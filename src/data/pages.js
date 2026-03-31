@@ -101,11 +101,8 @@ export const PAGES = [
     gate: { type: 'sub-steps-complete' },
     xpReward: 0,
     subSteps: [
-      { id: 'a', title: 'Моя роль', narrativeKey: 'threshing_role', gate: { type: 'self-report' }, xp: 20 },
-      { id: 'b', title: 'Код-ревью', narrativeKey: 'threshing_review', gate: { type: 'self-report' }, xp: 20 },
-      { id: 'c', title: 'Тест-кейсы', narrativeKey: 'threshing_tests', gate: { type: 'self-report' }, xp: 20 },
-      { id: 'd', title: 'Баг-репорты + стиль', narrativeKey: 'threshing_bugs', gate: { type: 'self-report' }, xp: 20 },
-      { id: 'e', title: 'Чекпойнт', narrativeKey: 'threshing_checkpoint', gate: { type: 'self-report' }, xp: 30 },
+      { id: 'a', title: 'Запусти магический промпт', narrativeKey: 'threshing_role', gate: { type: 'self-report' }, xp: 80 },
+      { id: 'b', title: 'Подтверди создание файла', narrativeKey: 'threshing_checkpoint', gate: { type: 'self-report' }, xp: 30 },
     ],
   },
   {
@@ -117,9 +114,8 @@ export const PAGES = [
     gate: { type: 'sub-steps-complete' },
     xpReward: 0,
     subSteps: [
-      { id: 'a', title: 'Создай папку', narrativeKey: 'combat1_folder', gate: { type: 'self-report' }, xp: 15 },
-      { id: 'b', title: 'Напиши bug-report.md', narrativeKey: 'combat1_write', gate: { type: 'self-report' }, xp: 25 },
-      { id: 'c', title: 'Чекпойнт', narrativeKey: 'combat1_checkpoint', gate: { type: 'self-report' }, xp: 20 },
+      { id: 'a', title: 'Скопируй промпт и создай команду', narrativeKey: 'combat1_write', gate: { type: 'self-report' }, xp: 40 },
+      { id: 'b', title: 'Подтверди', narrativeKey: 'combat1_checkpoint', gate: { type: 'self-report' }, xp: 20 },
     ],
   },
   {
@@ -131,8 +127,8 @@ export const PAGES = [
     gate: { type: 'sub-steps-complete' },
     xpReward: 0,
     subSteps: [
-      { id: 'a', title: 'Напиши test-cases.md', narrativeKey: 'combat2_write', gate: { type: 'self-report' }, xp: 25 },
-      { id: 'b', title: 'Чекпойнт', narrativeKey: 'combat2_checkpoint', gate: { type: 'self-report' }, xp: 20 },
+      { id: 'a', title: 'Скопируй промпт и создай команду', narrativeKey: 'combat2_write', gate: { type: 'self-report' }, xp: 25 },
+      { id: 'b', title: 'Подтверди', narrativeKey: 'combat2_checkpoint', gate: { type: 'self-report' }, xp: 20 },
     ],
   },
   {
