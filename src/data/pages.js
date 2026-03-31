@@ -174,14 +174,16 @@ export const PAGES = [
   },
   {
     id: 13,
-    slug: 'bonus',
+    slug: 'superpower',
     phase: 'live',
-    title: 'Бонус: Третья команда',
+    title: 'Суперсила: MCP',
     narrativeKey: 'bonus',
-    gate: { type: 'facilitator' },
-    xpReward: 30,
-    optional: true,
-    subSteps: null,
+    gate: { type: 'sub-steps-complete' },
+    xpReward: 0,
+    subSteps: [
+      { id: 'a', title: 'Установи MCP серверы', narrativeKey: 'bonus', gate: { type: 'self-report' }, xp: 50 },
+      { id: 'b', title: 'Попробуй суперсилу', narrativeKey: 'bonus', gate: { type: 'self-report' }, xp: 50 },
+    ],
   },
   {
     id: 14,

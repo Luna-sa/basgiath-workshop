@@ -30,11 +30,19 @@ export default function P11_Flight1() {
         </div>
         <div className="p-6 border border-border border-l-[3px] border-l-qa-teal bg-surface/50 text-left">
           <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-3">Задание</div>
-          <p className="text-sm text-text-body mb-3">Открой тестовое приложение BugBank и протестируй форму регистрации:</p>
-          <a href="/sample-project/index.html" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть BugBank</a>
-          <p className="text-sm text-text-body mb-2">Затем запусти в своём агенте:</p>
-          <div className="p-3 bg-black border border-border font-mono text-sm text-qa-teal mb-4">/test-cases Форма регистрации банковского приложения с полями: имя, фамилия, email, телефон, пароль, подтверждение пароля, дата рождения</div>
-          <p className="text-xs text-text-dim">Сравни сгенерированные тест-кейсы с тем, что ты видишь в приложении. Сколько багов уже видно?</p>
+          <p className="text-sm text-text-body mb-3">Протестируй форму регистрации Nexus Academy. Два варианта:</p>
+          <a href="/sample-project/index.html" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть Nexus Academy</a>
+          <div className="space-y-2 mb-4">
+            <div className="p-3 bg-black border border-border">
+              <div className="font-mono text-[11px] text-text-dim mb-1">Вариант 1 — Команда</div>
+              <code className="font-mono text-sm text-qa-teal">/test-cases Форма регистрации: имя, фамилия, email, телефон, пароль, подтверждение, дата рождения, выбор квадранта</code>
+            </div>
+            <div className="p-3 bg-black border border-ember/30">
+              <div className="font-mono text-[11px] text-ember mb-1">Вариант 2 — WOW (если установлен Playwright MCP)</div>
+              <code className="font-mono text-sm text-ember">Открой [URL] и протестируй регистрацию: пустые поля, невалидный email, пароль "1", дата из будущего. Покажи все найденные баги.</code>
+            </div>
+          </div>
+          <p className="text-xs text-text-dim">Сравни результат с тем, что видишь глазами. AI нашёл больше или меньше?</p>
         </div>
         {!started && !submitted ? (
           <div className="text-center"><button onClick={() => setStarted(true)} className="px-10 py-4 bg-qa-teal text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] hover:bg-qa-teal-soft transition-all cursor-pointer">Начать →</button></div>
