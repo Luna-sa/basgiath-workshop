@@ -30,10 +30,11 @@ export default function P11_Flight1() {
         </div>
         <div className="p-6 border border-border border-l-[3px] border-l-qa-teal bg-surface/50 text-left">
           <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-3">Задание</div>
-          <p className="text-sm text-text-body mb-2">Открой тестовый проект в своём редакторе. Запусти:</p>
-          <a href="/sample-project.zip" download className="inline-block mb-3 font-mono text-[12px] text-qa-teal border border-qa-teal/20 px-3 py-1.5 hover:bg-qa-teal/10 transition-colors">↓ Скачать sample-project.zip</a>
-          <div className="p-3 bg-black border border-border font-mono text-sm text-qa-teal mb-4">/test-cases Страница регистрации с полями: имя, email, пароль, подтверждение пароля</div>
-          <p className="text-xs text-text-dim">Сколько тест-кейсов? Покрыты ли positive, negative, boundary, edge?</p>
+          <p className="text-sm text-text-body mb-3">Открой тестовое приложение BugBank и протестируй форму регистрации:</p>
+          <a href="/sample-project/" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть BugBank</a>
+          <p className="text-sm text-text-body mb-2">Затем запусти в своём агенте:</p>
+          <div className="p-3 bg-black border border-border font-mono text-sm text-qa-teal mb-4">/test-cases Форма регистрации банковского приложения с полями: имя, фамилия, email, телефон, пароль, подтверждение пароля, дата рождения</div>
+          <p className="text-xs text-text-dim">Сравни сгенерированные тест-кейсы с тем, что ты видишь в приложении. Сколько багов уже видно?</p>
         </div>
         {!started && !submitted ? (
           <div className="text-center"><button onClick={() => setStarted(true)} className="px-10 py-4 bg-qa-teal text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] hover:bg-qa-teal-soft transition-all cursor-pointer">Начать →</button></div>
