@@ -31,7 +31,7 @@ export default function P12_Flight2() {
         <div className="p-6 border border-border border-l-[3px] border-l-qa-teal bg-surface/50 text-left">
           <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-3">Задание</div>
           <p className="text-sm text-text-body mb-3">Открой BugBank, найди баг и опиши его своему AI-агенту:</p>
-          <a href="/sample-project/" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть BugBank</a>
+          <a href="/sample-project/index.html" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть BugBank</a>
           <div className="p-3 bg-black border border-border font-mono text-sm text-qa-teal mb-4">/bug-report [опиши найденный баг в BugBank]</div>
           <p className="text-xs text-text-dim">Подсказки: попробуй логин без данных, регистрацию с пустыми полями, перевод отрицательной суммы, удаление аккаунта.</p>
         </div>

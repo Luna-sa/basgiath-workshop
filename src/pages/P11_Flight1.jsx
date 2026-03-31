@@ -31,7 +31,7 @@ export default function P11_Flight1() {
         <div className="p-6 border border-border border-l-[3px] border-l-qa-teal bg-surface/50 text-left">
           <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-3">Задание</div>
           <p className="text-sm text-text-body mb-3">Открой тестовое приложение BugBank и протестируй форму регистрации:</p>
-          <a href="/sample-project/" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть BugBank</a>
+          <a href="/sample-project/index.html" target="_blank" className="inline-flex items-center gap-2 mb-4 font-mono text-[13px] text-black bg-qa-teal px-4 py-2.5 hover:bg-qa-teal-soft transition-colors">↗ Открыть BugBank</a>
           <p className="text-sm text-text-body mb-2">Затем запусти в своём агенте:</p>
           <div className="p-3 bg-black border border-border font-mono text-sm text-qa-teal mb-4">/test-cases Форма регистрации банковского приложения с полями: имя, фамилия, email, телефон, пароль, подтверждение пароля, дата рождения</div>
           <p className="text-xs text-text-dim">Сравни сгенерированные тест-кейсы с тем, что ты видишь в приложении. Сколько багов уже видно?</p>

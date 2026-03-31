@@ -3,438 +3,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BugBank — Online Banking</title>
+<title>Nexus Academy — Cadet Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --teal: #00E5CC; --teal-soft: #00C4AE; --red: #FF3344;
+    --bg: #0A0A0A; --surface: #111111; --border: #1E1E1E;
+    --white: #FFFFFF; --text: #F0F0F0; --body: #CCCCCC; --dim: #888888;
+    --ember: #E85D26; --forest: #2D6A4F;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--body); min-height: 100vh; }
 
-  .header { background: #1a3a5c; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 22px; font-weight: 600; }
-  .header nav a { color: rgba(255,255,255,0.8); text-decoration: none; margin-left: 24px; font-size: 14px; }
-  .header nav a:hover { color: white; }
+  /* Red top line — QA Clan signature */
+  .top-line { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--red); z-index: 100; }
 
-  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  .header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; justify-content: space-between; align-items: center;
+    margin-top: 4px;
+  }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--white); font-weight: 400; }
+  .header h1 em { color: var(--teal); font-style: italic; }
+  .header nav { display: flex; gap: 20px; }
+  .header nav a {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--dim); text-decoration: none; cursor: pointer;
+  }
+  .header nav a:hover { color: var(--teal); }
 
-  /* BUG #1: Success message green on green — unreadable */
-  .alert-success { background: #22c55e; color: #16a34a; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; }
-  .alert-error { background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; display: none; }
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 24px; }
+  .section { display: none; }
+  .section.active { display: block; }
 
-  .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; }
-  .card h2 { font-size: 18px; margin-bottom: 16px; color: #1a3a5c; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: var(--white); margin-bottom: 8px; }
+  h2 em { color: var(--teal); font-style: italic; }
+  .subtitle { font-family: 'Playfair Display', serif; font-style: italic; color: var(--dim); font-size: 15px; margin-bottom: 24px; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+  .card-teal { border-left: 3px solid var(--teal); }
+  .card-red { border-left: 3px solid var(--red); }
+
+  .label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  .label-teal { color: var(--teal); }
 
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+  .form-group label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
   .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 6px;
-    font-size: 15px; font-family: inherit; transition: border-color 0.2s;
+    width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
+    color: var(--white); font-size: 15px; font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s;
   }
-  .form-group input:focus, .form-group select:focus { border-color: #1a3a5c; outline: none; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--teal); outline: none;
+    box-shadow: 0 0 0 3px rgba(0,229,204,0.08);
+  }
+  .form-group input::placeholder { color: #444; font-style: italic; }
 
-  .btn { padding: 10px 24px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-  .btn-primary { background: #1a3a5c; color: white; }
-  .btn-primary:hover { background: #143050; }
-  .btn-danger { background: #dc2626; color: white; }
-  .btn-secondary { background: #e5e7eb; color: #333; }
+  .btn {
+    padding: 12px 32px; border: none; font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-primary { background: var(--teal); color: var(--bg); }
+  .btn-primary:hover { background: var(--teal-soft); box-shadow: 0 0 20px rgba(0,229,204,0.2); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-ghost { background: none; border: 1px solid var(--border); color: var(--dim); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 36px; color: var(--teal); font-weight: 700; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--dim); }
+
   table { width: 100%; border-collapse: collapse; }
-  table th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 13px; color: #555; border-bottom: 2px solid #e5e7eb; }
-  table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+  table th { text-align: left; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); }
+  table td { padding: 10px 12px; border-bottom: 1px solid #151515; font-size: 14px; }
 
-  /* BUG #2: Overlapping elements on mobile — no responsive */
-  .balance-display { font-size: 42px; font-weight: 700; color: #1a3a5c; }
-  .balance-label { font-size: 13px; color: #888; margin-bottom: 4px; }
+  .badge { display: inline-block; padding: 3px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; border: 1px solid; }
+  .badge-ok { color: var(--forest); border-color: rgba(45,106,79,0.3); }
+  .badge-pending { color: var(--ember); border-color: rgba(232,93,38,0.3); }
+  .badge-fail { color: var(--red); border-color: rgba(255,51,68,0.3); }
 
-  .tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid #e5e7eb; }
-  .tab { padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: #888; }
-  .tab.active { color: #1a3a5c; border-bottom-color: #1a3a5c; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+  .alert { padding: 14px 18px; margin-bottom: 20px; font-size: 13px; border-left: 3px solid; }
+  /* BUG #1: Success alert — teal text on teal-tinted background — barely readable */
+  .alert-success { background: rgba(0,229,204,0.15); color: rgba(0,229,204,0.4); border-color: var(--teal); }
+  .alert-error { background: rgba(255,51,68,0.08); color: var(--red); border-color: var(--red); display: none; }
 
-  /* BUG #3: Footer overlaps content on short pages */
-  .footer { background: #1a3a5c; color: rgba(255,255,255,0.6); padding: 16px 24px; font-size: 12px; text-align: center; position: fixed; bottom: 0; left: 0; right: 0; }
+  /* BUG #2: Footer overlaps content — fixed position */
+  .footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 12px 24px; text-align: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 2px;
+  }
 
-  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-  .status-success { background: #dcfce7; color: #16a34a; }
-  .status-pending { background: #fef9c3; color: #a16207; }
-  .status-failed { background: #fee2e2; color: #dc2626; }
-
-  .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1a3a5c; font-size: 16px; }
-
-  .hidden { display: none; }
-
-  /* BUG #4: Tooltip cuts off screen on the right side */
-  .tooltip { position: relative; display: inline-block; cursor: help; }
-  .tooltip .tooltip-text { visibility: hidden; background: #333; color: white; padding: 8px 12px; border-radius: 4px; font-size: 12px; position: absolute; left: 0; top: -40px; white-space: nowrap; z-index: 10; }
-  .tooltip:hover .tooltip-text { visibility: visible; }
+  .quest-hint {
+    margin-top: 24px; padding: 16px; border: 1px solid rgba(0,229,204,0.15);
+    background: rgba(0,229,204,0.03); font-size: 13px; color: var(--dim);
+  }
+  .quest-hint strong { color: var(--teal); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
 </style>
 </head>
 <body>
 
+<div class="top-line"></div>
+
 <div class="header">
-  <h1>🏦 BugBank</h1>
+  <h1>Nexus <em>Academy</em></h1>
   <nav>
-    <a href="#" onclick="showSection('dashboard')">Dashboard</a>
-    <a href="#" onclick="showSection('transfer')">Transfer</a>
-    <a href="#" onclick="showSection('profile')">Profile</a>
-    <!-- BUG #5: Logout button doesn't actually log out -->
-    <a href="#" onclick="alert('Logged out!'); return false;">Logout</a>
+    <a onclick="show('dashboard')">Dashboard</a>
+    <a onclick="show('missions')">Missions</a>
+    <a onclick="show('profile')">Profile</a>
+    <!-- BUG #3: Logout shows alert but doesn't reset anything -->
+    <a onclick="alert('Logged out!'); return false;">Logout</a>
   </nav>
 </div>
 
-<div class="container" id="app">
+<div class="container">
 
-  <!-- LOGIN SECTION -->
-  <div id="section-login">
-    <div class="card" style="max-width: 420px; margin: 60px auto;">
-      <h2>Sign In to BugBank</h2>
-      <div class="alert-error" id="login-error"></div>
+  <!-- ============ LOGIN ============ -->
+  <div id="s-login" class="section active">
+    <div style="max-width: 420px; margin: 40px auto;">
+      <div class="label label-teal" style="text-align:center; margin-bottom: 16px;">Cadet Authentication</div>
+      <h2 style="text-align:center;">Enter the <em>Academy</em></h2>
+      <p class="subtitle" style="text-align:center;">Prove your identity, cadet.</p>
 
-      <div class="form-group">
-        <label>Email</label>
-        <!-- BUG #6: No autocomplete attribute — browser can't help users -->
-        <input type="text" id="login-email" placeholder="your@email.com">
+      <div class="card card-teal">
+        <div class="alert-error" id="login-error"></div>
+
+        <div class="form-group">
+          <label>Cadet Email</label>
+          <!-- BUG #4: type="text" instead of type="email" — no browser validation -->
+          <input type="text" id="login-email" placeholder="cadet@nexus.academy">
+        </div>
+        <div class="form-group">
+          <label>Access Code</label>
+          <!-- BUG #5: type="text" — password is visible to anyone watching -->
+          <input type="text" id="login-pass" placeholder="Your access code">
+        </div>
+        <div class="form-group">
+          <!-- BUG #6: "Remember me" checked by default on military academy portal -->
+          <label style="font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--body);">
+            <input type="checkbox" checked> Stay authenticated on this device
+          </label>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Authenticate →</button>
+
+        <p style="text-align:center; margin-top:16px; font-size:13px; color: var(--dim);">
+          New cadet? <a href="#" style="color: var(--teal);" onclick="show('register')">Request Access</a>
+        </p>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <!-- BUG #7: Password field is type="text" — password visible to everyone nearby -->
-        <input type="text" id="login-password" placeholder="Enter password">
-      </div>
-      <div class="form-group">
-        <!-- BUG #8: "Remember me" checkbox is checked by default on a banking site -->
-        <label><input type="checkbox" checked> Remember me on this device</label>
-      </div>
-
-      <button class="btn btn-primary" style="width: 100%;" onclick="doLogin()">Sign In</button>
-
-      <p style="text-align: center; margin-top: 16px; font-size: 13px;">
-        Don't have an account? <a href="#" onclick="showSection('register')">Register</a>
-      </p>
     </div>
   </div>
 
-  <!-- REGISTER SECTION -->
-  <div id="section-register" class="hidden">
-    <div class="card" style="max-width: 480px; margin: 40px auto;">
-      <h2>Create Account</h2>
-      <div class="alert-error" id="register-error"></div>
+  <!-- ============ REGISTER ============ -->
+  <div id="s-register" class="section">
+    <div style="max-width: 480px; margin: 20px auto;">
+      <div class="label label-teal" style="text-align:center; margin-bottom: 16px;">New Cadet Registration</div>
+      <h2 style="text-align:center;">Join the <em>Riders Quadrant</em></h2>
+      <p class="subtitle" style="text-align:center;">Only the worthy are accepted.</p>
 
-      <div class="grid-2">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" id="reg-first" placeholder="John">
+      <div class="card card-teal">
+        <div class="alert-error" id="reg-error"></div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="reg-first" placeholder="Violet">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="reg-last" placeholder="Sorrengail">
+          </div>
         </div>
         <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" id="reg-last" placeholder="Doe">
+          <label>Email</label>
+          <input type="text" id="reg-email" placeholder="cadet@nexus.academy">
         </div>
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="text" id="reg-email" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <!-- BUG #9: No input mask or format hint — accepts "abc", "!!!", anything -->
-        <input type="text" id="reg-phone" placeholder="Phone number">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <!-- BUG #10: No password requirements shown; accepts "1" as valid password -->
-        <input type="password" id="reg-password" placeholder="Create password">
-      </div>
-      <div class="form-group">
-        <label>Confirm Password</label>
-        <input type="password" id="reg-confirm" placeholder="Confirm password">
-      </div>
-      <div class="form-group">
-        <label>Date of Birth</label>
-        <!-- BUG #11: No max date — allows future dates (year 2099) -->
-        <input type="date" id="reg-dob">
-      </div>
-      <div class="form-group">
-        <!-- BUG #12: Terms link opens nothing; checkbox not required -->
-        <label><input type="checkbox" id="reg-terms"> I agree to the <a href="#">Terms of Service</a></label>
-      </div>
+        <div class="form-group">
+          <label>Communication Signal</label>
+          <!-- BUG #7: No format hint, accepts anything -->
+          <input type="text" id="reg-phone" placeholder="Signal frequency">
+        </div>
+        <div class="form-group">
+          <label>Access Code</label>
+          <!-- BUG #8: No password requirements shown; "1" accepted -->
+          <input type="password" id="reg-pass" placeholder="Create access code">
+        </div>
+        <div class="form-group">
+          <label>Confirm Access Code</label>
+          <input type="password" id="reg-confirm" placeholder="Repeat access code">
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <!-- BUG #9: No max date — future dates accepted -->
+          <input type="date" id="reg-dob">
+        </div>
+        <div class="form-group">
+          <label>Quadrant</label>
+          <!-- BUG #10: "Select quadrant" is a valid option — no real validation -->
+          <select id="reg-quadrant">
+            <option>Select quadrant</option>
+            <option>Riders</option>
+            <option>Scribes</option>
+            <option>Infantry</option>
+            <option>Healers</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <!-- BUG #11: Terms link goes nowhere; checkbox not required for submit -->
+          <label style="font-size:12px; letter-spacing:0; text-transform:none; color:var(--body);">
+            <input type="checkbox" id="reg-terms"> I accept the <a href="#" style="color:var(--teal);">Academy Code of Conduct</a>
+          </label>
+        </div>
 
-      <button class="btn btn-primary" style="width: 100%;" onclick="doRegister()">Create Account</button>
-
-      <p style="text-align: center; margin-top: 16px; font-size: 13px;">
-        Already have an account? <a href="#" onclick="showSection('login')">Sign In</a>
-      </p>
+        <button class="btn btn-primary" style="width:100%;" onclick="doRegister()">Request Access →</button>
+        <p style="text-align:center; margin-top:16px; font-size:13px; color:var(--dim);">
+          Already a cadet? <a href="#" style="color:var(--teal);" onclick="show('login')">Authenticate</a>
+        </p>
+      </div>
     </div>
   </div>
 
-  <!-- DASHBOARD SECTION -->
-  <div id="section-dashboard" class="hidden">
-    <div class="alert-success" id="welcome-msg">Welcome back! Your last login was from Unknown Location.</div>
+  <!-- ============ DASHBOARD ============ -->
+  <div id="s-dashboard" class="section">
+    <!-- BUG #12: Success message barely readable (teal on teal) -->
+    <div class="alert alert-success">Access granted. Your last session was from Unknown Device, Unknown Location.</div>
 
     <div class="grid-2">
-      <div class="card">
-        <div class="balance-label">Current Balance</div>
-        <!-- BUG #13: Balance shown with wrong currency symbol — $ instead of user's currency -->
-        <div class="balance-display">$ 12,847.50</div>
-        <div style="margin-top: 12px; font-size: 13px; color: #888;">
-          Account: **** **** **** 4589
-          <span class="tooltip" style="margin-left: 8px;">ℹ️
-            <span class="tooltip-text">Your account ending in 4589 was opened on January 15, 2024 at the Downtown Branch with initial deposit</span>
-          </span>
+      <div class="card card-teal">
+        <div class="stat-label">Cadet Rank</div>
+        <div class="stat-value">47</div>
+        <div style="margin-top:8px; font-size:13px; color:var(--dim);">
+          Wing: Fourth · Squad: Alpha
         </div>
       </div>
       <div class="card">
-        <div class="balance-label">Savings Account</div>
-        <div class="balance-display" style="font-size: 32px;">$ 3,200.00</div>
-        <div style="margin-top: 12px;">
-          <!-- BUG #14: "Transfer" button goes to profile instead of transfer page -->
-          <button class="btn btn-secondary" onclick="showSection('profile')">Quick Transfer</button>
-        </div>
+        <div class="stat-label">Training XP</div>
+        <div class="stat-value" style="font-size:28px;">2,340</div>
+        <!-- BUG #13: "Start Training" button navigates to profile instead of missions -->
+        <button class="btn btn-ghost" style="margin-top:12px;" onclick="show('profile')">Start Training →</button>
       </div>
     </div>
 
     <div class="card">
-      <h2>Recent Transactions</h2>
+      <div class="label" style="margin-bottom:16px;">Recent Activity</div>
       <table>
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Status</th>
-          </tr>
+          <tr><th>Date</th><th>Activity</th><th>XP</th><th>Status</th></tr>
         </thead>
         <tbody>
+          <!-- BUG #14: Date formats inconsistent across rows -->
           <tr>
-            <!-- BUG #15: Date format inconsistent — mix of US and EU formats -->
             <td>03/28/2026</td>
-            <td>Netflix Subscription</td>
-            <td style="color: #dc2626;">- $15.99</td>
-            <td><span class="status-badge status-success">Completed</span></td>
+            <td>Combat Assessment — Fire Module</td>
+            <td style="color:var(--teal);">+120</td>
+            <td><span class="badge badge-ok">Complete</span></td>
           </tr>
           <tr>
             <td>28.03.2026</td>
-            <td>Salary Deposit</td>
-            <td style="color: #16a34a;">+ $4,500.00</td>
-            <td><span class="status-badge status-success">Completed</span></td>
+            <td>Dragon Communication Theory</td>
+            <td style="color:var(--teal);">+80</td>
+            <td><span class="badge badge-ok">Complete</span></td>
           </tr>
           <tr>
             <td>2026-03-27</td>
-            <td>Amazon Purchase</td>
-            <!-- BUG #16: Negative amount shows as positive (missing minus) -->
-            <td style="color: #dc2626;">$89.99</td>
-            <td><span class="status-badge status-pending">Pending</span></td>
+            <td>Aerial Tactics Exam</td>
+            <!-- BUG #15: Positive XP but marked as Failed -->
+            <td style="color:var(--teal);">+200</td>
+            <td><span class="badge badge-fail">Failed</span></td>
           </tr>
           <tr>
-            <td>Mar 26, 2026</td>
-            <td>Transfer to John</td>
-            <td style="color: #dc2626;">- $200.00</td>
-            <!-- BUG #17: Status says "Failed" but amount was still deducted -->
-            <td><span class="status-badge status-failed">Failed</span></td>
-          </tr>
-          <tr>
-            <td>03/25/2026</td>
-            <!-- BUG #18: HTML in description — XSS vulnerability -->
-            <td>Coffee Shop <img src="x" onerror="this.style.display='none'"> ☕</td>
-            <td style="color: #dc2626;">- $4.50</td>
-            <td><span class="status-badge status-success">Completed</span></td>
+            <td>Mar 26</td>
+            <td>Squad Formation Drill</td>
+            <!-- BUG #16: XP shows as negative for completed training -->
+            <td style="color:var(--red);">-50</td>
+            <td><span class="badge badge-pending">Pending</span></td>
           </tr>
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- TRANSFER SECTION -->
-  <div id="section-transfer" class="hidden">
-    <div class="card" style="max-width: 520px; margin: 0 auto;">
-      <h2>Send Money</h2>
-      <div class="alert-error" id="transfer-error"></div>
-
-      <div class="form-group">
-        <label>From Account</label>
-        <select id="transfer-from">
-          <option>Checking **** 4589 — $12,847.50</option>
-          <option>Savings **** 7721 — $3,200.00</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Recipient</label>
-        <input type="text" id="transfer-to" placeholder="Email or account number">
-      </div>
-      <div class="form-group">
-        <label>Amount</label>
-        <!-- BUG #19: Accepts negative amounts — type="text" instead of number -->
-        <input type="text" id="transfer-amount" placeholder="0.00">
-      </div>
-      <div class="form-group">
-        <label>Note (optional)</label>
-        <!-- BUG #20: No character limit — can paste megabytes of text -->
-        <textarea id="transfer-note" rows="3" placeholder="What's this for?"></textarea>
-      </div>
-
-      <!-- BUG #21: No confirmation dialog — money sent instantly on click -->
-      <button class="btn btn-primary" style="width: 100%;" onclick="doTransfer()">Send Money</button>
-
-      <!-- BUG #22: "Cancel" button submits the form instead of going back -->
-      <button class="btn btn-secondary" style="width: 100%; margin-top: 8px;" onclick="doTransfer()">Cancel</button>
+    <div class="quest-hint">
+      <strong>Quest Hint</strong><br>
+      This portal has intentional bugs. Your mission: find as many as you can. Look at forms, buttons, data display, navigation, and security.
     </div>
   </div>
 
-  <!-- PROFILE SECTION -->
-  <div id="section-profile" class="hidden">
-    <div class="card" style="max-width: 520px; margin: 0 auto;">
-      <h2>Your Profile</h2>
+  <!-- ============ MISSIONS ============ -->
+  <div id="s-missions" class="section">
+    <div class="label label-teal" style="margin-bottom:16px;">Mission Board</div>
+    <h2>Active <em>Missions</em></h2>
+    <p class="subtitle">Select a training mission to begin.</p>
 
-      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-        <div class="avatar">JD</div>
+    <div class="card card-teal">
+      <div class="label label-teal">Mission: Dragon Bond Assessment</div>
+      <h3 style="color:var(--white); margin: 8px 0;">Transfer Training Credits</h3>
+      <p style="font-size:14px; margin-bottom:16px;">Send XP credits to another cadet's account.</p>
+
+      <div class="alert-error" id="mission-error"></div>
+
+      <div class="form-group">
+        <label>Recipient Cadet</label>
+        <input type="text" id="m-recipient" placeholder="Cadet name or ID">
+      </div>
+      <div class="form-group">
+        <label>Credits to Transfer</label>
+        <!-- BUG #17: type="text" — accepts letters, negative numbers, symbols -->
+        <input type="text" id="m-amount" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Mission Note</label>
+        <!-- BUG #18: No character limit on textarea -->
+        <textarea id="m-note" rows="3" placeholder="Reason for transfer..." style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--border); color:var(--white); font-family:inherit;"></textarea>
+      </div>
+
+      <!-- BUG #19: No confirmation dialog on send -->
+      <button class="btn btn-primary" style="width:100%;" onclick="doMission()">Execute Transfer →</button>
+      <!-- BUG #20: Cancel button also executes the transfer -->
+      <button class="btn btn-ghost" style="width:100%; margin-top:8px;" onclick="doMission()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ============ PROFILE ============ -->
+  <div id="s-profile" class="section">
+    <div class="label label-teal" style="margin-bottom:16px;">Cadet Profile</div>
+    <h2>Your <em>Identity</em></h2>
+
+    <div class="card card-teal">
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+        <div style="width:56px; height:56px; border:2px solid var(--teal); display:flex; align-items:center; justify-content:center; font-size:22px;">⚡</div>
         <div>
-          <div style="font-weight: 600;">John Doe</div>
-          <div style="font-size: 13px; color: #888;">Member since Jan 2024</div>
+          <div style="font-size:16px; color:var(--white); font-weight:600;">Violet Sorrengail</div>
+          <div style="font-size:12px; color:var(--dim);">Riders Quadrant · Fourth Wing</div>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" value="John Doe" id="profile-name">
+        <label>Cadet Name</label>
+        <input type="text" value="Violet Sorrengail" id="p-name">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <!-- BUG #23: Email field is disabled but looks enabled (confusing UX) -->
-        <input type="text" value="john.doe@email.com" id="profile-email" style="opacity: 0.9; background: #fafafa;">
+        <!-- BUG #21: Looks editable but shouldn't be (no visual disabled state) -->
+        <input type="text" value="violet@nexus.academy" id="p-email" style="opacity:0.9; background:#0d0d0d;">
       </div>
       <div class="form-group">
-        <label>Phone</label>
-        <input type="text" value="+1 (555) 123-4567" id="profile-phone">
-      </div>
-      <div class="form-group">
-        <label>Address</label>
-        <textarea rows="2" id="profile-address">123 Main St, Apt 4B, New York, NY 10001</textarea>
+        <label>Signal</label>
+        <input type="text" value="+1 (555) 987-6543" id="p-phone">
       </div>
 
-      <div style="display: flex; gap: 8px;">
+      <div style="display:flex; gap:8px;">
         <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
-        <!-- BUG #24: "Delete Account" has no confirmation, same style as secondary button -->
-        <button class="btn btn-secondary" onclick="deleteAccount()">Delete Account</button>
+        <!-- BUG #22: Delete account — no confirmation, styled like a regular button -->
+        <button class="btn btn-ghost" onclick="deleteAccount()">Delete Account</button>
       </div>
+    </div>
 
-      <div class="card" style="margin-top: 24px; background: #f8f9fa;">
-        <h2 style="font-size: 15px;">Change Password</h2>
-        <div class="form-group">
-          <label>Current Password</label>
-          <input type="password" placeholder="Current password">
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="new-pass" placeholder="New password">
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" id="confirm-new-pass" placeholder="Confirm new password">
-        </div>
-        <!-- BUG #25: Password strength indicator always shows "Strong" regardless of input -->
-        <div style="font-size: 12px; color: #16a34a; margin-bottom: 12px;">Password strength: Strong ✓</div>
-        <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+    <div class="card">
+      <div class="label" style="margin-bottom:16px;">Change Access Code</div>
+      <div class="form-group">
+        <label>Current Code</label>
+        <input type="password" id="cp-current" placeholder="Current access code">
       </div>
+      <div class="form-group">
+        <label>New Code</label>
+        <input type="password" id="cp-new" placeholder="New access code">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Code</label>
+        <input type="password" id="cp-confirm" placeholder="Repeat new code">
+      </div>
+      <!-- BUG #23: Always shows "Strong" regardless of what's typed -->
+      <div style="font-size:12px; color:var(--forest); margin-bottom:12px;">Code strength: Strong ✓</div>
+      <button class="btn btn-primary" onclick="changeCode()">Update Code</button>
     </div>
   </div>
 
 </div>
 
 <div class="footer">
-  <!-- BUG #26: Copyright year is 2024 instead of 2026 -->
-  © 2024 BugBank Inc. All rights reserved. | <a href="#" style="color: rgba(255,255,255,0.6);">Privacy</a> | <a href="#" style="color: rgba(255,255,255,0.6);">Terms</a>
-  <!-- BUG #27: "Privacy" and "Terms" links go nowhere -->
+  <!-- BUG #24: Copyright year is 2024, not 2026 -->
+  © 2024 Nexus Academy · Basgiath War College · <a href="#" style="color:var(--dim);">Privacy</a> · <a href="#" style="color:var(--dim);">Terms</a>
+  <!-- BUG #25: Privacy and Terms links go nowhere -->
 </div>
 
 <script>
-function showSection(name) {
-  document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.add('hidden'));
-  const section = document.getElementById('section-' + name);
-  if (section) section.classList.remove('hidden');
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + id)?.classList.add('active');
 }
 
 function doLogin() {
   const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  const errorEl = document.getElementById('login-error');
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
 
-  // BUG #28: Empty email/password accepted — shows dashboard anyway
-  if (!email && !password) {
-    showSection('dashboard');
-    return;
-  }
+  // BUG #26: Empty credentials accepted — goes straight to dashboard
+  if (!email && !pass) { show('dashboard'); return; }
 
-  // BUG #29: Error message reveals if email exists in system
+  // BUG #27: Error reveals whether email exists in system
   if (email && !email.includes('@')) {
-    errorEl.textContent = 'No account found with email: ' + email;
-    errorEl.style.display = 'block';
-    return;
+    err.textContent = 'No cadet found with identifier: ' + email;
+    err.style.display = 'block'; return;
   }
 
-  // BUG #30: Any password accepted if email contains @
-  showSection('dashboard');
+  // BUG #28: Any password works if email has @
+  show('dashboard');
 }
 
 function doRegister() {
   const first = document.getElementById('reg-first').value;
-  const email = document.getElementById('reg-email').value;
-  const password = document.getElementById('reg-password').value;
+  const pass = document.getElementById('reg-pass').value;
   const confirm = document.getElementById('reg-confirm').value;
   const phone = document.getElementById('reg-phone').value;
-  const errorEl = document.getElementById('register-error');
+  const err = document.getElementById('reg-error');
 
-  // BUG #31: Only checks first name, all other fields optional
-  if (!first) {
-    errorEl.textContent = 'First name is required';
-    errorEl.style.display = 'block';
-    return;
-  }
+  // BUG #29: Only first name required, everything else optional
+  if (!first) { err.textContent = 'Cadet name is required'; err.style.display = 'block'; return; }
 
-  // BUG #32: Password match check compares password with phone, not confirm
-  if (password !== phone) {
-    // This would almost always pass since phone != password
-    // errorEl.textContent = 'Passwords do not match';
-  }
+  // BUG #30: Compares password with phone field instead of confirm field
+  if (pass !== phone) { /* silently passes */ }
 
-  alert('Account created! Welcome, ' + first + '!');
-  showSection('dashboard');
+  alert('✓ Access granted, Cadet ' + first + '! Welcome to the Riders Quadrant.');
+  show('dashboard');
 }
 
-function doTransfer() {
-  const amount = document.getElementById('transfer-amount').value;
-  const to = document.getElementById('transfer-to').value;
-
-  // BUG #33: No validation — empty recipient, zero/negative amount all accepted
-  // BUG #34: Shows success even with obviously invalid data
-  alert('✅ Transfer of $' + (amount || '0') + ' sent to ' + (to || 'unknown') + '!');
-  showSection('dashboard');
+function doMission() {
+  const amount = document.getElementById('m-amount').value;
+  const to = document.getElementById('m-recipient').value;
+  // BUG #31: No validation — empty, negative, text all accepted
+  // BUG #32: Shows success for any input
+  alert('✓ Transfer of ' + (amount || '0') + ' credits to ' + (to || 'unknown') + ' executed.');
+  show('dashboard');
 }
 
 function saveProfile() {
-  // BUG #35: Shows success but doesn't actually save (no backend, but also no localStorage)
-  alert('Profile updated successfully!');
+  // BUG #33: Shows success but nothing actually saves
+  alert('Profile updated.');
 }
 
 function deleteAccount() {
-  // BUG #36: Account "deleted" with single click, no confirmation
-  alert('Account deleted. Goodbye!');
-  showSection('login');
+  // BUG #34: Instant delete, no confirmation
+  alert('Account deleted. You have been removed from the Academy.');
+  show('login');
 }
 
-function changePassword() {
-  const newPass = document.getElementById('new-pass').value;
-  const confirmPass = document.getElementById('confirm-new-pass').value;
-
-  // BUG #37: Doesn't check current password at all
-  // BUG #38: Accepts empty new password
-  if (newPass !== confirmPass) {
-    alert('Passwords do not match!');
-    return;
-  }
-  alert('Password changed successfully!');
+function changeCode() {
+  const current = document.getElementById('cp-current').value;
+  const newCode = document.getElementById('cp-new').value;
+  const confirm = document.getElementById('cp-confirm').value;
+  // BUG #35: Doesn't verify current code
+  // BUG #36: Accepts empty new code
+  if (newCode !== confirm) { alert('Codes do not match.'); return; }
+  alert('Access code updated.');
 }
 
-// Start on login page
-showSection('login');
+show('login');
 </script>
 </body>
 </html>
