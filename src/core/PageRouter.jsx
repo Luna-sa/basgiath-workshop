@@ -1,0 +1,114 @@
+import { useEffect, useCallback, lazy, Suspense } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useWorkshopStore } from '../store/workshopStore'
+import { evaluateGate } from '../store/gateUtils'
+import { PAGES } from '../data/pages'
+import ProgressBar from './ProgressBar'
+import HUD from './HUD'
+
+// Lazy-load page components
+const pageComponents = {
+  0: lazy(() => import('../pages/P00_Landing')),
+  1: lazy(() => import('../pages/P01_CharacterSelect')),
+  2: lazy(() => import('../pages/P02_Registration')),
+  3: lazy(() => import('../pages/P03_PreWork')),
+  4: lazy(() => import('../pages/P04_WaitingRoom')),
+  5: lazy(() => import('../pages/P05_Opening')),
+  6: lazy(() => import('../pages/P06_Context')),
+  7: lazy(() => import('../pages/P07_Threshing')),
+  8: lazy(() => import('../pages/P08_Combat1')),
+  9: lazy(() => import('../pages/P09_Combat2')),
+  10: lazy(() => import('../pages/P10_Quiz')),
+  11: lazy(() => import('../pages/P11_Flight1')),
+  12: lazy(() => import('../pages/P12_Flight2')),
+  13: lazy(() => import('../pages/P13_Bonus')),
+  14: lazy(() => import('../pages/P14_WarGames')),
+  15: lazy(() => import('../pages/P15_Leaderboard')),
+  16: lazy(() => import('../pages/P16_Graduation')),
+}
+
+// Loading fallback
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-bg">
+      <div className="text-center">
+        <div className="w-2 h-2 rounded-full bg-qa-teal animate-pulse mx-auto mb-3" />
+        <span className="font-mono text-[12px] text-text-dim tracking-widest uppercase">Loading...</span>
+      </div>
+    </div>
+  )
+}
+
+export default function PageRouter() {
+  const currentPage = useWorkshopStore(s => s.currentPage)
+  const direction = useWorkshopStore(s => s.direction)
+  const navigateNext = useWorkshopStore(s => s.navigateNext)
+  const navigateBack = useWorkshopStore(s => s.navigateBack)
+  const completePage = useWorkshopStore(s => s.completePage)
+
+  // Keyboard navigation
+  const handleKeyDown = useCallback((e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return
+
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault()
+      const page = PAGES[currentPage]
+      const gate = page?.gate
+      const state = useWorkshopStore.getState()
+      if (!gate || gate.type === 'click' || gate.type === 'none' || evaluateGate(state, currentPage)) {
+        if (gate?.type === 'click' || gate?.type === 'none') completePage(currentPage)
+        navigateNext()
+      }
+    }
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      navigateBack()
+    }
+  }, [currentPage, navigateNext, navigateBack, completePage])
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
+  const PageComponent = pageComponents[currentPage]
+
+  // Animation variants
+  const variants = {
+    enter: (dir) => ({
+      x: dir > 0 ? 80 : -80,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (dir) => ({
+      x: dir > 0 ? -80 : 80,
+      opacity: 0,
+    }),
+  }
+
+  return (
+    <>
+      <ProgressBar />
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={currentPage}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <Suspense fallback={<PageLoader />}>
+            {PageComponent ? <PageComponent /> : <PageLoader />}
+          </Suspense>
+        </motion.div>
+      </AnimatePresence>
+      <HUD />
+    </>
+  )
+}
