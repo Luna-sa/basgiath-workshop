@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
+import { usePersona } from '../store/usePersona'
 import PageShell from '../core/PageShell'
 
 export default function P11_Flight1() {
   const submitTask = useWorkshopStore(s => s.submitTask)
   const taskSubmissions = useWorkshopStore(s => s.taskSubmissions)
   const completePage = useWorkshopStore(s => s.completePage)
+  const persona = usePersona()
   const submitted = !!taskSubmissions[11]
   const [timeLeft, setTimeLeft] = useState(420)
   const [started, setStarted] = useState(false)
@@ -44,12 +46,18 @@ export default function P11_Flight1() {
           </div>
           <p className="text-xs text-text-dim">Сравни результат с тем, что видишь глазами. AI нашёл больше или меньше?</p>
         </div>
+        {/* Character-specific approach */}
+        <div className="p-3 border bg-surface/30" style={{ borderColor: persona.accentBorder }}>
+          <p className="text-xs text-text-secondary">
+            <span className="font-mono text-[12px] uppercase" style={{ color: persona.accent }}>Твой подход</span>{' '}— {persona.approach.testStrategy}
+          </p>
+        </div>
         {!started && !submitted ? (
-          <div className="text-center"><button onClick={() => setStarted(true)} className="px-10 py-4 bg-qa-teal text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] hover:bg-qa-teal-soft transition-all cursor-pointer">Начать →</button></div>
+          <div className="text-center"><button onClick={() => setStarted(true)} className="px-10 py-4 text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] transition-all cursor-pointer" style={{ backgroundColor: persona.accent }}>Начать →</button></div>
         ) : submitted ? (
-          <div className="text-center p-6 border border-forest/30 bg-forest/[0.05]"><p className="text-forest font-display">✓ Задание выполнено</p></div>
+          <div className="text-center p-6 border border-forest/30 bg-forest/[0.05]"><p className="text-forest font-display">{persona.voice.success[0]}</p></div>
         ) : (
-          <div className="text-center"><button onClick={handleSubmit} className="px-8 py-4 border-2 border-qa-teal/40 text-qa-teal font-body text-[15px] font-semibold rounded-[2px] hover:bg-qa-teal/10 transition-all cursor-pointer">✓ Выполнил(а)</button></div>
+          <div className="text-center"><button onClick={handleSubmit} className="px-8 py-4 border-2 font-body text-[15px] font-semibold rounded-[2px] transition-all cursor-pointer" style={{ borderColor: persona.accentBorder, color: persona.accent }}>✓ Выполнил(а)</button></div>
         )}
       </div>
     </PageShell>
