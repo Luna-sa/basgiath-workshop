@@ -48,6 +48,14 @@ export const useWorkshopStore = create(
       startedAt: null,
       completedAt: null,
 
+      // ── Round Competition ──
+      activeRoundId: null,
+      roundTimerStart: null,
+      roundTimerDuration: null,
+      roundEnded: false,
+      roundWinners: null,
+      showPodium: false,
+
       // ── UI ──
       soundEnabled: false,
       showBadgeOverlay: false,
@@ -325,6 +333,26 @@ export const useWorkshopStore = create(
 
       setFacilitatorUnlock: (page) => set({ facilitatorUnlockedPage: page }),
       setWorkshopPhase: (phase) => set({ workshopPhase: phase }),
+
+      // ── Round Competition ──
+
+      setActiveRound: (roundId, timerStart, duration) => set({
+        activeRoundId: roundId,
+        roundTimerStart: timerStart,
+        roundTimerDuration: duration,
+        roundEnded: false,
+        roundWinners: null,
+        showPodium: false,
+      }),
+
+      setRoundEnded: (ended) => set({ roundEnded: ended }),
+
+      setRoundWinners: (winners) => set({
+        roundWinners: winners,
+        showPodium: Array.isArray(winners) && winners.length > 0,
+      }),
+
+      dismissPodium: () => set({ showPodium: false }),
 
       // ── UI ──
 

@@ -2,17 +2,21 @@ import { useState } from 'react'
 import { usePersona } from '../store/usePersona'
 import { useWorkshopStore } from '../store/workshopStore'
 import { evaluateSubmission } from '../api/groq'
+import { submitRoundEntry } from '../api/rounds'
 
 /**
  * Text submission + AI review component.
  * type: 'bug-report' | 'test-cases'
  * pageIndex: for XP tracking
+ * roundId: optional — if set, writes to Supabase for competition
  * onComplete: called when review is done
  */
-export default function SubmissionReview({ type, pageIndex, onComplete }) {
+export default function SubmissionReview({ type, pageIndex, roundId, onComplete }) {
   const persona = usePersona()
   const addXP = useWorkshopStore(s => s.addXP)
   const submitTask = useWorkshopStore(s => s.submitTask)
+  const userId = useWorkshopStore(s => s.user.id)
+  const timerStart = useWorkshopStore(s => s.roundTimerStart)
 
   const [text, setText] = useState('')
   const [loading, setLoading] = useState(false)
@@ -29,15 +33,26 @@ export default function SubmissionReview({ type, pageIndex, onComplete }) {
 
     if (evaluation) {
       setResult(evaluation)
-      // Award XP based on score
       const xp = evaluation.xpBonus || 10
       addXP(xp)
       submitTask(pageIndex, { type: 'ai-review', score: evaluation.score, maxScore: evaluation.maxScore })
+
+      // Write to Supabase for competition tracking
+      if (roundId && userId && timerStart) {
+        submitRoundEntry(userId, pageIndex, roundId, evaluation.score, evaluation.maxScore, xp,
+          { type: 'ai-review', textPreview: text.substring(0, 300) }, timerStart
+        ).catch(() => {})
+      }
     } else {
-      // Fallback — no API or error — still give base XP
       setResult({ score: null, maxScore: 10, feedback: null, xpBonus: 15 })
       addXP(15)
       submitTask(pageIndex, { type: 'self-report' })
+
+      if (roundId && userId && timerStart) {
+        submitRoundEntry(userId, pageIndex, roundId, 5, 10, 15,
+          { type: 'no-groq-fallback' }, timerStart
+        ).catch(() => {})
+      }
     }
 
     setSubmitted(true)

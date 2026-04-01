@@ -69,6 +69,7 @@ export default function P12_Flight2() {
           <SubmissionReview
             type="bug-report"
             pageIndex={12}
+            roundId="round-2"
             onComplete={() => completePage(12)}
           />
         ) : (

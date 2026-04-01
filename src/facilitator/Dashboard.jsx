@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { PAGES } from '../data/pages'
 import { CHARACTERS } from '../data/characters'
 import { advanceAll, getAllStudents, setWorkshopPhase } from '../api/facilitator'
+import RoundControl from './RoundControl'
 
 export default function Dashboard() {
   const [students, setStudents] = useState([])
@@ -86,6 +87,9 @@ export default function Dashboard() {
             Нажми номер → все студенты получат доступ до этой страницы
           </div>
         </div>
+
+        {/* Round control */}
+        <RoundControl />
 
         {/* Quick actions */}
         <div className="grid sm:grid-cols-4 gap-3 mb-8">

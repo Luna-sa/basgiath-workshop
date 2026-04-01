@@ -77,6 +77,20 @@ function applyFacilitatorState(newState) {
   if (newState.workshop_phase && newState.workshop_phase !== store.workshopPhase) {
     store.setWorkshopPhase(newState.workshop_phase)
   }
+  // Round competition sync
+  if (newState.active_round_id !== undefined) {
+    if (newState.active_round_id && newState.active_round_id !== store.activeRoundId) {
+      store.setActiveRound(newState.active_round_id, newState.active_timer_start, newState.active_timer_duration)
+    } else if (!newState.active_round_id && store.activeRoundId) {
+      store.setActiveRound(null, null, null)
+    }
+  }
+  if (newState.round_ended === true && !store.roundEnded) {
+    store.setRoundEnded(true)
+  }
+  if (newState.round_winners && JSON.stringify(newState.round_winners) !== JSON.stringify(store.roundWinners)) {
+    store.setRoundWinners(newState.round_winners)
+  }
 }
 
 export function stopSync() {

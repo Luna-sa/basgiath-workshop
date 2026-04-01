@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import PageRouter from './core/PageRouter'
 import AchievementToast from './components/AchievementToast'
+import WinnersPodium from './components/WinnersPodium'
 import ErrorBoundary from './core/ErrorBoundary'
 import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
@@ -35,6 +36,7 @@ export default function App() {
         <TealParticles />
         <PageRouter />
         <AchievementToast />
+        <WinnersPodium />
       </div>
     </ErrorBoundary>
   )
