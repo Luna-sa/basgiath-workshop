@@ -40,6 +40,9 @@
 
 html {
   scroll-behavior: smooth;
+  --char-accent: #00E5CC;
+  --char-accent-light: rgba(0, 229, 204, 0.08);
+  --char-accent-border: rgba(0, 229, 204, 0.25);
 }
 
 body {

@@ -1,6 +1,7 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { CHARACTERS } from '../data/characters'
 import { BADGES } from '../data/badges'
+import { usePersona } from '../store/usePersona'
 
 export default function HUD() {
   const xp = useWorkshopStore(s => s.xp)
@@ -9,6 +10,7 @@ export default function HUD() {
   const name = useWorkshopStore(s => s.user.name)
   const toggleBadgeOverlay = useWorkshopStore(s => s.toggleBadgeOverlay)
   const showBadgeOverlay = useWorkshopStore(s => s.showBadgeOverlay)
+  const persona = usePersona()
 
   const character = CHARACTERS.find(c => c.id === characterId)
 
@@ -35,9 +37,9 @@ export default function HUD() {
       {/* Fixed HUD — bottom right */}
       <div className="fixed bottom-4 right-4 z-50 flex items-end gap-3">
         {/* XP Counter */}
-        <div className="px-3 py-2 bg-surface/90 backdrop-blur-lg border border-qa-teal/20 rounded-[2px]">
+        <div className="px-3 py-2 bg-surface/90 backdrop-blur-lg rounded-[2px]" style={{ borderColor: persona.accentBorder, borderWidth: 1, borderStyle: 'solid' }}>
           <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">XP</div>
-          <div className="font-display text-lg text-qa-teal font-bold leading-none">{xp}</div>
+          <div className="font-display text-lg font-bold leading-none" style={{ color: persona.accent }}>{xp}</div>
         </div>
 
         {/* Badges button */}

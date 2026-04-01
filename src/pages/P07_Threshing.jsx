@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
+import { usePersona } from '../store/usePersona'
 import { PAGES } from '../data/pages'
 import PageShell from '../core/PageShell'
 import StepIndicator from '../components/StepIndicator'
@@ -46,6 +47,7 @@ export default function P07_Threshing() {
   const completedSubSteps = useWorkshopStore(s => s.completedSubSteps[PAGE_INDEX] ?? EMPTY)
   const navigateNext = useWorkshopStore(s => s.navigateNext)
   const user = useWorkshopStore(s => s.user)
+  const persona = usePersona()
   const [copied, setCopied] = useState(false)
 
   const prompt = generatePrompt(user)
@@ -150,12 +152,11 @@ export default function P07_Threshing() {
             </pre>
           </div>
 
-          {/* Tip */}
-          <div className="p-4 border border-qa-teal/15 bg-qa-teal/[0.03]">
+          {/* Character-specific tip */}
+          <div className="p-4 border" style={{ borderColor: persona.accentBorder, backgroundColor: persona.accentLight }}>
             <p className="text-xs text-text-secondary">
-              <span className="text-qa-teal font-mono text-[12px] uppercase">Совет</span>{' '}
-              — После генерации можешь попросить AI доработать файл: «Добавь секцию про API-тестирование» или «Сделай формат баг-репорта на русском».
-              Чем точнее инструкции в CLAUDE.md, тем лучше будет работать агент.
+              <span className="font-mono text-[12px] uppercase" style={{ color: persona.accent }}>Твой подход</span>{' '}
+              — {persona.approach.promptStyle}
             </p>
           </div>
         </div>

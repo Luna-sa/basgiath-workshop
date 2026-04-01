@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { BADGES } from '../data/badges'
+import { usePersona, getRandomSuccess } from '../store/usePersona'
 
 export default function AchievementToast() {
   const lastToast = useWorkshopStore(s => s.lastToast)
   const clearToast = useWorkshopStore(s => s.clearToast)
+  const persona = usePersona()
   const [visible, setVisible] = useState(false)
   const [content, setContent] = useState(null)
 
@@ -12,7 +14,8 @@ export default function AchievementToast() {
     if (!lastToast) return
 
     if (lastToast.type === 'xp') {
-      setContent({ type: 'xp', value: `+${lastToast.value} XP` })
+      const msg = getRandomSuccess(persona)
+      setContent({ type: 'xp', value: `+${lastToast.value} XP`, message: msg })
     } else if (lastToast.type === 'badge') {
       const badge = BADGES.find(b => b.id === lastToast.value)
       setContent({ type: 'badge', emoji: badge?.emoji, name: badge?.name })
@@ -22,7 +25,7 @@ export default function AchievementToast() {
     const timer = setTimeout(() => {
       setVisible(false)
       setTimeout(clearToast, 300)
-    }, 2500)
+    }, 3000)
 
     return () => clearTimeout(timer)
   }, [lastToast?.timestamp])
@@ -34,14 +37,17 @@ export default function AchievementToast() {
       visible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
     }`}>
       {content.type === 'xp' ? (
-        <div className="px-4 py-3 bg-qa-teal/10 border border-qa-teal/30 backdrop-blur-lg flex items-center gap-2">
-          <span className="text-qa-teal font-display text-lg font-bold">{content.value}</span>
+        <div className="px-4 py-3 backdrop-blur-lg border flex items-center gap-3"
+          style={{ backgroundColor: persona.accentLight, borderColor: persona.accentBorder }}>
+          <span className="font-display text-lg font-bold" style={{ color: persona.accent }}>{content.value}</span>
+          <span className="text-xs text-text-secondary max-w-[180px]">{content.message}</span>
         </div>
       ) : (
-        <div className="px-4 py-3 bg-surface border border-qa-teal/30 backdrop-blur-lg flex items-center gap-3">
+        <div className="px-4 py-3 bg-surface backdrop-blur-lg flex items-center gap-3"
+          style={{ borderColor: persona.accentBorder, borderWidth: 1, borderStyle: 'solid' }}>
           <span className="text-2xl">{content.emoji}</span>
           <div>
-            <div className="font-mono text-[11px] text-qa-teal tracking-[2px] uppercase">Бейдж получен</div>
+            <div className="font-mono text-[11px] tracking-[2px] uppercase" style={{ color: persona.accent }}>Badge</div>
             <div className="text-sm text-white font-display">{content.name}</div>
           </div>
         </div>
