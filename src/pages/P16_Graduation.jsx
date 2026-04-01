@@ -22,29 +22,33 @@ export default function P16_Graduation() {
   return (
     <PageShell pageIndex={16}>
       <div className="space-y-8">
-        {/* Hero card — character portrait + stats */}
+        {/* Hero card — large portrait, stats overlay only at bottom */}
         <div className="relative overflow-hidden border" style={{ borderColor: persona.accentBorder }}>
-          {/* Background portrait — faded, centered on face */}
+          {/* Full portrait — no darkening on face */}
           {character?.image && (
-            <div className="absolute inset-0 overflow-hidden">
-              <img src={character.image} alt=""
-                className={`w-full h-full object-cover opacity-15 ${character.imagePosition || 'object-center'}`} />
-              <div className="absolute inset-0 bg-gradient-to-b from-bg/60 via-transparent to-bg/80" />
+            <div className="relative h-64 sm:h-72 overflow-hidden">
+              <img src={character.image} alt={character.name}
+                className={`w-full h-full object-cover ${character.imagePosition || 'object-center'}`} />
+              {/* Gradient ONLY on bottom 20% */}
+              <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+              {/* Name + title at very bottom of photo */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
+                <div className="font-display text-xl text-white">{name}</div>
+                <div className="font-mono text-[12px] tracking-[3px] uppercase" style={{ color: persona.accent }}>
+                  {character?.title}
+                </div>
+              </div>
             </div>
           )}
-          <div className="relative p-6 text-center">
-            <div className="font-display text-5xl font-bold mb-1" style={{ color: persona.accent }}>{xp} XP</div>
-            <div className="font-display text-lg text-white">{name}</div>
-            <div className="font-mono text-[12px] tracking-[3px] uppercase mt-1" style={{ color: persona.accent }}>
-              {character?.title}
-            </div>
-            {/* Personalized badges */}
-            <div className="flex justify-center gap-3 mt-4">
+          {/* Stats below photo */}
+          <div className="p-5 text-center" style={{ backgroundColor: persona.accentLight }}>
+            <div className="font-display text-4xl font-bold mb-3" style={{ color: persona.accent }}>{xp} XP</div>
+            <div className="flex justify-center gap-3 flex-wrap">
               {badges.map(id => {
                 const b = BADGES.find(x => x.id === id)
                 return (
                   <div key={id} className="flex flex-col items-center gap-1">
-                    <span className="text-2xl">{b?.emoji}</span>
+                    <span className="text-xl">{b?.emoji}</span>
                     <span className="font-mono text-[9px] text-text-dim">{b?.name}</span>
                   </div>
                 )
