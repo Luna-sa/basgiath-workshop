@@ -71,7 +71,7 @@ function startPolling() {
 
 function applyFacilitatorState(newState) {
   const store = useWorkshopStore.getState()
-  if (newState.unlocked_page !== undefined && newState.unlocked_page > store.facilitatorUnlockedPage) {
+  if (newState.unlocked_page !== undefined && newState.unlocked_page !== store.facilitatorUnlockedPage) {
     store.setFacilitatorUnlock(newState.unlocked_page)
   }
   if (newState.workshop_phase && newState.workshop_phase !== store.workshopPhase) {

@@ -6,7 +6,7 @@ export default function ProgressBar() {
   const completedPages = useWorkshopStore(s => s.completedPages)
   const page = PAGES[currentPage]
 
-  const progress = ((currentPage) / (PAGES.length - 1)) * 100
+  const progress = (completedPages.length / (PAGES.length - 1)) * 100
 
   return (
     <div className="fixed top-1 left-0 right-0 z-[90]">

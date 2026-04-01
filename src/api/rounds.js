@@ -47,6 +47,7 @@ export async function getRoundSubmissions(roundId) {
     .eq('round_id', roundId)
     .order('score', { ascending: false })
     .order('duration_seconds', { ascending: true })
+    .order('submitted_at', { ascending: true })
 
   if (error) { console.warn('Get round submissions error:', error); return [] }
   return data || []
