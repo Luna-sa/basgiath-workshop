@@ -22,24 +22,32 @@ export default function P16_Graduation() {
   return (
     <PageShell pageIndex={16}>
       <div className="space-y-8">
-        {/* Hero card — large portrait, stats overlay only at bottom */}
-        <div className="relative overflow-hidden border" style={{ borderColor: persona.accentBorder }}>
-          {/* Full portrait — no darkening on face */}
-          {character?.image && (
-            <div className="relative h-64 sm:h-72 overflow-hidden">
-              <img src={character.image} alt={character.name}
-                className={`w-full h-full object-cover ${character.imagePosition || 'object-center'}`} />
-              {/* Gradient ONLY on bottom 20% */}
-              <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-[#0A0A0A] to-transparent" />
-              {/* Name + title at very bottom of photo */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
-                <div className="font-display text-xl text-white">{name}</div>
-                <div className="font-mono text-[12px] tracking-[3px] uppercase" style={{ color: persona.accent }}>
-                  {character?.title}
-                </div>
+        {/* Hero card — portrait + stats */}
+        <div className="overflow-hidden border" style={{ borderColor: persona.accentBorder }}>
+          {/* Portrait — always rendered, fallback bg if no image */}
+          <div className="relative h-64 sm:h-72 overflow-hidden bg-surface">
+            {character?.image ? (
+              <img
+                src={character.image}
+                alt={name || ''}
+                className={`w-full h-full object-cover ${character?.imagePosition || 'object-center'}`}
+                loading="eager"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-6xl">{character?.emoji || '🐉'}</span>
+              </div>
+            )}
+            {/* Thin gradient at bottom only */}
+            <div className="absolute bottom-0 left-0 right-0 h-[35%] bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+            {/* Name on bottom edge */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
+              <div className="font-display text-xl text-white drop-shadow-lg">{name}</div>
+              <div className="font-mono text-[12px] tracking-[3px] uppercase drop-shadow-lg" style={{ color: persona.accent }}>
+                {character?.title}
               </div>
             </div>
-          )}
+          </div>
           {/* Stats below photo */}
           <div className="p-5 text-center" style={{ backgroundColor: persona.accentLight }}>
             <div className="font-display text-4xl font-bold mb-3" style={{ color: persona.accent }}>{xp} XP</div>
