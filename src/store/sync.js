@@ -3,14 +3,16 @@ import { syncProgress, getFacilitatorState } from '../api/progress'
 import { useWorkshopStore } from './workshopStore'
 
 let syncInterval = null
+let pollInterval = null
 let realtimeChannel = null
 let started = false
+let realtimeConnected = false
 
 export function startSync() {
   if (!supabase || started) return
   started = true
 
-  // Sync progress every 10 seconds
+  // Sync student progress every 10 seconds
   syncInterval = setInterval(() => {
     const state = useWorkshopStore.getState()
     if (state.user.id) {
@@ -18,7 +20,7 @@ export function startSync() {
     }
   }, 10000)
 
-  // Subscribe to facilitator_state realtime changes
+  // Try Realtime first
   try {
     realtimeChannel = supabase
       .channel('facilitator-updates')
@@ -27,14 +29,7 @@ export function startSync() {
         { event: 'UPDATE', schema: 'public', table: 'facilitator_state' },
         (payload) => {
           try {
-            const newState = payload.new
-            const store = useWorkshopStore.getState()
-            if (newState.unlocked_page !== undefined && newState.unlocked_page > store.facilitatorUnlockedPage) {
-              store.setFacilitatorUnlock(newState.unlocked_page)
-            }
-            if (newState.workshop_phase && newState.workshop_phase !== store.workshopPhase) {
-              store.setWorkshopPhase(newState.workshop_phase)
-            }
+            applyFacilitatorState(payload.new)
           } catch (e) {
             console.warn('Realtime handler error:', e)
           }
@@ -43,35 +38,62 @@ export function startSync() {
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
           console.log('Supabase realtime connected')
+          realtimeConnected = true
+          // Stop polling if realtime works
+          if (pollInterval) {
+            clearInterval(pollInterval)
+            pollInterval = null
+          }
         } else if (status === 'CHANNEL_ERROR') {
-          console.warn('Supabase realtime channel error')
+          console.warn('Realtime failed — falling back to polling')
+          realtimeConnected = false
+          startPolling()
         }
       })
   } catch (e) {
-    console.warn('Supabase realtime setup failed:', e.message)
+    console.warn('Realtime setup failed — using polling:', e.message)
+    startPolling()
+  }
+
+  // Also start polling as fallback — will stop if realtime connects
+  startPolling()
+}
+
+function startPolling() {
+  if (pollInterval) return
+  pollInterval = setInterval(async () => {
+    try {
+      const data = await getFacilitatorState()
+      if (data) applyFacilitatorState(data)
+    } catch (e) {}
+  }, 5000)
+}
+
+function applyFacilitatorState(newState) {
+  const store = useWorkshopStore.getState()
+  if (newState.unlocked_page !== undefined && newState.unlocked_page > store.facilitatorUnlockedPage) {
+    store.setFacilitatorUnlock(newState.unlocked_page)
+  }
+  if (newState.workshop_phase && newState.workshop_phase !== store.workshopPhase) {
+    store.setWorkshopPhase(newState.workshop_phase)
   }
 }
 
 export function stopSync() {
-  if (syncInterval) {
-    clearInterval(syncInterval)
-    syncInterval = null
-  }
+  if (syncInterval) { clearInterval(syncInterval); syncInterval = null }
+  if (pollInterval) { clearInterval(pollInterval); pollInterval = null }
   if (realtimeChannel && supabase) {
     try { supabase.removeChannel(realtimeChannel) } catch (e) {}
     realtimeChannel = null
   }
   started = false
+  realtimeConnected = false
 }
 
 export async function fetchInitialState() {
   try {
     const data = await getFacilitatorState()
-    if (data) {
-      const store = useWorkshopStore.getState()
-      store.setFacilitatorUnlock(data.unlocked_page)
-      if (data.workshop_phase) store.setWorkshopPhase(data.workshop_phase)
-    }
+    if (data) applyFacilitatorState(data)
   } catch (e) {
     console.warn('Initial state fetch failed — offline mode')
   }
