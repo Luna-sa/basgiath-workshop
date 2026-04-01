@@ -57,7 +57,7 @@ export const CHARACTERS = [
     style: 'Надёжный исполнитель. Доводит каждую задачу до конца.',
     emoji: '🛡️',
     image: '/characters/liam.png',
-    imagePosition: 'object-[center_5%] scale-125',
+    imagePosition: 'object-[center_15%]',
   },
   {
     id: 'imogen',

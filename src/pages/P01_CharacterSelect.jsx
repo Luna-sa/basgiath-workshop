@@ -8,7 +8,7 @@ export default function P01_CharacterSelect() {
 
   return (
     <PageShell pageIndex={1}>
-      {/* Quick lore context */}
+      {/* Lore context */}
       <div className="mb-5 p-4 border border-border bg-surface/30 text-[13px] text-text-secondary leading-relaxed">
         <p className="mb-2">
           В книге <strong className="text-white">«Четвёртое Крыло»</strong> кадеты делятся на крылья и отряды. У каждого свой характер, свой дракон и свой способ выживать.
@@ -17,10 +17,12 @@ export default function P01_CharacterSelect() {
           <strong className="text-white"> Рианнон</strong> — та, к кому бежит весь отряд когда всё ломается.
         </p>
         <p className="text-text-dim italic text-[12px]">
-          Не читал(а) книгу? Не страшно — выбирай по описанию стиля. А потом, может, и прочитаешь.
+          Не читал(а) книгу? Не страшно — выбирай по стилю. А потом, может, и прочитаешь.
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      {/* Character grid — 2 columns, photo dominant */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {CHARACTERS.map(c => {
           const isSelected = characterId === c.id
 
@@ -28,60 +30,43 @@ export default function P01_CharacterSelect() {
             <button
               key={c.id}
               onClick={() => selectCharacter(c.id === characterId ? null : c.id)}
-              className={`group relative text-left overflow-hidden cursor-pointer transition-all duration-300 border ${
+              className={`group relative text-left overflow-hidden cursor-pointer transition-all duration-300 border flex flex-col ${
                 isSelected
-                  ? 'border-qa-teal ring-1 ring-qa-teal shadow-[0_0_30px_rgba(0,229,204,0.12)]'
+                  ? 'border-qa-teal ring-1 ring-qa-teal shadow-[0_0_24px_rgba(0,229,204,0.12)]'
                   : 'border-border hover:border-qa-teal/30'
               }`}
             >
-              {/* Top: Photo + Gradient + Name */}
-              <div className="relative h-48 sm:h-56 overflow-hidden">
+              {/* Portrait — large, clean, minimal overlay */}
+              <div className="relative aspect-[3/4] overflow-hidden">
                 <img
                   src={c.image}
                   alt={c.name}
                   className={`w-full h-full object-cover transition-transform duration-500 ${c.imagePosition || 'object-top'} ${
-                    isSelected ? 'scale-110' : 'group-hover:scale-[1.03]'
+                    isSelected ? 'scale-105' : 'group-hover:scale-[1.02]'
                   }`}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/60 to-transparent" />
 
-                {/* Selected badge */}
+                {/* Thin gradient — only at very bottom for name, keeps face visible */}
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/90 to-transparent" />
+
+                {/* Selected checkmark */}
                 {isSelected && (
-                  <div className="absolute top-3 right-3 w-7 h-7 bg-qa-teal flex items-center justify-center">
-                    <span className="text-black text-sm font-bold">✓</span>
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-qa-teal flex items-center justify-center">
+                    <span className="text-black text-xs font-bold">✓</span>
                   </div>
                 )}
 
-                {/* Name overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="font-display text-xl text-white leading-tight">{c.name}</h3>
-                  <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mt-1">{c.title}</div>
+                {/* Name — small, at the very bottom */}
+                <div className="absolute bottom-0 left-0 right-0 px-3 pb-2">
+                  <h3 className="font-display text-sm sm:text-base text-white leading-tight truncate">{c.name}</h3>
+                  <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal">{c.title}</div>
                 </div>
               </div>
 
-              {/* Bottom: Full dossier */}
-              <div className="p-4 bg-surface/50 space-y-3">
-                {/* Dragon */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">🐉</span>
-                  <span className="font-mono text-[12px] text-text-secondary">{c.dragon}</span>
-                </div>
-
-                {/* Trait */}
-                <p className="text-[14px] text-text-body font-medium leading-snug">{c.trait}</p>
-
-                {/* Match quote */}
-                <div className="p-3 bg-black/40 border-l-2 border-qa-teal/30">
-                  <p className="text-[13px] text-text-secondary italic leading-relaxed">
-                    «{c.match}»
-                  </p>
-                </div>
-
-                {/* Learning style */}
-                <div className="flex items-start gap-2">
-                  <span className="font-mono text-[11px] text-qa-teal shrink-0 mt-0.5">Стиль:</span>
-                  <span className="text-[13px] text-text-secondary">{c.style}</span>
-                </div>
+              {/* Compact info — only trait + match */}
+              <div className="p-3 bg-surface/50 flex-1 space-y-2">
+                <p className="text-[13px] text-text-body font-medium leading-snug">{c.trait}</p>
+                <p className="text-[11px] text-text-dim italic leading-relaxed">«{c.match}»</p>
               </div>
             </button>
           )
@@ -89,8 +74,8 @@ export default function P01_CharacterSelect() {
       </div>
 
       {characterId && (
-        <div className="text-center mt-5 p-3 border border-qa-teal/20 bg-qa-teal/[0.03]">
-          <p className="text-base text-qa-teal">
+        <div className="text-center mt-4 p-3 border border-qa-teal/20 bg-qa-teal/[0.03]">
+          <p className="text-sm text-qa-teal">
             ✦ {CHARACTERS.find(c => c.id === characterId)?.name}
           </p>
         </div>
