@@ -9,6 +9,7 @@ export const CHARACTERS = [
     style: 'Изучает документацию. Понимает систему до того, как трогать.',
     emoji: '⚡',
     image: '/characters/violet.png',
+    imagePosition: 'object-[center_20%]',
   },
   {
     id: 'xaden',
@@ -20,6 +21,7 @@ export const CHARACTERS = [
     style: 'Учится делая. Начинает до того, как объяснят.',
     emoji: '🌑',
     image: '/characters/xaden.png',
+    imagePosition: 'object-[center_15%]',
   },
   {
     id: 'rhiannon',
@@ -31,6 +33,7 @@ export const CHARACTERS = [
     style: 'Социальный учёник. Лучший бета-тестер чужих конфигов.',
     emoji: '🔥',
     image: '/characters/rhiannon.png',
+    imagePosition: 'object-[center_15%]',
   },
   {
     id: 'ridoc',
@@ -42,6 +45,7 @@ export const CHARACTERS = [
     style: 'Эксперименты и игра. Его отклонения — самые интересные.',
     emoji: '❄️',
     image: '/characters/ridoc.png',
+    imagePosition: 'object-[center_10%]',
   },
   {
     id: 'liam',
@@ -53,6 +57,7 @@ export const CHARACTERS = [
     style: 'Надёжный исполнитель. Доводит каждую задачу до конца.',
     emoji: '🛡️',
     image: '/characters/liam.png',
+    imagePosition: 'object-[center_5%] scale-125',
   },
   {
     id: 'imogen',
@@ -64,5 +69,6 @@ export const CHARACTERS = [
     style: 'Результат важнее процесса. Модифицирует готовое.',
     emoji: '⚔️',
     image: '/characters/imogen.png',
+    imagePosition: 'object-[center_15%]',
   },
 ]
