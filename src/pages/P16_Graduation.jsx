@@ -24,13 +24,15 @@ export default function P16_Graduation() {
       <div className="space-y-8">
         {/* Hero card — character portrait + stats */}
         <div className="relative overflow-hidden border" style={{ borderColor: persona.accentBorder }}>
+          {/* Background portrait — faded, centered on face */}
           {character?.image && (
-            <div className="h-32 overflow-hidden">
-              <img src={character.image} alt="" className="w-full h-full object-cover object-top opacity-30" />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-bg" />
+            <div className="absolute inset-0 overflow-hidden">
+              <img src={character.image} alt=""
+                className={`w-full h-full object-cover opacity-15 ${character.imagePosition || 'object-center'}`} />
+              <div className="absolute inset-0 bg-gradient-to-b from-bg/60 via-transparent to-bg/80" />
             </div>
           )}
-          <div className="p-6 text-center" style={{ backgroundColor: persona.accentLight }}>
+          <div className="relative p-6 text-center">
             <div className="font-display text-5xl font-bold mb-1" style={{ color: persona.accent }}>{xp} XP</div>
             <div className="font-display text-lg text-white">{name}</div>
             <div className="font-mono text-[12px] tracking-[3px] uppercase mt-1" style={{ color: persona.accent }}>
