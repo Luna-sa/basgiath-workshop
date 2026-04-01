@@ -1,8 +1,9 @@
-import { useEffect, useCallback, lazy, Suspense } from 'react'
+import { useEffect, useCallback, useRef, lazy, Suspense } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { evaluateGate } from '../store/gateUtils'
 import { PAGES } from '../data/pages'
+import { playNavigateSound } from '../effects/SoundManager'
 import ProgressBar from './ProgressBar'
 import HUD from './HUD'
 
@@ -43,6 +44,15 @@ export default function PageRouter() {
   const currentPage = useWorkshopStore(s => s.currentPage)
   const direction = useWorkshopStore(s => s.direction)
   const navigateNext = useWorkshopStore(s => s.navigateNext)
+  const prevPage = useRef(currentPage)
+
+  // Play navigation sound on page change
+  useEffect(() => {
+    if (prevPage.current !== currentPage) {
+      if (useWorkshopStore.getState().soundEnabled) playNavigateSound()
+      prevPage.current = currentPage
+    }
+  }, [currentPage])
   const navigateBack = useWorkshopStore(s => s.navigateBack)
   const completePage = useWorkshopStore(s => s.completePage)
 

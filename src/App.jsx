@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import PageRouter from './core/PageRouter'
 import AchievementToast from './components/AchievementToast'
 import ErrorBoundary from './core/ErrorBoundary'
+import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
 import { startSync, fetchInitialState } from './store/sync'
 
@@ -31,6 +32,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-bg text-text-body">
+        <TealParticles />
         <PageRouter />
         <AchievementToast />
       </div>

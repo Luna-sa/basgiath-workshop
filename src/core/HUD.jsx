@@ -10,6 +10,8 @@ export default function HUD() {
   const name = useWorkshopStore(s => s.user.name)
   const toggleBadgeOverlay = useWorkshopStore(s => s.toggleBadgeOverlay)
   const showBadgeOverlay = useWorkshopStore(s => s.showBadgeOverlay)
+  const soundEnabled = useWorkshopStore(s => s.soundEnabled)
+  const toggleSound = useWorkshopStore(s => s.toggleSound)
   const persona = usePersona()
 
   const character = CHARACTERS.find(c => c.id === characterId)
@@ -35,7 +37,16 @@ export default function HUD() {
       </div>
 
       {/* Fixed HUD — bottom right */}
-      <div className="fixed bottom-4 right-4 z-50 flex items-end gap-3">
+      <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2">
+        {/* Sound toggle */}
+        <button
+          onClick={toggleSound}
+          className="px-2 py-2 bg-surface/90 backdrop-blur-lg border border-border rounded-[2px] hover:border-qa-teal/25 transition-colors cursor-pointer"
+          title={soundEnabled ? 'Выключить звук' : 'Включить звук'}
+        >
+          <span className="text-sm">{soundEnabled ? '🔊' : '🔇'}</span>
+        </button>
+
         {/* XP Counter */}
         <div className="px-3 py-2 bg-surface/90 backdrop-blur-lg rounded-[2px]" style={{ borderColor: persona.accentBorder, borderWidth: 1, borderStyle: 'solid' }}>
           <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">XP</div>

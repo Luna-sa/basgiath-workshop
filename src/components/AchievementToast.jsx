@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { BADGES } from '../data/badges'
 import { usePersona, getRandomSuccess } from '../store/usePersona'
+import { playXPSound, playBadgeSound } from '../effects/SoundManager'
 
 export default function AchievementToast() {
   const lastToast = useWorkshopStore(s => s.lastToast)
@@ -13,12 +14,16 @@ export default function AchievementToast() {
   useEffect(() => {
     if (!lastToast) return
 
+    const soundEnabled = useWorkshopStore.getState().soundEnabled
+
     if (lastToast.type === 'xp') {
       const msg = getRandomSuccess(persona)
       setContent({ type: 'xp', value: `+${lastToast.value} XP`, message: msg })
+      if (soundEnabled) playXPSound()
     } else if (lastToast.type === 'badge') {
       const badge = BADGES.find(b => b.id === lastToast.value)
       setContent({ type: 'badge', emoji: badge?.emoji, name: badge?.name })
+      if (soundEnabled) playBadgeSound()
     }
 
     setVisible(true)
