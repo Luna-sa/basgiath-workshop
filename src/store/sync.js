@@ -18,7 +18,7 @@ export function startSync() {
     if (state.user.id) {
       syncProgress(state.user.id, state).catch(() => {})
     }
-  }, 10000)
+  }, 30000)
 
   // Try Realtime first
   try {
@@ -66,7 +66,7 @@ function startPolling() {
       const data = await getFacilitatorState()
       if (data) applyFacilitatorState(data)
     } catch (e) {}
-  }, 5000)
+  }, 8000)
 }
 
 function applyFacilitatorState(newState) {

@@ -101,10 +101,25 @@ export default function P03_PreWork() {
         })}
       </div>
 
-      {done === currentSteps.length && (
+      {done === currentSteps.length ? (
         <div className="mt-6 text-center p-5 border border-qa-teal/30 bg-qa-teal/[0.05]">
           <p className="font-display text-qa-teal text-lg">Парапет пройден</p>
           <p className="text-xs text-text-dim mt-1">Все инструменты установлены. Ты готов(а).</p>
+        </div>
+      ) : (
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => {
+              // Mark all steps as done
+              const path = preworkPath
+              for (let i = 0; i < 6; i++) {
+                if (!preworkChecklist[`${path}-${i}`]) togglePreworkItem(`${path}-${i}`)
+              }
+            }}
+            className="text-text-dim text-[13px] hover:text-text-secondary transition-colors cursor-pointer underline underline-offset-4"
+          >
+            Всё уже установлено — пропустить
+          </button>
         </div>
       )}
 

@@ -8,7 +8,7 @@ export const CHARACTERS = [
     match: 'Ты не технарь в классическом смысле, но разбираешься быстрее тех, кто таковым себя считает.',
     style: 'Сначала читает документацию, потом трогает.',
     emoji: '⚡',
-    image: '/characters/violet.png',
+    image: '/characters/violet.webp',
     imagePosition: 'object-[center_20%]',
   },
   {
@@ -20,7 +20,7 @@ export const CHARACTERS = [
     match: 'Ты уже прикидываешь, что ещё можно выжать из этого инструмента.',
     style: 'Делает, потом разбирается. Начинает раньше, чем объяснят.',
     emoji: '🌑',
-    image: '/characters/xaden.png',
+    image: '/characters/xaden.webp',
     imagePosition: 'object-[center_15%]',
   },
   {
@@ -32,7 +32,7 @@ export const CHARACTERS = [
     match: 'Ты уже подсказываешь соседу. Учишься лучше, когда объясняешь другим.',
     style: 'Командный игрок. Лучший бета-тестер чужих конфигов.',
     emoji: '🔥',
-    image: '/characters/rhiannon.png',
+    image: '/characters/rhiannon.webp',
     imagePosition: 'object-[center_15%]',
   },
   {
@@ -44,7 +44,7 @@ export const CHARACTERS = [
     match: 'Ты назовёшь секции CLAUDE.md как-нибудь нелепо. И оно будет работать лучше, чем у остальных.',
     style: 'Экспериментирует, играет. Его «отклонения от темы» дают самые интересные результаты.',
     emoji: '❄️',
-    image: '/characters/ridoc.png',
+    image: '/characters/ridoc.webp',
     imagePosition: 'object-[center_10%]',
   },
   {
@@ -56,7 +56,7 @@ export const CHARACTERS = [
     match: 'На тебя можно положиться. Ты тот, кто не бросает задачу на полпути.',
     style: 'Идёт по шагам, ничего не пропускает, доводит до конца.',
     emoji: '🛡️',
-    image: '/characters/liam.png',
+    image: '/characters/liam.webp',
     imagePosition: 'object-[center_15%]',
   },
   {
@@ -68,7 +68,7 @@ export const CHARACTERS = [
     match: 'Ты пропустила вступление и уже смотришь шаблоны команд.',
     style: 'Результат важнее процесса. Берёт готовое и допиливает.',
     emoji: '⚔️',
-    image: '/characters/imogen.png',
+    image: '/characters/imogen.webp',
     imagePosition: 'object-[center_15%]',
   },
 ]

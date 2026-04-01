@@ -28,7 +28,7 @@ export default function P12_Flight2() {
       <div className="space-y-5">
         {/* Timer */}
         <div className="text-center">
-          <div className={`font-mono text-3xl font-bold ${color} transition-colors`}>{String(mins).padStart(2,'0')}:{String(secs).padStart(2,'0')}</div>
+          <div className={`font-mono text-3xl font-bold ${color} transition-colors ${timeLeft <= 30 && timeLeft > 0 && started ? 'animate-pulse' : ''}`}>{String(mins).padStart(2,'0')}:{String(secs).padStart(2,'0')}</div>
           <div className="font-mono text-[12px] text-text-dim tracking-wider uppercase mt-1">{submitted ? 'Выполнено' : started ? 'Осталось' : '7 минут'}</div>
         </div>
 
