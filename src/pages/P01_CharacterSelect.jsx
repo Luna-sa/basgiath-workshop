@@ -11,13 +11,13 @@ export default function P01_CharacterSelect() {
       {/* Lore context */}
       <div className="mb-5 p-4 border border-border bg-surface/30 text-[13px] text-text-secondary leading-relaxed">
         <p className="mb-2">
-          В книге <strong className="text-white">«Четвёртое Крыло»</strong> кадеты делятся на крылья и отряды. У каждого свой характер, свой дракон и свой способ выживать.
-          <strong className="text-white"> Вайолет</strong> — маленькая, хрупкая, но умнее всех в комнате.
-          <strong className="text-white"> Ксаден</strong> — сын врага, которому никто не доверяет, но все подчиняются.
-          <strong className="text-white"> Рианнон</strong> — та, к кому бежит весь отряд когда всё ломается.
+          В <strong className="text-white">«Четвёртом Крыле»</strong> кадеты разбиты на крылья и отряды.
+          <strong className="text-white"> Вайолет</strong> — хрупкая, её никто не воспринимал всерьёз, пока она не стала одной из сильнейших.
+          <strong className="text-white"> Ксаден</strong> — сын казнённого мятежника; ему не доверяют, но подчиняются.
+          <strong className="text-white"> Рианнон</strong> — к ней бегут, когда всё летит к чертям.
         </p>
         <p className="text-text-dim italic text-[12px]">
-          Не читал(а) книгу? Не страшно — выбирай по стилю. А потом, может, и прочитаешь.
+          Не читал(а)? Выбирай по описанию стиля. А потом, может, и прочитаешь.
         </p>
       </div>
 

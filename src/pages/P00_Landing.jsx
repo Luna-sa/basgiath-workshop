@@ -4,18 +4,18 @@ export default function P00_Landing() {
   return (
     <PageShell pageIndex={0}>
       <div className="space-y-5">
-        {/* World intro — hook */}
+        {/* World intro */}
         <div className="p-5 border border-border bg-surface/30">
           <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-3">О мире</div>
           <p className="text-[14px] text-text-body leading-relaxed mb-3">
-            В мире <strong className="text-white">«Четвёртого Крыла»</strong> существует Академия Басгиат — военная школа, где люди связываются с драконами.
-            Драконы — древние, смертельно опасные существа с собственным разумом. Они сами выбирают наездника. Если дракон не выберет тебя — ты уходишь ни с чем. Если выберет — ты получаешь силу, о которой не мечтал.
+            <strong className="text-white">«Четвёртое Крыло»</strong> — книга про военную академию, где люди связываются с драконами.
+            Драконы разумные и опасные. Они сами решают, с кем связываться. Не выбрал — уходишь ни с чем. Выбрал — получаешь силу, к которой не был готов.
           </p>
           <p className="text-[14px] text-text-body leading-relaxed mb-3">
-            Но прежде чем дойти до драконов, нужно пересечь <strong className="text-white">Парапет</strong> — узкий каменный мост без перил над пропастью. Это первый отсев. Не все доходят.
+            Но до драконов ещё нужно дойти. Сначала — <strong className="text-white">Парапет</strong>. Каменный мост без перил, под которым ничего кроме пропасти. Первый отсев.
           </p>
           <p className="text-[13px] text-text-secondary italic">
-            Сегодня твой AI-инструмент — это дракон. Ты научишься устанавливать с ним связь, управлять им и использовать его силу в QA-работе.
+            Сегодня AI-инструмент — это ваш дракон. Вы научитесь с ним работать и применять в QA.
           </p>
         </div>
 
@@ -35,12 +35,12 @@ export default function P00_Landing() {
           ))}
         </div>
 
-        {/* Three artifacts */}
+        {/* What we'll build */}
         <div className="grid sm:grid-cols-3 gap-3">
           {[
             { num: '01', title: 'Связь с драконом', desc: 'CLAUDE.md — файл, через который AI узнаёт тебя', icon: '🐉' },
             { num: '02', title: 'Боевые приёмы', desc: 'Команды /bug-report и /test-cases', icon: '⚔️' },
-            { num: '03', title: 'Первый полёт', desc: 'Практика на приложении с реальными багами', icon: '🎯' },
+            { num: '03', title: 'Первый полёт', desc: 'Практика на приложении с заложенными багами', icon: '🎯' },
           ].map(a => (
             <div key={a.num} className="p-4 border border-border bg-surface/30">
               <div className="flex items-center gap-2 mb-2">
