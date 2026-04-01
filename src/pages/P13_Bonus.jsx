@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
+import { usePersona } from '../store/usePersona'
 import { PAGES } from '../data/pages'
 import PageShell from '../core/PageShell'
 import StepIndicator from '../components/StepIndicator'
@@ -79,6 +80,7 @@ export default function P13_Bonus() {
   const completedSubSteps = useWorkshopStore(s => s.completedSubSteps[PAGE_INDEX] ?? EMPTY)
   const navigateNext = useWorkshopStore(s => s.navigateNext)
   const user = useWorkshopStore(s => s.user)
+  const persona = usePersona()
   const [copiedId, setCopiedId] = useState(null)
 
   const isClaudeCode = user.tool === 'claude' || user.tool === 'both'
@@ -191,10 +193,10 @@ export default function P13_Bonus() {
     <PageShell pageIndex={PAGE_INDEX} subStepId="b">
       <StepIndicator steps={page.subSteps} currentStepId="b" completedIds={completedSubSteps} />
       <div className="space-y-5">
-        <div className="p-4 border border-border border-l-[3px] border-l-qa-teal bg-qa-teal/[0.03]">
-          <div className="font-mono text-[12px] tracking-[2px] uppercase text-qa-teal mb-2">Время магии</div>
+        <div className="p-4 border border-l-[3px]" style={{ borderColor: persona.accentBorder, borderLeftColor: persona.accent, backgroundColor: persona.accentLight }}>
+          <div className="font-mono text-[12px] tracking-[2px] uppercase mb-2" style={{ color: persona.accent }}>{persona.voice.taskIntro}</div>
           <p className="text-sm text-text-body">
-            Выбери любой промпт ниже, скопируй и вставь в {user.tool === 'claude' ? 'Claude Code' : 'Cursor'}. Смотри как AI работает.
+            Выбери промпт, скопируй и вставь в {user.tool === 'claude' ? 'Claude Code' : 'Cursor'}. Смотри как AI работает.
           </p>
         </div>
 

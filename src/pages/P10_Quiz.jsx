@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
+import { usePersona } from '../store/usePersona'
 import { QUIZ_QUESTIONS, QUIZ_BONUS_XP } from '../data/quiz'
 import PageShell from '../core/PageShell'
 
 export default function P10_Quiz() {
   const quizAnswers = useWorkshopStore(s => s.quizAnswers)
   const quizScore = useWorkshopStore(s => s.quizScore)
+  const persona = usePersona()
   const submitQuizAnswer = useWorkshopStore(s => s.submitQuizAnswer)
   const finalizeQuiz = useWorkshopStore(s => s.finalizeQuiz)
   const [showResults, setShowResults] = useState(false)
@@ -39,7 +41,8 @@ export default function P10_Quiz() {
           ))}
           {allAnswered && (
             <div className="text-center">
-              <button onClick={handleSubmit} className="px-10 py-4 bg-qa-teal text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] hover:bg-qa-teal-soft transition-all cursor-pointer">
+              <button onClick={handleSubmit} className="px-10 py-4 text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] transition-all cursor-pointer"
+                style={{ backgroundColor: persona.accent }}>
                 Отправить ответы →
               </button>
             </div>
@@ -47,10 +50,12 @@ export default function P10_Quiz() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="text-center p-8 border border-qa-teal/30 bg-qa-teal/[0.05]">
+          <div className="text-center p-8 border" style={{ borderColor: persona.accentBorder, backgroundColor: persona.accentLight }}>
             <div className="font-display text-4xl text-white mb-2">{quizScore}/5</div>
-            <div className="font-mono text-[12px] text-qa-teal tracking-wider uppercase">+{quizScore * 10 + (quizScore === 5 ? QUIZ_BONUS_XP : 0)} XP</div>
-            {quizScore === 5 && <div className="text-sm text-qa-teal mt-2">💎 Безупречный! +{QUIZ_BONUS_XP} бонус</div>}
+            <div className="font-mono text-[12px] tracking-wider uppercase" style={{ color: persona.accent }}>+{quizScore * 10 + (quizScore === 5 ? QUIZ_BONUS_XP : 0)} XP</div>
+            {quizScore === 5 && <div className="text-sm mt-2" style={{ color: persona.accent }}>💎 {persona.voice.successBig}</div>}
+            {quizScore < 5 && quizScore >= 3 && <div className="text-sm text-text-secondary mt-2">{persona.voice.success[0]}</div>}
+            {quizScore < 3 && <div className="text-sm text-text-secondary mt-2">{persona.voice.failure}</div>}
           </div>
           {QUIZ_QUESTIONS.map(q => {
             const correct = quizAnswers[q.id] === q.correct
