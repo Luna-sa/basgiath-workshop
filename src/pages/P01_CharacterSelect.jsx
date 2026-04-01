@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { CHARACTERS } from '../data/characters'
 import PageShell from '../core/PageShell'
@@ -5,75 +6,81 @@ import PageShell from '../core/PageShell'
 export default function P01_CharacterSelect() {
   const characterId = useWorkshopStore(s => s.user.characterId)
   const selectCharacter = useWorkshopStore(s => s.selectCharacter)
+  const [expanded, setExpanded] = useState(null)
+
+  const handleClick = (id) => {
+    selectCharacter(id === characterId ? null : id)
+    setExpanded(id === expanded ? null : id)
+  }
 
   return (
     <PageShell pageIndex={1}>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {CHARACTERS.map(c => (
-          <button
-            key={c.id}
-            onClick={() => selectCharacter(c.id === characterId ? null : c.id)}
-            className={`group text-left border transition-all duration-300 cursor-pointer overflow-hidden ${
-              characterId === c.id
-                ? 'border-qa-teal bg-qa-teal/[0.05] shadow-[0_0_24px_rgba(0,229,204,0.12)]'
-                : 'border-border bg-surface/30 hover:border-qa-teal/25 hover:bg-qa-teal/[0.02]'
-            }`}
-          >
-            {/* Character portrait placeholder */}
-            <div className="relative w-full aspect-[3/4] bg-surface overflow-hidden">
-              {/* Replace src with actual AI-generated portrait */}
-              {c.image ? (
-                <img src={c.image} alt={c.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-surface via-bg to-surface">
-                  <span className="text-5xl mb-3">{c.emoji}</span>
-                  <span className="font-mono text-[11px] text-text-dim tracking-[2px] uppercase">Portrait</span>
-                </div>
-              )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {CHARACTERS.map(c => {
+          const isSelected = characterId === c.id
+          const isExpanded = expanded === c.id
 
-              {/* Name overlay on image */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 pt-10">
-                <div className="flex items-end justify-between">
-                  <div>
-                    <h3 className="font-display text-lg text-white leading-tight">{c.name}</h3>
-                    <span className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal">{c.title}</span>
-                  </div>
-                  {characterId === c.id && (
-                    <span className="text-qa-teal text-lg">✦</span>
+          return (
+            <div key={c.id} className="flex flex-col">
+              {/* Portrait card */}
+              <button
+                onClick={() => handleClick(c.id)}
+                className={`relative overflow-hidden cursor-pointer transition-all duration-300 ${
+                  isSelected
+                    ? 'ring-2 ring-qa-teal shadow-[0_0_24px_rgba(0,229,204,0.15)]'
+                    : 'hover:ring-1 hover:ring-qa-teal/30'
+                }`}
+              >
+                {/* Photo */}
+                <div className="relative aspect-[3/4]">
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+
+                  {/* Dark gradient overlay at bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+
+                  {/* Selected checkmark */}
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 w-7 h-7 bg-qa-teal flex items-center justify-center">
+                      <span className="text-black text-sm font-bold">✓</span>
+                    </div>
                   )}
-                </div>
-              </div>
 
-              {/* Selected overlay */}
-              {characterId === c.id && (
-                <div className="absolute inset-0 border-2 border-qa-teal pointer-events-none" />
+                  {/* Name + title overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <h3 className="font-display text-base sm:text-lg text-white leading-tight">{c.name}</h3>
+                    <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mt-0.5">{c.title}</div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Expanded info — shows below the card */}
+              {isExpanded && (
+                <div className="p-3 border border-t-0 border-qa-teal/20 bg-qa-teal/[0.03] text-sm space-y-2">
+                  <div className="font-mono text-[11px] text-text-secondary">
+                    🐉 {c.dragon}
+                  </div>
+                  <p className="text-text-body text-[13px] font-medium">{c.trait}</p>
+                  <p className="text-text-secondary text-[12px] italic leading-relaxed">
+                    «{c.match}»
+                  </p>
+                  <div className="pt-2 border-t border-border">
+                    <span className="font-mono text-[10px] text-text-dim tracking-[2px] uppercase">Стиль:</span>
+                    <p className="text-[12px] text-text-secondary mt-0.5">{c.style}</p>
+                  </div>
+                </div>
               )}
             </div>
-
-            {/* Info section */}
-            <div className="p-4">
-              <div className="font-mono text-[11px] text-text-secondary mb-2">
-                🐉 {c.dragon}
-              </div>
-
-              <p className="text-sm text-text-body font-medium mb-2">{c.trait}</p>
-
-              <p className="text-[13px] text-text-secondary leading-relaxed italic mb-3">
-                «{c.match}»
-              </p>
-
-              <div className="pt-3 border-t border-border">
-                <span className="font-mono text-[11px] text-text-secondary tracking-[2px] uppercase">Стиль обучения:</span>
-                <p className="text-[13px] text-text-secondary mt-1">{c.style}</p>
-              </div>
-            </div>
-          </button>
-        ))}
+          )
+        })}
       </div>
 
       {characterId && (
-        <div className="text-center mt-6 p-4 border border-qa-teal/20 bg-qa-teal/[0.03]">
-          <p className="text-base text-qa-teal">
+        <div className="text-center mt-5 p-3 border border-qa-teal/20 bg-qa-teal/[0.03]">
+          <p className="text-sm text-qa-teal">
             ✦ {CHARACTERS.find(c => c.id === characterId)?.name}
           </p>
         </div>
