@@ -1,9 +1,3 @@
-// image: path to AI-generated portrait (place in src/assets/characters/)
-// When you generate portraits in Midjourney, save as:
-//   src/assets/characters/violet.png, xaden.png, etc.
-// Then update the `image` field below with:
-//   image: new URL('../assets/characters/violet.png', import.meta.url).href
-
 export const CHARACTERS = [
   {
     id: 'violet',
@@ -14,7 +8,7 @@ export const CHARACTERS = [
     match: 'Ты не «типичный технарь», но ты умнее всех в комнате.',
     style: 'Изучает документацию. Понимает систему до того, как трогать.',
     emoji: '⚡',
-    image: null, // Replace with portrait URL
+    image: '/characters/violet.png',
   },
   {
     id: 'xaden',
@@ -25,7 +19,7 @@ export const CHARACTERS = [
     match: 'Ты уже думаешь, что ещё можно сделать с этим инструментом.',
     style: 'Учится делая. Начинает до того, как объяснят.',
     emoji: '🌑',
-    image: null,
+    image: '/characters/xaden.png',
   },
   {
     id: 'rhiannon',
@@ -36,7 +30,7 @@ export const CHARACTERS = [
     match: 'Ты уже помогаешь соседу. Учишься лучше, когда можешь учить.',
     style: 'Социальный учёник. Лучший бета-тестер чужих конфигов.',
     emoji: '🔥',
-    image: null,
+    image: '/characters/rhiannon.png',
   },
   {
     id: 'ridoc',
@@ -47,7 +41,7 @@ export const CHARACTERS = [
     match: 'Ты назовёшь секции CLAUDE.md чем-то нелепым. И оно будет работать.',
     style: 'Эксперименты и игра. Его отклонения — самые интересные.',
     emoji: '❄️',
-    image: null,
+    image: '/characters/ridoc.png',
   },
   {
     id: 'liam',
@@ -58,7 +52,7 @@ export const CHARACTERS = [
     match: 'Ты тот, на кого всегда можно положиться. Ты сделаешь всё, чтобы команда не упала.',
     style: 'Надёжный исполнитель. Доводит каждую задачу до конца.',
     emoji: '🛡️',
-    image: null,
+    image: '/characters/liam.png',
   },
   {
     id: 'imogen',
@@ -69,6 +63,6 @@ export const CHARACTERS = [
     match: 'Ты пропустила вступление и уже читаешь шаблоны команд.',
     style: 'Результат важнее процесса. Модифицирует готовое.',
     emoji: '⚔️',
-    image: null,
+    image: '/characters/imogen.png',
   },
 ]
