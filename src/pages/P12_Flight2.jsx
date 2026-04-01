@@ -7,6 +7,7 @@ import SubmissionReview from '../components/SubmissionReview'
 export default function P12_Flight2() {
   const taskSubmissions = useWorkshopStore(s => s.taskSubmissions)
   const completePage = useWorkshopStore(s => s.completePage)
+  const roundEnded = useWorkshopStore(s => s.roundEnded)
   const persona = usePersona()
   const submitted = !!taskSubmissions[12]
   const [timeLeft, setTimeLeft] = useState(420)
@@ -14,10 +15,10 @@ export default function P12_Flight2() {
   const [showReview, setShowReview] = useState(false)
 
   useEffect(() => {
-    if (!started || submitted) return
+    if (!started || submitted || roundEnded) return
     const interval = setInterval(() => setTimeLeft(p => p <= 1 ? (clearInterval(interval), 0) : p - 1), 1000)
     return () => clearInterval(interval)
-  }, [started, submitted])
+  }, [started, submitted, roundEnded])
 
   const mins = Math.floor(timeLeft / 60), secs = timeLeft % 60
   const color = timeLeft > 120 ? 'text-qa-teal' : timeLeft > 60 ? 'text-ember' : 'text-corp-red'

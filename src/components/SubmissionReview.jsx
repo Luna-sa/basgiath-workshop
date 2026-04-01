@@ -88,10 +88,11 @@ export default function SubmissionReview({ type, pageIndex, roundId, onComplete 
           </div>
         )}
 
-        {/* No API fallback */}
+        {/* No API fallback — show clear message */}
         {!result.feedback && (
-          <div className="text-center p-4 border border-forest/30 bg-forest/[0.05]">
-            <p className="text-sm text-forest">Результат сохранён. +{result.xpBonus} XP</p>
+          <div className="text-center p-4 border border-ember/30 bg-ember/[0.05]">
+            <p className="text-sm text-ember mb-1">AI-ревью недоступно</p>
+            <p className="text-xs text-text-dim">Groq API не ответил. Результат сохранён, ты получил(а) +{result.xpBonus} XP.</p>
           </div>
         )}
       </div>

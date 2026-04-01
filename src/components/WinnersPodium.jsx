@@ -3,8 +3,8 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { CHARACTERS } from '../data/characters'
 import { playBadgeSound } from '../effects/SoundManager'
 
-const MEDALS = ['🥇', '🥈', '🥉']
-const DELAYS = [2.5, 1.5, 0.5] // 1st reveals last (most dramatic)
+const MEDALS = ['🥇', '🥈', '🥉', '🏅', '🏅']
+const DELAYS = [2.5, 1.5, 0.5, 0.3, 0.2]
 
 function formatTime(seconds) {
   if (!seconds) return '--:--'

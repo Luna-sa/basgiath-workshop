@@ -10,11 +10,14 @@ export default function P10_Quiz() {
   const persona = usePersona()
   const submitQuizAnswer = useWorkshopStore(s => s.submitQuizAnswer)
   const finalizeQuiz = useWorkshopStore(s => s.finalizeQuiz)
-  const [showResults, setShowResults] = useState(false)
+  const [showResults, setShowResults] = useState(quizScore !== null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const allAnswered = QUIZ_QUESTIONS.every(q => quizAnswers[q.id])
 
   const handleSubmit = () => {
+    if (isSubmitting || quizScore !== null) return
+    setIsSubmitting(true)
     const correct = QUIZ_QUESTIONS.filter(q => quizAnswers[q.id] === q.correct).length
     finalizeQuiz(correct)
     setShowResults(true)
