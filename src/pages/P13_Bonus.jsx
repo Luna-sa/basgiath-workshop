@@ -60,7 +60,7 @@ const CURSOR_CONFIG = `{
 const WOW_PROMPTS = [
   {
     title: '🌐 AI тестирует сайт',
-    prompt: 'Open the website at [URL_ТЕСТОВОГО_ПРИЛОЖЕНИЯ] and test the registration form. Try: empty fields, invalid email, password "1", mismatched passwords, future date of birth. Take a screenshot of each bug you find and write a summary.',
+    prompt: 'Open the website at https://basgiath-workshop.onrender.com/sample-project/index.html and test the registration form. Try: empty fields, invalid email, password "1", mismatched passwords, future date of birth. Take a screenshot of each bug you find and write a summary.',
     description: 'AI откроет браузер, зайдёт на сайт, заполнит формы, найдёт баги, сделает скриншоты',
   },
   {
