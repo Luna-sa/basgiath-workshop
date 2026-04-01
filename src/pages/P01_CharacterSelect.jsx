@@ -8,6 +8,18 @@ export default function P01_CharacterSelect() {
 
   return (
     <PageShell pageIndex={1}>
+      {/* Quick lore context */}
+      <div className="mb-5 p-4 border border-border bg-surface/30 text-[13px] text-text-secondary leading-relaxed">
+        <p className="mb-2">
+          В книге <strong className="text-white">«Четвёртое Крыло»</strong> кадеты делятся на крылья и отряды. У каждого свой характер, свой дракон и свой способ выживать.
+          <strong className="text-white"> Вайолет</strong> — маленькая, хрупкая, но умнее всех в комнате.
+          <strong className="text-white"> Ксаден</strong> — сын врага, которому никто не доверяет, но все подчиняются.
+          <strong className="text-white"> Рианнон</strong> — та, к кому бежит весь отряд когда всё ломается.
+        </p>
+        <p className="text-text-dim italic text-[12px]">
+          Не читал(а) книгу? Не страшно — выбирай по описанию стиля. А потом, может, и прочитаешь.
+        </p>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {CHARACTERS.map(c => {
           const isSelected = characterId === c.id

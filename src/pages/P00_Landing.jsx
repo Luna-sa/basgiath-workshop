@@ -4,6 +4,21 @@ export default function P00_Landing() {
   return (
     <PageShell pageIndex={0}>
       <div className="space-y-5">
+        {/* World intro — hook */}
+        <div className="p-5 border border-border bg-surface/30">
+          <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-3">О мире</div>
+          <p className="text-[14px] text-text-body leading-relaxed mb-3">
+            В мире <strong className="text-white">«Четвёртого Крыла»</strong> существует Академия Басгиат — военная школа, где люди связываются с драконами.
+            Драконы — древние, смертельно опасные существа с собственным разумом. Они сами выбирают наездника. Если дракон не выберет тебя — ты уходишь ни с чем. Если выберет — ты получаешь силу, о которой не мечтал.
+          </p>
+          <p className="text-[14px] text-text-body leading-relaxed mb-3">
+            Но прежде чем дойти до драконов, нужно пересечь <strong className="text-white">Парапет</strong> — узкий каменный мост без перил над пропастью. Это первый отсев. Не все доходят.
+          </p>
+          <p className="text-[13px] text-text-secondary italic">
+            Сегодня твой AI-инструмент — это дракон. Ты научишься устанавливать с ним связь, управлять им и использовать его силу в QA-работе.
+          </p>
+        </div>
+
         {/* Stats */}
         <div className="flex items-center justify-center gap-8 sm:gap-12">
           {[
@@ -23,9 +38,9 @@ export default function P00_Landing() {
         {/* Three artifacts */}
         <div className="grid sm:grid-cols-3 gap-3">
           {[
-            { num: '01', title: 'Связь с драконом', desc: 'CLAUDE.md — инструкция для AI', icon: '🐉' },
-            { num: '02', title: 'Боевые приёмы', desc: '/bug-report и /test-cases', icon: '⚔️' },
-            { num: '03', title: 'Первый полёт', desc: 'Практика на реальном коде', icon: '🎯' },
+            { num: '01', title: 'Связь с драконом', desc: 'CLAUDE.md — файл, через который AI узнаёт тебя', icon: '🐉' },
+            { num: '02', title: 'Боевые приёмы', desc: 'Команды /bug-report и /test-cases', icon: '⚔️' },
+            { num: '03', title: 'Первый полёт', desc: 'Практика на приложении с реальными багами', icon: '🎯' },
           ].map(a => (
             <div key={a.num} className="p-4 border border-border bg-surface/30">
               <div className="flex items-center gap-2 mb-2">
@@ -37,18 +52,6 @@ export default function P00_Landing() {
               <p className="text-xs text-text-secondary">{a.desc}</p>
             </div>
           ))}
-        </div>
-
-        {/* About */}
-        <div className="p-4 border border-border border-l-[3px] border-l-qa-teal bg-surface/30">
-          <div className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mb-2">
-            Что тебя ждёт
-          </div>
-          <p className="text-sm text-text-body leading-relaxed">
-            За 60 минут ты настроишь AI-агента (Claude Code или Cursor), создашь CLAUDE.md,
-            напишешь slash-команды для QA и применишь их на коде с настоящими багами.
-            Без опыта программирования.
-          </p>
         </div>
       </div>
     </PageShell>
