@@ -1,32 +1,54 @@
 import PageShell from '../core/PageShell'
 
 const SERVERS = [
-  { emoji: '🌐', name: 'Playwright', what: 'AI получает браузер — открывает сайты, кликает, заполняет формы, делает скриншоты', wow: '«Открой сайт и протестируй регистрацию — пустые поля, невалидный email, пароль 1»' },
-  { emoji: '🔌', name: 'Fetch', what: 'AI отправляет HTTP-запросы — GET, POST, PUT, DELETE на любой API', wow: '«Протестируй все эндпоинты: валидные и невалидные данные, проверь статус-коды»' },
-  { emoji: '📚', name: 'Context7', what: 'AI получает актуальную документацию вместо устаревших знаний', wow: '«Напиши Playwright тесты используя только актуальный API»' },
+  {
+    emoji: '🌐', name: 'Playwright',
+    what: 'AI получает браузер',
+    details: 'Открывает сайты, кликает, заполняет формы, делает скриншоты — без единой строки кода',
+    wow: '«Открой сайт и протестируй регистрацию — пустые поля, невалидный email, пароль 1»',
+  },
+  {
+    emoji: '🔌', name: 'Fetch',
+    what: 'AI отправляет HTTP-запросы',
+    details: 'GET, POST, PUT, DELETE на любой API. Проверяет статус-коды, тело ответа, время',
+    wow: '«Протестируй все эндпоинты: валидные и невалидные данные, проверь 400/401/404»',
+  },
+  {
+    emoji: '📚', name: 'Context7',
+    what: 'AI знает актуальную документацию',
+    details: 'Вместо устаревших знаний — свежие доки любой библиотеки. Playwright, Jest, React...',
+    wow: '«Напиши Playwright тесты используя только актуальный API, не deprecated»',
+  },
 ]
 
 export default function P10_TalkMCP() {
   return (
     <PageShell pageIndex={10}>
-      <div className="space-y-4">
-        <div className="p-4 border border-border border-l-[3px] border-l-qa-teal bg-qa-teal/[0.03]">
-          <p className="text-sm text-text-body">
-            Без MCP — AI только отвечает на вопросы. С MCP — <strong className="text-white">открывает браузер</strong>, <strong className="text-white">тестирует API</strong>, <strong className="text-white">читает документацию</strong>. Это уже установлено в вашей экосистеме.
+      <div className="space-y-5">
+        {/* Core message */}
+        <div className="p-6 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">
+          <p className="text-[20px] text-text-body leading-relaxed">
+            Без MCP — AI <span className="text-text-dim">только отвечает</span>.
+            <br />С MCP — AI <strong className="text-white">действует</strong>.
           </p>
         </div>
 
+        {/* Server cards */}
         {SERVERS.map(s => (
-          <div key={s.name} className="p-4 border border-border bg-surface/30">
-            <div className="flex items-start gap-3">
-              <span className="text-xl shrink-0">{s.emoji}</span>
-              <div>
-                <div className="font-display text-[15px] text-white mb-1">{s.name}</div>
-                <p className="text-sm text-text-body mb-2">{s.what}</p>
-                <div className="p-2 bg-black/50 border border-border">
-                  <p className="text-xs text-qa-teal font-mono italic">{s.wow}</p>
+          <div key={s.name} className="border border-[#2E2E2E] bg-[#141414] rounded-lg overflow-hidden">
+            <div className="p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-3xl">{s.emoji}</span>
+                <div>
+                  <div className="font-display text-[22px] text-white">{s.name}</div>
+                  <div className="text-[15px] text-text-secondary">{s.what}</div>
                 </div>
               </div>
+              <p className="text-[16px] text-text-body leading-relaxed mb-3">{s.details}</p>
+            </div>
+            <div className="px-5 py-3 bg-black/40 border-t border-[#1E1E1E]">
+              <div className="font-mono text-[11px] text-text-dim uppercase tracking-wider mb-1">Пример промпта</div>
+              <code className="font-mono text-[15px] text-qa-teal italic">{s.wow}</code>
             </div>
           </div>
         ))}

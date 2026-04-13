@@ -5,62 +5,61 @@ const LEVELS = [
   {
     level: 1, badge: '🪶', title: 'Кадет', subtitle: 'Базовый чат',
     color: '#888888',
-    description: 'Просто открываешь ChatGPT / Claude и пишешь вопрос текстом. Каждый раз заново, без контекста.',
+    desc: 'Пишешь вопрос — получаешь ответ. Каждый раз с нуля, без контекста.',
     tools: [
-      { name: 'Текстовый чат', desc: 'Пишешь "исправь этот баг", "что делает этот код" — получаешь ответ' },
-      { name: 'Tab-автодополнение', desc: 'В Cursor/Copilot AI подсказывает следующую строку' },
+      { name: 'Текстовый чат', desc: '"Исправь баг", "что делает этот код" — и всё' },
+      { name: 'Tab-автодополнение', desc: 'AI подсказывает следующую строку' },
     ],
-    example: '"Напиши тест для функции validateEmail"',
-    limitation: 'AI не знает твой проект. Каждый раз приходится объяснять контекст с нуля.',
+    example: '"Напиши тест для validateEmail"',
+    limit: 'AI не знает твой проект. Каждый раз заново.',
   },
   {
-    level: 2, badge: '🐉', title: 'Наездник', subtitle: 'Конфиги и команды',
-    color: '#00E5CC',
-    current: true,
-    description: 'AI запоминает контекст через файлы. Ты один раз настраиваешь — дальше он знает, кто ты и как работаешь.',
+    level: 2, badge: '🐉', title: 'Наездник', subtitle: 'Конфиги + команды',
+    color: '#00E5CC', current: true,
+    desc: 'AI запоминает контекст. Один раз настроил — дальше он знает, кто ты.',
     tools: [
-      { name: 'CLAUDE.md / .cursorrules', desc: 'Файл с инструкциями: роль, стандарты, формат отчётов. AI читает его при каждом запуске' },
-      { name: 'Slash-команды', desc: '/bug-report, /test-cases — одно слово вместо абзаца промпта' },
+      { name: 'CLAUDE.md', desc: 'Файл с инструкциями. AI читает при каждом запуске' },
+      { name: 'Slash-команды', desc: '/bug-report — одно слово вместо абзаца промпта' },
       { name: '@file, @codebase', desc: 'Указываешь AI на конкретный файл или весь проект' },
     ],
-    example: '/bug-report Логин принимает пустой пароль без ошибки',
-    limitation: 'AI всё ещё только читает и отвечает. Не может сам открыть браузер или отправить запрос.',
+    example: '/bug-report Логин принимает пустой пароль',
+    limit: 'AI только читает и отвечает. Не может открыть браузер.',
   },
   {
-    level: 3, badge: '⚔️', title: 'Боец', subtitle: 'Plan mode и skills',
+    level: 3, badge: '⚔️', title: 'Боец', subtitle: 'Plan mode + skills',
     color: '#E85D26',
-    description: 'AI сначала думает, потом делает. Ты описываешь что нужно — он составляет план, ты одобряешь, он выполняет.',
+    desc: 'AI сначала думает, потом делает. Составляет план — ты одобряешь.',
     tools: [
-      { name: 'Plan Mode', desc: 'AI анализирует задачу, находит файлы, строит план. Ты проверяешь перед выполнением' },
-      { name: 'Skills (авто-активация)', desc: 'AI сам определяет тип задачи и применяет нужный workflow. Не нужно выбирать руками' },
-      { name: 'Multi-file / Composer', desc: 'Изменения сразу в нескольких файлах одним промптом. Видишь diff перед принятием' },
+      { name: 'Plan Mode', desc: 'Анализ → план → твоё одобрение → выполнение' },
+      { name: 'Skills', desc: 'AI сам определяет тип задачи и включает нужный workflow' },
+      { name: 'Multi-file', desc: 'Меняет несколько файлов сразу. Видишь diff перед принятием' },
     ],
-    example: '"Отрефактори модуль авторизации: разбей на сервисы, добавь валидацию, напиши тесты"',
-    limitation: 'AI работает только с файлами. Не может зайти на сайт, проверить API или создать issue.',
+    example: '"Разбей auth на сервисы, добавь валидацию и тесты"',
+    limit: 'Работает только с файлами. Не выходит за пределы проекта.',
   },
   {
-    level: 4, badge: '👑', title: 'Командир', subtitle: 'MCP, hooks, агенты',
+    level: 4, badge: '👑', title: 'Командир', subtitle: 'MCP + агенты',
     color: '#FF65BE',
-    description: 'AI получает доступ к внешнему миру. Открывает браузер, тестирует API, создаёт issues, следит за правилами автоматически.',
+    desc: 'AI выходит за пределы кода. Открывает браузер, тестирует API, создаёт issues.',
     tools: [
-      { name: 'MCP серверы', desc: 'Playwright — AI сам тестирует сайт. Fetch — отправляет HTTP-запросы. Sentry — мониторит ошибки' },
-      { name: 'Hooks', desc: 'Автоматические правила: "перед коммитом — проверь линтер", "после edit — форматируй". AI следует им без напоминаний' },
-      { name: 'Sub-agents', desc: 'AI запускает специализированных агентов для подзадач. qa-reviewer ревьюит код, security-scanner ищет уязвимости' },
+      { name: 'MCP серверы', desc: 'Playwright — тестирует сайт. Fetch — API. Sentry — мониторинг' },
+      { name: 'Hooks', desc: 'Автоматические правила. "Перед коммитом — линтер"' },
+      { name: 'Sub-agents', desc: 'qa-reviewer ревьюит, security-scanner ищет уязвимости' },
     ],
-    example: '"Открой staging-сайт, протестируй регистрацию невалидными данными, запиши баги в Jira"',
-    limitation: 'Ты всё ещё управляешь вручную. Каждую задачу нужно запускать самому.',
+    example: '"Открой staging, протестируй регистрацию, запиши баги в Jira"',
+    limit: 'Каждую задачу запускаешь вручную.',
   },
   {
     level: 5, badge: '🏛️', title: 'Архитектор', subtitle: 'Оркестрация',
     color: '#00E5CC',
-    description: 'AI работает автономно. Несколько агентов параллельно, автоматические задачи по расписанию, интеграция в CI/CD.',
+    desc: 'AI работает автономно. Параллельные агенты, расписание, CI/CD.',
     tools: [
-      { name: 'Agent Teams', desc: 'Несколько AI работают одновременно: один пишет код, другой тестирует, третий ревьюит. Спорят друг с другом' },
-      { name: 'Headless / CI-CD', desc: 'AI запускается автоматически в пайплайне: при каждом PR — авто-ревью, авто-тесты, отчёт' },
-      { name: 'Automations', desc: 'Расписание: "каждую ночь проверяй все открытые PR", "утром отчёт в Slack". AI работает пока ты спишь' },
+      { name: 'Agent Teams', desc: 'Несколько AI параллельно: пишет, тестирует, ревьюит' },
+      { name: 'Headless', desc: 'AI в CI/CD: авто-ревью на каждый PR' },
+      { name: 'Automations', desc: '"Каждую ночь проверяй PR, утром отчёт в Slack"' },
     ],
-    example: '"Запусти 5 агентов параллельно: каждый фиксит по одному багу из бэклога, создай PR с тестами"',
-    limitation: '',
+    example: '"5 агентов: каждый фиксит по багу из бэклога"',
+    limit: '',
   },
 ]
 
@@ -69,63 +68,61 @@ export default function P05_TalkEvolution() {
 
   return (
     <PageShell pageIndex={5}>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {LEVELS.map(lvl => (
           <button key={lvl.level} onClick={() => setExpanded(expanded === lvl.level ? null : lvl.level)}
-            className={`w-full text-left border transition-all cursor-pointer overflow-hidden ${lvl.current ? 'border-qa-teal/30 bg-qa-teal/[0.05]' : 'border-border bg-surface/30 hover:bg-surface/50'}`}>
+            className={`w-full text-left border transition-all cursor-pointer overflow-hidden ${
+              lvl.current ? 'border-qa-teal/40 bg-qa-teal/[0.05]' : 'border-border bg-surface/30 hover:bg-surface/50'
+            }`}>
 
-            {/* Header */}
-            <div className="flex items-center gap-3 p-3">
-              <span className="text-xl shrink-0">{lvl.badge}</span>
+            {/* Header — always visible */}
+            <div className="flex items-center gap-4 p-4">
+              <span className="text-2xl shrink-0">{lvl.badge}</span>
               <div className="flex-1 min-w-0">
-                <div className="font-display text-[15px]" style={{ color: lvl.color }}>
+                <div className="font-display text-[20px] leading-tight" style={{ color: lvl.color }}>
                   Lv {lvl.level}: {lvl.title}
                 </div>
-                <div className="font-mono text-[11px] text-text-dim">{lvl.subtitle}</div>
+                <div className="text-[14px] text-text-dim mt-0.5">{lvl.subtitle}</div>
               </div>
-              {lvl.current && <span className="font-mono text-[10px] text-qa-teal border border-qa-teal/20 px-2 py-0.5 shrink-0">Сегодня</span>}
-              {lvl.level <= 2 && !lvl.current && <span className="font-mono text-[10px] text-forest shrink-0">✓</span>}
-              <span className={`text-text-dim text-sm transition-transform shrink-0 ${expanded === lvl.level ? 'rotate-180' : ''}`}>▾</span>
+              {lvl.current && <span className="font-mono text-[12px] text-qa-teal border border-qa-teal/20 px-3 py-1 shrink-0">Сегодня</span>}
+              <span className={`text-text-dim text-base transition-transform shrink-0 ${expanded === lvl.level ? 'rotate-180' : ''}`}>▾</span>
             </div>
 
-            {/* Expanded detail */}
+            {/* Expanded — full detail */}
             {expanded === lvl.level && (
-              <div className="px-3 pb-4 border-t border-border/50 pt-3 space-y-3" onClick={e => e.stopPropagation()}>
-                {/* Description */}
-                <p className="text-[13px] text-text-body leading-relaxed">{lvl.description}</p>
+              <div className="px-4 pb-5 border-t border-border/50 pt-4 space-y-4" onClick={e => e.stopPropagation()}>
+                <p className="text-[16px] text-text-body leading-relaxed">{lvl.desc}</p>
 
                 {/* Tools */}
                 <div className="space-y-2">
                   {lvl.tools.map((tool, i) => (
-                    <div key={i} className="p-2.5 bg-black/30 border border-border/50">
-                      <div className="text-[13px] text-white font-medium mb-0.5">{tool.name}</div>
-                      <div className="text-[12px] text-text-secondary">{tool.desc}</div>
+                    <div key={i} className="p-3 bg-[#141414] border border-[#2E2E2E] rounded-lg">
+                      <div className="text-[16px] text-white font-medium mb-1">{tool.name}</div>
+                      <div className="text-[14px] text-text-secondary leading-relaxed">{tool.desc}</div>
                     </div>
                   ))}
                 </div>
 
-                {/* Example prompt */}
-                <div className="p-2.5 bg-black border border-border">
-                  <div className="font-mono text-[10px] text-text-dim mb-1 uppercase tracking-wider">Пример</div>
-                  <code className="font-mono text-[12px]" style={{ color: lvl.color }}>{lvl.example}</code>
+                {/* Example */}
+                <div className="p-3 bg-[#141414] border border-[#2E2E2E] rounded-lg">
+                  <div className="font-mono text-[12px] text-text-dim uppercase tracking-wider mb-1">Пример</div>
+                  <code className="font-mono text-[16px] leading-relaxed" style={{ color: lvl.color }}>{lvl.example}</code>
                 </div>
 
                 {/* Limitation */}
-                {lvl.limitation && (
-                  <div className="p-2 border border-border/50 bg-surface/30">
-                    <p className="text-[11px] text-text-dim italic">
-                      <span className="text-corp-red font-mono text-[10px] uppercase not-italic">Ограничение:</span>{' '}{lvl.limitation}
-                    </p>
-                  </div>
+                {lvl.limit && (
+                  <p className="text-[14px] text-text-dim italic px-1">
+                    <span className="text-corp-red not-italic font-mono text-[12px] uppercase">Ограничение:</span>{' '}{lvl.limit}
+                  </p>
                 )}
               </div>
             )}
           </button>
         ))}
 
-        <div className="mt-3 p-3 border border-qa-teal/15 bg-qa-teal/[0.03] text-center">
-          <p className="text-xs text-text-secondary">
-            <span className="text-qa-teal font-mono text-[11px]">Сегодня:</span> Lv 1 → Lv 2, начало Lv 4 с MCP.
+        <div className="mt-4 p-4 border border-qa-teal/15 bg-qa-teal/[0.03] text-center">
+          <p className="text-[16px] text-text-secondary">
+            <span className="text-qa-teal font-mono">Сегодня:</span> Lv 1 → Lv 2, начало Lv 4.
             <span className="text-text-dim"> Следующие воркшопы: Lv 3–5.</span>
           </p>
         </div>
