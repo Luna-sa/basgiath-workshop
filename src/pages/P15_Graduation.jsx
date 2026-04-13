@@ -69,7 +69,7 @@ export default function P15_Graduation() {
     `✅ AI сам тестировал сайт через браузер`,
     `✅ Получил(а) AI-ревью баг-репорта от Groq`,
     ``,
-    `Попробуй сам → basgiath-workshop.onrender.com`,
+    `Воркшоп проводит @ainastasia — QA Tech Lead, AI Clan Champion`,
   ].join('\n')
 
   const linkedinText = [
