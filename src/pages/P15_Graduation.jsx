@@ -55,7 +55,49 @@ export default function P15_Graduation() {
     }, 1200)
   }, [])
 
-  const shareText = `Прошёл воркшоп "Академия Басгиат" — AI для QA!\n${xp} XP | ${badges.length} бейджей | Персонаж: ${character?.name}\nhttps://basgiath-workshop.onrender.com`
+  const badgeEmojis = badges.map(id => BADGES.find(x => x.id === id)?.emoji).join(' ')
+
+  const telegramText = [
+    `🐉 Академия Басгиат — воркшоп пройден!`,
+    ``,
+    `⚡ ${xp} XP`,
+    `🏅 ${badges.length} бейджей: ${badgeEmojis}`,
+    `🎭 Персонаж: ${character?.name} (${character?.title})`,
+    ``,
+    `За 60 минут:`,
+    `✅ Настроил(а) полную QA-экосистему — 7 команд, 4 агента, 3 MCP`,
+    `✅ AI сам тестировал сайт через браузер`,
+    `✅ Получил(а) AI-ревью баг-репорта от Groq`,
+    ``,
+    `Попробуй сам → basgiath-workshop.onrender.com`,
+  ].join('\n')
+
+  const linkedinText = [
+    `Just completed an interactive AI for QA workshop — "Basgiath Academy" 🐉`,
+    ``,
+    `In 60 minutes, I set up a complete QA ecosystem:`,
+    `→ 7 slash commands (/bug-report, /test-cases, /review...)`,
+    `→ 4 AI agents (qa-reviewer, test-generator, security-scanner, bug-triager)`,
+    `→ 3 MCP servers (Playwright, Fetch, Context7)`,
+    ``,
+    `The AI literally opened a browser and tested a web app on its own. 🤯`,
+    ``,
+    `Final score: ${xp} XP | ${badges.length} badges earned`,
+    ``,
+    `#QA #AITesting #ISTQB #ClaudeCode #Cursor #QAClan`,
+  ].join('\n')
+
+  const copyText = [
+    `🐉 Академия Басгиат — AI для QA`,
+    ``,
+    `${xp} XP | ${badges.length} бейджей ${badgeEmojis}`,
+    `Персонаж: ${character?.name}`,
+    ``,
+    `7 команд + 4 агента + 3 MCP-сервера`,
+    `Всё настроено за 60 минут`,
+    ``,
+    `→ basgiath-workshop.onrender.com`,
+  ].join('\n')
 
   return (
     <PageShell pageIndex={15}>
@@ -120,33 +162,61 @@ export default function P15_Graduation() {
           <p className="font-display italic text-text-body text-lg leading-relaxed">«{persona.voice.finalWords}»</p>
         </motion.div>
 
-        {/* Share buttons */}
+        {/* Share section */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 3.5 }}
-          className="flex flex-wrap gap-3 justify-center"
+          className="space-y-4"
         >
-          <button
-            onClick={() => { navigator.clipboard.writeText(shareText) }}
-            className="px-5 py-2.5 border border-border bg-surface/50 text-text-secondary text-[14px] hover:border-qa-teal/30 hover:text-white transition-colors cursor-pointer rounded-lg"
-          >
-            📋 Скопировать
-          </button>
-          <a
-            href={`https://t.me/share/url?url=${encodeURIComponent('https://basgiath-workshop.onrender.com')}&text=${encodeURIComponent(shareText)}`}
-            target="_blank"
-            className="px-5 py-2.5 border border-border bg-surface/50 text-text-secondary text-[14px] hover:border-qa-teal/30 hover:text-white transition-colors cursor-pointer rounded-lg"
-          >
-            ✈️ Telegram
-          </a>
-          <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://basgiath-workshop.onrender.com')}`}
-            target="_blank"
-            className="px-5 py-2.5 border border-border bg-surface/50 text-text-secondary text-[14px] hover:border-qa-teal/30 hover:text-white transition-colors cursor-pointer rounded-lg"
-          >
-            💼 LinkedIn
-          </a>
+          <div className="font-mono text-[13px] tracking-[2px] uppercase text-text-dim text-center">Поделиться</div>
+
+          {/* Share card preview */}
+          <div className="p-5 border border-[#2E2E2E] bg-[#141414] rounded-lg">
+            <div className="flex items-center gap-3 mb-3">
+              {character?.image && (
+                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2" style={{ borderColor: persona.accent }}>
+                  <img src={character.image} alt="" className="w-full h-full object-cover object-top" />
+                </div>
+              )}
+              <div>
+                <div className="text-[15px] text-white font-medium">{name}</div>
+                <div className="font-mono text-[11px]" style={{ color: persona.accent }}>{character?.title} · {xp} XP · {badgeEmojis}</div>
+              </div>
+            </div>
+            <p className="text-[13px] text-text-secondary leading-relaxed">
+              7 команд + 4 агента + 3 MCP — полная QA-экосистема за 60 минут
+            </p>
+          </div>
+
+          {/* Buttons */}
+          <div className="grid grid-cols-3 gap-3">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(copyText)
+                const btn = document.getElementById('copy-btn')
+                if (btn) { btn.textContent = '✓ Готово!'; setTimeout(() => { btn.textContent = '📋 Копировать' }, 2000) }
+              }}
+              id="copy-btn"
+              className="px-4 py-3 border border-[#2E2E2E] bg-[#141414] text-text-secondary text-[14px] hover:border-qa-teal/40 hover:text-white transition-all cursor-pointer rounded-lg text-center"
+            >
+              📋 Копировать
+            </button>
+            <a
+              href={`https://t.me/share/url?url=${encodeURIComponent('https://basgiath-workshop.onrender.com')}&text=${encodeURIComponent(telegramText)}`}
+              target="_blank"
+              className="px-4 py-3 border border-[#2E2E2E] bg-[#141414] text-text-secondary text-[14px] hover:border-[#26A5E4]/40 hover:text-[#26A5E4] transition-all cursor-pointer rounded-lg text-center"
+            >
+              ✈️ Telegram
+            </a>
+            <a
+              href={`https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(linkedinText)}`}
+              target="_blank"
+              className="px-4 py-3 border border-[#2E2E2E] bg-[#141414] text-text-secondary text-[14px] hover:border-[#0A66C2]/40 hover:text-[#0A66C2] transition-all cursor-pointer rounded-lg text-center"
+            >
+              💼 LinkedIn
+            </a>
+          </div>
         </motion.div>
 
         {/* What you got */}
