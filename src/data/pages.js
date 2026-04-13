@@ -1,8 +1,10 @@
-// Master page registry — all 17 pages + sub-steps with gate definitions
+// Workshop flow — 16 pages
+// 🔒 facilitator = locked until facilitator advances (talk slides)
+// 🔓 self-report / timed-task = student works independently after unlock
 
 export const PAGES = [
   // ═══════════════════════════════════════════
-  // PRE-WORKSHOP PHASE
+  // PRE-WORKSHOP (self-service)
   // ═══════════════════════════════════════════
   {
     id: 0,
@@ -20,11 +22,7 @@ export const PAGES = [
     phase: 'pre',
     title: 'Выбери Наездника',
     narrativeKey: 'character_select',
-    gate: {
-      type: 'selection',
-      field: 'characterId',
-      message: 'Выбери персонажа, чтобы продолжить',
-    },
+    gate: { type: 'selection', field: 'characterId', message: 'Выбери персонажа' },
     xpReward: 10,
     subSteps: null,
   },
@@ -34,11 +32,7 @@ export const PAGES = [
     phase: 'pre',
     title: 'Записаться на Отбор',
     narrativeKey: 'registration',
-    gate: {
-      type: 'form',
-      requiredFields: ['name', 'email'],
-      message: 'Заполни имя и email',
-    },
+    gate: { type: 'form', requiredFields: ['name', 'email'], message: 'Заполни имя и email' },
     xpReward: 20,
     subSteps: null,
   },
@@ -48,145 +42,126 @@ export const PAGES = [
     phase: 'pre',
     title: 'Парапет',
     narrativeKey: 'prework',
-    gate: {
-      type: 'checklist',
-      message: 'Пройди все шаги чек-листа',
-    },
+    gate: { type: 'checklist', message: 'Установи инструменты' },
     xpReward: 50,
-    subSteps: null,
-  },
-  {
-    id: 4,
-    slug: 'waiting-room',
-    phase: 'pre',
-    title: 'Ожидание',
-    narrativeKey: 'waiting',
-    gate: {
-      type: 'facilitator',
-      message: 'Ожидай начала воркшопа. Фасилитатор откроет следующий этап.',
-    },
-    xpReward: 0,
     subSteps: null,
   },
 
   // ═══════════════════════════════════════════
-  // LIVE WORKSHOP PHASE
+  // LIVE WORKSHOP
   // ═══════════════════════════════════════════
+
+  // 🔒 TALK: Что такое AI для QA + эволюция
+  {
+    id: 4,
+    slug: 'talk-intro',
+    phase: 'live',
+    title: 'Что такое AI для QA',
+    narrativeKey: 'talk_intro',
+    gate: { type: 'facilitator', message: 'Фасилитатор ведёт рассказ...' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🔒 TALK: 5 уровней эволюции
   {
     id: 5,
-    slug: 'opening',
+    slug: 'talk-evolution',
     phase: 'live',
-    title: 'Начало',
-    narrativeKey: 'opening',
-    gate: { type: 'facilitator' },
+    title: 'Эволюция наездника',
+    narrativeKey: 'talk_evolution',
+    gate: { type: 'facilitator', message: 'Фасилитатор ведёт рассказ...' },
     xpReward: 0,
     subSteps: null,
   },
+
+  // 🔓 TASK: Установи QA-экосистему
   {
     id: 6,
-    slug: 'context',
+    slug: 'install-ecosystem',
     phase: 'live',
-    title: 'Два мира QA',
-    narrativeKey: 'context',
-    gate: { type: 'facilitator' },
-    xpReward: 10,
+    title: 'Установи экосистему',
+    narrativeKey: 'install',
+    gate: { type: 'self-report', message: 'Подтверди установку' },
+    xpReward: 100,
     subSteps: null,
   },
+
+  // 🔒 TALK: Что мы установили — разбор
   {
     id: 7,
-    slug: 'threshing',
+    slug: 'talk-ecosystem',
     phase: 'live',
-    title: 'Отбор: CLAUDE.md',
-    narrativeKey: 'threshing',
-    gate: { type: 'sub-steps-complete' },
+    title: 'Что мы установили',
+    narrativeKey: 'talk_ecosystem',
+    gate: { type: 'facilitator', message: 'Фасилитатор разбирает экосистему...' },
     xpReward: 0,
-    subSteps: [
-      { id: 'a', title: 'Запусти магический промпт', narrativeKey: 'threshing_role', gate: { type: 'self-report' }, xp: 80 },
-      { id: 'b', title: 'Подтверди создание файла', narrativeKey: 'threshing_checkpoint', gate: { type: 'self-report' }, xp: 30 },
-    ],
+    subSteps: null,
   },
+
+  // 🔓 TASK: Попробуй /test-cases
   {
     id: 8,
-    slug: 'combat-1',
+    slug: 'practice-testcases',
     phase: 'live',
-    title: 'Тренировка: /bug-report',
-    narrativeKey: 'combat1',
-    gate: { type: 'sub-steps-complete' },
-    xpReward: 0,
-    subSteps: [
-      { id: 'a', title: 'Скопируй промпт и создай команду', narrativeKey: 'combat1_write', gate: { type: 'self-report' }, xp: 40 },
-      { id: 'b', title: 'Подтверди', narrativeKey: 'combat1_checkpoint', gate: { type: 'self-report' }, xp: 20 },
-    ],
+    title: 'Практика: /test-cases',
+    narrativeKey: 'practice_tc',
+    gate: { type: 'timed-task', durationSeconds: 420, message: 'Запусти /test-cases и отправь результат' },
+    xpReward: 50,
+    subSteps: null,
   },
+
+  // 🔓 TASK: Найди баг и /bug-report
   {
     id: 9,
-    slug: 'combat-2',
+    slug: 'practice-bugreport',
     phase: 'live',
-    title: 'Тренировка: /test-cases',
-    narrativeKey: 'combat2',
-    gate: { type: 'sub-steps-complete' },
-    xpReward: 0,
-    subSteps: [
-      { id: 'a', title: 'Скопируй промпт и создай команду', narrativeKey: 'combat2_write', gate: { type: 'self-report' }, xp: 25 },
-      { id: 'b', title: 'Подтверди', narrativeKey: 'combat2_checkpoint', gate: { type: 'self-report' }, xp: 20 },
-    ],
+    title: 'Практика: /bug-report',
+    narrativeKey: 'practice_br',
+    gate: { type: 'timed-task', durationSeconds: 420, message: 'Найди баг и отправь отчёт' },
+    xpReward: 50,
+    subSteps: null,
   },
+
+  // 🔒 TALK: MCP суперсила + демо
   {
     id: 10,
-    slug: 'battle-brief',
-    phase: 'live',
-    title: 'Battle Brief: Квиз',
-    narrativeKey: 'quiz',
-    gate: {
-      type: 'quiz',
-      message: 'Ответь на все вопросы квиза',
-    },
-    xpReward: 0, // XP from quiz answers
-    subSteps: null,
-  },
-  {
-    id: 11,
-    slug: 'first-flight-1',
-    phase: 'live',
-    title: 'Первый полёт: Тест-кейсы',
-    narrativeKey: 'flight1',
-    gate: {
-      type: 'timed-task',
-      durationSeconds: 420,
-      message: 'Запусти /test-cases на тестовом проекте и подтверди выполнение',
-    },
-    xpReward: 50,
-    subSteps: null,
-  },
-  {
-    id: 12,
-    slug: 'first-flight-2',
-    phase: 'live',
-    title: 'Первый полёт: Охота за багами',
-    narrativeKey: 'flight2',
-    gate: {
-      type: 'timed-task',
-      durationSeconds: 420,
-      message: 'Найди баг и создай отчёт с помощью /bug-report',
-    },
-    xpReward: 50,
-    subSteps: null,
-  },
-  {
-    id: 13,
-    slug: 'superpower',
+    slug: 'talk-mcp',
     phase: 'live',
     title: 'Суперсила: MCP',
-    narrativeKey: 'bonus',
-    gate: { type: 'sub-steps-complete' },
+    narrativeKey: 'talk_mcp',
+    gate: { type: 'facilitator', message: 'Фасилитатор показывает MCP...' },
     xpReward: 0,
-    subSteps: [
-      { id: 'a', title: 'Установи MCP серверы', narrativeKey: 'bonus', gate: { type: 'self-report' }, xp: 50 },
-      { id: 'b', title: 'Попробуй суперсилу', narrativeKey: 'bonus', gate: { type: 'self-report' }, xp: 50 },
-    ],
+    subSteps: null,
   },
+
+  // 🔓 TASK: AI тестирует сайт через браузер
   {
-    id: 14,
+    id: 11,
+    slug: 'practice-mcp',
+    phase: 'live',
+    title: 'AI тестирует сайт',
+    narrativeKey: 'practice_mcp',
+    gate: { type: 'self-report', message: 'Попробуй и подтверди' },
+    xpReward: 80,
+    subSteps: null,
+  },
+
+  // 🔓 TASK: Квиз
+  {
+    id: 12,
+    slug: 'quiz',
+    phase: 'live',
+    title: 'Battle Brief',
+    narrativeKey: 'quiz',
+    gate: { type: 'quiz', message: 'Ответь на все вопросы' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🔒 War Games + голосование
+  {
+    id: 13,
     slug: 'war-games',
     phase: 'live',
     title: 'Военные игры',
@@ -195,18 +170,22 @@ export const PAGES = [
     xpReward: 0,
     subSteps: null,
   },
+
+  // 🔒 Лидерборд
   {
-    id: 15,
+    id: 14,
     slug: 'leaderboard',
     phase: 'live',
-    title: 'Таблица лидеров',
+    title: 'Результаты',
     narrativeKey: 'leaderboard',
     gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
+
+  // Выпуск
   {
-    id: 16,
+    id: 15,
     slug: 'graduation',
     phase: 'live',
     title: 'Выпуск',

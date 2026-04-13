@@ -1,8 +1,8 @@
 import { supabase } from './supabase'
 
 export const ROUND_CONFIG = {
-  'round-1': { pageIndex: 11, type: 'test-cases', duration: 420, title: 'Тест-кейсы' },
-  'round-2': { pageIndex: 12, type: 'bug-report', duration: 420, title: 'Баг-репорт' },
+  'round-1': { pageIndex: 8, type: 'test-cases', duration: 420, title: 'Тест-кейсы' },
+  'round-2': { pageIndex: 9, type: 'bug-report', duration: 420, title: 'Баг-репорт' },
 }
 
 // Student submits a round entry
