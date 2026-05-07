@@ -173,6 +173,26 @@ button {
   transition: all 0.15s;
 }
 button:hover { border-color: var(--teal); color: var(--teal); }
+button.submit-btn {
+  border-color: rgba(254, 237, 0, 0.4);
+  color: var(--white);
+}
+button.submit-btn:hover {
+  border-color: #FEED00;
+  color: #FEED00;
+}
+.submitted-by {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--teal);
+  padding: 4px 8px;
+  background: rgba(0,229,204,0.06);
+  border-left: 2px solid var(--teal);
+}
+.submitted-by strong { color: var(--white); }
+
 button.primary {
   background: var(--teal);
   color: #000;
@@ -700,8 +720,10 @@ function renderSlots() {
         <textarea data-slot="${s.id}" spellcheck="false">${s.code}</textarea>
         <div class="slot-actions">
           <button data-save="${s.id}">Save</button>
+          <button data-submit="${s.id}" class="submit-btn">Submit ✦</button>
           <button data-default="${s.id}">Reset to default</button>
         </div>
+        ${s.submittedBy ? `<div class="submitted-by">Submitted by <strong>${s.submittedBy}</strong></div>` : ''}
       </div>
     `
     slotsEl.appendChild(div)
@@ -730,6 +752,62 @@ slotsEl.addEventListener('click', (e) => {
     s.code = DEFAULT_BOT
     s.status = 'default'
     persistSlots()
+    renderSlots()
+  } else if (t.matches('[data-submit]')) {
+    submitSlot(t.dataset.submit)
+  }
+})
+
+// ── Submit flow: post code to parent React, parent calls Supabase
+let submitInFlight = false
+function submitSlot(slotId) {
+  if (submitInFlight) return
+  const s = slotState.find(x => x.id === slotId)
+  if (!s) return
+  // Sync code from textarea
+  const ta = slotsEl.querySelector(`textarea[data-slot="${slotId}"]`)
+  if (ta) s.code = ta.value
+  if (!s.code || s.code.length < 20) {
+    showBanner('Bot code is too short. Make it do something first.')
+    return
+  }
+  // Get nickname from URL param or prompt
+  let nickname = (new URLSearchParams(window.location.search)).get('nickname')
+  if (!nickname) {
+    nickname = window.prompt('Your workshop nickname (lowercase, the one from registration):')
+    if (!nickname) return
+  }
+  nickname = nickname.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '')
+  if (nickname.length < 3) {
+    showBanner('Nickname looks invalid. Use letters, numbers, _ and -.')
+    return
+  }
+  submitInFlight = true
+  s.status = 'sending'
+  renderSlots()
+  // Tell parent (the React Arena.jsx) to write to Supabase
+  window.parent.postMessage({
+    type: 'submit-bot',
+    nickname,
+    characterId: slotId,
+    code: s.code,
+  }, '*')
+}
+
+window.addEventListener('message', (e) => {
+  if (!e.data || typeof e.data !== 'object') return
+  if (e.data.type === 'submit-result') {
+    submitInFlight = false
+    const s = slotState.find(x => x.id === e.data.characterId)
+    if (!s) return
+    if (e.data.ok) {
+      s.status = 'submitted'
+      s.submittedBy = e.data.nickname
+      showBanner(`${s.name} bot submitted by ${e.data.nickname}.`)
+    } else {
+      s.status = 'err'
+      showBanner('Submit failed: ' + (e.data.error || 'unknown error'))
+    }
     renderSlots()
   }
 })
