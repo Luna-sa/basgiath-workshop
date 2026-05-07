@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import PageRouter from './core/PageRouter'
 import AchievementToast from './components/AchievementToast'
+import AnnouncementToast from './components/AnnouncementToast'
 import WinnersPodium from './components/WinnersPodium'
 import LanguageToggle from './components/LanguageToggle'
 import ErrorBoundary from './core/ErrorBoundary'
@@ -138,6 +139,7 @@ export default function App() {
         <LanguageToggle />
         <PageRouter />
         <AchievementToast />
+        <AnnouncementToast />
         <WinnersPodium />
       </div>
     </ErrorBoundary>

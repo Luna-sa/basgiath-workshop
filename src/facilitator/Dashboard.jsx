@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { PAGES } from '../data/pages'
 import { CHARACTERS } from '../data/characters'
-import { advanceAll, getAllStudents, setWorkshopPhase, deleteStudent } from '../api/facilitator'
+import {
+  advanceAll, getAllStudents, setWorkshopPhase, deleteStudent,
+  awardXp, setAnnouncement, getPrizes, updatePrize,
+} from '../api/facilitator'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
 import RoundControl from './RoundControl'
 
@@ -13,6 +16,46 @@ export default function Dashboard() {
   const [busyId, setBusyId] = useState(null)
   const [submissions, setSubmissions] = useState([])
   const [submissionsLoading, setSubmissionsLoading] = useState(false)
+  const [announceText, setAnnounceText] = useState('')
+  const [prizes, setPrizes] = useState([])
+
+  const handleAwardXp = async (student, amount) => {
+    setBusyId(student.id)
+    const { error, xp } = await awardXp(student.id, amount)
+    setBusyId(null)
+    if (error) { alert('XP award failed: ' + (error.message || JSON.stringify(error))); return }
+    setStudents(prev => prev.map(s => s.id === student.id ? { ...s, xp } : s))
+  }
+
+  const handleAnnounce = async () => {
+    if (!announceText.trim()) return
+    const { error } = await setAnnouncement(announceText.trim())
+    if (error) { alert('Announcement failed'); return }
+    setAnnounceText('')
+  }
+
+  const handleClearAnnouncement = async () => {
+    await setAnnouncement(null)
+  }
+
+  const refreshPrizes = async () => {
+    const { data } = await getPrizes()
+    setPrizes(data)
+  }
+
+  const handlePrizeUpdate = async (position, fields) => {
+    const { error } = await updatePrize(position, fields)
+    if (error) { alert('Update failed'); return }
+    refreshPrizes()
+  }
+
+  const handleAwardPrize = async (position, studentId) => {
+    await updatePrize(position, {
+      awarded_to_student_id: studentId || null,
+      awarded_at: studentId ? new Date().toISOString() : null,
+    })
+    refreshPrizes()
+  }
 
   const refreshSubmissions = async () => {
     setSubmissionsLoading(true)
@@ -55,6 +98,7 @@ export default function Dashboard() {
     }
     load()
     refreshSubmissions()
+    refreshPrizes()
     const interval = setInterval(load, 3000)
     return () => clearInterval(interval)
   }, [])
@@ -129,6 +173,117 @@ export default function Dashboard() {
 
         {/* Round control */}
         <RoundControl />
+
+        {/* Stats summary (studio / role / claude_code_ready) */}
+        <div className="mb-6 grid sm:grid-cols-3 gap-3">
+          <div className="p-4 border border-border bg-surface/40">
+            <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">By studio</div>
+            <div className="text-[12px] text-text-body space-y-1">
+              {Object.entries(students.reduce((acc, s) => {
+                const k = s.studio || '—'
+                acc[k] = (acc[k] || 0) + 1
+                return acc
+              }, {})).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, n]) => (
+                <div key={k} className="flex justify-between"><span>{k}</span><span className="text-qa-teal">{n}</span></div>
+              ))}
+              {students.length === 0 && <div className="text-text-dim italic">none yet</div>}
+            </div>
+          </div>
+          <div className="p-4 border border-border bg-surface/40">
+            <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">By role</div>
+            <div className="text-[12px] text-text-body space-y-1">
+              {Object.entries(students.reduce((acc, s) => {
+                const k = s.role || '—'
+                acc[k] = (acc[k] || 0) + 1
+                return acc
+              }, {})).sort((a, b) => b[1] - a[1]).map(([k, n]) => (
+                <div key={k} className="flex justify-between"><span>{k}</span><span className="text-qa-teal">{n}</span></div>
+              ))}
+              {students.length === 0 && <div className="text-text-dim italic">none yet</div>}
+            </div>
+          </div>
+          <div className="p-4 border border-border bg-surface/40">
+            <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">Claude Code ready</div>
+            {(() => {
+              const ready = students.filter(s => s.claude_code_ready).length
+              const pct = students.length ? Math.round(ready / students.length * 100) : 0
+              return (
+                <div>
+                  <div className="font-display text-3xl text-white">{pct}<span className="text-text-dim text-base">%</span></div>
+                  <div className="text-[12px] text-text-dim mt-1">{ready} / {students.length} confirmed</div>
+                  <div className="mt-3 h-1.5 bg-border overflow-hidden">
+                    <div className="h-full bg-qa-teal" style={{ width: pct + '%' }} />
+                  </div>
+                </div>
+              )
+            })()}
+          </div>
+        </div>
+
+        {/* Live announcement (broadcasts to all students via Supabase realtime on facilitator_state) */}
+        <div className="mb-6 p-4 border border-border bg-surface/40">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">Live announcement</div>
+          <div className="flex gap-2 flex-wrap">
+            <input
+              type="text"
+              value={announceText}
+              onChange={e => setAnnounceText(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleAnnounce() }}
+              placeholder="Type a message — broadcasts to all students..."
+              className="flex-1 min-w-[260px] px-3 py-2 bg-bg border border-border text-white text-sm placeholder:text-text-dim focus:border-qa-teal outline-none"
+            />
+            <button
+              onClick={handleAnnounce}
+              className="font-mono text-[11px] tracking-[2px] uppercase font-semibold bg-qa-teal text-black px-4 py-2 cursor-pointer hover:shadow-[0_0_18px_rgba(0,229,204,0.4)]"
+            >
+              Send
+            </button>
+            <button
+              onClick={handleClearAnnouncement}
+              className="font-mono text-[11px] tracking-[1px] uppercase border border-border text-text-dim hover:border-qa-teal/40 hover:text-qa-teal px-3 py-2 cursor-pointer"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        {/* Prizes config */}
+        <div className="mb-8 p-5 border border-border bg-surface/50">
+          <div className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mb-3">Prizes · Configure & Award</div>
+          <div className="space-y-3">
+            {prizes.map(p => (
+              <div key={p.position} className="flex flex-wrap gap-3 items-center p-3 border border-border bg-bg/50">
+                <div className="font-display text-lg text-qa-teal w-8">{p.position}</div>
+                <input
+                  type="text"
+                  defaultValue={p.name}
+                  onBlur={e => handlePrizeUpdate(p.position, { name: e.target.value })}
+                  placeholder="Prize name"
+                  className="flex-1 min-w-[140px] px-3 py-2 bg-surface border border-border text-white text-sm focus:border-qa-teal outline-none"
+                />
+                <input
+                  type="text"
+                  defaultValue={p.description || ''}
+                  onBlur={e => handlePrizeUpdate(p.position, { description: e.target.value })}
+                  placeholder="Description"
+                  className="flex-1 min-w-[200px] px-3 py-2 bg-surface border border-border text-text-secondary text-sm focus:border-qa-teal outline-none"
+                />
+                <select
+                  value={p.awarded_to_student_id || ''}
+                  onChange={e => handleAwardPrize(p.position, e.target.value)}
+                  className="px-3 py-2 bg-surface border border-border text-white text-sm focus:border-qa-teal outline-none"
+                >
+                  <option value="">— not awarded —</option>
+                  {[...students].sort((a, b) => (b.xp || 0) - (a.xp || 0)).slice(0, 20).map(s => (
+                    <option key={s.id} value={s.id}>
+                      {s.nickname || s.name} · {s.xp || 0} XP
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Bot submissions for final battle */}
         <div className="mb-8 p-5 border border-border bg-surface/50">
@@ -251,7 +406,7 @@ export default function Dashboard() {
                 const pageTitle = PAGES[student.current_page]?.title || '—'
                 const created = student.created_at ? new Date(student.created_at).toLocaleString() : '—'
                 return (
-                  <div key={student.id} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 p-4 hover:bg-surface/30 transition-colors">
+                  <div key={student.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 p-4 hover:bg-surface/30 transition-colors">
                     <span className="text-lg">{char?.emoji || '👤'}</span>
 
                     <div className="min-w-0">
@@ -276,6 +431,20 @@ export default function Dashboard() {
                       <div className="font-mono text-[11px] text-text-dim">
                         P{String(student.current_page || 0).padStart(2, '0')} {pageTitle}
                       </div>
+                    </div>
+
+                    <div className="flex gap-1">
+                      {[10, 20, 50].map(amt => (
+                        <button
+                          key={amt}
+                          onClick={() => handleAwardXp(student, amt)}
+                          disabled={busyId === student.id}
+                          className="font-mono text-[10px] tracking-[1px] border border-qa-teal/30 text-qa-teal hover:bg-qa-teal/10 px-2 py-1 disabled:opacity-30 cursor-pointer transition-all"
+                          title={`+${amt} XP`}
+                        >
+                          +{amt}
+                        </button>
+                      ))}
                     </div>
 
                     <button

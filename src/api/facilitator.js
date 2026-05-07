@@ -59,6 +59,51 @@ export async function getAllStudents() {
   return data || []
 }
 
+export async function awardXp(studentId, amount) {
+  if (!supabase) return { error: 'no supabase' }
+  // Read current XP, add, write back. (Not atomic but ok for facilitator.)
+  const { data: cur, error: readErr } = await supabase
+    .from('students').select('xp').eq('id', studentId).maybeSingle()
+  if (readErr) return { error: readErr }
+  const newXp = (cur?.xp || 0) + amount
+  const { error } = await supabase
+    .from('students')
+    .update({ xp: newXp })
+    .eq('id', studentId)
+  return { error, xp: newXp }
+}
+
+export async function setAnnouncement(message) {
+  if (!supabase) return { error: 'no supabase' }
+  const { error } = await supabase
+    .from('facilitator_state')
+    .update({
+      announcement: message || null,
+      announcement_at: message ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', 1)
+  return { error }
+}
+
+export async function getPrizes() {
+  if (!supabase) return { data: [], error: null }
+  const { data, error } = await supabase
+    .from('prizes')
+    .select('*, awarded_to:awarded_to_student_id (id, name, nickname)')
+    .order('position')
+  return { data: data || [], error }
+}
+
+export async function updatePrize(position, fields) {
+  if (!supabase) return { error: 'no supabase' }
+  const { error } = await supabase
+    .from('prizes')
+    .update(fields)
+    .eq('position', position)
+  return { error }
+}
+
 export async function deleteStudent(studentId) {
   if (!supabase) return { error: 'no supabase' }
   const { data, error } = await supabase

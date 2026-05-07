@@ -91,6 +91,16 @@ function applyFacilitatorState(newState) {
   if (newState.round_winners && JSON.stringify(newState.round_winners) !== JSON.stringify(store.roundWinners)) {
     store.setRoundWinners(newState.round_winners)
   }
+  // Live announcement from facilitator
+  if (newState.announcement !== undefined) {
+    const stored = store.lastAnnouncement || {}
+    const incoming = { text: newState.announcement || '', at: newState.announcement_at || null }
+    if (incoming.text && incoming.at !== stored.at) {
+      if (typeof store.setAnnouncement === 'function') {
+        store.setAnnouncement(incoming)
+      }
+    }
+  }
 }
 
 export function stopSync() {

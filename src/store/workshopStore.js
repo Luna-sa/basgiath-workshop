@@ -65,6 +65,7 @@ export const useWorkshopStore = create(
       soundEnabled: false,
       showBadgeOverlay: false,
       lastToast: null, // { type: 'xp'|'badge', value, timestamp }
+      lastAnnouncement: null, // { text, at }
 
       // ═══════════════════════════════════════
       // ACTIONS
@@ -81,6 +82,8 @@ export const useWorkshopStore = create(
       setPersonaAnswers: (answers) => set((s) => ({
         user: { ...s.user, personaAnswers: { ...(s.user.personaAnswers || {}), ...answers } },
       })),
+
+      setAnnouncement: (announcement) => set({ lastAnnouncement: announcement }),
 
       // ── Backend Registration ──
 
