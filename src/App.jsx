@@ -7,6 +7,7 @@ import ErrorBoundary from './core/ErrorBoundary'
 import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
+import Arena from './pages/Arena'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
 import { startSync, fetchInitialState } from './store/sync'
@@ -25,18 +26,34 @@ function isRegisterRoute() {
   return path === '/register' || path === '/register/'
 }
 
+function isArenaRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'arena') return true
+  const path = window.location.pathname
+  return path === '/arena' || path === '/arena/'
+}
+
 export default function App() {
   const [facilitator] = useState(isFacilitatorMode)
   const [registerOnly] = useState(isRegisterRoute)
+  const [arenaOnly] = useState(isArenaRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly) {
+    if (!registerOnly && !arenaOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly])
+  }, [facilitator, registerOnly, arenaOnly])
+
+  if (arenaOnly) {
+    return (
+      <ErrorBoundary>
+        <Arena />
+      </ErrorBoundary>
+    )
+  }
 
   if (registerOnly) {
     return (
