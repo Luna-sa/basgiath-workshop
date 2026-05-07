@@ -440,18 +440,100 @@ let round = null
 class ArenaScene extends Phaser.Scene {
   create() {
     scene = this
-    this.cameras.main.setBackgroundColor('#050505')
+    this.cameras.main.setBackgroundColor('#040408')
 
-    // starry sky background
-    const stars2 = this.add.graphics()
-    stars2.fillStyle(0xFFFFFF, 0.5)
-    for (let i = 0; i < 120; i++) {
-      stars2.fillCircle(Math.random() * ARENA_W, Math.random() * ARENA_H, Math.random() * 1.2)
+    // ── Layer 1: deep space gradient + nebula puffs
+    const grad = this.add.graphics()
+    grad.fillGradientStyle(0x0a0014, 0x0a0014, 0x040408, 0x080814, 1)
+    grad.fillRect(0, 0, ARENA_W, ARENA_H)
+    // Nebula clouds (soft purple/teal puffs)
+    for (let i = 0; i < 4; i++) {
+      const nebula = this.add.graphics()
+      const colors = [0x2A1A4A, 0x1A2A4A, 0x4A1A2A, 0x1A4A3A]
+      nebula.fillStyle(colors[i % colors.length], 0.18)
+      nebula.fillCircle(
+        100 + Math.random() * (ARENA_W - 200),
+        80 + Math.random() * (ARENA_H - 160),
+        80 + Math.random() * 60
+      )
+    }
+
+    // ── Layer 2: distant twinkling stars
+    this.twinkleStars = []
+    for (let i = 0; i < 80; i++) {
+      const x = Math.random() * ARENA_W
+      const y = Math.random() * ARENA_H
+      const size = 0.5 + Math.random() * 1.2
+      const dot = this.add.circle(x, y, size, 0xFFFFFF, 0.5 + Math.random() * 0.5)
+      this.twinkleStars.push(dot)
+      this.tweens.add({
+        targets: dot,
+        alpha: { from: 0.2, to: 1 },
+        duration: 1500 + Math.random() * 2500,
+        yoyo: true,
+        repeat: -1,
+      })
+    }
+
+    // ── Layer 3: brighter foreground stars + occasional accent
+    for (let i = 0; i < 25; i++) {
+      const x = Math.random() * ARENA_W
+      const y = Math.random() * ARENA_H
+      const star = this.add.circle(x, y, 1.5, 0xFFFFFF, 0.85)
+      this.tweens.add({
+        targets: star,
+        alpha: { from: 0.4, to: 1 },
+        duration: 800 + Math.random() * 1200,
+        yoyo: true,
+        repeat: -1,
+      })
+    }
+    // 4 accent diamond-stars (qa-teal)
+    for (let i = 0; i < 4; i++) {
+      const x = Math.random() * ARENA_W
+      const y = Math.random() * ARENA_H
+      const cross = this.add.graphics()
+      cross.lineStyle(1, 0x00E5CC, 0.7)
+      cross.beginPath()
+      cross.moveTo(x - 4, y); cross.lineTo(x + 4, y)
+      cross.moveTo(x, y - 4); cross.lineTo(x, y + 4)
+      cross.strokePath()
+      this.tweens.add({
+        targets: cross,
+        alpha: { from: 0.2, to: 1 },
+        duration: 2000,
+        yoyo: true,
+        repeat: -1,
+      })
+    }
+
+    // ── Layer 4: drifting clouds (parallax)
+    this.clouds = []
+    for (let i = 0; i < 3; i++) {
+      const cloud = this.add.graphics()
+      cloud.fillStyle(0xFFFFFF, 0.04)
+      const cx = Math.random() * ARENA_W
+      const cy = 50 + Math.random() * (ARENA_H - 100)
+      cloud.fillCircle(cx - 20, cy, 28)
+      cloud.fillCircle(cx, cy - 10, 35)
+      cloud.fillCircle(cx + 24, cy, 26)
+      cloud.fillCircle(cx + 6, cy + 14, 30)
+      this.clouds.push({ gfx: cloud, dx: 0.15 + Math.random() * 0.25 })
     }
 
     this.starGroup = this.add.group()
     this.wallGroup = this.add.group()
     this.dragonGroup = this.add.group()
+  }
+
+  update() {
+    // Drift clouds slowly
+    if (this.clouds) {
+      for (const c of this.clouds) {
+        c.gfx.x += c.dx
+        if (c.gfx.x > ARENA_W + 80) c.gfx.x = -160
+      }
+    }
   }
 }
 
@@ -472,7 +554,7 @@ function spawnRound() {
   scene.wallGroup.clear(true, true)
   scene.dragonGroup.clear(true, true)
 
-  // walls (obstacles)
+  // walls (floating rocky islands)
   walls = []
   for (let i = 0; i < WALL_COUNT; i++) {
     const w = {
@@ -482,14 +564,40 @@ function spawnRound() {
     }
     walls.push(w)
     const g = scene.add.graphics()
-    g.fillStyle(0x222222, 1)
-    g.lineStyle(2, 0x444444, 1)
-    g.fillCircle(w.x, w.y, w.r)
-    g.strokeCircle(w.x, w.y, w.r)
+    // dark island shadow
+    g.fillStyle(0x000000, 0.4)
+    g.fillCircle(w.x + 2, w.y + 4, w.r)
+    // rocky body — irregular polygon
+    g.fillStyle(0x1f1825, 1)
+    g.lineStyle(1, 0x4a3a55, 0.8)
+    g.beginPath()
+    const sides = 8
+    for (let s = 0; s <= sides; s++) {
+      const a = (s / sides) * Math.PI * 2
+      const r = w.r * (0.85 + Math.random() * 0.3)
+      const px = w.x + Math.cos(a) * r
+      const py = w.y + Math.sin(a) * r
+      if (s === 0) g.moveTo(px, py); else g.lineTo(px, py)
+    }
+    g.closePath()
+    g.fillPath()
+    g.strokePath()
+    // top moss highlight
+    g.fillStyle(0x2d5a3d, 0.4)
+    g.fillCircle(w.x, w.y - w.r * 0.5, w.r * 0.4)
     scene.wallGroup.add(g)
+    // Slow float bob
+    scene.tweens.add({
+      targets: g,
+      y: { from: -3, to: 3 },
+      duration: 2500 + Math.random() * 1500,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
   }
 
-  // stars
+  // stars (with glow + spin)
   stars = []
   for (let i = 0; i < STAR_COUNT; i++) {
     const s = {
@@ -497,20 +605,121 @@ function spawnRound() {
       y: 40 + Math.random() * (ARENA_H - 80),
       collected: false,
     }
-    // ensure not overlapping a wall
     let safe = true
     for (const w of walls) if (Math.hypot(s.x - w.x, s.y - w.y) < w.r + 16) safe = false
     if (!safe) { i--; continue }
-    s.gfx = scene.add.star(s.x, s.y, 5, 4, 9, 0xFEED00)
+    // Glow halo
+    const halo = scene.add.circle(s.x, s.y, 14, 0xFEED00, 0.18)
+    scene.tweens.add({
+      targets: halo,
+      scale: { from: 0.8, to: 1.3 },
+      alpha: { from: 0.18, to: 0.05 },
+      duration: 1400,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+    s.halo = halo
+    // The star itself
+    const star = scene.add.star(s.x, s.y, 5, 4, 9, 0xFEED00)
+    star.setStrokeStyle(1, 0xFFFFFF, 0.8)
+    scene.tweens.add({
+      targets: star,
+      angle: { from: 0, to: 360 },
+      duration: 6000,
+      repeat: -1,
+    })
+    s.gfx = star
     stars.push(s)
   }
 
-  // dragons (one per character)
+  // dragons (one per character) — each dragon is a Container with body + 2 wings
   dragons = CHARACTERS.map((c, i) => {
     const x = 60 + (ARENA_W - 120) * (i / (CHARACTERS.length - 1))
     const y = ARENA_H - 40
-    const tri = scene.add.triangle(x, y, 0, 12, -8, -8, 8, -8, c.color)
-    tri.setStrokeStyle(1, 0xFFFFFF, 0.5)
+
+    const container = scene.add.container(x, y)
+
+    // Body (elongated diamond/teardrop pointing forward = +X axis)
+    const body = scene.add.graphics()
+    body.fillStyle(c.color, 1)
+    body.lineStyle(1, 0xFFFFFF, 0.4)
+    // Tail to head shape (head at right, tail at left, in local coords)
+    body.beginPath()
+    body.moveTo(14, 0)        // head tip
+    body.lineTo(4, -4)        // upper neck
+    body.lineTo(-4, -3)       // upper body
+    body.lineTo(-12, 0)       // tail tip
+    body.lineTo(-4, 3)        // lower body
+    body.lineTo(4, 4)         // lower neck
+    body.closePath()
+    body.fillPath()
+    body.strokePath()
+
+    // Tail flick — small triangle dangling behind
+    body.fillStyle(c.color, 0.7)
+    body.beginPath()
+    body.moveTo(-12, 0)
+    body.lineTo(-16, -2)
+    body.lineTo(-16, 2)
+    body.closePath()
+    body.fillPath()
+
+    // Wings — two graphics objects pivoted at body center
+    const wingUp = scene.add.graphics()
+    wingUp.fillStyle(c.color, 0.85)
+    wingUp.lineStyle(1, 0xFFFFFF, 0.5)
+    wingUp.beginPath()
+    wingUp.moveTo(0, 0)
+    wingUp.lineTo(-2, -10)
+    wingUp.lineTo(-8, -14)
+    wingUp.lineTo(-10, -8)
+    wingUp.lineTo(-4, -3)
+    wingUp.closePath()
+    wingUp.fillPath()
+    wingUp.strokePath()
+
+    const wingDown = scene.add.graphics()
+    wingDown.fillStyle(c.color, 0.85)
+    wingDown.lineStyle(1, 0xFFFFFF, 0.5)
+    wingDown.beginPath()
+    wingDown.moveTo(0, 0)
+    wingDown.lineTo(-2, 10)
+    wingDown.lineTo(-8, 14)
+    wingDown.lineTo(-10, 8)
+    wingDown.lineTo(-4, 3)
+    wingDown.closePath()
+    wingDown.fillPath()
+    wingDown.strokePath()
+
+    // Inner glow under body
+    const glow = scene.add.graphics()
+    glow.fillStyle(c.color, 0.18)
+    glow.fillCircle(0, 0, 18)
+
+    container.add([glow, wingUp, wingDown, body])
+
+    // Wing flap animation — alternate scale Y
+    scene.tweens.add({
+      targets: [wingUp, wingDown],
+      scaleY: { from: 1, to: 0.4 },
+      duration: 220,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+
+    // Subtle hover bob
+    scene.tweens.add({
+      targets: container,
+      scaleX: { from: 1, to: 1.03 },
+      scaleY: { from: 1, to: 1.03 },
+      duration: 1100,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+
     return {
       ...c,
       x, y,
@@ -519,7 +728,8 @@ function spawnRound() {
       throttle: 0,
       score: 0,
       alive: true,
-      gfx: tri,
+      gfx: container,
+      body, wingUp, wingDown, glow,
       trail: scene.add.graphics(),
       trailPts: [],
       worker: null,
@@ -599,26 +809,60 @@ function tick() {
 
     d.gfx.x = d.x
     d.gfx.y = d.y
-    d.gfx.rotation = rad + Math.PI / 2
+    // Body's "head" is at +X, so rotation = motion angle directly
+    d.gfx.rotation = rad
 
-    // trail
+    // trail (two passes: outer glow + inner core)
     d.trailPts.push({ x: d.x, y: d.y })
-    if (d.trailPts.length > 20) d.trailPts.shift()
+    if (d.trailPts.length > 24) d.trailPts.shift()
     d.trail.clear()
+    // Outer glow pass — thick, low alpha
     for (let i = 1; i < d.trailPts.length; i++) {
       const a = d.trailPts[i - 1], b = d.trailPts[i]
-      d.trail.lineStyle(2, d.color, i / d.trailPts.length * 0.6)
+      d.trail.lineStyle(6, d.color, (i / d.trailPts.length) * 0.25)
+      d.trail.beginPath()
+      d.trail.moveTo(a.x, a.y)
+      d.trail.lineTo(b.x, b.y)
+      d.trail.strokePath()
+    }
+    // Core pass — thin, brighter
+    for (let i = 1; i < d.trailPts.length; i++) {
+      const a = d.trailPts[i - 1], b = d.trailPts[i]
+      d.trail.lineStyle(2, d.color, (i / d.trailPts.length) * 0.85)
       d.trail.beginPath()
       d.trail.moveTo(a.x, a.y)
       d.trail.lineTo(b.x, b.y)
       d.trail.strokePath()
     }
 
-    // collect stars
+    // collect stars (with pop effect)
     for (const s of stars) {
       if (!s.collected && Math.hypot(d.x - s.x, d.y - s.y) < 14) {
         s.collected = true
-        s.gfx.destroy()
+        // Pop the star
+        scene.tweens.add({
+          targets: [s.gfx, s.halo],
+          scale: 2.5,
+          alpha: 0,
+          duration: 280,
+          ease: 'Cubic.easeOut',
+          onComplete: () => { s.gfx.destroy(); s.halo.destroy() },
+        })
+        // Burst particles in dragon's color
+        for (let p = 0; p < 6; p++) {
+          const dot = scene.add.circle(s.x, s.y, 2, d.color, 1)
+          const a = Math.random() * Math.PI * 2
+          const dist = 30 + Math.random() * 20
+          scene.tweens.add({
+            targets: dot,
+            x: s.x + Math.cos(a) * dist,
+            y: s.y + Math.sin(a) * dist,
+            alpha: 0,
+            duration: 500,
+            ease: 'Cubic.easeOut',
+            onComplete: () => dot.destroy(),
+          })
+        }
         d.score++
       }
     }
