@@ -657,11 +657,31 @@ function createBotWorker(code) {
 // UI: slot panel
 // ─────────────────────────────────────────────────────────
 const slotsEl = document.getElementById('slots')
+const STORAGE_KEY = 'dragon-arena:slots'
+function loadSavedSlots() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    return parsed
+  } catch (e) { return null }
+}
+function persistSlots() {
+  try {
+    const data = {}
+    for (const s of slotState) {
+      if (s.code && s.code !== DEFAULT_BOT) data[s.id] = s.code
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (e) {}
+}
+
+const savedSlots = loadSavedSlots() || {}
 const slotState = CHARACTERS.map((c, i) => ({
   ...c,
   index: i,
-  code: DEFAULT_BOT,
-  status: 'default',
+  code: savedSlots[c.id] || DEFAULT_BOT,
+  status: savedSlots[c.id] ? 'saved' : 'default',
   open: i === 0,
 }))
 
@@ -702,15 +722,31 @@ slotsEl.addEventListener('click', (e) => {
     const ta = slotsEl.querySelector(`textarea[data-slot="${id}"]`)
     s.code = ta.value
     s.status = 'saved'
+    persistSlots()
     renderSlots()
   } else if (t.matches('[data-default]')) {
     const id = t.dataset.default
     const s = slotState.find(x => x.id === id)
     s.code = DEFAULT_BOT
     s.status = 'default'
+    persistSlots()
     renderSlots()
   }
 })
+
+// Auto-save on textarea blur (catches "I forgot to click Save")
+slotsEl.addEventListener('blur', (e) => {
+  const t = e.target
+  if (t.matches && t.matches('textarea[data-slot]')) {
+    const id = t.dataset.slot
+    const s = slotState.find(x => x.id === id)
+    if (s && s.code !== t.value) {
+      s.code = t.value
+      s.status = 'saved'
+      persistSlots()
+    }
+  }
+}, true)
 
 document.getElementById('btn-load-all').addEventListener('click', () => {
   for (const s of slotState) { s.code = DEFAULT_BOT; s.status = 'default' }
