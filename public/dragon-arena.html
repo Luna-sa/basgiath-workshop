@@ -469,9 +469,11 @@ button.primary:hover::after { transform: translateX(100%); }
 <pre>tick(<code>{ me, stars, walls, sky }</code>)
   → <code>{ angle, throttle }</code>
 
-<code>me</code>: { x, y, score }
+<code>me</code>: { x, y, score, fuel }
+   ↳ <code>fuel</code> 0-100, drains at full throttle
 <code>stars</code>: [{ x, y, value, fire }]
    ↳ <code>value</code>=1 (regular) or <code>value</code>=3 (fire)
+   ↳ regular star refuels +25, fire +100
 <code>walls</code>: [{ x, y, r }] - avoid
 <code>sky</code>: { width, height }
 
@@ -1361,6 +1363,9 @@ function spawnRound() {
       ease: 'Sine.easeInOut',
     })
 
+    // Tiny fuel ring graphic that hovers under dragon (drawn each tick)
+    const fuelGfx = scene.add.graphics()
+
     return {
       ...c,
       x, y,
@@ -1368,6 +1373,9 @@ function spawnRound() {
       angle: 270,
       throttle: 0,
       score: 0,
+      fuel: 100,
+      fuelGfx,
+      replayTrack: [],
       regularStars: 0,
       fireStars: 0,
       wallsHit: 0,
@@ -1383,6 +1391,54 @@ function spawnRound() {
     }
   })
   renderScoreboard()
+}
+
+function playReplay(winner) {
+  if (!scene || !winner.replayTrack?.length) return
+  const track = winner.replayTrack.slice(-50) // last ~5 seconds
+  if (track.length < 6) return
+
+  // Banner
+  showBanner('REPLAY · ' + winner.name + '\'s flight')
+
+  // Ghost dragon — same color, lower opacity, slow-mo trail through points
+  const ghost = scene.add.circle(track[0].x, track[0].y, 8, winner.color, 0.85)
+  ghost.setStrokeStyle(2, 0xFFFFFF, 0.6)
+  const tail = scene.add.graphics()
+
+  // Spotlight — dim everything else briefly
+  const spotlight = scene.add.rectangle(ARENA_W / 2, ARENA_H / 2, ARENA_W, ARENA_H, 0x000000, 0.6)
+  spotlight.setDepth(50)
+  ghost.setDepth(60)
+  tail.setDepth(60)
+
+  let i = 0
+  const replayTimer = setInterval(() => {
+    if (i >= track.length) {
+      clearInterval(replayTimer)
+      // Fade out
+      scene.tweens.add({
+        targets: [ghost, tail, spotlight],
+        alpha: 0,
+        duration: 600,
+        onComplete: () => { ghost.destroy(); tail.destroy(); spotlight.destroy() },
+      })
+      return
+    }
+    const p = track[i]
+    ghost.x = p.x
+    ghost.y = p.y
+    // Cumulative tail
+    tail.lineStyle(3, winner.color, 0.5 + (i / track.length) * 0.4)
+    if (i > 0) {
+      const prev = track[i - 1]
+      tail.beginPath()
+      tail.moveTo(prev.x, prev.y)
+      tail.lineTo(p.x, p.y)
+      tail.strokePath()
+    }
+    i++
+  }, 60) // 60ms per frame = 3x slow-mo (original was 50ms × every-2nd-tick = 100ms per replay frame)
 }
 
 function triggerSignetVfx(d) {
@@ -1483,7 +1539,7 @@ function tick() {
       type: 'tick',
       tick: round.tickIdx,
       payload: {
-        me: { x: d.x, y: d.y, score: d.score },
+        me: { x: d.x, y: d.y, score: d.score, fuel: d.fuel },
         stars: remaining,
         walls: wallView,
         sky: { width: ARENA_W, height: ARENA_H },
@@ -1512,17 +1568,29 @@ function tick() {
       })
     }
 
+    // Fuel: throttle burns 0.6 per tick at full; clamp to low if empty
+    if (d.fuel > 0) {
+      d.fuel = Math.max(0, d.fuel - d.throttle * 0.6)
+    }
+    const effectiveThrottle = d.fuel > 0 ? d.throttle : Math.min(d.throttle, 0.25)
+
     const rad = d.angle * Math.PI / 180
     // Signet boost: 1.6x speed for 3 seconds; combine with persona maxSpeedMul
     const signetMul = (now < d.signetBoostUntil) ? 1.6 : 1.0
     const baseMul = d.maxSpeedMul || 1.0
     const speedMul = signetMul * baseMul
-    const tax = Math.cos(rad) * d.throttle * MAX_SPEED * speedMul
-    const tay = Math.sin(rad) * d.throttle * MAX_SPEED * speedMul
+    const tax = Math.cos(rad) * effectiveThrottle * MAX_SPEED * speedMul
+    const tay = Math.sin(rad) * effectiveThrottle * MAX_SPEED * speedMul
     // Persona-specific turn smoothing — lower = sharper instant turns
     const ts = d.turnSmoothing != null ? d.turnSmoothing : 0.85
     d.vx = d.vx * ts + tax * (1 - ts + 0.1)
     d.vy = d.vy * ts + tay * (1 - ts + 0.1)
+
+    // Track replay frames (every 2nd tick to keep buffer lean)
+    if (round.tickIdx % 2 === 0) {
+      d.replayTrack.push({ x: d.x, y: d.y, angle: d.angle, score: d.score })
+      if (d.replayTrack.length > 100) d.replayTrack.shift()
+    }
     d.x += d.vx
     d.y += d.vy
     d.x = Math.max(10, Math.min(ARENA_W - 10, d.x))
@@ -1532,6 +1600,17 @@ function tick() {
     d.gfx.y = d.y
     // Body's "head" is at +X, so rotation = motion angle directly
     d.gfx.rotation = rad
+
+    // Fuel arc under dragon — small 16-radius arc, color shifts red as fuel drops
+    if (d.fuelGfx) {
+      d.fuelGfx.clear()
+      const f = Math.max(0, Math.min(1, d.fuel / 100))
+      const arcColor = f > 0.5 ? 0x00E5CC : (f > 0.2 ? 0xFEED00 : 0xFF3344)
+      d.fuelGfx.lineStyle(2, arcColor, 0.7)
+      d.fuelGfx.beginPath()
+      d.fuelGfx.arc(d.x, d.y + 16, 12, Math.PI - Math.PI * f * 0.5, Math.PI + Math.PI * f * 0.5)
+      d.fuelGfx.strokePath()
+    }
 
     // trail (two passes: outer glow + inner core)
     d.trailPts.push({ x: d.x, y: d.y })
@@ -1605,6 +1684,8 @@ function tick() {
         })
         d.score += s.value
         if (s.fire) d.fireStars++; else d.regularStars++
+        // Stars regenerate fuel — fire stars give a full top-up
+        d.fuel = Math.min(100, d.fuel + (s.fire ? 100 : 25))
       }
     }
 
@@ -1720,6 +1801,8 @@ function endRound() {
   playVictoryFanfare()
   showBanner(`${winner.name} took the sky · ${winner.score} stars`)
   renderBreakdown(sorted)
+  // Schedule slow-mo replay of winner's last few seconds
+  setTimeout(() => playReplay(winner), 1800)
 
   // Confetti — colored particles from top
   if (scene && winner.score > 0) {
