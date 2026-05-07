@@ -7,6 +7,7 @@ import { registerStudent } from '../api/registration'
 const initialUser = {
   id: null,
   name: '',
+  nickname: '',
   email: '',
   studio: '',
   role: '',

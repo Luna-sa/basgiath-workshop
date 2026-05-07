@@ -7,6 +7,7 @@ export async function registerStudent(userData) {
     .from('students')
     .insert({
       name: userData.name,
+      nickname: userData.nickname,
       email: userData.email,
       studio: userData.studio,
       role: userData.role,
@@ -21,8 +22,31 @@ export async function registerStudent(userData) {
     .single()
 
   if (error) {
+    if (error.code === '23505' || /duplicate key|unique/i.test(error.message || '')) {
+      const e = new Error('NICKNAME_TAKEN')
+      e.code = 'NICKNAME_TAKEN'
+      throw e
+    }
     console.error('Registration error:', error)
-    return { id: crypto.randomUUID() }
+    throw error
+  }
+  return data
+}
+
+export async function findStudentByNickname(nickname) {
+  if (!supabase) return null
+  const trimmed = (nickname || '').trim().toLowerCase()
+  if (!trimmed) return null
+
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .ilike('nickname', trimmed)
+    .maybeSingle()
+
+  if (error) {
+    console.error('Lookup error:', error)
+    return null
   }
   return data
 }

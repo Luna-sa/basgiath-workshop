@@ -14,6 +14,7 @@ export default function StandaloneRegister() {
   const t = useT()
   const [form, setForm] = useState({
     name: '',
+    nickname: '',
     studio: '',
     role: '',
     customRole: '',
@@ -22,12 +23,18 @@ export default function StandaloneRegister() {
     pain: '',
     claudeCodeReady: false,
   })
-  const [status, setStatus] = useState('idle') // idle | submitting | success | error
+  const [status, setStatus] = useState('idle') // idle | submitting | success | error | nickname-taken
   const [errorMsg, setErrorMsg] = useState('')
 
-  const updateField = (k, v) => setForm(s => ({ ...s, [k]: v }))
+  const updateField = (k, v) => {
+    if (k === 'nickname') v = String(v).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20)
+    setForm(s => ({ ...s, [k]: v }))
+  }
+
+  const nicknameValid = /^[a-z0-9_-]{3,20}$/.test(form.nickname)
 
   const isValid = form.name.trim() &&
+    nicknameValid &&
     form.studio.trim() &&
     form.role &&
     (form.role !== 'other' || form.customRole.trim()) &&
@@ -42,6 +49,7 @@ export default function StandaloneRegister() {
       const finalRole = form.role === 'other' ? form.customRole.trim() : form.role
       await registerStudent({
         name: form.name.trim(),
+        nickname: form.nickname.trim().toLowerCase(),
         email: null,
         studio: form.studio.trim(),
         role: finalRole,
@@ -55,8 +63,13 @@ export default function StandaloneRegister() {
       setStatus('success')
     } catch (err) {
       console.error(err)
-      setStatus('error')
-      setErrorMsg(err?.message || 'Submission failed')
+      if (err?.code === 'NICKNAME_TAKEN') {
+        setStatus('nickname-taken')
+        setErrorMsg('')
+      } else {
+        setStatus('error')
+        setErrorMsg(err?.message || 'Submission failed')
+      }
     }
   }
 
@@ -74,6 +87,18 @@ export default function StandaloneRegister() {
             <h1 className="font-display text-3xl sm:text-4xl text-white leading-tight mb-5">
               {t('You are registered.', 'Ты зарегистрирована.')}
             </h1>
+            <div className="border border-qa-teal bg-qa-teal/[0.06] py-4 px-5 mb-6 rounded-[2px]">
+              <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-1">
+                {t('Your workshop nickname', 'Твой ник для воркшопа')}
+              </div>
+              <div className="font-mono text-[18px] text-qa-teal">{form.nickname}</div>
+              <p className="text-[12px] text-text-secondary mt-2 italic">
+                {t(
+                  'Save this. You will need it to enter the workshop on May 13.',
+                  'Сохрани. Понадобится чтобы зайти на воркшоп 13 мая.'
+                )}
+              </p>
+            </div>
             <p className="text-[15px] text-text-body leading-relaxed mb-3">
               {t(
                 'I will send a calendar invite for May 13, 14:00 to 15:30. Watch your Outlook.',
@@ -141,18 +166,42 @@ export default function StandaloneRegister() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Name */}
-          <div>
-            <label className={labelClass}>
-              {t('Name', 'Имя')} <span className="text-qa-teal">*</span>
-            </label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={e => updateField('name', e.target.value)}
-              placeholder={t('How should I call you', 'Как к тебе обращаться')}
-              className={inputClass}
-            />
+          {/* Name + Nickname */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>
+                {t('Name', 'Имя')} <span className="text-qa-teal">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={e => updateField('name', e.target.value)}
+                placeholder={t('How should I call you', 'Как к тебе обращаться')}
+                className={inputClass}
+              />
+              <p className="text-xs text-text-dim mt-2 italic">
+                {t('Goes on your badge', 'Это имя будет на твоём бейдже')}
+              </p>
+            </div>
+            <div>
+              <label className={labelClass}>
+                {t('Workshop nickname', 'Ник для воркшопа')} <span className="text-qa-teal">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.nickname}
+                onChange={e => updateField('nickname', e.target.value)}
+                placeholder="luna_qa, dragonbreath, x42..."
+                className={inputClass}
+                autoComplete="off"
+                maxLength={20}
+              />
+              <p className="text-xs text-text-dim mt-2 italic">
+                {form.nickname && !nicknameValid
+                  ? t('3-20 chars: letters, numbers, _ and - only', '3-20 символов: латиница, цифры, _ и -')
+                  : t("You'll use this to log into the workshop", 'С этим ником будешь заходить на воркшоп')}
+              </p>
+            </div>
           </div>
 
           {/* Studio */}
@@ -325,6 +374,11 @@ export default function StandaloneRegister() {
             {status === 'error' && (
               <p className="text-[12px] text-corp-red mt-3 text-center">
                 {t('Something went wrong: ', 'Что-то не так: ')}{errorMsg}
+              </p>
+            )}
+            {status === 'nickname-taken' && (
+              <p className="text-[12px] text-corp-red mt-3 text-center">
+                {t('This nickname is already taken. Pick another one.', 'Этот ник уже занят. Выбери другой.')}
               </p>
             )}
             <p className="text-[11px] text-text-dim italic text-center mt-3">
