@@ -32,7 +32,7 @@ export const PAGES = [
     phase: 'pre',
     title: 'Записаться на Отбор',
     narrativeKey: 'registration',
-    gate: { type: 'form', requiredFields: ['name', 'email', 'studio', 'role', 'claudeCodeReady'], message: 'Заполни обязательные поля и подтверди готовность Claude Code' },
+    gate: { type: 'form', requiredFields: ['name', 'studio', 'role', 'claudeCodeReady'], message: 'Заполни обязательные поля и подтверди готовность Claude Code' },
     xpReward: 20,
     subSteps: null,
   },

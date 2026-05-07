@@ -10,6 +10,64 @@ export default function P02_Registration() {
   const inputClass = "w-full px-5 py-4 bg-surface border border-border rounded-[2px] text-white text-base placeholder:text-text-dim placeholder:italic focus:border-qa-teal focus:shadow-[0_0_0_3px_rgba(0,229,204,0.08),0_0_20px_rgba(0,229,204,0.08)] outline-none transition-all"
   const labelClass = "font-mono text-[12px] tracking-[2px] uppercase text-text-secondary block mb-2.5"
 
+  // If the user already came through WorkshopGate with a known nickname,
+  // their data is already in the store. Skip the form — show a confirmation
+  // and a "next" prompt instead.
+  if (user.nickname) {
+    return (
+      <PageShell pageIndex={2}>
+        <div className="space-y-6">
+          <div className="border border-qa-teal/40 bg-qa-teal/[0.04] p-8 rounded-[2px]">
+            <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
+              ✦ {t('Already on the rolls', 'Уже в свитках')}
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl text-white mb-4">
+              {t('Welcome back,', 'С возвращением,')} <em className="text-qa-teal italic">{user.name || user.nickname}</em>
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[14px] text-text-body">
+              <div>
+                <span className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim block mb-1">
+                  {t('Signet', 'Сигнет')}
+                </span>
+                <span className="font-mono text-qa-teal">{user.nickname}</span>
+              </div>
+              {user.studio && (
+                <div>
+                  <span className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim block mb-1">
+                    {t('Studio', 'Студия')}
+                  </span>
+                  <span>{user.studio}</span>
+                </div>
+              )}
+              {user.role && (
+                <div>
+                  <span className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim block mb-1">
+                    {t('Role', 'Роль')}
+                  </span>
+                  <span>{user.role}</span>
+                </div>
+              )}
+              {user.claudeCodeReady && (
+                <div>
+                  <span className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim block mb-1">
+                    {t('Claude Code', 'Claude Code')}
+                  </span>
+                  <span className="text-qa-teal">{t('ready', 'готов')}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <p className="text-[14px] text-text-secondary italic">
+            {t(
+              'Press → or Continue to keep moving through the academy.',
+              'Нажми → или Continue чтобы двигаться дальше по академии.'
+            )}
+          </p>
+        </div>
+      </PageShell>
+    )
+  }
+
   return (
     <PageShell pageIndex={2}>
       {/* Workshop tool callout — emphasizes Claude Code */}
