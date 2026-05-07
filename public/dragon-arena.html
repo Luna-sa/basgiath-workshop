@@ -253,6 +253,94 @@ button.primary:hover::after { transform: translateX(100%); }
   text-shadow: 0 0 12px rgba(0,229,204,0.5);
 }
 .score.lead .score-name { color: var(--teal); opacity: 0.9; }
+
+/* Battle Brief breakdown card */
+.breakdown {
+  display: none;
+  background: linear-gradient(180deg, rgba(0,229,204,0.06), transparent 80%);
+  border: 1px solid rgba(0,229,204,0.3);
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 2px;
+  animation: fade-in 0.5s ease-out;
+}
+.breakdown.show { display: block; }
+.bd-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.bd-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+}
+.bd-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.bd-close:hover { color: var(--white); border-color: var(--dim); }
+.bd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.bd-table th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 6px 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.bd-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.bd-table tr.bd-lead td {
+  background: rgba(0,229,204,0.06);
+}
+.bd-table tr.bd-lead .bd-rank,
+.bd-table tr.bd-lead .bd-total {
+  color: var(--teal);
+  font-weight: 600;
+}
+.bd-rank { font-weight: 600; color: var(--white); }
+.bd-color {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  box-shadow: 0 0 6px currentColor;
+}
+.bd-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--white);
+  font-size: 14px;
+}
+.bd-num { text-align: right; color: var(--body); }
+.bd-fire { color: var(--ember); }
+.bd-dim { color: var(--dim); }
+.bd-total {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--white);
+}
 .docs {
   background: #050505;
   border: 1px solid var(--border);
@@ -376,6 +464,8 @@ button.primary:hover::after { transform: translateX(100%); }
       </div>
 
       <div class="scoreboard" id="scoreboard"></div>
+
+      <div class="breakdown" id="breakdown"></div>
     </main>
 
   </div>
@@ -1077,6 +1167,9 @@ function spawnRound() {
       angle: 270,
       throttle: 0,
       score: 0,
+      regularStars: 0,
+      fireStars: 0,
+      wallsHit: 0,
       alive: true,
       gfx: container,
       body, wingUp, wingDown, glow, flapTween,
@@ -1306,6 +1399,7 @@ function tick() {
           onComplete: () => popup.destroy(),
         })
         d.score += s.value
+        if (s.fire) d.fireStars++; else d.regularStars++
       }
     }
 
@@ -1321,6 +1415,7 @@ function tick() {
         d.vx = -d.vx * 0.5
         d.vy = -d.vy * 0.5
         if (speed > 1.5) {
+          d.wallsHit++
           playWhoosh()
           const intensity = Math.min(speed / 4, 1)
           // Expanding shockwave ring
@@ -1419,6 +1514,7 @@ function endRound() {
   const winner = sorted[0]
   playVictoryFanfare()
   showBanner(`${winner.name} took the sky · ${winner.score} stars`)
+  renderBreakdown(sorted)
 
   // Confetti — colored particles from top
   if (scene && winner.score > 0) {
@@ -1451,6 +1547,41 @@ function showBanner(text) {
   b.textContent = text
   b.classList.add('show')
   setTimeout(() => b.classList.remove('show'), 6000)
+}
+
+function renderBreakdown(sorted) {
+  const wrap = document.getElementById('breakdown')
+  if (!wrap) return
+  wrap.innerHTML = `
+    <div class="bd-head">
+      <span class="bd-eyebrow">▲ Battle Brief</span>
+      <button class="bd-close" id="bd-close">close ✕</button>
+    </div>
+    <table class="bd-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Rider</th><th>Stars</th><th>★3 fire</th><th>Walls hit</th><th>Signet</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map((d, i) => `
+          <tr class="${i === 0 ? 'bd-lead' : ''}">
+            <td><span class="bd-rank">${i + 1}</span></td>
+            <td><span class="bd-color" style="background:${d.hex}"></span><span class="bd-name">${d.name}</span></td>
+            <td class="bd-num">${d.regularStars}</td>
+            <td class="bd-num bd-fire">${d.fireStars > 0 ? d.fireStars : '—'}</td>
+            <td class="bd-num bd-dim">${d.wallsHit}</td>
+            <td class="bd-num">${d.signetUsed ? '✦' : '—'}</td>
+            <td class="bd-num bd-total">${d.score}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `
+  wrap.classList.add('show')
+  document.getElementById('bd-close')?.addEventListener('click', () => {
+    wrap.classList.remove('show')
+  })
 }
 
 document.getElementById('btn-go').addEventListener('click', () => {
