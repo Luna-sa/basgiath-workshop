@@ -83,7 +83,7 @@ export default function StandaloneRegister() {
               · QA Clan · Workshop
             </div>
             <h1 className="font-display text-3xl sm:text-4xl text-white leading-tight mb-5">
-              {t('You are registered.', 'Ты зарегистрирована.', 'Ти зареєстрована.')}
+              {t('You are registered.', 'Регистрация подтверждена.', 'Реєстрацію підтверджено.')}
             </h1>
             <div className="border border-qa-teal bg-qa-teal/[0.06] py-4 px-5 mb-6 rounded-[2px]">
               <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-1">

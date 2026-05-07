@@ -64,8 +64,8 @@ export default function WorkshopGate({ onUnlock }) {
         <p className="text-[14px] text-text-secondary leading-relaxed mb-8">
           {t(
             'Enter the nickname you picked when you registered. Workshop is locked until your nickname is found.',
-            'Введи ник который ты придумала при регистрации. Воркшоп заблокирован пока ник не найдётся.',
-            'Введи нік який ти вигадала при реєстрації. Воркшоп заблокований доки нік не знайдеться.'
+            'Введи свой ник из регистрации. Воркшоп заблокирован пока ник не найдётся.',
+            'Введи свій нік з реєстрації. Воркшоп заблокований доки нік не знайдеться.'
           )}
         </p>
 
@@ -109,8 +109,8 @@ export default function WorkshopGate({ onUnlock }) {
               <p className="text-[13px] text-white leading-relaxed mb-2">
                 {t(
                   "Nickname not found. You haven't registered yet, or you typed it differently.",
-                  'Ник не найден. Либо ещё не зарегистрировалась, либо вводишь не так как при регистрации.',
-                  'Нік не знайдено. Або ще не зареєструвалась, або вводиш не так як при реєстрації.'
+                  'Ник не найден. Возможно регистрации ещё нет, или ник написан иначе.',
+                  'Нік не знайдено. Можливо реєстрації ще немає, або нік написаний інакше.'
                 )}
               </p>
               <a
