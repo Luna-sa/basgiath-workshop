@@ -33,10 +33,20 @@ export const NARRATIVE = {
     subtitle: 'Spine, wings, claws, eyes — the anatomy of Claude Code.',
     text: 'Claude Code это не один файл и не одна команда. Это система: CLAUDE.md (память про тебя), skills и agents (специализированные помощники), MCP-серверы (руки и глаза), hooks (рефлексы). Разберём по частям, увидим как одно срабатывает с другим.',
   },
+  talk_modes: {
+    title: 'Three modes, eight keys',
+    subtitle: 'The grammar of riding.',
+    text: 'Three working modes (Plan / Edit / Yolo) and a small set of hotkeys cover 90% of how you control Claude. Master Shift+Tab and /clear; the rest grows on you.',
+  },
   install: {
     title: 'Forging the bond',
     subtitle: 'One prompt, one ecosystem.',
     text: 'Один промпт — и у тебя полная QA-экосистема: 7 команд, 4 агента, 3 MCP-сервера и настроенный CLAUDE.md. Скопируй промпт в Claude Code и подожди пару минут пока всё встанет.',
+  },
+  talk_power_moves: {
+    title: 'Power moves',
+    subtitle: 'Six habits that 5x your dragon.',
+    text: 'Plan first, ask for the source, drag and drop, give the full error, /clear when context is full, and run sub-agents in parallel. These are the habits that separate users from riders.',
   },
   talk_ecosystem: {
     title: 'What flew in',

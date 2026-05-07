@@ -25,7 +25,7 @@ const ITEMS = [
 
 export default function P07_TalkEcosystem() {
   return (
-    <PageShell pageIndex={7}>
+    <PageShell pageIndex={8}>
       <div className="space-y-6">
         {ITEMS.map(cat => (
           <div key={cat.category} className="border border-[#2E2E2E] rounded-lg overflow-hidden">

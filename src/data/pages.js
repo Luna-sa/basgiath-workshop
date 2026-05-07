@@ -1,4 +1,4 @@
-// Workshop flow — 13 pages (rebuilt around Dragon Arena, no test-cases drill).
+// Workshop flow — 16 pages (rebuilt around Dragon Arena, no QA practice drill).
 //
 // 🔒 facilitator = locked until facilitator advances (talk slides)
 // 🔓 self-report / timed-task = student works independently after unlock
@@ -65,7 +65,7 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔒 TALK: Anatomy of Claude Code
+  // 🔒 TALK: Anatomy — six parts of Claude Code
   {
     id: 5,
     slug: 'talk-evolution',
@@ -77,9 +77,21 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔓 TASK: Install ecosystem in one prompt
+  // 🔒 TALK: Modes & hotkeys
   {
     id: 6,
+    slug: 'talk-modes',
+    phase: 'live',
+    title: 'Three modes, eight keys',
+    narrativeKey: 'talk_modes',
+    gate: { type: 'facilitator', message: 'Фасилитатор показывает modes & hotkeys...' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🔓 TASK: Install ecosystem in one prompt
+  {
+    id: 7,
     slug: 'install-ecosystem',
     phase: 'live',
     title: 'Forging the bond',
@@ -91,7 +103,7 @@ export const PAGES = [
 
   // 🔒 TALK: What flew in (review installed pieces)
   {
-    id: 7,
+    id: 8,
     slug: 'talk-ecosystem',
     phase: 'live',
     title: 'What flew in',
@@ -101,9 +113,21 @@ export const PAGES = [
     subSteps: null,
   },
 
+  // 🔒 TALK: Power moves
+  {
+    id: 9,
+    slug: 'talk-power-moves',
+    phase: 'live',
+    title: 'Power moves',
+    narrativeKey: 'talk_power_moves',
+    gate: { type: 'facilitator', message: 'Фасилитатор разбирает power moves...' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
   // 🔓 SIGNATURE: Build your personal CLAUDE.md from 7 questions
   {
-    id: 8,
+    id: 10,
     slug: 'persona-builder',
     phase: 'live',
     title: 'Your signet emerges',
@@ -115,7 +139,7 @@ export const PAGES = [
 
   // 🔒 TALK: MCP demo by facilitator (5 min showcase, no participant task)
   {
-    id: 9,
+    id: 11,
     slug: 'talk-mcp',
     phase: 'live',
     title: "Riders' arts",
@@ -127,7 +151,7 @@ export const PAGES = [
 
   // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
   {
-    id: 10,
+    id: 12,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -139,7 +163,7 @@ export const PAGES = [
 
   // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 11,
+    id: 13,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -151,7 +175,7 @@ export const PAGES = [
 
   // 🎓 GRADUATION
   {
-    id: 12,
+    id: 14,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -161,9 +185,9 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 📦 RESOURCES — take-home reference, accessible anytime via /?page=resources
+  // 📦 RESOURCES — take-home reference
   {
-    id: 13,
+    id: 15,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',

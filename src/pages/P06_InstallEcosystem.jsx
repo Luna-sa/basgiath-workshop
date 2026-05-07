@@ -20,7 +20,7 @@ export default function P06_InstallEcosystem() {
   }
 
   return (
-    <PageShell pageIndex={6}>
+    <PageShell pageIndex={7}>
       <div className="space-y-5">
         {/* What you get */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">

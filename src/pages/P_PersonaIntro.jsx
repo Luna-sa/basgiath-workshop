@@ -15,7 +15,7 @@ export default function P_PersonaIntro() {
   const character = CHARACTERS.find(c => c.id === characterId)
 
   return (
-    <PageShell pageIndex={8}>
+    <PageShell pageIndex={10}>
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
