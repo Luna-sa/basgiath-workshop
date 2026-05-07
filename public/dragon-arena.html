@@ -921,10 +921,26 @@ function spawnRound() {
     // wing fill
     wingUp.fillStyle(c.color, 0.92)
     wingUp.lineStyle(1.2, 0xFFFFFF, 0.55)
-    wingUp.beginPath()
-    wingUp.moveTo(0, 0); wingUp.lineTo(-2, -11); wingUp.lineTo(-10, -15)
-    wingUp.lineTo(-13, -9); wingUp.lineTo(-9, -5); wingUp.lineTo(-4, -3)
-    wingUp.closePath(); wingUp.fillPath(); wingUp.strokePath()
+    if (c.jagged) {
+      // Jagged wing edge — Ridoc's playful chaos
+      wingUp.beginPath()
+      wingUp.moveTo(0, 0)
+      wingUp.lineTo(-2, -10)
+      wingUp.lineTo(-5, -13)
+      wingUp.lineTo(-7, -10)
+      wingUp.lineTo(-10, -15)
+      wingUp.lineTo(-12, -11)
+      wingUp.lineTo(-13, -9)
+      wingUp.lineTo(-9, -5)
+      wingUp.lineTo(-4, -3)
+      wingUp.closePath()
+    } else {
+      wingUp.beginPath()
+      wingUp.moveTo(0, 0); wingUp.lineTo(-2, -11); wingUp.lineTo(-10, -15)
+      wingUp.lineTo(-13, -9); wingUp.lineTo(-9, -5); wingUp.lineTo(-4, -3)
+      wingUp.closePath()
+    }
+    wingUp.fillPath(); wingUp.strokePath()
     // wing veins
     wingUp.lineStyle(0.6, 0x000000, 0.4)
     wingUp.beginPath(); wingUp.moveTo(-2, -2); wingUp.lineTo(-9, -13); wingUp.strokePath()
@@ -938,10 +954,25 @@ function spawnRound() {
     wingDown.closePath(); wingDown.fillPath()
     wingDown.fillStyle(c.color, 0.92)
     wingDown.lineStyle(1.2, 0xFFFFFF, 0.55)
-    wingDown.beginPath()
-    wingDown.moveTo(0, 0); wingDown.lineTo(-2, 11); wingDown.lineTo(-10, 15)
-    wingDown.lineTo(-13, 9); wingDown.lineTo(-9, 5); wingDown.lineTo(-4, 3)
-    wingDown.closePath(); wingDown.fillPath(); wingDown.strokePath()
+    if (c.jagged) {
+      wingDown.beginPath()
+      wingDown.moveTo(0, 0)
+      wingDown.lineTo(-2, 10)
+      wingDown.lineTo(-5, 13)
+      wingDown.lineTo(-7, 10)
+      wingDown.lineTo(-10, 15)
+      wingDown.lineTo(-12, 11)
+      wingDown.lineTo(-13, 9)
+      wingDown.lineTo(-9, 5)
+      wingDown.lineTo(-4, 3)
+      wingDown.closePath()
+    } else {
+      wingDown.beginPath()
+      wingDown.moveTo(0, 0); wingDown.lineTo(-2, 11); wingDown.lineTo(-10, 15)
+      wingDown.lineTo(-13, 9); wingDown.lineTo(-9, 5); wingDown.lineTo(-4, 3)
+      wingDown.closePath()
+    }
+    wingDown.fillPath(); wingDown.strokePath()
     wingDown.lineStyle(0.6, 0x000000, 0.4)
     wingDown.beginPath(); wingDown.moveTo(-2, 2); wingDown.lineTo(-9, 13); wingDown.strokePath()
     wingDown.beginPath(); wingDown.moveTo(-3, 4); wingDown.lineTo(-11, 10); wingDown.strokePath()
@@ -1170,17 +1201,20 @@ function tick() {
   const now = Date.now()
   for (const d of dragons) {
     if (!d.alive) continue
-    // Throttle-dependent wing flap speed: 220ms (idle) → 80ms (full throttle)
-    const desiredFlapDur = 220 - (d.throttle || 0) * 140
-    if (d.flapTween && Math.abs((d.flapTween.duration || 220) - desiredFlapDur) > 30) {
+    // Throttle-dependent wing flap: idle 800ms gentle flutter (high amplitude
+    // wouldn't make sense at rest), increasing speed and amplitude with throttle.
+    const t = d.throttle || 0
+    const desiredFlapDur = t < 0.05 ? 800 : (220 - t * 140)
+    const minScale = t < 0.05 ? (d.wingScale || 1) * 0.85 : (d.wingScale || 1) * 0.4
+    if (d.flapTween && Math.abs((d.flapTween.duration || 220) - desiredFlapDur) > 50) {
       d.flapTween.remove()
       d.flapTween = scene.tweens.add({
         targets: [d.wingUp, d.wingDown],
-        scaleY: { from: (d.wingScale || 1), to: (d.wingScale || 1) * 0.4 },
+        scaleY: { from: (d.wingScale || 1), to: minScale },
         duration: desiredFlapDur,
         yoyo: true,
         repeat: -1,
-        ease: 'Sine.easeInOut',
+        ease: t < 0.05 ? 'Sine.easeInOut' : 'Quad.easeInOut',
       })
     }
 
@@ -1288,19 +1322,66 @@ function tick() {
         d.vy = -d.vy * 0.5
         if (speed > 1.5) {
           playWhoosh()
-          // Small impact spark
-          for (let p = 0; p < 4; p++) {
-            const dot = scene.add.circle(d.x, d.y, 1.5, 0xFFFFFF, 1)
+          const intensity = Math.min(speed / 4, 1)
+          // Expanding shockwave ring
+          const ring = scene.add.circle(d.x, d.y, 8, 0xFFE08C, 0.6)
+          ring.setStrokeStyle(2, 0xFFFFFF, 1)
+          scene.tweens.add({
+            targets: ring,
+            scale: 3 + intensity * 2,
+            alpha: 0,
+            duration: 350,
+            ease: 'Cubic.easeOut',
+            onComplete: () => ring.destroy(),
+          })
+          // 12 yellow/white sparks radiating
+          const partCount = 8 + Math.floor(intensity * 8)
+          for (let p = 0; p < partCount; p++) {
+            const a = (p / partCount) * Math.PI * 2 + Math.random() * 0.4
+            const dist = 18 + Math.random() * 26
+            const colorOpts = [0xFFE08C, 0xFFFFFF, 0xFFB347, d.color]
+            const dot = scene.add.circle(d.x, d.y, 1 + Math.random() * 1.5, colorOpts[p % colorOpts.length], 1)
             scene.tweens.add({
               targets: dot,
-              x: d.x + (Math.random() - 0.5) * 30,
-              y: d.y + (Math.random() - 0.5) * 30,
+              x: d.x + Math.cos(a) * dist,
+              y: d.y + Math.sin(a) * dist,
               alpha: 0,
-              duration: 300,
+              scale: 0.3,
+              duration: 400 + Math.random() * 200,
+              ease: 'Cubic.easeOut',
               onComplete: () => dot.destroy(),
             })
           }
-          scene.cameras.main.shake(120, 0.003)
+          // Brief flame puff (2 short-lived orange ovals overlap)
+          for (let f = 0; f < 2; f++) {
+            const flame = scene.add.ellipse(
+              d.x + (Math.random() - 0.5) * 8,
+              d.y + (Math.random() - 0.5) * 8,
+              10, 6, 0xFF6B2A, 0.7
+            )
+            scene.tweens.add({
+              targets: flame,
+              scale: 1.8 + intensity,
+              alpha: 0,
+              duration: 250,
+              ease: 'Cubic.easeOut',
+              onComplete: () => flame.destroy(),
+            })
+          }
+          // Brief stun flash on hard hit (>2.5 speed)
+          if (speed > 2.5) {
+            // Tint flicker
+            d.body.alpha = 0.4
+            scene.tweens.add({
+              targets: d.body,
+              alpha: 1,
+              duration: 600,
+              ease: 'Sine.easeIn',
+            })
+            // Slow down further
+            d.vx *= 0.4; d.vy *= 0.4
+          }
+          scene.cameras.main.shake(120 + intensity * 100, 0.003 + intensity * 0.004)
         }
       }
     }
