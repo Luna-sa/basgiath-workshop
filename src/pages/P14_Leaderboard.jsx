@@ -21,7 +21,7 @@ export default function P14_Leaderboard() {
   }, [])
 
   return (
-    <PageShell pageIndex={14}>
+    <PageShell pageIndex={11}>
       {leaders.length === 0 ? (
         <div className="text-center space-y-6">
           <div className="relative overflow-hidden border p-8" style={{ borderColor: persona.accentBorder, backgroundColor: persona.accentLight }}>

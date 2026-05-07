@@ -113,7 +113,7 @@ export default function P15_Graduation() {
   ].join('\n')
 
   return (
-    <PageShell pageIndex={15}>
+    <PageShell pageIndex={12}>
       <div className="space-y-6">
         {/* Portrait + animated stats */}
         <motion.div
