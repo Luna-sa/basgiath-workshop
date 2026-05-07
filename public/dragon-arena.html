@@ -220,6 +220,19 @@ button.primary:hover::after { transform: translateX(100%); }
   margin-bottom: 16px;
 }
 .controls button { flex: 1; padding: 12px; }
+.controls select {
+  background: var(--surface);
+  color: var(--body);
+  border: 1px solid var(--border);
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-width: 140px;
+}
+.controls select:focus { border-color: var(--teal); outline: none; }
 #arena-wrap {
   border: 1px solid var(--border);
   background: #050505;
@@ -477,6 +490,11 @@ button.primary:hover::after { transform: translateX(100%); }
         <button class="primary" id="btn-go">▶ Run flight</button>
         <button id="btn-reset">Reset</button>
         <button id="btn-load-all">Load all defaults</button>
+        <select id="biome-select" title="Map biome">
+          <option value="star_vault">Star Vault</option>
+          <option value="misty_pass">Misty Pass</option>
+          <option value="lava_crags">Lava Crags</option>
+        </select>
       </div>
 
       <div id="arena-wrap">
@@ -494,29 +512,72 @@ button.primary:hover::after { transform: translateX(100%); }
 
 <script type="module">
 // ─────────────────────────────────────────────────────────
-// Characters & defaults — each has a unique silhouette config
+// Characters & defaults — silhouette + flight-stat tuning per archetype
+// maxSpeedMul: how fast at full throttle (1.0 = baseline)
+// turnSmoothing: 0..1, lower = sharper instant turns; higher = smoother arcs
 // ─────────────────────────────────────────────────────────
 const CHARACTERS = [
-  // Violet — slender, precise. Long thin body, narrow wings.
+  // Violet — slender, precise. Lower top speed, sharpest turns.
   { id: 'violet',   name: 'Violet',   color: 0x9D6BFF, hex: '#9D6BFF',
-    bodyScale: 0.95, wingScale: 0.92, wingSweep: 1.1, headSharpness: 1.15 },
-  // Xaden — broad, dominant. Wide body, big wings.
+    bodyScale: 0.95, wingScale: 0.92, wingSweep: 1.1, headSharpness: 1.15,
+    maxSpeedMul: 0.95, turnSmoothing: 0.78 },
+  // Xaden — broad, dominant. Highest speed, smoother arcs.
   { id: 'xaden',    name: 'Xaden',    color: 0xFF8C2A, hex: '#FF8C2A',
-    bodyScale: 1.15, wingScale: 1.2, wingSweep: 0.95, headSharpness: 1.0 },
-  // Rhiannon — balanced, friendly. Slightly larger than default.
+    bodyScale: 1.15, wingScale: 1.2, wingSweep: 0.95, headSharpness: 1.0,
+    maxSpeedMul: 1.15, turnSmoothing: 0.88 },
+  // Rhiannon — balanced.
   { id: 'rhiannon', name: 'Rhiannon', color: 0x14B8C7, hex: '#14B8C7',
-    bodyScale: 1.05, wingScale: 1.05, wingSweep: 1.0, headSharpness: 0.95 },
-  // Ridoc — playful, lighter. Smaller body, jagged wings.
+    bodyScale: 1.05, wingScale: 1.05, wingSweep: 1.0, headSharpness: 0.95,
+    maxSpeedMul: 1.0, turnSmoothing: 0.85 },
+  // Ridoc — playful, lighter. Quick start, looser turns.
   { id: 'ridoc',    name: 'Ridoc',    color: 0xFF9E5E, hex: '#FF9E5E',
     bodyScale: 0.9, wingScale: 1.0, wingSweep: 1.2, headSharpness: 1.05,
-    jagged: true },
-  // Liam — sturdy, dependable. Solid body, wide stance.
+    jagged: true,
+    maxSpeedMul: 1.05, turnSmoothing: 0.82 },
+  // Liam — sturdy, dependable. Steady — middle of road.
   { id: 'liam',     name: 'Liam',     color: 0x10C98C, hex: '#10C98C',
-    bodyScale: 1.1, wingScale: 1.0, wingSweep: 0.9, headSharpness: 0.9 },
-  // Imogen — compact, sharp. Short body, tight wings, edges.
+    bodyScale: 1.1, wingScale: 1.0, wingSweep: 0.9, headSharpness: 0.9,
+    maxSpeedMul: 1.0, turnSmoothing: 0.86 },
+  // Imogen — compact, sharp. Knife-quick turns, modest top speed.
   { id: 'imogen',   name: 'Imogen',   color: 0xE53E48, hex: '#E53E48',
-    bodyScale: 0.85, wingScale: 0.88, wingSweep: 1.05, headSharpness: 1.2 },
+    bodyScale: 0.85, wingScale: 0.88, wingSweep: 1.05, headSharpness: 1.2,
+    maxSpeedMul: 0.95, turnSmoothing: 0.72 },
 ]
+
+// Biome configurations — visual variants for round atmosphere
+const BIOMES = {
+  star_vault: {
+    name: 'Star Vault',
+    bgFrom: 0x0a0014, bgTo: 0x040408,
+    nebulaColors: [0x2A1A4A, 0x1A2A4A, 0x4A1A2A, 0x1A4A3A],
+    accentColor: 0x00E5CC,
+    obstacleFill: 0x1f1825,
+    obstacleStroke: 0x4a3a55,
+    moss: 0x2d5a3d,
+    fogAlpha: 0,
+  },
+  misty_pass: {
+    name: 'Misty Pass',
+    bgFrom: 0x0d1a1f, bgTo: 0x05080a,
+    nebulaColors: [0x1a3a4a, 0x2a4a5a, 0x1a4a4a, 0x2a3a4a],
+    accentColor: 0x88DDEE,
+    obstacleFill: 0x1a2025,
+    obstacleStroke: 0x456575,
+    moss: 0x456575,
+    fogAlpha: 0.18,
+  },
+  lava_crags: {
+    name: 'Lava Crags',
+    bgFrom: 0x1a0a05, bgTo: 0x0a0505,
+    nebulaColors: [0x4a1a0a, 0x3a1505, 0x4a2505, 0x551510],
+    accentColor: 0xFF6B2A,
+    obstacleFill: 0x251510,
+    obstacleStroke: 0x8a3520,
+    moss: 0xCC3520,
+    fogAlpha: 0.06,
+  },
+}
+let currentBiome = 'star_vault'
 
 const DEFAULT_BOT = `// Beat the default by writing smarter logic with Claude.
 // Return: { angle, throttle }
@@ -865,20 +926,30 @@ class ArenaScene extends Phaser.Scene {
     scene = this
     this.cameras.main.setBackgroundColor('#040408')
 
-    // ── Layer 1: deep space gradient + nebula puffs
-    const grad = this.add.graphics()
-    grad.fillGradientStyle(0x0a0014, 0x0a0014, 0x040408, 0x080814, 1)
-    grad.fillRect(0, 0, ARENA_W, ARENA_H)
-    // Nebula clouds (soft purple/teal puffs)
+    // ── Layer 1: biome-themed gradient + nebula puffs
+    const biome = BIOMES[currentBiome] || BIOMES.star_vault
+    this.bgGrad = this.add.graphics()
+    this.bgGrad.fillGradientStyle(biome.bgFrom, biome.bgFrom, biome.bgTo, biome.bgTo, 1)
+    this.bgGrad.fillRect(0, 0, ARENA_W, ARENA_H)
+    // Nebula clouds in biome palette
     for (let i = 0; i < 4; i++) {
       const nebula = this.add.graphics()
-      const colors = [0x2A1A4A, 0x1A2A4A, 0x4A1A2A, 0x1A4A3A]
-      nebula.fillStyle(colors[i % colors.length], 0.18)
+      nebula.fillStyle(biome.nebulaColors[i % biome.nebulaColors.length], 0.18)
       nebula.fillCircle(
         100 + Math.random() * (ARENA_W - 200),
         80 + Math.random() * (ARENA_H - 160),
         80 + Math.random() * 60
       )
+    }
+    // Optional fog layer (Misty Pass)
+    if (biome.fogAlpha > 0) {
+      this.fogLayer = this.add.graphics()
+      this.fogLayer.fillStyle(0xFFFFFF, biome.fogAlpha)
+      // Banded fog stripes
+      for (let f = 0; f < 4; f++) {
+        const y = 80 + f * 130
+        this.fogLayer.fillEllipse(ARENA_W / 2, y, ARENA_W * 1.3, 60 + Math.random() * 30)
+      }
     }
 
     // ── Layer 2: distant twinkling stars
@@ -911,12 +982,12 @@ class ArenaScene extends Phaser.Scene {
         repeat: -1,
       })
     }
-    // 4 accent diamond-stars (qa-teal)
+    // 4 accent diamond-stars in biome accent color
     for (let i = 0; i < 4; i++) {
       const x = Math.random() * ARENA_W
       const y = Math.random() * ARENA_H
       const cross = this.add.graphics()
-      cross.lineStyle(1, 0x00E5CC, 0.7)
+      cross.lineStyle(1, biome.accentColor, 0.7)
       cross.beginPath()
       cross.moveTo(x - 4, y); cross.lineTo(x + 4, y)
       cross.moveTo(x, y - 4); cross.lineTo(x, y + 4)
@@ -1016,7 +1087,8 @@ function spawnRound() {
   scene.wallGroup.clear(true, true)
   scene.dragonGroup.clear(true, true)
 
-  // walls (floating rocky islands)
+  // walls (floating rocky islands), biome-tinted
+  const biome = BIOMES[currentBiome] || BIOMES.star_vault
   walls = []
   for (let i = 0; i < WALL_COUNT; i++) {
     const w = {
@@ -1029,9 +1101,9 @@ function spawnRound() {
     // dark island shadow
     g.fillStyle(0x000000, 0.4)
     g.fillCircle(w.x + 2, w.y + 4, w.r)
-    // rocky body — irregular polygon
-    g.fillStyle(0x1f1825, 1)
-    g.lineStyle(1, 0x4a3a55, 0.8)
+    // rocky body — irregular polygon (biome-tinted)
+    g.fillStyle(biome.obstacleFill, 1)
+    g.lineStyle(1, biome.obstacleStroke, 0.8)
     g.beginPath()
     const sides = 8
     for (let s = 0; s <= sides; s++) {
@@ -1044,8 +1116,8 @@ function spawnRound() {
     g.closePath()
     g.fillPath()
     g.strokePath()
-    // top moss highlight
-    g.fillStyle(0x2d5a3d, 0.4)
+    // top moss/glow highlight (biome accent)
+    g.fillStyle(biome.moss, 0.4)
     g.fillCircle(w.x, w.y - w.r * 0.5, w.r * 0.4)
     scene.wallGroup.add(g)
     // Slow float bob
@@ -1441,12 +1513,16 @@ function tick() {
     }
 
     const rad = d.angle * Math.PI / 180
-    // Signet boost: 1.6x speed for 3 seconds
-    const speedMul = (now < d.signetBoostUntil) ? 1.6 : 1.0
+    // Signet boost: 1.6x speed for 3 seconds; combine with persona maxSpeedMul
+    const signetMul = (now < d.signetBoostUntil) ? 1.6 : 1.0
+    const baseMul = d.maxSpeedMul || 1.0
+    const speedMul = signetMul * baseMul
     const tax = Math.cos(rad) * d.throttle * MAX_SPEED * speedMul
     const tay = Math.sin(rad) * d.throttle * MAX_SPEED * speedMul
-    d.vx = d.vx * 0.85 + tax * 0.5
-    d.vy = d.vy * 0.85 + tay * 0.5
+    // Persona-specific turn smoothing — lower = sharper instant turns
+    const ts = d.turnSmoothing != null ? d.turnSmoothing : 0.85
+    d.vx = d.vx * ts + tax * (1 - ts + 0.1)
+    d.vy = d.vy * ts + tay * (1 - ts + 0.1)
     d.x += d.vx
     d.y += d.vy
     d.x = Math.max(10, Math.min(ARENA_W - 10, d.x))
@@ -1712,6 +1788,15 @@ function renderBreakdown(sorted) {
     wrap.classList.remove('show')
   })
 }
+
+document.getElementById('biome-select').addEventListener('change', (e) => {
+  currentBiome = e.target.value
+  // Re-create the scene to apply biome
+  if (game && game.scene && game.scene.scenes[0]) {
+    game.scene.scenes[0].scene.restart()
+    setTimeout(() => spawnRound(), 100)
+  }
+})
 
 document.getElementById('btn-go').addEventListener('click', () => {
   if (round) return
