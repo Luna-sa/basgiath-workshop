@@ -8,6 +8,7 @@ import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
 import Arena from './pages/Arena'
+import P_PersonaBuilder from './pages/P_PersonaBuilder'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
 import { startSync, fetchInitialState } from './store/sync'
@@ -33,24 +34,44 @@ function isArenaRoute() {
   return path === '/arena' || path === '/arena/'
 }
 
+function isPersonaRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'persona') return true
+  const path = window.location.pathname
+  return path === '/persona' || path === '/persona/'
+}
+
 export default function App() {
   const [facilitator] = useState(isFacilitatorMode)
   const [registerOnly] = useState(isRegisterRoute)
   const [arenaOnly] = useState(isArenaRoute)
+  const [personaOnly] = useState(isPersonaRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly])
 
   if (arenaOnly) {
     return (
       <ErrorBoundary>
         <Arena />
+      </ErrorBoundary>
+    )
+  }
+
+  if (personaOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle />
+          <P_PersonaBuilder />
+        </div>
       </ErrorBoundary>
     )
   }

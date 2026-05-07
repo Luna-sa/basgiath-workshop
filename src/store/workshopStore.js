@@ -17,6 +17,7 @@ const initialUser = {
   pain: '',
   claudeCodeReady: false,
   characterId: null,
+  personaAnswers: {},
 }
 
 export const useWorkshopStore = create(
@@ -75,6 +76,10 @@ export const useWorkshopStore = create(
 
       selectCharacter: (id) => set((s) => ({
         user: { ...s.user, characterId: id },
+      })),
+
+      setPersonaAnswers: (answers) => set((s) => ({
+        user: { ...s.user, personaAnswers: { ...(s.user.personaAnswers || {}), ...answers } },
       })),
 
       // ── Backend Registration ──
