@@ -1,6 +1,7 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
+import CheckpointButton from '../components/CheckpointButton'
 import { CHARACTERS } from '../data/characters'
 
 /**
@@ -60,6 +61,12 @@ export default function P_PersonaIntro() {
             {t('Open Persona Builder →', 'Открыть сборку персонажа →')}
           </a>
         </div>
+
+        <CheckpointButton
+          id="signet"
+          label="Mark CLAUDE.md applied"
+          helpText="After Claude has written ~/.claude/CLAUDE.md and you've restarted it"
+        />
 
         <div className="border border-border bg-bg/50 p-5">
           <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">

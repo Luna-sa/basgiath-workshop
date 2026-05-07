@@ -6,6 +6,7 @@ import {
   awardXp, setAnnouncement, getPrizes, updatePrize,
 } from '../api/facilitator'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
+import { CHECKPOINT_IDS, CHECKPOINT_LABELS, CHECKPOINT_DESCRIPTIONS } from '../api/checkpoints'
 import RoundControl from './RoundControl'
 
 export default function Dashboard() {
@@ -218,6 +219,70 @@ export default function Dashboard() {
               )
             })()}
           </div>
+        </div>
+
+        {/* Workshop progress — checkpoint completion across all students */}
+        <div className="mb-6 p-5 border border-border bg-surface/40">
+          <div className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mb-4">
+            Workshop progress · checkpoints
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {CHECKPOINT_IDS.map(cid => {
+              const completed = students.filter(s => s.checkpoints?.[cid]).length
+              const total = students.length
+              const pct = total ? Math.round(completed / total * 100) : 0
+              return (
+                <div key={cid} className="border border-border bg-bg/40 p-3">
+                  <div className="flex items-baseline justify-between mb-1">
+                    <span className="font-display text-base text-white capitalize">{CHECKPOINT_LABELS[cid]}</span>
+                    <span className="font-mono text-[12px] text-qa-teal">{completed}/{total}</span>
+                  </div>
+                  <div className="h-1.5 bg-border overflow-hidden mb-2">
+                    <div className="h-full bg-qa-teal transition-all duration-500" style={{ width: pct + '%' }} />
+                  </div>
+                  <p className="text-[10px] text-text-dim leading-snug">{CHECKPOINT_DESCRIPTIONS[cid]}</p>
+                </div>
+              )
+            })}
+          </div>
+          {students.length > 0 && (
+            <details className="mt-4">
+              <summary className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim cursor-pointer hover:text-qa-teal">
+                Per-student grid
+              </summary>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full text-[12px] font-mono">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left p-2 text-text-dim font-normal text-[10px] tracking-[1px] uppercase">Nickname</th>
+                      {CHECKPOINT_IDS.map(cid => (
+                        <th key={cid} className="text-center p-2 text-text-dim font-normal text-[10px] tracking-[1px] uppercase">
+                          {CHECKPOINT_LABELS[cid]}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {students.map(s => (
+                      <tr key={s.id} className="border-b border-border/40 hover:bg-bg/40">
+                        <td className="p-2 text-qa-teal">{s.nickname || s.name || '—'}</td>
+                        {CHECKPOINT_IDS.map(cid => {
+                          const ts = s.checkpoints?.[cid]
+                          return (
+                            <td key={cid} className="text-center p-2">
+                              {ts
+                                ? <span className="text-qa-teal">✓</span>
+                                : <span className="text-text-dim">—</span>}
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          )}
         </div>
 
         {/* Live announcement (broadcasts to all students via Supabase realtime on facilitator_state) */}

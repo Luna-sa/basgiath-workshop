@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { supabase } from '../api/supabase'
 import PageShell from '../core/PageShell'
+import CheckpointButton from '../components/CheckpointButton'
+import { useT } from '../i18n/useT'
 
 const paths = {
   cursor: {
@@ -112,9 +114,16 @@ export default function P03_PreWork() {
       </div>
 
       {done === currentSteps.length ? (
-        <div className="mt-6 text-center p-5 border border-qa-teal/30 bg-qa-teal/[0.05]">
-          <p className="font-display text-qa-teal text-lg">Парапет пройден</p>
-          <p className="text-xs text-text-dim mt-1">Все инструменты установлены. Ты готов(а).</p>
+        <div className="mt-6 space-y-3">
+          <div className="text-center p-5 border border-qa-teal/30 bg-qa-teal/[0.05]">
+            <p className="font-display text-qa-teal text-lg">Парапет пройден</p>
+            <p className="text-xs text-text-dim mt-1">Все инструменты установлены. Ты готов(а).</p>
+          </div>
+          <CheckpointButton
+            id="parapet"
+            label="Mark Parapet crossed"
+            helpText="Tells the facilitator you're ready"
+          />
         </div>
       ) : (
         <div className="mt-4 text-center">

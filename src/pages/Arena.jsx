@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import arenaHtml from '../../public/dragon-arena.html?raw'
 import { useWorkshopStore } from '../store/workshopStore'
 import { submitBot, getLatestSubmissionsByCharacter } from '../api/submissions'
+import { markCheckpoint } from '../api/checkpoints'
 
 /**
  * Arena page wrapper. Render's static-site routing returns 404 for
@@ -19,6 +20,7 @@ function isFinalBattle() {
 export default function Arena() {
   const iframeRef = useRef(null)
   const nickname = useWorkshopStore(s => s.user.nickname)
+  const studentId = useWorkshopStore(s => s.user.id)
 
   // If ?final=1 is in URL, push the latest submitted bots into the arena
   // once the iframe says it's ready.
@@ -70,6 +72,10 @@ export default function Arena() {
                 iframeRef.current.contentWindow.postMessage(reply, '*')
               }
             } catch {}
+            // Auto-mark Arena checkpoint
+            if (!error && studentId) {
+              markCheckpoint(studentId, 'arena').catch(() => {})
+            }
           })
       } else if (e.data.type === 'request-nickname') {
         // Arena asks for the logged-in nickname (e.g., to prefill a prompt)

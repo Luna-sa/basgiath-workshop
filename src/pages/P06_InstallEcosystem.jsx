@@ -3,6 +3,7 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
 import { generateEcosystemPrompt, CURSOR_ECOSYSTEM_PROMPT } from '../data/ecosystem-prompt'
 import PageShell from '../core/PageShell'
+import CheckpointButton from '../components/CheckpointButton'
 
 export default function P06_InstallEcosystem() {
   const user = useWorkshopStore(s => s.user)
@@ -74,6 +75,13 @@ export default function P06_InstallEcosystem() {
             <span className="font-mono text-[11px] uppercase" style={{ color: persona.accent }}>Подход</span>{' '}— {persona.approach.promptStyle}
           </p>
         </div>
+
+        {/* Checkpoint */}
+        <CheckpointButton
+          id="forge"
+          label="Mark ecosystem installed"
+          helpText="When Claude has finished placing the files in your ~/.claude/ folder"
+        />
       </div>
     </PageShell>
   )

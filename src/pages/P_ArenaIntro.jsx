@@ -1,6 +1,7 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
+import CheckpointButton from '../components/CheckpointButton'
 
 /**
  * Workshop-flow intro to the Dragon Arena. The arena itself runs at
@@ -92,6 +93,12 @@ sky   : { width, height }`}</pre>
             'Когда фасилитатор объявит финальную битву — все отправленные боты загрузятся на проекторе.'
           )}
         </p>
+
+        <CheckpointButton
+          id="arena"
+          label="Mark bot submitted"
+          helpText="After you've clicked Submit ✦ on your character's slot"
+        />
       </div>
     </PageShell>
   )
