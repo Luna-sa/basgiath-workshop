@@ -3,6 +3,7 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
 import PageShell from '../core/PageShell'
 import SubmissionReview from '../components/SubmissionReview'
+import MiniLeaderboard from '../components/MiniLeaderboard'
 
 export default function P08_PracticeTC() {
   const taskSubmissions = useWorkshopStore(s => s.taskSubmissions)
@@ -46,6 +47,9 @@ export default function P08_PracticeTC() {
             </p>
           </div>
         </div>
+
+        {/* Live mini-leaderboard during round */}
+        {started && !submitted && <MiniLeaderboard roundId="round-1" active={started && !submitted} />}
 
         {!started && !submitted ? (
           <div className="text-center"><button onClick={() => setStarted(true)} className="px-10 py-4 text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] transition-all cursor-pointer" style={{ backgroundColor: persona.accent }}>Начать →</button></div>

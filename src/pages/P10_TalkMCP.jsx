@@ -35,7 +35,7 @@ export default function P10_TalkMCP() {
 
         {/* Server cards */}
         {SERVERS.map(s => (
-          <div key={s.name} className="border border-[#2E2E2E] bg-[#141414] rounded-lg overflow-hidden">
+          <div key={s.name} className="border border-[#2E2E2E] bg-[#141414] rounded-lg overflow-hidden hover:border-qa-teal/20 hover:shadow-[0_0_15px_rgba(0,229,204,0.05)] transition-all">
             <div className="p-5">
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-3xl">{s.emoji}</span>

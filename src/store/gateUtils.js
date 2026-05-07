@@ -28,6 +28,7 @@ export function evaluateGate(state, pageIndex, subStepId = null) {
     case 'form':
       return gate.requiredFields.every(f => {
         const val = state.user[f]
+        if (typeof val === 'boolean') return val === true
         return val !== '' && val !== null && val !== undefined
       })
 

@@ -8,10 +8,13 @@ const initialUser = {
   id: null,
   name: '',
   email: '',
+  studio: '',
   role: '',
   experience: '',
-  tool: 'cursor',
+  tool: 'claude',
   os: 'mac',
+  pain: '',
+  claudeCodeReady: false,
   characterId: null,
 }
 
@@ -38,7 +41,7 @@ export const useWorkshopStore = create(
 
       // ── Pre-work ──
       preworkChecklist: {},
-      preworkPath: 'cursor',
+      preworkPath: 'claude',
 
       // ── Workshop state ──
       workshopPhase: 'pre', // 'pre' | 'live' | 'complete'
@@ -376,7 +379,7 @@ export const useWorkshopStore = create(
         quizScore: null,
         taskSubmissions: {},
         preworkChecklist: {},
-        preworkPath: 'cursor',
+        preworkPath: 'claude',
         workshopPhase: 'pre',
         facilitatorUnlockedPage: 4,
         startedAt: null,

@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
+import { supabase } from '../api/supabase'
 import { BADGES } from '../data/badges'
 import { CHARACTERS } from '../data/characters'
 import PageShell from '../core/PageShell'
@@ -37,6 +38,20 @@ export default function P15_Graduation() {
   const persona = usePersona()
   const character = CHARACTERS.find(c => c.id === characterId)
   const [confettiFired, setConfettiFired] = useState(false)
+  const [compStats, setCompStats] = useState(null)
+
+  // Fetch comparison stats
+  useEffect(() => {
+    if (!supabase || !xp) return
+    supabase.from('students').select('xp').then(({ data }) => {
+      if (!data || data.length < 2) return
+      const scores = data.map(d => d.xp || 0).sort((a, b) => a - b)
+      const below = scores.filter(s => s < xp).length
+      const percentile = Math.round((below / scores.length) * 100)
+      const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+      setCompStats({ percentile, avg, total: scores.length })
+    }).catch(() => {})
+  }, [xp])
 
   // Fire confetti on mount
   useEffect(() => {
@@ -95,8 +110,6 @@ export default function P15_Graduation() {
     ``,
     `7 команд + 4 агента + 3 MCP-сервера`,
     `Всё настроено за 60 минут`,
-    ``,
-    `→ basgiath-workshop.onrender.com`,
   ].join('\n')
 
   return (
@@ -149,6 +162,29 @@ export default function P15_Graduation() {
             </div>
           </div>
         </motion.div>
+
+        {/* Comparison stats */}
+        {compStats && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.2 }}
+            className="grid grid-cols-3 gap-3"
+          >
+            <div className="p-3 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">
+              <div className="font-display text-2xl font-bold" style={{ color: persona.accent }}>{compStats.percentile}%</div>
+              <div className="font-mono text-[10px] text-text-dim tracking-wider uppercase mt-1">выше остальных</div>
+            </div>
+            <div className="p-3 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">
+              <div className="font-display text-2xl font-bold text-white">{compStats.avg}</div>
+              <div className="font-mono text-[10px] text-text-dim tracking-wider uppercase mt-1">средний XP</div>
+            </div>
+            <div className="p-3 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">
+              <div className="font-display text-2xl font-bold text-white">{compStats.total}</div>
+              <div className="font-mono text-[10px] text-text-dim tracking-wider uppercase mt-1">участников</div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Final words */}
         <motion.div

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import PageRouter from './core/PageRouter'
 import AchievementToast from './components/AchievementToast'
 import WinnersPodium from './components/WinnersPodium'
+import LanguageToggle from './components/LanguageToggle'
 import ErrorBoundary from './core/ErrorBoundary'
 import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
@@ -34,6 +35,7 @@ export default function App() {
     <ErrorBoundary>
       <div className="min-h-screen bg-bg text-text-body">
         <TealParticles />
+        <LanguageToggle />
         <PageRouter />
         <AchievementToast />
         <WinnersPodium />

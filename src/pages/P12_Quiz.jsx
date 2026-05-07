@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import confetti from 'canvas-confetti'
 import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
 import { QUIZ_QUESTIONS, QUIZ_BONUS_XP } from '../data/quiz'
@@ -21,6 +22,12 @@ export default function P12_Quiz() {
     const correct = QUIZ_QUESTIONS.filter(q => quizAnswers[q.id] === q.correct).length
     finalizeQuiz(correct)
     setShowResults(true)
+    // Confetti for perfect score
+    if (correct === 5) {
+      setTimeout(() => {
+        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: [persona.accent, '#00E5CC', '#F59E0B'] })
+      }, 300)
+    }
   }
 
   return (

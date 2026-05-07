@@ -8,10 +8,13 @@ export async function registerStudent(userData) {
     .insert({
       name: userData.name,
       email: userData.email,
+      studio: userData.studio,
       role: userData.role,
       experience: userData.experience,
       tool: userData.tool,
       os: userData.os,
+      pain: userData.pain,
+      claude_code_ready: userData.claudeCodeReady,
       character_id: userData.characterId,
     })
     .select('id')

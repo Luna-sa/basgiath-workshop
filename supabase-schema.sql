@@ -6,10 +6,13 @@ CREATE TABLE IF NOT EXISTS students (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   email TEXT,
+  studio TEXT,
   role TEXT,
   experience TEXT,
   tool TEXT DEFAULT 'cursor',
   os TEXT DEFAULT 'mac',
+  pain TEXT,
+  claude_code_ready BOOLEAN DEFAULT false,
   character_id TEXT,
   current_page INTEGER DEFAULT 0,
   current_sub_step TEXT,
@@ -90,3 +93,11 @@ ALTER PUBLICATION supabase_realtime ADD TABLE students;
 -- 8. Index for leaderboard performance
 CREATE INDEX IF NOT EXISTS idx_students_xp ON students(xp DESC);
 CREATE INDEX IF NOT EXISTS idx_students_last_seen ON students(last_seen);
+
+-- ─────────────────────────────────────────────────────────
+-- Migration 2026-05-07: registration form expansion
+-- Run if the students table already exists in your Supabase
+-- ─────────────────────────────────────────────────────────
+ALTER TABLE students ADD COLUMN IF NOT EXISTS studio TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS pain TEXT;
+ALTER TABLE students ADD COLUMN IF NOT EXISTS claude_code_ready BOOLEAN DEFAULT false;

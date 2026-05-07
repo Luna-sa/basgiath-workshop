@@ -5,7 +5,7 @@ export default function P04_TalkIntro() {
     <PageShell pageIndex={4}>
       <div className="grid md:grid-cols-2 gap-8">
         {/* Without AI */}
-        <div className="p-6 sm:p-8 border border-border border-l-[4px] border-l-corp-red bg-surface/50">
+        <div className="p-6 sm:p-8 border border-border border-l-[4px] border-l-corp-red bg-surface/50 hover:bg-surface/70 transition-colors">
           <div className="font-mono text-[14px] tracking-[3px] uppercase text-corp-red mb-6">Без AI</div>
           <ul className="space-y-4">
             {[
@@ -23,7 +23,7 @@ export default function P04_TalkIntro() {
         </div>
 
         {/* With ecosystem */}
-        <div className="p-6 sm:p-8 border border-border border-l-[4px] border-l-qa-teal bg-qa-teal/[0.03]">
+        <div className="p-6 sm:p-8 border border-border border-l-[4px] border-l-qa-teal bg-qa-teal/[0.03] hover:bg-qa-teal/[0.06] transition-colors">
           <div className="font-mono text-[14px] tracking-[3px] uppercase text-qa-teal mb-6">С QA-экосистемой</div>
           <ul className="space-y-4">
             {[

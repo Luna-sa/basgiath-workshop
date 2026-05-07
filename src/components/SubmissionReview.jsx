@@ -3,6 +3,7 @@ import { usePersona } from '../store/usePersona'
 import { useWorkshopStore } from '../store/workshopStore'
 import { evaluateSubmission } from '../api/groq'
 import { submitRoundEntry } from '../api/rounds'
+import ScoreReveal from './ScoreReveal'
 
 /**
  * Text submission + AI review component.
@@ -64,16 +65,9 @@ export default function SubmissionReview({ type, pageIndex, roundId, onComplete 
   if (submitted && result) {
     return (
       <div className="space-y-4">
-        {/* Score */}
+        {/* Animated score reveal */}
         {result.score !== null && (
-          <div className="text-center p-5 border" style={{ borderColor: persona.accentBorder, backgroundColor: persona.accentLight }}>
-            <div className="font-display text-3xl font-bold text-white mb-1">
-              {result.score}<span className="text-text-dim text-lg">/{result.maxScore}</span>
-            </div>
-            <div className="font-mono text-[12px] tracking-[2px] uppercase" style={{ color: persona.accent }}>
-              +{result.xpBonus} XP
-            </div>
-          </div>
+          <ScoreReveal score={result.score} maxScore={result.maxScore} xpBonus={result.xpBonus} accentColor={persona.accent} />
         )}
 
         {/* AI Feedback */}

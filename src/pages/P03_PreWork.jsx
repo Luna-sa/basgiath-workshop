@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
+import { supabase } from '../api/supabase'
 import PageShell from '../core/PageShell'
 
 const paths = {
@@ -33,6 +35,14 @@ export default function P03_PreWork() {
   const preworkChecklist = useWorkshopStore(s => s.preworkChecklist)
   const setPreworkPath = useWorkshopStore(s => s.setPreworkPath)
   const togglePreworkItem = useWorkshopStore(s => s.togglePreworkItem)
+  const [studentCount, setStudentCount] = useState(null)
+
+  useEffect(() => {
+    if (!supabase) return
+    supabase.from('students').select('id', { count: 'exact', head: true }).then(({ count }) => {
+      if (count) setStudentCount(count)
+    }).catch(() => {})
+  }, [])
 
   const currentSteps = paths[preworkPath].steps
   const done = currentSteps.filter((_, i) => preworkChecklist[`${preworkPath}-${i}`]).length
@@ -120,6 +130,16 @@ export default function P03_PreWork() {
           >
             Всё уже установлено — пропустить
           </button>
+        </div>
+      )}
+
+      {/* Student counter */}
+      {studentCount > 0 && (
+        <div className="mt-6 text-center">
+          <span className="inline-flex items-center gap-2 px-4 py-2 border border-qa-teal/20 bg-qa-teal/[0.05] font-mono text-[13px] text-qa-teal">
+            <span className="w-2 h-2 rounded-full bg-qa-teal animate-pulse" />
+            {studentCount} {studentCount === 1 ? 'студент' : studentCount < 5 ? 'студента' : 'студентов'} уже здесь
+          </span>
         </div>
       )}
 
