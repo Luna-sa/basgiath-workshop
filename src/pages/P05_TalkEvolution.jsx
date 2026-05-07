@@ -1,131 +1,113 @@
-import { useState } from 'react'
 import PageShell from '../core/PageShell'
+import { useT } from '../i18n/useT'
 
-const LEVELS = [
+const PARTS = [
   {
-    level: 1, badge: '🪶', title: 'Кадет', subtitle: 'Базовый чат',
-    color: '#888888',
-    desc: 'Пишешь вопрос — получаешь ответ. Каждый раз с нуля, без контекста.',
-    tools: [
-      { name: 'Текстовый чат', desc: '"Исправь баг", "что делает этот код" — и всё' },
-      { name: 'Tab-автодополнение', desc: 'AI подсказывает следующую строку' },
-    ],
-    example: '"Напиши тест для validateEmail"',
-    limit: 'AI не знает твой проект. Каждый раз заново.',
+    n: '01',
+    name: 'CLAUDE.md',
+    role: 'spine',
+    summary_en: "A markdown file Claude reads at every start. Describes you, your rules, your project context.",
+    summary_ru: 'Markdown файл который Claude читает при каждом старте. Описывает тебя, твои правила, контекст проекта.',
+    detail_en: 'Hierarchy: ~/.claude/CLAUDE.md (everywhere) → project/CLAUDE.md (this repo) → subdir/CLAUDE.md. Lower overrides upper.',
+    detail_ru: 'Иерархия: ~/.claude/CLAUDE.md (везде) → project/CLAUDE.md (этот репо) → subdir/CLAUDE.md. Нижние перебивают верхние.',
   },
   {
-    level: 2, badge: '🐉', title: 'Наездник', subtitle: 'Конфиги + команды',
-    color: '#00E5CC', current: true,
-    desc: 'AI запоминает контекст. Один раз настроил — дальше он знает, кто ты.',
-    tools: [
-      { name: 'CLAUDE.md', desc: 'Файл с инструкциями. AI читает при каждом запуске' },
-      { name: 'Slash-команды', desc: '/bug-report — одно слово вместо абзаца промпта' },
-      { name: '@file, @codebase', desc: 'Указываешь AI на конкретный файл или весь проект' },
-    ],
-    example: '/bug-report Логин принимает пустой пароль',
-    limit: 'AI только читает и отвечает. Не может открыть браузер.',
+    n: '02',
+    name: 'Skills',
+    role: 'wings',
+    summary_en: 'Reusable abilities Claude installs and gains. Like extensions for the brain.',
+    summary_ru: 'Многоразовые навыки которые Claude получает. Как расширения для мозга.',
+    detail_en: 'Examples: Excalidraw (drawing), git skill (workflows), writing-skills (style). Browse and install via /plugin marketplace.',
+    detail_ru: 'Примеры: Excalidraw (рисование), git skill (workflow), writing-skills (стиль). Найти и установить через /plugin marketplace.',
   },
   {
-    level: 3, badge: '⚔️', title: 'Боец', subtitle: 'Plan mode + skills',
-    color: '#E85D26',
-    desc: 'AI сначала думает, потом делает. Составляет план — ты одобряешь.',
-    tools: [
-      { name: 'Plan Mode', desc: 'Анализ → план → твоё одобрение → выполнение' },
-      { name: 'Skills', desc: 'AI сам определяет тип задачи и включает нужный workflow' },
-      { name: 'Multi-file', desc: 'Меняет несколько файлов сразу. Видишь diff перед принятием' },
-    ],
-    example: '"Разбей auth на сервисы, добавь валидацию и тесты"',
-    limit: 'Работает только с файлами. Не выходит за пределы проекта.',
+    n: '03',
+    name: 'Agents',
+    role: 'claws',
+    summary_en: 'Specialised mini-Claudes for specific roles. They run in parallel, return results.',
+    summary_ru: 'Специализированные мини-Claude под конкретные роли. Работают параллельно, возвращают результат.',
+    detail_en: 'Examples: code-reviewer, qa-tester, security-scanner, docs-writer. You delegate, they execute, main session stays clean.',
+    detail_ru: 'Примеры: code-reviewer, qa-tester, security-scanner, docs-writer. Делегируешь — работают — main session чистая.',
   },
   {
-    level: 4, badge: '👑', title: 'Командир', subtitle: 'MCP + агенты',
-    color: '#FF65BE',
-    desc: 'AI выходит за пределы кода. Открывает браузер, тестирует API, создаёт issues.',
-    tools: [
-      { name: 'MCP серверы', desc: 'Playwright — тестирует сайт. Fetch — API. Sentry — мониторинг' },
-      { name: 'Hooks', desc: 'Автоматические правила. "Перед коммитом — линтер"' },
-      { name: 'Sub-agents', desc: 'qa-reviewer ревьюит, security-scanner ищет уязвимости' },
-    ],
-    example: '"Открой staging, протестируй регистрацию, запиши баги в Jira"',
-    limit: 'Каждую задачу запускаешь вручную.',
+    n: '04',
+    name: 'MCP',
+    role: 'eyes',
+    summary_en: "Model Context Protocol — Claude's connection to the outside world. Browsers, APIs, databases, services.",
+    summary_ru: 'Model Context Protocol — связь Claude с внешним миром. Браузеры, API, базы данных, сервисы.',
+    detail_en: 'Playwright (browser test), GitHub (PR/issues), Confluence/Notion (docs), Atlassian (Jira), filesystem (any folder).',
+    detail_ru: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (любая папка).',
   },
   {
-    level: 5, badge: '🏛️', title: 'Архитектор', subtitle: 'Оркестрация',
-    color: '#00E5CC',
-    desc: 'AI работает автономно. Параллельные агенты, расписание, CI/CD.',
-    tools: [
-      { name: 'Agent Teams', desc: 'Несколько AI параллельно: пишет, тестирует, ревьюит' },
-      { name: 'Headless', desc: 'AI в CI/CD: авто-ревью на каждый PR' },
-      { name: 'Automations', desc: '"Каждую ночь проверяй PR, утром отчёт в Slack"' },
-    ],
-    example: '"5 агентов: каждый фиксит по багу из бэклога"',
-    limit: '',
+    n: '05',
+    name: 'Hooks',
+    role: 'reflexes',
+    summary_en: 'Auto-trigger commands on events. Pre-commit, post-edit, on-error — Claude reacts without being asked.',
+    summary_ru: 'Авто-триггер команд на события. Pre-commit, post-edit, on-error — Claude реагирует без просьбы.',
+    detail_en: 'Examples: branch-guard (block commits to main), auto-format (run prettier on save), notify-on-stop (sound when ready).',
+    detail_ru: 'Примеры: branch-guard (блокирует commit в main), auto-format (prettier при сохранении), notify-on-stop (звук когда готово).',
+  },
+  {
+    n: '06',
+    name: 'Plugins',
+    role: 'companions',
+    summary_en: 'Bundles of skills + agents + hooks shared across teams. Install one — gain a whole stack.',
+    summary_ru: 'Пакеты skills + agents + hooks для команд. Один install — целый стек.',
+    detail_en: 'Browse the marketplace with /plugin. Examples: superpowers (meta-skills), digital-marketing-pro (115 commands).',
+    detail_ru: 'Marketplace через /plugin. Примеры: superpowers (мета-скиллы), digital-marketing-pro (115 команд).',
   },
 ]
 
 export default function P05_TalkEvolution() {
-  const [expanded, setExpanded] = useState(2)
-
+  const t = useT()
   return (
     <PageShell pageIndex={5}>
-      <div className="space-y-3">
-        {LEVELS.map(lvl => (
-          <button key={lvl.level} onClick={() => setExpanded(expanded === lvl.level ? null : lvl.level)}
-            className={`w-full text-left border transition-all cursor-pointer overflow-hidden ${
-              lvl.current ? 'border-qa-teal/40 bg-qa-teal/[0.05]' : 'border-border bg-surface/30 hover:bg-surface/50'
-            }`}>
+      <div className="space-y-6">
 
-            {/* Header — always visible */}
-            <div className="flex items-center gap-4 p-4">
-              <span className="text-2xl shrink-0">{lvl.badge}</span>
-              <div className="flex-1 min-w-0">
-                <div className="font-display text-[20px] leading-tight" style={{ color: lvl.color }}>
-                  Lv {lvl.level}: {lvl.title}
-                </div>
-                <div className="text-[14px] text-text-dim mt-0.5">{lvl.subtitle}</div>
+        <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
+          {t(
+            "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда.",
+            "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда."
+          )}
+        </p>
+
+        {/* Six parts */}
+        <div className="grid md:grid-cols-2 gap-3">
+          {PARTS.map(p => (
+            <div
+              key={p.n}
+              className="p-4 border border-border bg-surface/40 hover:border-qa-teal/40 transition-colors"
+            >
+              <div className="flex items-baseline gap-3 mb-2">
+                <span className="font-mono text-[11px] tracking-[2px] text-qa-teal">{p.n}</span>
+                <span className="font-display italic text-xl text-white">{p.name}</span>
+                <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim ml-auto">{p.role}</span>
               </div>
-              {lvl.current && <span className="font-mono text-[12px] text-qa-teal border border-qa-teal/20 px-3 py-1 shrink-0">Сегодня</span>}
-              <span className={`text-text-dim text-base transition-transform shrink-0 ${expanded === lvl.level ? 'rotate-180' : ''}`}>▾</span>
+              <p className="text-[13px] text-text-body leading-relaxed mb-2">
+                {t(p.summary_en, p.summary_ru)}
+              </p>
+              <p className="text-[12px] text-text-dim leading-relaxed italic">
+                {t(p.detail_en, p.detail_ru)}
+              </p>
             </div>
-
-            {/* Expanded — full detail */}
-            {expanded === lvl.level && (
-              <div className="px-4 pb-5 border-t border-border/50 pt-4 space-y-4" onClick={e => e.stopPropagation()}>
-                <p className="text-[16px] text-text-body leading-relaxed">{lvl.desc}</p>
-
-                {/* Tools */}
-                <div className="space-y-2">
-                  {lvl.tools.map((tool, i) => (
-                    <div key={i} className="p-3 bg-[#141414] border border-[#2E2E2E] rounded-lg">
-                      <div className="text-[16px] text-white font-medium mb-1">{tool.name}</div>
-                      <div className="text-[14px] text-text-secondary leading-relaxed">{tool.desc}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Example */}
-                <div className="p-3 bg-[#141414] border border-[#2E2E2E] rounded-lg">
-                  <div className="font-mono text-[12px] text-text-dim uppercase tracking-wider mb-1">Пример</div>
-                  <code className="font-mono text-[16px] leading-relaxed" style={{ color: lvl.color }}>{lvl.example}</code>
-                </div>
-
-                {/* Limitation */}
-                {lvl.limit && (
-                  <p className="text-[14px] text-text-dim italic px-1">
-                    <span className="text-corp-red not-italic font-mono text-[12px] uppercase">Ограничение:</span>{' '}{lvl.limit}
-                  </p>
-                )}
-              </div>
-            )}
-          </button>
-        ))}
-
-        <div className="mt-4 p-4 border border-qa-teal/15 bg-qa-teal/[0.03] text-center">
-          <p className="text-[16px] text-text-secondary">
-            <span className="text-qa-teal font-mono">Сегодня:</span> Lv 1 → Lv 2, начало Lv 4.
-            <span className="text-text-dim"> Следующие воркшопы: Lv 3–5.</span>
-          </p>
+          ))}
         </div>
+
+        {/* Where it all lives */}
+        <div className="border border-qa-teal/20 bg-qa-teal/[0.03] p-5">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-3">
+            ◆ {t('Where the dragon lives on disk', 'Где живёт дракон на диске')}
+          </div>
+          <pre className="font-mono text-[12px] text-text-body leading-relaxed whitespace-pre-wrap">{`~/.claude/
+├── CLAUDE.md          # spine — your global rules + persona
+├── settings.json      # permissions, env, hooks config
+├── commands/          # your custom /slash-commands
+├── agents/            # your subagents
+├── skills/            # installed skills (auto-loaded)
+└── plugins/           # installed plugins
+mcp_servers.json       # MCP connections (browser, GitHub, ...)`}</pre>
+        </div>
+
       </div>
     </PageShell>
   )

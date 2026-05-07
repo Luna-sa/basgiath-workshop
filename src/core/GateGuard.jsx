@@ -32,7 +32,22 @@ export default function GateGuard({ pageIndex, subStepId }) {
     gate = page.gate
   }
 
+  // On the very last page, there's nothing after — don't show a "Next" button
+  const isLastPage = pageIndex >= PAGES.length - 1
+
   if (!gate || gate.type === 'none' || gate.type === 'click') {
+    if (isLastPage) {
+      return (
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={() => completePage(pageIndex)}
+            className="px-8 py-3 border border-qa-teal/40 text-qa-teal font-mono text-[12px] tracking-[2px] uppercase font-semibold hover:bg-qa-teal/10 cursor-pointer transition-all"
+          >
+            ✦ Закрыть воркшоп
+          </button>
+        </div>
+      )
+    }
     return (
       <div className="mt-6 flex justify-center">
         <NextButton onClick={() => { completePage(pageIndex); navigateNext() }} />
