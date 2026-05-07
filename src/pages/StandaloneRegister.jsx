@@ -77,8 +77,18 @@ export default function StandaloneRegister() {
   if (status === 'success') {
     return (
       <div className="min-h-screen flex items-center justify-center px-6 py-16">
-        <div className="max-w-[560px] w-full">
-          <div className="border border-qa-teal/40 bg-qa-teal/[0.04] p-10 text-center rounded-[2px]">
+        <div className="flex items-center justify-center gap-6 w-full max-w-[1200px]">
+
+          {/* Left silhouette — hidden on small screens */}
+          <img
+            src="/sword-left.jpg"
+            alt=""
+            aria-hidden="true"
+            className="hidden lg:block w-[260px] h-[600px] object-cover opacity-80 rounded-[2px]"
+          />
+
+          <div className="max-w-[560px] w-full">
+            <div className="border border-qa-teal/40 bg-qa-teal/[0.04] p-10 text-center rounded-[2px]">
             <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-6">
               · QA Clan · Workshop
             </div>
@@ -130,7 +140,17 @@ export default function StandaloneRegister() {
                 claude --version
               </div>
             </div>
+            </div>
           </div>
+
+          {/* Right silhouette — hidden on small screens */}
+          <img
+            src="/sword-right.jpg"
+            alt=""
+            aria-hidden="true"
+            className="hidden lg:block w-[260px] h-[600px] object-cover opacity-80 rounded-[2px]"
+          />
+
         </div>
       </div>
     )
