@@ -26,6 +26,9 @@ Claude Code for QA
 1 to 1.5 hours, hands-on. Set up Claude Code as your QA partner,
 configure the full ecosystem, take everything home.
 
+Wrapped in Fourth Wing themes — dragons, riders, Basgiath. Haven't
+read the books? Doesn't matter, the QA work underneath is real.
+
 ▲ ATTENTION
 Pre-registration is MANDATORY. No registration, no entry.
 Claude Code must be installed before the workshop.
@@ -48,7 +51,7 @@ WHEN AND WHERE
 
 TWO THINGS TO ATTEND
 
-1. Register (mandatory): https://basgiath-workshop.onrender.com
+1. Register (mandatory): https://basgiath-workshop.onrender.com/register
    Closes May 12, 17:00. No registration, no entry.
 
 2. Install Claude Code before the workshop.

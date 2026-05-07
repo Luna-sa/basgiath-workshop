@@ -6,6 +6,7 @@ import LanguageToggle from './components/LanguageToggle'
 import ErrorBoundary from './core/ErrorBoundary'
 import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
+import StandaloneRegister from './pages/StandaloneRegister'
 import { startSync, fetchInitialState } from './store/sync'
 
 const FACILITATOR_TOKEN = import.meta.env.VITE_FACILITATOR_TOKEN
@@ -15,13 +16,32 @@ function isFacilitatorMode() {
   return params.get('token') === FACILITATOR_TOKEN
 }
 
+function isRegisterRoute() {
+  return window.location.pathname === '/register' || window.location.pathname === '/register/'
+}
+
 export default function App() {
   const [facilitator] = useState(isFacilitatorMode)
+  const [registerOnly] = useState(isRegisterRoute)
 
   useEffect(() => {
-    fetchInitialState()
-    if (!facilitator) startSync()
-  }, [facilitator])
+    if (!registerOnly) {
+      fetchInitialState()
+      if (!facilitator) startSync()
+    }
+  }, [facilitator, registerOnly])
+
+  if (registerOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle />
+          <StandaloneRegister />
+        </div>
+      </ErrorBoundary>
+    )
+  }
 
   if (facilitator) {
     return (
