@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dragon Flight Trial · QA Clan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+<style>
+:root {
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --border: #1E1E1E;
+  --teal: #00E5CC;
+  --pink: #FF65BE;
+  --ember: #E85D26;
+  --white: #FFFFFF;
+  --dim: #888888;
+  --body: #DCDCDC;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--body);
+  min-height: 100vh;
+}
+.shell {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+}
+header {
+  border-top: 3px solid var(--teal);
+  padding: 32px 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 12px;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 38px;
+  margin: 0 0 8px;
+  color: var(--white);
+}
+h1 em { color: var(--teal); font-style: italic; }
+.lead {
+  font-size: 14px;
+  color: var(--dim);
+  margin: 0;
+  font-style: italic;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+}
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: 1fr; }
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 18px;
+}
+.panel h2 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+.slot {
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  background: #0A0A0A;
+}
+.slot.active { border-color: var(--teal); }
+.slot-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.slot-head:hover { background: rgba(0,229,204,0.04); }
+.slot-color { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+.slot-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--white);
+  flex: 1;
+}
+.slot-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.slot-status.ok { color: var(--teal); }
+.slot-status.err { color: var(--ember); }
+.slot-body {
+  display: none;
+  padding: 0 12px 12px;
+}
+.slot.open .slot-body { display: block; }
+textarea {
+  width: 100%;
+  min-height: 180px;
+  background: #000;
+  color: var(--teal);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+textarea:focus { border-color: var(--teal); outline: none; }
+.slot-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+button {
+  background: var(--surface);
+  color: var(--body);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+button:hover { border-color: var(--teal); color: var(--teal); }
+button.primary {
+  background: var(--teal);
+  color: #000;
+  border-color: var(--teal);
+  font-weight: 600;
+}
+button.primary:hover { color: #000; box-shadow: 0 0 16px rgba(0,229,204,0.3); }
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.controls button { flex: 1; padding: 12px; }
+#arena-wrap {
+  border: 1px solid var(--border);
+  background: #050505;
+}
+#arena {
+  display: block;
+  margin: 0 auto;
+}
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  margin-top: 12px;
+}
+.score {
+  background: #050505;
+  border: 1px solid var(--border);
+  padding: 8px;
+  text-align: center;
+}
+.score-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.score-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--white);
+  margin-top: 2px;
+}
+.score.lead .score-value { color: var(--teal); }
+.docs {
+  background: #050505;
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-top: 18px;
+}
+.docs h3 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 8px;
+}
+.docs pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--body);
+  white-space: pre-wrap;
+}
+.docs code { color: var(--teal); }
+.banner {
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--white);
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  display: none;
+}
+.banner.show { display: block; animation: fade-in 0.6s ease-out; }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.flash {
+  animation: flash 0.5s ease-out;
+}
+@keyframes flash {
+  0% { background: rgba(0,229,204,0.4); }
+  100% { background: transparent; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <header>
+    <p class="eyebrow">· QA Clan · Dragon Flight Trial</p>
+    <h1>Riders <em>in</em> the Sky</h1>
+    <p class="lead">Each rider writes how their dragon flies. The sky judges who collects the most stars before time runs out.</p>
+  </header>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="layout">
+
+    <!-- Left: bot slots -->
+    <aside class="panel">
+      <h2>Your dragons</h2>
+      <div id="slots"></div>
+
+      <div class="docs">
+        <h3>API</h3>
+<pre>tick(<code>{ me, stars, walls, sky }</code>)
+  → <code>{ angle, throttle }</code>
+
+<code>me</code>: { x, y, score }
+<code>stars</code>: [{ x, y }] - collect
+<code>walls</code>: [{ x, y, r }] - avoid
+<code>sky</code>: { width, height }
+
+<code>angle</code>: 0-360 (degrees)
+<code>throttle</code>: 0-1</pre>
+      </div>
+    </aside>
+
+    <!-- Right: arena -->
+    <main class="panel">
+      <div class="controls">
+        <button class="primary" id="btn-go">▶ Run flight</button>
+        <button id="btn-reset">Reset</button>
+        <button id="btn-load-all">Load all defaults</button>
+      </div>
+
+      <div id="arena-wrap">
+        <div id="arena"></div>
+      </div>
+
+      <div class="scoreboard" id="scoreboard"></div>
+    </main>
+
+  </div>
+
+</div>
+
+<script type="module">
+// ─────────────────────────────────────────────────────────
+// Characters & defaults
+// ─────────────────────────────────────────────────────────
+const CHARACTERS = [
+  { id: 'violet',   name: 'Violet',   color: 0x7C3AED, hex: '#7C3AED' },
+  { id: 'xaden',    name: 'Xaden',    color: 0xF59E0B, hex: '#F59E0B' },
+  { id: 'rhiannon', name: 'Rhiannon', color: 0x0891B2, hex: '#0891B2' },
+  { id: 'ridoc',    name: 'Ridoc',    color: 0xF97316, hex: '#F97316' },
+  { id: 'liam',     name: 'Liam',     color: 0x059669, hex: '#059669' },
+  { id: 'imogen',   name: 'Imogen',   color: 0xDC2626, hex: '#DC2626' },
+]
+
+const DEFAULT_BOT = `// Beat the default by writing smarter logic with Claude.
+// Return: { angle, throttle }
+function tick({ me, stars, walls, sky }) {
+  if (stars.length === 0) {
+    return { angle: 0, throttle: 0 }
+  }
+  // Aim at the nearest star
+  let target = stars[0]
+  let bestDist = Infinity
+  for (const s of stars) {
+    const d = Math.hypot(s.x - me.x, s.y - me.y)
+    if (d < bestDist) { bestDist = d; target = s }
+  }
+  const angle = Math.atan2(target.y - me.y, target.x - me.x) * 180 / Math.PI
+  return { angle, throttle: 0.7 }
+}`
+
+// ─────────────────────────────────────────────────────────
+// Sandbox: each bot runs in its own Web Worker
+// ─────────────────────────────────────────────────────────
+function createBotWorker(code) {
+  const workerSrc = `
+    let userTick = null
+    try {
+      ${code}
+      userTick = tick
+    } catch(e) {
+      self.postMessage({ type: 'error', message: e.message })
+    }
+    self.onmessage = (e) => {
+      if (e.data.type === 'tick' && userTick) {
+        try {
+          const result = userTick(e.data.payload)
+          self.postMessage({ type: 'result', tick: e.data.tick, result })
+        } catch(err) {
+          self.postMessage({ type: 'error', message: err.message })
+        }
+      }
+    }
+  `
+  const blob = new Blob([workerSrc], { type: 'application/javascript' })
+  return new Worker(URL.createObjectURL(blob))
+}
+
+// ─────────────────────────────────────────────────────────
+// UI: slot panel
+// ─────────────────────────────────────────────────────────
+const slotsEl = document.getElementById('slots')
+const slotState = CHARACTERS.map((c, i) => ({
+  ...c,
+  index: i,
+  code: DEFAULT_BOT,
+  status: 'default',
+  open: i === 0,
+}))
+
+function renderSlots() {
+  slotsEl.innerHTML = ''
+  for (const s of slotState) {
+    const div = document.createElement('div')
+    div.className = 'slot' + (s.open ? ' open' : '')
+    div.innerHTML = `
+      <div class="slot-head" data-toggle="${s.id}">
+        <span class="slot-color" style="background:${s.hex}"></span>
+        <span class="slot-name">${s.name}</span>
+        <span class="slot-status ${s.status === 'ok' ? 'ok' : s.status === 'err' ? 'err' : ''}">${s.status}</span>
+      </div>
+      <div class="slot-body">
+        <textarea data-slot="${s.id}" spellcheck="false">${s.code}</textarea>
+        <div class="slot-actions">
+          <button data-save="${s.id}">Save</button>
+          <button data-default="${s.id}">Reset to default</button>
+        </div>
+      </div>
+    `
+    slotsEl.appendChild(div)
+  }
+}
+renderSlots()
+
+slotsEl.addEventListener('click', (e) => {
+  const t = e.target
+  if (t.matches('[data-toggle], [data-toggle] *')) {
+    const head = t.closest('[data-toggle]')
+    const id = head.dataset.toggle
+    for (const s of slotState) s.open = (s.id === id) ? !s.open : false
+    renderSlots()
+  } else if (t.matches('[data-save]')) {
+    const id = t.dataset.save
+    const s = slotState.find(x => x.id === id)
+    const ta = slotsEl.querySelector(`textarea[data-slot="${id}"]`)
+    s.code = ta.value
+    s.status = 'saved'
+    renderSlots()
+  } else if (t.matches('[data-default]')) {
+    const id = t.dataset.default
+    const s = slotState.find(x => x.id === id)
+    s.code = DEFAULT_BOT
+    s.status = 'default'
+    renderSlots()
+  }
+})
+
+document.getElementById('btn-load-all').addEventListener('click', () => {
+  for (const s of slotState) { s.code = DEFAULT_BOT; s.status = 'default' }
+  renderSlots()
+})
+
+// ─────────────────────────────────────────────────────────
+// Phaser arena
+// ─────────────────────────────────────────────────────────
+const ARENA_W = 880
+const ARENA_H = 560
+const TICK_MS = 50  // 20 ticks per second
+const MAX_SPEED = 3
+const STAR_COUNT = 14
+const WALL_COUNT = 8
+const ROUND_TICKS = 20 * 60   // 60 seconds
+
+let game, scene, dragons = [], stars = [], walls = [], scoreboard = []
+let round = null
+
+class ArenaScene extends Phaser.Scene {
+  create() {
+    scene = this
+    this.cameras.main.setBackgroundColor('#050505')
+
+    // starry sky background
+    const stars2 = this.add.graphics()
+    stars2.fillStyle(0xFFFFFF, 0.5)
+    for (let i = 0; i < 120; i++) {
+      stars2.fillCircle(Math.random() * ARENA_W, Math.random() * ARENA_H, Math.random() * 1.2)
+    }
+
+    this.starGroup = this.add.group()
+    this.wallGroup = this.add.group()
+    this.dragonGroup = this.add.group()
+  }
+}
+
+game = new Phaser.Game({
+  type: Phaser.AUTO,
+  parent: 'arena',
+  width: ARENA_W,
+  height: ARENA_H,
+  backgroundColor: '#050505',
+  scene: [ArenaScene],
+  physics: { default: 'arcade' },
+})
+
+function spawnRound() {
+  if (!scene) return
+  // clear
+  scene.starGroup.clear(true, true)
+  scene.wallGroup.clear(true, true)
+  scene.dragonGroup.clear(true, true)
+
+  // walls (obstacles)
+  walls = []
+  for (let i = 0; i < WALL_COUNT; i++) {
+    const w = {
+      x: 100 + Math.random() * (ARENA_W - 200),
+      y: 80 + Math.random() * (ARENA_H - 160),
+      r: 18 + Math.random() * 10,
+    }
+    walls.push(w)
+    const g = scene.add.graphics()
+    g.fillStyle(0x222222, 1)
+    g.lineStyle(2, 0x444444, 1)
+    g.fillCircle(w.x, w.y, w.r)
+    g.strokeCircle(w.x, w.y, w.r)
+    scene.wallGroup.add(g)
+  }
+
+  // stars
+  stars = []
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const s = {
+      x: 40 + Math.random() * (ARENA_W - 80),
+      y: 40 + Math.random() * (ARENA_H - 80),
+      collected: false,
+    }
+    // ensure not overlapping a wall
+    let safe = true
+    for (const w of walls) if (Math.hypot(s.x - w.x, s.y - w.y) < w.r + 16) safe = false
+    if (!safe) { i--; continue }
+    s.gfx = scene.add.star(s.x, s.y, 5, 4, 9, 0xFEED00)
+    stars.push(s)
+  }
+
+  // dragons (one per character)
+  dragons = CHARACTERS.map((c, i) => {
+    const x = 60 + (ARENA_W - 120) * (i / (CHARACTERS.length - 1))
+    const y = ARENA_H - 40
+    const tri = scene.add.triangle(x, y, 0, 12, -8, -8, 8, -8, c.color)
+    tri.setStrokeStyle(1, 0xFFFFFF, 0.5)
+    return {
+      ...c,
+      x, y,
+      vx: 0, vy: 0,
+      angle: 270,
+      throttle: 0,
+      score: 0,
+      alive: true,
+      gfx: tri,
+      trail: scene.add.graphics(),
+      trailPts: [],
+      worker: null,
+      pending: false,
+    }
+  })
+  renderScoreboard()
+}
+
+function killWorkers() {
+  for (const d of dragons) {
+    if (d.worker) { try { d.worker.terminate() } catch(e){} d.worker = null }
+  }
+}
+
+function startWorkers() {
+  killWorkers()
+  for (const d of dragons) {
+    const slot = slotState.find(s => s.id === d.id)
+    try {
+      d.worker = createBotWorker(slot.code)
+      d.worker.onmessage = (e) => {
+        if (e.data.type === 'result') {
+          const { angle, throttle } = e.data.result || {}
+          d.angle = (typeof angle === 'number') ? angle : d.angle
+          d.throttle = Math.max(0, Math.min(1, typeof throttle === 'number' ? throttle : 0))
+          d.pending = false
+          slot.status = 'ok'
+        } else if (e.data.type === 'error') {
+          slot.status = 'err'
+          d.pending = false
+        }
+      }
+    } catch(e) {
+      slot.status = 'err'
+    }
+  }
+  renderSlots()
+}
+
+function tick() {
+  if (!round) return
+  round.tickIdx++
+  if (round.tickIdx > ROUND_TICKS) { endRound(); return }
+
+  // ask each dragon's worker
+  for (const d of dragons) {
+    if (!d.alive || !d.worker) continue
+    if (d.pending) continue
+    const remaining = stars.filter(s => !s.collected).map(s => ({ x: s.x, y: s.y }))
+    const wallView = walls.map(w => ({ x: w.x, y: w.y, r: w.r }))
+    d.pending = true
+    d.worker.postMessage({
+      type: 'tick',
+      tick: round.tickIdx,
+      payload: {
+        me: { x: d.x, y: d.y, score: d.score },
+        stars: remaining,
+        walls: wallView,
+        sky: { width: ARENA_W, height: ARENA_H },
+      },
+    })
+  }
+
+  // physics — apply throttle along angle
+  for (const d of dragons) {
+    if (!d.alive) continue
+    const rad = d.angle * Math.PI / 180
+    const tax = Math.cos(rad) * d.throttle * MAX_SPEED
+    const tay = Math.sin(rad) * d.throttle * MAX_SPEED
+    d.vx = d.vx * 0.85 + tax * 0.5
+    d.vy = d.vy * 0.85 + tay * 0.5
+    d.x += d.vx
+    d.y += d.vy
+    d.x = Math.max(10, Math.min(ARENA_W - 10, d.x))
+    d.y = Math.max(10, Math.min(ARENA_H - 10, d.y))
+
+    d.gfx.x = d.x
+    d.gfx.y = d.y
+    d.gfx.rotation = rad + Math.PI / 2
+
+    // trail
+    d.trailPts.push({ x: d.x, y: d.y })
+    if (d.trailPts.length > 20) d.trailPts.shift()
+    d.trail.clear()
+    for (let i = 1; i < d.trailPts.length; i++) {
+      const a = d.trailPts[i - 1], b = d.trailPts[i]
+      d.trail.lineStyle(2, d.color, i / d.trailPts.length * 0.6)
+      d.trail.beginPath()
+      d.trail.moveTo(a.x, a.y)
+      d.trail.lineTo(b.x, b.y)
+      d.trail.strokePath()
+    }
+
+    // collect stars
+    for (const s of stars) {
+      if (!s.collected && Math.hypot(d.x - s.x, d.y - s.y) < 14) {
+        s.collected = true
+        s.gfx.destroy()
+        d.score++
+      }
+    }
+
+    // wall hits — small score penalty + bounce
+    for (const w of walls) {
+      const dist = Math.hypot(d.x - w.x, d.y - w.y)
+      if (dist < w.r + 8) {
+        const nx = (d.x - w.x) / dist
+        const ny = (d.y - w.y) / dist
+        d.x = w.x + nx * (w.r + 9)
+        d.y = w.y + ny * (w.r + 9)
+        d.vx = -d.vx * 0.5
+        d.vy = -d.vy * 0.5
+      }
+    }
+  }
+
+  renderScoreboard()
+
+  // round ends if all stars collected
+  if (stars.every(s => s.collected)) endRound()
+}
+
+function renderScoreboard() {
+  const board = document.getElementById('scoreboard')
+  board.innerHTML = ''
+  const sorted = [...dragons].sort((a, b) => b.score - a.score)
+  const top = sorted[0]?.score
+  for (const d of sorted) {
+    const div = document.createElement('div')
+    div.className = 'score' + (d.score === top && top > 0 ? ' lead' : '')
+    div.style.borderColor = d.hex
+    div.innerHTML = `
+      <div class="score-name" style="color:${d.hex}">${d.name}</div>
+      <div class="score-value">${d.score}</div>
+    `
+    board.appendChild(div)
+  }
+}
+
+function endRound() {
+  if (!round) return
+  clearInterval(round.timer)
+  killWorkers()
+  round = null
+  const winner = [...dragons].sort((a, b) => b.score - a.score)[0]
+  showBanner(`${winner.name} took the sky · ${winner.score} stars`)
+}
+
+function showBanner(text) {
+  const b = document.getElementById('banner')
+  b.textContent = text
+  b.classList.add('show')
+  setTimeout(() => b.classList.remove('show'), 6000)
+}
+
+document.getElementById('btn-go').addEventListener('click', () => {
+  if (round) return
+  // save current open textarea contents
+  for (const s of slotState) {
+    const ta = slotsEl.querySelector(`textarea[data-slot="${s.id}"]`)
+    if (ta) s.code = ta.value
+  }
+  spawnRound()
+  startWorkers()
+  round = { tickIdx: 0, timer: setInterval(tick, TICK_MS) }
+  showBanner('The sky is open. Fly.')
+})
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (round) { clearInterval(round.timer); round = null }
+  killWorkers()
+  spawnRound()
+  document.getElementById('banner').classList.remove('show')
+})
+
+// initial setup
+setTimeout(() => spawnRound(), 200)
+</script>
+
+</body>
+</html>
