@@ -61,9 +61,18 @@ export async function getAllStudents() {
 
 export async function deleteStudent(studentId) {
   if (!supabase) return { error: 'no supabase' }
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('students')
     .delete()
     .eq('id', studentId)
-  return { error }
+    .select()
+  if (error) return { error }
+  if (!data || data.length === 0) {
+    return {
+      error: {
+        message: 'Delete blocked by RLS. Run SUPABASE_MIGRATION_2026-05-07_delete_policy.sql in Supabase SQL Editor.'
+      }
+    }
+  }
+  return { error: null }
 }
