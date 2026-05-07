@@ -1,3 +1,7 @@
+// Badges adjusted to the new 14-page flow (was 16). Old QA-practice
+// badges (battle-ready/2 commands, perfect-score quiz, bug-hunter,
+// speed-demon, third-wing) removed.
+
 export const BADGES = [
   {
     id: 'parapet',
@@ -7,55 +11,31 @@ export const BADGES = [
     condition: (store) => store.completedPages.includes(3),
   },
   {
-    id: 'dragon-bond',
-    name: 'Связь с драконом',
-    emoji: '🐉',
-    description: 'Создал CLAUDE.md',
-    condition: (store) => store.completedPages.includes(7),
-  },
-  {
-    id: 'battle-ready',
-    name: 'Боевая готовность',
-    emoji: '⚔️',
-    description: 'Создал 2 slash-команды',
-    condition: (store) => store.completedPages.includes(8) && store.completedPages.includes(9),
-  },
-  {
-    id: 'perfect-score',
-    name: 'Безупречный',
-    emoji: '💎',
-    description: '5 из 5 правильных ответов на Battle Brief',
-    condition: (store) => store.quizScore === 5,
-  },
-  {
-    id: 'bug-hunter',
-    name: 'Охотник за багами',
-    emoji: '🎯',
-    description: 'Нашёл баг и написал отчёт в First Flight',
-    condition: (store) => store.completedPages.includes(12),
-  },
-  {
-    id: 'speed-demon',
-    name: 'Молния',
-    emoji: '⚡',
-    description: 'Выполнил задание First Flight за 3 минуты или быстрее',
-    condition: (store) => {
-      const sub = store.taskSubmissions[11]
-      return sub && sub.durationSeconds && sub.durationSeconds <= 180
-    },
-  },
-  {
-    id: 'third-wing',
-    name: 'Третье крыло',
+    id: 'forge',
+    name: 'Forge',
     emoji: '🔥',
-    description: 'Создал бонусную третью команду',
-    condition: (store) => store.completedPages.includes(13),
+    description: 'Установил полную QA-экосистему одним промптом',
+    condition: (store) => store.completedPages.includes(6),
+  },
+  {
+    id: 'signet',
+    name: 'Signet',
+    emoji: '✦',
+    description: 'Собрал свой персональный CLAUDE.md',
+    condition: (store) => store.completedPages.includes(8),
+  },
+  {
+    id: 'rider',
+    name: 'Rider',
+    emoji: '🐉',
+    description: 'Запрограммировал поведение своего дракона в Arena',
+    condition: (store) => store.completedPages.includes(10),
   },
   {
     id: 'dragon-rider',
     name: 'Наездник',
     emoji: '👑',
-    description: 'Прошёл весь воркшоп от Парапета до Выпуска',
-    condition: (store) => store.completedPages.includes(16),
+    description: 'Прошёл весь воркшоп от Парапета до Bonded',
+    condition: (store) => store.completedPages.includes(12),
   },
 ]

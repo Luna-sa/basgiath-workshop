@@ -64,10 +64,36 @@ Prizes panel, and Live Announcement broadcaster will work.
 
 ---
 
-## Workshop flow — what each page is for
+## Workshop flow — REBUILT around Dragon Arena (no QA practice drill)
 
-The workshop runs in this order on May 13. Most live pages are gated
-behind the facilitator unlocking them via the dashboard.
+**Rebuilt 2026-05-08.** Old QA practice block (PracticeTC, PracticeBR,
+PracticeMCP, Quiz, WarGames) **removed**. The workshop is now built
+entirely around the Persona Builder + Dragon Arena.
+
+The 14-page flow:
+
+| # | Slug | Title (Empyrean) | What participant does |
+|---|---|---|---|
+| 0 | landing | Академия Басгиат | Read intro, click → |
+| 1 | character-select | Threshing | Pick one of 6 archetypes |
+| 2 | registration | Cross the Parapet | "Welcome back" card (form auto-skipped if logged in via WorkshopGate) |
+| 3 | prework | Parapet | Verify Claude Code installed |
+| 4 | talk-intro | The Bonding | Listen — facilitator explains "AI partner, not assistant" thesis |
+| 5 | talk-evolution | What is your dragon | Listen — anatomy of Claude Code (CLAUDE.md, skills, agents, MCP, hooks) |
+| 6 | install-ecosystem | Forging the bond | Paste big ecosystem prompt → wait → confirm |
+| 7 | talk-ecosystem | What flew in | Listen — review what just got installed |
+| 8 | persona-builder | Your signet emerges | Click "Open Persona Builder →" → fill 7 questions → generate CLAUDE.md → apply via autopilot |
+| 9 | talk-mcp | Riders' arts | Watch facilitator's 5-min MCP demo (no participant task) |
+| 10 | arena | Riders in the Sky | Click "Open Arena →" → write dragon flight in Claude Code → submit |
+| 11 | leaderboard | Signets honoured | Watch — facilitator triggers final battle, leaderboard reveals |
+| 12 | graduation | First flight | Confetti, share, prize reveal |
+| 13 | resources | Bonded | Click "Open Resource Hub →" — bookmark for take-home |
+
+Persona Builder, Arena, and Resource Hub each live as **standalone
+full-screen pages** at `/?page=persona`, `/?page=arena`, `/?page=resources`.
+The flow pages are short **intros** that explain the activity and link
+to the standalone experience (opens in a new tab so the workshop
+sequence stays open in the original).
 
 | Stage | Page / Route | What happens |
 |---|---|---|
@@ -265,6 +291,86 @@ Render auto-deploys on push to `main`. Last commits:
 - cd18e66 Round 4: bot submission
 - fc7cc33 Battle Brief breakdown
 - 6bc2d28 Auto-save + bot_submissions schema
+
+---
+
+## Workshop interactivity playbook
+
+The flow above is the skeleton. These are the moments you can use to
+make it **feel alive** — most are already coded into the platform,
+others are facilitator-only suggestions.
+
+**1. Live demo at the start (5 min, T+5).**
+After landing slide, before character select. Open your own Claude Code
+on the projector. Show in 90 seconds: paste a single autopilot prompt,
+watch Claude install something live, ask it a question, get a real
+answer. The audience sees the magic in real time. This single moment
+is what cuts through the cynicism — they realise this isn't a "watch
+slides" workshop.
+
+**2. Threshing reveal (T+10).**
+After everyone picks a character, show a slide with the 6 archetypes
+side by side. Each has a one-sentence essence. The audience sees who
+ended up with whom across the room. Let the room laugh.
+
+**3. Persona showcase round (T+45, after Persona Builder).**
+3-5 volunteers read their `override` rule aloud. You quickly demo
+their CLAUDE.md by pasting it as a system prompt and asking the same
+short question to each. Audience hears the same Claude in 5 different
+voices. This proves the persona system actually works.
+
+**4. Easter egg hint drop (T+55, before Arena coding starts).**
+Drop the line: "There is something in the arena docs that bonded
+riders find. The first one to use it correctly gets bonus points and
+a bonus prize." (You're pointing at `me.summonSignet()` — undocumented
+in the main API but present in a comment hint and in `arena.api.js`.)
+This adds curiosity to the next 25 minutes.
+
+**5. Live announcements during the coding round (T+55 to T+80).**
+From the admin dashboard, push toasts every few minutes:
+- "5 minutes in. Anyone past the default bot yet?"
+- "First submission landed — Liam from Bingo Blitz."
+- "10 minutes left. Ship something, even if it's basic."
+- "Easter egg has been found — bonus award locked in."
+These keep the room aware and competitive without you interrupting.
+
+**6. Manual XP for moments worth catching (anywhere).**
++10 / +20 / +50 buttons per student in admin. Use them when:
+- Someone helps their neighbour (+20)
+- Someone asks a great question (+10)
+- Someone discovers a clever bot strategy and shares it (+50)
+- First arena submit (+20)
+This makes you the visible scorekeeper of behaviours you want.
+
+**7. Final battle theatrics (T+80).**
+- Pause the room. "Let's see what we built."
+- Open admin → Bot Submissions panel → Refresh.
+- Click "Open Final Battle →" — projector tab takes over.
+- Banner: "Final battle loaded · N riders bonded"
+- Hit Run flight. Sound on. Audience cheers their character.
+- Confetti + Battle Brief table + winner replay slow-mo.
+- Don't rush this. Let it land.
+
+**8. Award ceremony (T+85).**
+From admin, the prize rows are pre-configured (1st, 2nd, 3rd). After
+final battle, set `awarded_to_student_id` for each. The graduation page
+will reveal them with confetti when participant lands there. Three
+prizes max, named with Empyrean flavour (e.g. "Champion of the Wing",
+"Signet of Skies", "Easter Egg Finder").
+
+**9. Ad-libs that always work.**
+- "Show of hands — who got Claude to write something they don't fully
+  understand yet?" (Almost everyone. Acknowledge it's normal.)
+- "Quick poll: emoji reactions in chat — fire if your bot took at
+  least one star, skull if it crashed into a wall, dragon if it won
+  a heat."
+- "Take 30 seconds — write down one prompt that surprised you with
+  how well it worked. You'll need this list for tomorrow."
+
+**10. Closing moment (T+88).**
+"Today the workshop is two hours. Your dragon waits at this URL with
+your nickname any day you want to come back. Bookmark it."
+Then the resources hub — and you stop.
 
 ---
 

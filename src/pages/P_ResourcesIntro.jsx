@@ -1,0 +1,54 @@
+import { useT } from '../i18n/useT'
+import PageShell from '../core/PageShell'
+
+/**
+ * Final-page intro pointing to the standalone Resource Hub at
+ * /?page=resources (full-screen layout). Sits in workshop flow as
+ * the last step.
+ */
+export default function P_ResourcesIntro() {
+  const t = useT()
+
+  return (
+    <PageShell pageIndex={13}>
+      <div className="space-y-6">
+        <div>
+          <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
+            ◆ {t('Bonded', 'Связан')}
+          </p>
+          <h2 className="font-display text-3xl text-white leading-tight mb-3">
+            {t('Take it home, rider.', 'Унеси домой, всадник.')}
+          </h2>
+          <p className="text-[15px] text-text-body leading-relaxed">
+            {t(
+              'Every prompt, every reference, every file. Bookmark this page — your dragon waits here any day you come back.',
+              'Каждый промпт, каждая справка, каждый файл. Закрепи закладкой — твой дракон ждёт тебя в любой день, когда захочешь вернуться.'
+            )}
+          </p>
+        </div>
+
+        <a
+          href="/?page=resources"
+          target="_blank"
+          rel="noopener"
+          className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all"
+        >
+          {t('Open Resource Hub →', 'Открыть хаб ресурсов →')}
+        </a>
+
+        <div className="border border-border bg-surface/40 p-5">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-3">
+            ◆ {t('What\'s inside', 'Что внутри')}
+          </div>
+          <ul className="text-[13px] text-text-body leading-relaxed space-y-2 list-none">
+            <li>◆ {t('Master setup prompt — full QA ecosystem in one go', 'Master setup промпт — вся QA-экосистема одной командой')}</li>
+            <li>◆ {t('Five autopilot prompts — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', 'Пять autopilot-промптов — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error')}</li>
+            <li>◆ {t('Hidden Gems — 22 power-user features', 'Hidden Gems — 22 продвинутых фишки Claude Code')}</li>
+            <li>◆ {t('Quick Reference — slash commands + hotkeys', 'Quick Reference — слэш-команды + хоткеи')}</li>
+            <li>◆ {t('Sample QA project — for at-home practice', 'Sample QA project — для практики дома')}</li>
+          </ul>
+        </div>
+      </div>
+    </PageShell>
+  )
+}

@@ -1,4 +1,5 @@
-// Workshop flow — 16 pages
+// Workshop flow — 13 pages (rebuilt around Dragon Arena, no test-cases drill).
+//
 // 🔒 facilitator = locked until facilitator advances (talk slides)
 // 🔓 self-report / timed-task = student works independently after unlock
 
@@ -20,7 +21,7 @@ export const PAGES = [
     id: 1,
     slug: 'character-select',
     phase: 'pre',
-    title: 'Выбери Наездника',
+    title: 'Threshing',
     narrativeKey: 'character_select',
     gate: { type: 'selection', field: 'characterId', message: 'Выбери персонажа' },
     xpReward: 10,
@@ -30,8 +31,9 @@ export const PAGES = [
     id: 2,
     slug: 'registration',
     phase: 'pre',
-    title: 'Записаться на Отбор',
+    title: 'Cross the Parapet',
     narrativeKey: 'registration',
+    // Gate auto-passes if WorkshopGate already loaded the user via nickname
     gate: { type: 'form', requiredFields: ['name', 'studio', 'role', 'claudeCodeReady'], message: 'Заполни обязательные поля и подтверди готовность Claude Code' },
     xpReward: 20,
     subSteps: null,
@@ -40,7 +42,7 @@ export const PAGES = [
     id: 3,
     slug: 'prework',
     phase: 'pre',
-    title: 'Парапет',
+    title: 'Parapet',
     narrativeKey: 'prework',
     gate: { type: 'checklist', message: 'Установи инструменты' },
     xpReward: 50,
@@ -48,150 +50,126 @@ export const PAGES = [
   },
 
   // ═══════════════════════════════════════════
-  // LIVE WORKSHOP
+  // LIVE WORKSHOP — built around Dragon Arena
   // ═══════════════════════════════════════════
 
-  // 🔒 TALK: Что такое AI для QA + эволюция
+  // 🔒 TALK: What is Claude Code (architecture overview)
   {
     id: 4,
     slug: 'talk-intro',
     phase: 'live',
-    title: 'Что такое AI для QA',
+    title: 'The Bonding',
     narrativeKey: 'talk_intro',
     gate: { type: 'facilitator', message: 'Фасилитатор ведёт рассказ...' },
     xpReward: 0,
     subSteps: null,
   },
 
-  // 🔒 TALK: 5 уровней эволюции
+  // 🔒 TALK: Anatomy of Claude Code
   {
     id: 5,
     slug: 'talk-evolution',
     phase: 'live',
-    title: 'Эволюция наездника',
+    title: 'What is your dragon',
     narrativeKey: 'talk_evolution',
-    gate: { type: 'facilitator', message: 'Фасилитатор ведёт рассказ...' },
+    gate: { type: 'facilitator', message: 'Фасилитатор разбирает архитектуру...' },
     xpReward: 0,
     subSteps: null,
   },
 
-  // 🔓 TASK: Установи QA-экосистему
+  // 🔓 TASK: Install ecosystem in one prompt
   {
     id: 6,
     slug: 'install-ecosystem',
     phase: 'live',
-    title: 'Установи экосистему',
+    title: 'Forging the bond',
     narrativeKey: 'install',
     gate: { type: 'self-report', message: 'Подтверди установку' },
     xpReward: 100,
     subSteps: null,
   },
 
-  // 🔒 TALK: Что мы установили — разбор
+  // 🔒 TALK: What flew in (review installed pieces)
   {
     id: 7,
     slug: 'talk-ecosystem',
     phase: 'live',
-    title: 'Что мы установили',
+    title: 'What flew in',
     narrativeKey: 'talk_ecosystem',
-    gate: { type: 'facilitator', message: 'Фасилитатор разбирает экосистему...' },
+    gate: { type: 'facilitator', message: 'Разбираем что встало...' },
     xpReward: 0,
     subSteps: null,
   },
 
-  // 🔓 TASK: Попробуй /test-cases
+  // 🔓 SIGNATURE: Build your personal CLAUDE.md from 7 questions
   {
     id: 8,
-    slug: 'practice-testcases',
+    slug: 'persona-builder',
     phase: 'live',
-    title: 'Практика: /test-cases',
-    narrativeKey: 'practice_tc',
-    gate: { type: 'timed-task', durationSeconds: 420, message: 'Запусти /test-cases и отправь результат' },
-    xpReward: 50,
+    title: 'Your signet emerges',
+    narrativeKey: 'persona_builder',
+    gate: { type: 'self-report', message: 'Сгенерируй и применить CLAUDE.md' },
+    xpReward: 100,
     subSteps: null,
   },
 
-  // 🔓 TASK: Найди баг и /bug-report
+  // 🔒 TALK: MCP demo by facilitator (5 min showcase, no participant task)
   {
     id: 9,
-    slug: 'practice-bugreport',
-    phase: 'live',
-    title: 'Практика: /bug-report',
-    narrativeKey: 'practice_br',
-    gate: { type: 'timed-task', durationSeconds: 420, message: 'Найди баг и отправь отчёт' },
-    xpReward: 50,
-    subSteps: null,
-  },
-
-  // 🔒 TALK: MCP суперсила + демо
-  {
-    id: 10,
     slug: 'talk-mcp',
     phase: 'live',
-    title: 'Суперсила: MCP',
+    title: "Riders' arts",
     narrativeKey: 'talk_mcp',
     gate: { type: 'facilitator', message: 'Фасилитатор показывает MCP...' },
     xpReward: 0,
     subSteps: null,
   },
 
-  // 🔓 TASK: AI тестирует сайт через браузер
+  // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
   {
-    id: 11,
-    slug: 'practice-mcp',
+    id: 10,
+    slug: 'arena',
     phase: 'live',
-    title: 'AI тестирует сайт',
-    narrativeKey: 'practice_mcp',
-    gate: { type: 'self-report', message: 'Попробуй и подтверди' },
+    title: 'Riders in the Sky',
+    narrativeKey: 'arena',
+    gate: { type: 'self-report', message: 'Запусти Arena и отправь своего бота' },
     xpReward: 80,
     subSteps: null,
   },
 
-  // 🔓 TASK: Квиз
+  // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 12,
-    slug: 'quiz',
-    phase: 'live',
-    title: 'Battle Brief',
-    narrativeKey: 'quiz',
-    gate: { type: 'quiz', message: 'Ответь на все вопросы' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // 🔒 War Games + голосование
-  {
-    id: 13,
-    slug: 'war-games',
-    phase: 'live',
-    title: 'Военные игры',
-    narrativeKey: 'wargames',
-    gate: { type: 'facilitator' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // 🔒 Лидерборд
-  {
-    id: 14,
+    id: 11,
     slug: 'leaderboard',
     phase: 'live',
-    title: 'Результаты',
+    title: 'Signets honoured',
     narrativeKey: 'leaderboard',
     gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
 
-  // Выпуск
+  // 🎓 GRADUATION
   {
-    id: 15,
+    id: 12,
     slug: 'graduation',
     phase: 'live',
-    title: 'Выпуск',
+    title: 'First flight',
     narrativeKey: 'graduation',
     gate: { type: 'none' },
     xpReward: 100,
+    subSteps: null,
+  },
+
+  // 📦 RESOURCES — take-home reference, accessible anytime via /?page=resources
+  {
+    id: 13,
+    slug: 'resources',
+    phase: 'live',
+    title: 'Bonded',
+    narrativeKey: 'resources',
+    gate: { type: 'click' },
+    xpReward: 0,
     subSteps: null,
   },
 ]

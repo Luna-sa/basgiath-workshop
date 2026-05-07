@@ -7,7 +7,11 @@ import { playNavigateSound } from '../effects/SoundManager'
 import ProgressBar from './ProgressBar'
 import HUD from './HUD'
 
-// Lazy-load page components
+// Lazy-load page components — workshop flow rebuilt around Dragon Arena.
+// Old QA practice pages (PracticeTC, PracticeBR, PracticeMCP, Quiz, WarGames)
+// removed — replaced by PersonaBuilder + Arena (each accessible
+// in-flow via a small intro page that links to the standalone
+// full-screen experience).
 const pageComponents = {
   0: lazy(() => import('../pages/P00_Landing')),
   1: lazy(() => import('../pages/P01_CharacterSelect')),
@@ -17,14 +21,12 @@ const pageComponents = {
   5: lazy(() => import('../pages/P05_TalkEvolution')),
   6: lazy(() => import('../pages/P06_InstallEcosystem')),
   7: lazy(() => import('../pages/P07_TalkEcosystem')),
-  8: lazy(() => import('../pages/P08_PracticeTC')),
-  9: lazy(() => import('../pages/P09_PracticeBR')),
-  10: lazy(() => import('../pages/P10_TalkMCP')),
-  11: lazy(() => import('../pages/P11_PracticeMCP')),
-  12: lazy(() => import('../pages/P12_Quiz')),
-  13: lazy(() => import('../pages/P13_WarGames')),
-  14: lazy(() => import('../pages/P14_Leaderboard')),
-  15: lazy(() => import('../pages/P15_Graduation')),
+  8: lazy(() => import('../pages/P_PersonaIntro')),
+  9: lazy(() => import('../pages/P10_TalkMCP')),
+  10: lazy(() => import('../pages/P_ArenaIntro')),
+  11: lazy(() => import('../pages/P14_Leaderboard')),
+  12: lazy(() => import('../pages/P15_Graduation')),
+  13: lazy(() => import('../pages/P_ResourcesIntro')),
 }
 
 // Loading fallback
