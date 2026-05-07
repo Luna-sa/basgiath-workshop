@@ -27,6 +27,12 @@ export const CHECKPOINT_DESCRIPTIONS = {
   arena: 'Bot submitted to the Dragon Arena',
 }
 
+function looksLikeMissingColumn(err) {
+  if (!err) return false
+  const msg = (err.message || '') + ' ' + (err.hint || '')
+  return /checkpoints.*does not exist|column.*checkpoints/i.test(msg)
+}
+
 export async function markCheckpoint(studentId, checkpointId) {
   if (!supabase) return { error: { message: 'Backend not configured' } }
   if (!studentId) return { error: { message: 'No student id — register first' } }
@@ -36,12 +42,20 @@ export async function markCheckpoint(studentId, checkpointId) {
   // Read-modify-write the JSONB blob (good enough for workshop scale)
   const { data: cur, error: readErr } = await supabase
     .from('students').select('checkpoints').eq('id', studentId).maybeSingle()
-  if (readErr) return { error: readErr }
+  if (readErr) {
+    if (looksLikeMissingColumn(readErr)) {
+      return { error: { message: 'Backend not migrated — run SUPABASE_MIGRATION_2026-05-08_checkpoints.sql in Supabase SQL Editor' } }
+    }
+    return { error: readErr }
+  }
   const next = { ...(cur?.checkpoints || {}), [checkpointId]: new Date().toISOString() }
   const { error } = await supabase
     .from('students')
     .update({ checkpoints: next })
     .eq('id', studentId)
+  if (looksLikeMissingColumn(error)) {
+    return { error: { message: 'Backend not migrated — run SUPABASE_MIGRATION_2026-05-08_checkpoints.sql in Supabase SQL Editor' } }
+  }
   return { error, checkpoints: next }
 }
 
@@ -49,5 +63,9 @@ export async function getCheckpoints(studentId) {
   if (!supabase || !studentId) return { data: {}, error: null }
   const { data, error } = await supabase
     .from('students').select('checkpoints').eq('id', studentId).maybeSingle()
+  if (looksLikeMissingColumn(error)) {
+    // Soft-fail so the page still renders without the column
+    return { data: {}, error: null }
+  }
   return { data: data?.checkpoints || {}, error }
 }
