@@ -58,13 +58,14 @@ export default function WorkshopGate({ onUnlock }) {
         </div>
 
         <h1 className="font-display text-3xl sm:text-4xl text-white leading-tight mb-3">
-          {t('Sign in', 'Вход')}
+          {t('Sign in', 'Вход', 'Вхід')}
         </h1>
 
         <p className="text-[14px] text-text-secondary leading-relaxed mb-8">
           {t(
             'Enter the nickname you picked when you registered. Workshop is locked until your nickname is found.',
-            'Введи ник который ты придумала при регистрации. Воркшоп заблокирован пока ник не найдётся.'
+            'Введи ник который ты придумала при регистрации. Воркшоп заблокирован пока ник не найдётся.',
+            'Введи нік який ти вигадала при реєстрації. Воркшоп заблокований доки нік не знайдеться.'
           )}
         </p>
 
@@ -72,7 +73,7 @@ export default function WorkshopGate({ onUnlock }) {
 
           <div>
             <label className="font-mono text-[11px] tracking-[2px] uppercase text-text-secondary block mb-2">
-              {t('Workshop nickname', 'Ник')}
+              {t('Workshop nickname', 'Ник', 'Нік')}
             </label>
             <input
               type="text"
@@ -98,7 +99,9 @@ export default function WorkshopGate({ onUnlock }) {
                 : 'bg-border text-text-dim cursor-not-allowed'
             }`}
           >
-            {status === 'checking' ? t('Checking...', 'Проверяю...') : t('Enter →', 'Войти →')}
+            {status === 'checking'
+              ? t('Checking...', 'Проверяю...', 'Перевіряю...')
+              : t('Enter →', 'Войти →', 'Увійти →')}
           </button>
 
           {status === 'not-found' && (
@@ -106,21 +109,22 @@ export default function WorkshopGate({ onUnlock }) {
               <p className="text-[13px] text-white leading-relaxed mb-2">
                 {t(
                   "Nickname not found. You haven't registered yet, or you typed it differently.",
-                  'Ник не найден. Либо ещё не зарегистрировалась, либо вводишь не так как при регистрации.'
+                  'Ник не найден. Либо ещё не зарегистрировалась, либо вводишь не так как при регистрации.',
+                  'Нік не знайдено. Або ще не зареєструвалась, або вводиш не так як при реєстрації.'
                 )}
               </p>
               <a
                 href="/?page=register"
                 className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal hover:underline"
               >
-                {t('Register →', 'Зарегистрироваться →')}
+                {t('Register →', 'Зарегистрироваться →', 'Зареєструватись →')}
               </a>
             </div>
           )}
 
           {status === 'error' && (
             <p className="text-[12px] text-corp-red text-center">
-              {t('Could not check nickname: ', 'Не получилось проверить ник: ')}{errorMsg}
+              {t('Could not check nickname: ', 'Не получилось проверить ник: ', 'Не вдалося перевірити нік: ')}{errorMsg}
             </p>
           )}
 
