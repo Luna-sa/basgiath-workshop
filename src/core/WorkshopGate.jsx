@@ -110,7 +110,7 @@ export default function WorkshopGate({ onUnlock }) {
                 )}
               </p>
               <a
-                href="/register"
+                href="/?page=register"
                 className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal hover:underline"
               >
                 {t('Register →', 'Зарегистрироваться →')}

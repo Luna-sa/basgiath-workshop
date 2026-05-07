@@ -19,7 +19,10 @@ function isFacilitatorMode() {
 }
 
 function isRegisterRoute() {
-  return window.location.pathname === '/register' || window.location.pathname === '/register/'
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'register') return true
+  const path = window.location.pathname
+  return path === '/register' || path === '/register/'
 }
 
 export default function App() {

@@ -51,7 +51,7 @@ WHEN AND WHERE
 
 TWO THINGS TO ATTEND
 
-1. Register (mandatory): https://basgiath-workshop.onrender.com/register
+1. Register (mandatory): https://basgiath-workshop.onrender.com/?page=register
    Closes May 12, 17:00. No registration, no entry.
 
 2. Install Claude Code before the workshop.
