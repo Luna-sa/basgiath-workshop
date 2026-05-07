@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import arenaHtml from '../../public/dragon-arena.html?raw'
 import { useWorkshopStore } from '../store/workshopStore'
-import { submitBot } from '../api/submissions'
+import { submitBot, getLatestSubmissionsByCharacter } from '../api/submissions'
 
 /**
  * Arena page wrapper. Render's static-site routing returns 404 for
@@ -12,9 +12,42 @@ import { submitBot } from '../api/submissions'
  * Also bridges submit events: arena posts {type:'submit-bot',code,characterId}
  * via window.parent.postMessage; we forward to Supabase and reply back.
  */
+function isFinalBattle() {
+  return new URLSearchParams(window.location.search).get('final') === '1'
+}
+
 export default function Arena() {
   const iframeRef = useRef(null)
   const nickname = useWorkshopStore(s => s.user.nickname)
+
+  // If ?final=1 is in URL, push the latest submitted bots into the arena
+  // once the iframe says it's ready.
+  useEffect(() => {
+    if (!isFinalBattle()) return
+    let pushed = false
+    async function push() {
+      if (pushed) return
+      pushed = true
+      const { data } = await getLatestSubmissionsByCharacter()
+      try {
+        if (iframeRef.current?.contentWindow) {
+          iframeRef.current.contentWindow.postMessage({
+            type: 'load-submissions',
+            submissions: (data || []).map(s => ({
+              characterId: s.character_id,
+              code: s.code,
+              nickname: s.nickname,
+            })),
+          }, '*')
+        }
+      } catch {}
+    }
+    // Try after iframe loads, with a fallback delay
+    const onLoad = () => push()
+    iframeRef.current?.addEventListener('load', onLoad)
+    setTimeout(push, 800)
+    return () => iframeRef.current?.removeEventListener('load', onLoad)
+  }, [])
 
   useEffect(() => {
     function onMessage(e) {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { PAGES } from '../data/pages'
 import { CHARACTERS } from '../data/characters'
 import { advanceAll, getAllStudents, setWorkshopPhase, deleteStudent } from '../api/facilitator'
+import { getLatestSubmissionsByCharacter } from '../api/submissions'
 import RoundControl from './RoundControl'
 
 export default function Dashboard() {
@@ -10,6 +11,19 @@ export default function Dashboard() {
   const [phase, setPhase] = useState('pre')
   const [search, setSearch] = useState('')
   const [busyId, setBusyId] = useState(null)
+  const [submissions, setSubmissions] = useState([])
+  const [submissionsLoading, setSubmissionsLoading] = useState(false)
+
+  const refreshSubmissions = async () => {
+    setSubmissionsLoading(true)
+    const { data } = await getLatestSubmissionsByCharacter()
+    setSubmissions(data || [])
+    setSubmissionsLoading(false)
+  }
+
+  const openFinalBattle = () => {
+    window.open('/?page=arena&final=1', '_blank', 'noopener')
+  }
 
   const handleDelete = async (student) => {
     setBusyId(student.id)
@@ -33,13 +47,14 @@ export default function Dashboard() {
     )
   })
 
-  // Poll students every 3 seconds
+  // Poll students every 3 seconds + initial fetch of submissions
   useEffect(() => {
     const load = async () => {
       const data = await getAllStudents()
       setStudents(data)
     }
     load()
+    refreshSubmissions()
     const interval = setInterval(load, 3000)
     return () => clearInterval(interval)
   }, [])
@@ -114,6 +129,61 @@ export default function Dashboard() {
 
         {/* Round control */}
         <RoundControl />
+
+        {/* Bot submissions for final battle */}
+        <div className="mb-8 p-5 border border-border bg-surface/50">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+            <div>
+              <div className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim">
+                Bot Submissions · Final Battle
+              </div>
+              <div className="text-[12px] text-text-dim mt-1">
+                Latest submission per character. Click "Open Final Battle" to load all into the arena.
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={refreshSubmissions}
+                disabled={submissionsLoading}
+                className="font-mono text-[11px] tracking-[1px] uppercase border border-border text-text-dim hover:border-qa-teal/40 hover:text-qa-teal px-3 py-2 cursor-pointer disabled:opacity-40"
+              >
+                {submissionsLoading ? 'Refreshing...' : 'Refresh'}
+              </button>
+              <button
+                onClick={openFinalBattle}
+                disabled={submissions.length === 0}
+                className="font-mono text-[11px] tracking-[2px] uppercase font-semibold bg-qa-teal text-black px-4 py-2 cursor-pointer hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Open Final Battle →
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {CHARACTERS.map(c => {
+              const sub = submissions.find(s => s.character_id === c.id)
+              return (
+                <div key={c.id} className="border border-border p-3 bg-bg/50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{c.emoji}</span>
+                    <span className="text-[13px] text-white truncate">{c.name}</span>
+                  </div>
+                  <div className="mt-2 font-mono text-[11px]">
+                    {sub ? (
+                      <>
+                        <span className="text-qa-teal">@{sub.nickname}</span>
+                        <span className="text-text-dim block mt-1">
+                          {new Date(sub.submitted_at).toLocaleString()}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-text-dim italic">no submission yet</span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
 
         {/* Quick actions */}
         <div className="grid sm:grid-cols-4 gap-3 mb-8">

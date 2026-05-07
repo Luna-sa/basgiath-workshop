@@ -809,6 +809,21 @@ window.addEventListener('message', (e) => {
       showBanner('Submit failed: ' + (e.data.error || 'unknown error'))
     }
     renderSlots()
+  } else if (e.data.type === 'load-submissions') {
+    // Final-battle mode: parent pushed all submitted bots
+    let loaded = 0
+    for (const sub of e.data.submissions || []) {
+      const s = slotState.find(x => x.id === sub.characterId)
+      if (!s || !sub.code) continue
+      s.code = sub.code
+      s.status = 'submitted'
+      s.submittedBy = sub.nickname
+      loaded++
+    }
+    renderSlots()
+    if (loaded > 0) {
+      showBanner(`Final battle loaded · ${loaded} riders bonded`)
+    }
   }
 })
 
