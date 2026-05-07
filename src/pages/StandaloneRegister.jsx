@@ -92,38 +92,49 @@ export default function StandaloneRegister() {
             <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-6">
               · QA Clan · Workshop
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl text-white leading-tight mb-6">
-              {t('You are registered.', 'Регистрация подтверждена.', 'Реєстрацію підтверджено.')}
+            <h1 className="font-display text-3xl sm:text-4xl text-white leading-tight mb-2">
+              {t(
+                'Your name is on the rolls.',
+                'Имя занесено в свитки.',
+                'Імʼя занесено до сувоїв.'
+              )}
             </h1>
+            <p className="font-display italic text-[15px] text-text-secondary mb-6">
+              {t(
+                'Basgiath awaits you on May 13.',
+                'Басгиат ждёт тебя 13 мая.',
+                'Басгіат чекає на тебе 13 травня.'
+              )}
+            </p>
 
             {/* Big attention block — remember the nickname */}
             <div className="border-2 border-qa-teal bg-qa-teal/[0.10] py-6 px-5 mb-6 rounded-[2px] shadow-[0_0_32px_rgba(0,229,204,0.18)]">
               <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3 font-semibold">
-                ▲ {t('Remember this nickname', 'Запомни этот ник', 'Запамʼятай цей нік')}
+                ▲ {t('Your signet', 'Твой сигнет', 'Твій сигнет')}
               </div>
               <div className="font-mono text-[28px] sm:text-[32px] text-white font-semibold tracking-wide mb-4 break-all">
                 {form.nickname}
               </div>
               <p className="text-[13px] text-white leading-relaxed font-medium">
                 {t(
-                  'Without this nickname you cannot enter the workshop on May 13. Save it now - take a screenshot, write it down, anything.',
-                  'Без этого ника зайти на воркшоп 13 мая нельзя. Сохрани прямо сейчас - скриншот, заметка, как угодно.',
-                  'Без цього ніка зайти на воркшоп 13 травня не можна. Збережи прямо зараз - скріншот, нотатка, як завгодно.'
+                  'Without your signet the Watch will not let you through the gates. Save it now - screenshot, note, anything.',
+                  'Без сигнета стража не пустит за ворота. Сохрани прямо сейчас - скриншот, заметка, что угодно.',
+                  'Без сигнета варта не пустить за ворота. Збережи прямо зараз - скріншот, нотатка, що завгодно.'
                 )}
               </p>
             </div>
             <p className="text-[15px] text-text-body leading-relaxed mb-3">
               {t(
-                'I will send a calendar invite for May 13, 14:00 to 15:30. Watch your Outlook.',
+                'A calendar invite for May 13, 14:00-15:30 will arrive in your Outlook.',
                 'Calendar invite на 13 мая, 14:00-15:30 придёт в Outlook.',
                 'Calendar invite на 13 травня, 14:00-15:30 прийде в Outlook.'
               )}
             </p>
-            <p className="text-[14px] text-text-secondary leading-relaxed mb-8">
+            <p className="text-[14px] text-text-secondary leading-relaxed mb-8 italic">
               {t(
-                'Make sure Claude Code is installed before the workshop. The whole thing runs in it.',
-                'Убедись что Claude Code установлен до воркшопа. Всё крутится вокруг него.',
-                'Переконайся що Claude Code встановлений до воркшопу. Все крутиться навколо нього.'
+                'On the day of the trial, your dragon must already be bonded. Install Claude Code now.',
+                'К дню испытания дракон должен быть уже привязан. Установи Claude Code сейчас.',
+                'До дня випробування дракон має бути вже привʼязаний. Встанови Claude Code зараз.'
               )}
             </p>
             <div className="border border-border bg-bg p-5 rounded-[2px] text-left">
