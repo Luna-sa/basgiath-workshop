@@ -254,33 +254,6 @@ export default function StandaloneRegister() {
             )}
           </div>
 
-          {/* OS */}
-          <div>
-            <label className={labelClass}>
-              {t('Operating system', 'Операционная система', 'Операційна система')}
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { value: 'mac', label: 'macOS' },
-                { value: 'win', label: 'Windows' },
-                { value: 'linux', label: 'Linux' },
-              ].map(o => (
-                <button
-                  key={o.value}
-                  type="button"
-                  onClick={() => updateField('os', o.value)}
-                  className={`px-4 py-3 border transition-all cursor-pointer text-[14px] ${
-                    form.os === o.value
-                      ? 'border-qa-teal bg-qa-teal/[0.06] text-white'
-                      : 'border-border text-text-secondary hover:border-qa-teal/30'
-                  }`}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Claude Code readiness */}
           <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5 rounded-[2px]">
             <label className="flex items-start gap-3 cursor-pointer">
