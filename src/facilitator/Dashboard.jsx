@@ -1,13 +1,40 @@
 import { useState, useEffect } from 'react'
 import { PAGES } from '../data/pages'
 import { CHARACTERS } from '../data/characters'
-import { advanceAll, getAllStudents, setWorkshopPhase } from '../api/facilitator'
+import { advanceAll, getAllStudents, setWorkshopPhase, deleteStudent } from '../api/facilitator'
 import RoundControl from './RoundControl'
 
 export default function Dashboard() {
   const [students, setStudents] = useState([])
   const [currentUnlock, setCurrentUnlock] = useState(4)
   const [phase, setPhase] = useState('pre')
+  const [search, setSearch] = useState('')
+  const [busyId, setBusyId] = useState(null)
+
+  const handleDelete = async (student) => {
+    const confirmText = `Delete ${student.nickname || student.name}?\n\nThis is permanent. Type ${student.nickname || student.name} to confirm.`
+    const typed = window.prompt(confirmText)
+    if (!typed || typed.trim() !== (student.nickname || student.name)) return
+    setBusyId(student.id)
+    const { error } = await deleteStudent(student.id)
+    setBusyId(null)
+    if (error) {
+      alert('Delete failed: ' + (error.message || JSON.stringify(error)))
+      return
+    }
+    setStudents(prev => prev.filter(s => s.id !== student.id))
+  }
+
+  const filteredStudents = students.filter(s => {
+    if (!search.trim()) return true
+    const q = search.toLowerCase()
+    return (
+      (s.nickname || '').toLowerCase().includes(q) ||
+      (s.name || '').toLowerCase().includes(q) ||
+      (s.studio || '').toLowerCase().includes(q) ||
+      (s.role || '').toLowerCase().includes(q)
+    )
+  })
 
   // Poll students every 3 seconds
   useEffect(() => {
@@ -125,50 +152,73 @@ export default function Dashboard() {
 
         {/* Student tracker */}
         <div className="border border-border">
-          <div className="p-4 border-b border-border bg-surface/50 flex items-center justify-between">
+          <div className="p-4 border-b border-border bg-surface/50 flex items-center justify-between gap-3 flex-wrap">
             <div className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim">
-              Студенты ({students.length})
+              Registered ({filteredStudents.length}{search ? ` of ${students.length}` : ''})
             </div>
-            <button
-              onClick={async () => setStudents(await getAllStudents())}
-              className="font-mono text-[12px] text-qa-teal tracking-wider hover:underline cursor-pointer"
-            >
-              Refresh
-            </button>
+            <div className="flex items-center gap-3">
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search nickname, name, studio..."
+                className="px-3 py-1.5 bg-bg border border-border text-white text-[12px] font-mono placeholder:text-text-dim focus:border-qa-teal outline-none w-[220px]"
+              />
+              <button
+                onClick={async () => setStudents(await getAllStudents())}
+                className="font-mono text-[12px] text-qa-teal tracking-wider hover:underline cursor-pointer"
+              >
+                Refresh
+              </button>
+            </div>
           </div>
 
-          {students.length === 0 ? (
+          {filteredStudents.length === 0 ? (
             <div className="p-8 text-center text-text-dim text-sm">
-              Ещё никто не зарегистрировался
+              {students.length === 0 ? 'Ещё никто не зарегистрировался' : 'Nothing matches that search'}
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {students.map(student => {
+              {filteredStudents.map(student => {
                 const char = CHARACTERS.find(c => c.id === student.character_id)
-                const pageTitle = PAGES[student.current_page]?.title || '?'
+                const pageTitle = PAGES[student.current_page]?.title || '—'
+                const created = student.created_at ? new Date(student.created_at).toLocaleString() : '—'
                 return (
-                  <div key={student.id} className="flex items-center gap-4 p-4 hover:bg-surface/30 transition-colors">
+                  <div key={student.id} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 p-4 hover:bg-surface/30 transition-colors">
                     <span className="text-lg">{char?.emoji || '👤'}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm text-white truncate">{student.name}</div>
-                      <div className="font-mono text-[12px] text-text-dim">
-                        {char?.title || student.role || '—'} · {student.email}
+
+                    <div className="min-w-0">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="font-mono text-[14px] text-qa-teal font-semibold">
+                          {student.nickname || '—'}
+                        </span>
+                        <span className="text-sm text-white truncate">{student.name || '—'}</span>
+                      </div>
+                      <div className="font-mono text-[11px] text-text-dim flex flex-wrap gap-x-3">
+                        <span>{student.studio || '— studio'}</span>
+                        <span>·</span>
+                        <span>{student.role || '— role'}</span>
+                        {student.claude_code_ready && <><span>·</span><span className="text-qa-teal">claude ready</span></>}
+                        <span>·</span>
+                        <span className="italic">{created}</span>
                       </div>
                     </div>
+
                     <div className="text-right">
-                      <div className="font-mono text-sm text-qa-teal">{student.xp} XP</div>
-                      <div className="font-mono text-[12px] text-text-dim">
-                        P{String(student.current_page).padStart(2, '0')} {pageTitle}
+                      <div className="font-mono text-sm text-qa-teal">{student.xp || 0} XP</div>
+                      <div className="font-mono text-[11px] text-text-dim">
+                        P{String(student.current_page || 0).padStart(2, '0')} {pageTitle}
                       </div>
                     </div>
-                    <div className="w-20">
-                      <div className="h-1.5 bg-border overflow-hidden">
-                        <div
-                          className="h-full bg-qa-teal transition-all"
-                          style={{ width: `${(student.current_page / 16) * 100}%` }}
-                        />
-                      </div>
-                    </div>
+
+                    <button
+                      onClick={() => handleDelete(student)}
+                      disabled={busyId === student.id}
+                      className="font-mono text-[10px] tracking-[2px] uppercase border border-corp-red/40 text-corp-red px-3 py-2 hover:bg-corp-red/10 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+                      title="Delete this registration"
+                    >
+                      {busyId === student.id ? '…' : 'Delete'}
+                    </button>
                   </div>
                 )
               })}

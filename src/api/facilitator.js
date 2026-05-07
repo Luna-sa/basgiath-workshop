@@ -54,7 +54,16 @@ export async function getAllStudents() {
   const { data, error } = await supabase
     .from('students')
     .select('*')
-    .order('xp', { ascending: false })
+    .order('created_at', { ascending: false })
   if (error) return []
   return data || []
+}
+
+export async function deleteStudent(studentId) {
+  if (!supabase) return { error: 'no supabase' }
+  const { error } = await supabase
+    .from('students')
+    .delete()
+    .eq('id', studentId)
+  return { error }
 }
