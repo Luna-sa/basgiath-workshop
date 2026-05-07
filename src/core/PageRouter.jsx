@@ -25,10 +25,11 @@ const pageComponents = {
   9: lazy(() => import('../pages/P_TalkPowerMoves')),
   10: lazy(() => import('../pages/P_PersonaIntro')),
   11: lazy(() => import('../pages/P10_TalkMCP')),
-  12: lazy(() => import('../pages/P_ArenaIntro')),
-  13: lazy(() => import('../pages/P14_Leaderboard')),
-  14: lazy(() => import('../pages/P15_Graduation')),
-  15: lazy(() => import('../pages/P_ResourcesIntro')),
+  12: lazy(() => import('../pages/P_HiddenGems')),
+  13: lazy(() => import('../pages/P_ArenaIntro')),
+  14: lazy(() => import('../pages/P14_Leaderboard')),
+  15: lazy(() => import('../pages/P15_Graduation')),
+  16: lazy(() => import('../pages/P_ResourcesIntro')),
 }
 
 // Loading fallback

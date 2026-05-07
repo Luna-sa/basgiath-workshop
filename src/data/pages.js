@@ -149,9 +149,21 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
+  // 🔒 HIDDEN GEMS — community projects + undocumented Claude Code features
   {
     id: 12,
+    slug: 'hidden-gems',
+    phase: 'live',
+    title: 'Hidden gems',
+    narrativeKey: 'hidden_gems',
+    gate: { type: 'facilitator', message: 'Фасилитатор показывает фишки...' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
+  {
+    id: 13,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -163,7 +175,7 @@ export const PAGES = [
 
   // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 13,
+    id: 14,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -175,7 +187,7 @@ export const PAGES = [
 
   // 🎓 GRADUATION
   {
-    id: 14,
+    id: 15,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -187,7 +199,7 @@ export const PAGES = [
 
   // 📦 RESOURCES — take-home reference
   {
-    id: 15,
+    id: 16,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',

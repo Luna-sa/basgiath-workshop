@@ -78,6 +78,11 @@ export const NARRATIVE = {
     subtitle: 'Let the dragon fly.',
     text: 'Попроси AI открыть sample-project в браузере и протестировать регистрацию — пустые поля, невалидный email, пароль «1». Смотри как он работает.',
   },
+  hidden_gems: {
+    title: 'Hidden gems',
+    subtitle: 'Things most riders don\'t know.',
+    text: 'Семь штук — встроенные фичи Claude Code и community-проекты, которые либо радуют, либо реально меняют workflow. Под каждым — autopilot prompt: copy → paste в Claude → он сам ставит.',
+  },
   arena: {
     title: 'Riders in the Sky',
     subtitle: 'Each rider writes how their dragon flies.',
