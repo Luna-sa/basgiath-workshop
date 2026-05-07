@@ -12,9 +12,6 @@ export default function Dashboard() {
   const [busyId, setBusyId] = useState(null)
 
   const handleDelete = async (student) => {
-    const confirmText = `Delete ${student.nickname || student.name}?\n\nThis is permanent. Type ${student.nickname || student.name} to confirm.`
-    const typed = window.prompt(confirmText)
-    if (!typed || typed.trim() !== (student.nickname || student.name)) return
     setBusyId(student.id)
     const { error } = await deleteStudent(student.id)
     setBusyId(null)
