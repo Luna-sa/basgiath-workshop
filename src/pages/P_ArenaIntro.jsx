@@ -36,6 +36,23 @@ export default function P_ArenaIntro() {
           </p>
         </div>
 
+        <div className="flex flex-wrap gap-3 items-center">
+          <a
+            href={arenaUrl}
+            target="_blank"
+            rel="noopener"
+            className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all animate-pulse-teal"
+          >
+            {t('Open Arena →', 'Открыть арену →')}
+          </a>
+          {nickname && (
+            <span className="text-[12px] text-text-dim italic">
+              {t('Signed in as', 'Вошла как')}{' '}
+              <span className="font-mono text-qa-teal">{nickname}</span>
+            </span>
+          )}
+        </div>
+
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5">
             <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-2">
@@ -68,23 +85,6 @@ sky   : { width, height }`}</pre>
               )}
             </p>
           </div>
-        </div>
-
-        <div className="flex flex-wrap gap-3 items-center pt-2">
-          <a
-            href={arenaUrl}
-            target="_blank"
-            rel="noopener"
-            className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all"
-          >
-            {t('Open Arena →', 'Открыть арену →')}
-          </a>
-          {nickname && (
-            <span className="text-[12px] text-text-dim italic">
-              {t('Signed in as', 'Вошла как')}{' '}
-              <span className="font-mono text-qa-teal">{nickname}</span>
-            </span>
-          )}
         </div>
 
         <p className="text-[12px] text-text-dim italic">

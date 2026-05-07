@@ -32,6 +32,17 @@ export default function P_PersonaIntro() {
           </p>
         </div>
 
+        <div className="flex flex-wrap gap-3 items-center">
+          <a
+            href="/?page=persona"
+            target="_blank"
+            rel="noopener"
+            className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all animate-pulse-teal"
+          >
+            {t('Open Persona Builder →', 'Открыть сборку персонажа →')}
+          </a>
+        </div>
+
         {character && (
           <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5 flex items-center gap-4">
             {character.image && (
@@ -50,17 +61,6 @@ export default function P_PersonaIntro() {
             </div>
           </div>
         )}
-
-        <div className="flex flex-wrap gap-3 items-center pt-2">
-          <a
-            href="/?page=persona"
-            target="_blank"
-            rel="noopener"
-            className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all"
-          >
-            {t('Open Persona Builder →', 'Открыть сборку персонажа →')}
-          </a>
-        </div>
 
         <CheckpointButton
           id="signet"

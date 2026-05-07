@@ -31,7 +31,7 @@ export default function P_ResourcesIntro() {
           href="/?page=resources"
           target="_blank"
           rel="noopener"
-          className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all"
+          className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all animate-pulse-teal"
         >
           {t('Open Resource Hub →', 'Открыть хаб ресурсов →')}
         </a>
