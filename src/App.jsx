@@ -136,7 +136,7 @@ export default function App() {
     <ErrorBoundary>
       <div className="min-h-screen bg-bg text-text-body">
         <TealParticles />
-        <LanguageToggle />
+        {/* LanguageToggle lives inside <ProgressBar /> on the main flow */}
         <PageRouter />
         <AchievementToast />
         <AnnouncementToast />

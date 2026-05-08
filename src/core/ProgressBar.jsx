@@ -1,9 +1,18 @@
 import { useWorkshopStore } from '../store/workshopStore'
+import { useLocale } from '../i18n/store'
 import { PAGES } from '../data/pages'
+
+const LANGS = [
+  { code: 'en', label: 'EN' },
+  { code: 'ru', label: 'RU' },
+  { code: 'uk', label: 'UK' },
+]
 
 export default function ProgressBar() {
   const currentPage = useWorkshopStore(s => s.currentPage)
   const completedPages = useWorkshopStore(s => s.completedPages)
+  const lang = useLocale(s => s.lang)
+  const setLang = useLocale(s => s.setLang)
   const page = PAGES[currentPage]
 
   const progress = (completedPages.length / (PAGES.length - 1)) * 100
@@ -31,6 +40,23 @@ export default function ProgressBar() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Language toggle */}
+          <div className="flex gap-0.5 border border-border bg-surface/60 rounded-[2px] p-0.5">
+            {LANGS.map(l => (
+              <button
+                key={l.code}
+                onClick={() => setLang(l.code)}
+                className={`px-2 py-1 font-mono text-[11px] tracking-[2px] rounded-[2px] transition-all cursor-pointer ${
+                  lang === l.code
+                    ? 'bg-qa-teal text-black font-semibold'
+                    : 'text-text-dim hover:text-qa-teal'
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
           <span className={`font-mono text-[11px] tracking-[2px] uppercase px-2 py-1 border ${
             page?.phase === 'pre'
               ? 'text-text-dim border-border'
