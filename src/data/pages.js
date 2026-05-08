@@ -1,11 +1,11 @@
-// Workshop flow — 24 pages.
+// Workshop flow — 23 pages.
 //
 // 🔒 facilitator = locked until facilitator advances (talk slides)
 // 🔓 self-report / timed-task = student works independently after unlock
 //
-// Hidden Gems (id 12) is an overview slide; ids 13–19 are seven
+// Hidden Gems (id 12) is an overview slide; ids 13–18 are six
 // per-gem deep-dive slides (Pixel Agents → MemPalace → suzu-mcp →
-// ENABLE_TOOL_SEARCH → Quinn+Jinx → Channels → /output-style learning).
+// ENABLE_TOOL_SEARCH → Quinn+Jinx → Channels).
 
 export const PAGES = [
   // ═══════════════════════════════════════════
@@ -224,20 +224,10 @@ export const PAGES = [
     xpReward: 0,
     subSteps: null,
   },
-  {
-    id: 19,
-    slug: 'gem-output-style',
-    phase: 'live',
-    title: '/output-style learning',
-    narrativeKey: 'gem_output_style',
-    gate: { type: 'facilitator' },
-    xpReward: 0,
-    subSteps: null,
-  },
 
   // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
   {
-    id: 20,
+    id: 19,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -249,7 +239,7 @@ export const PAGES = [
 
   // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 21,
+    id: 20,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -261,7 +251,7 @@ export const PAGES = [
 
   // 🎓 GRADUATION
   {
-    id: 22,
+    id: 21,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -273,7 +263,7 @@ export const PAGES = [
 
   // 📦 RESOURCES — take-home reference
   {
-    id: 23,
+    id: 22,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',

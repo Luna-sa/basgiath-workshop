@@ -294,46 +294,6 @@ export function ChannelsVisual() {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// /output-style learning — code with TODO(human) highlight
-// ─────────────────────────────────────────────────────────────────
-export function OutputStyleVisual() {
-  return (
-    <div className="border border-border bg-[#0d0e10] p-5 rounded-[2px]">
-      <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal/80 mb-3">
-        ◆ what claude leaves for you
-      </div>
-
-      <pre className="font-mono text-[12px] leading-relaxed bg-black border border-border p-4 overflow-x-auto">
-<span className="text-text-dim">{`function generatePasswordResetToken(userId) {`}</span>{'\n'}
-<span className="text-text-dim">{`  // scaffolding written by claude:`}</span>{'\n'}
-<span className="text-text-dim">{`  const user = db.users.findById(userId)`}</span>{'\n'}
-<span className="text-text-dim">{`  if (!user) throw new Error('not found')`}</span>{'\n\n'}
-<span className="bg-yellow-300/15 text-yellow-300">{`  // TODO(human): generate single-use token`}</span>{'\n'}
-<span className="bg-yellow-300/15 text-yellow-300">{`  // - what entropy? (32 random bytes is standard)`}</span>{'\n'}
-<span className="bg-yellow-300/15 text-yellow-300">{`  // - how long? (15 min is industry standard)`}</span>{'\n'}
-<span className="bg-yellow-300/15 text-yellow-300">{`  // - one-time use → invalidate on first use`}</span>{'\n'}
-<span className="bg-yellow-300/15 text-yellow-300">{`  // - bonus: rate-limit per email`}</span>{'\n'}
-<span className="bg-yellow-300/15 text-yellow-300">{`  const token = ???`}</span>{'\n\n'}
-<span className="text-text-dim">{`  await db.tokens.insert({ userId, token, ... })`}</span>{'\n'}
-<span className="text-text-dim">{`  return token`}</span>{'\n'}
-<span className="text-text-dim">{`}`}</span>
-      </pre>
-
-      <div className="grid grid-cols-2 gap-3 mt-4">
-        <div className="border border-border/40 bg-surface/40 p-3">
-          <div className="font-mono text-[9px] tracking-[1.5px] uppercase text-text-dim mb-1">default</div>
-          <div className="text-[12px] text-text-body">Claude writes everything · you tab-accept</div>
-        </div>
-        <div className="border border-qa-teal/40 bg-qa-teal/[0.06] p-3">
-          <div className="font-mono text-[9px] tracking-[1.5px] uppercase text-qa-teal mb-1">learning</div>
-          <div className="text-[12px] text-text-body">Claude scaffolds · you write the hard part</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─────────────────────────────────────────────────────────────────
 // Visual selector — picks the right component by gem id
 // ─────────────────────────────────────────────────────────────────
 export function GemVisual({ gemId }) {
@@ -344,7 +304,6 @@ export function GemVisual({ gemId }) {
     case 'tool-search': return <ToolSearchVisual />
     case 'quinn-jinx': return <QuinnJinxVisual />
     case 'channels': return <ChannelsVisual />
-    case 'output-style-learning': return <OutputStyleVisual />
     default: return null
   }
 }

@@ -16,8 +16,8 @@ export default function P_HiddenGems() {
         <div>
           <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
             {t(
-              'Seven things most riders don\'t know about. Some are baked into Claude Code and undocumented. Some are community projects that lift the workflow or just delight you. We go through them one at a time over the next slides — each with a copyable autopilot prompt, so you can install on the spot.',
-              'Семь штук, про которые большинство всадников не знают. Часть встроена в Claude Code и не задокументирована. Часть — community-проекты, которые поднимают workflow или просто радуют. Сейчас идём по ним по одной — у каждой свой слайд и copyable autopilot-промпт, поставить можно прямо здесь.'
+              'Six things most riders don\'t know about. Some are baked into Claude Code and undocumented. Some are community projects that lift the workflow or just delight you. We go through them one at a time over the next slides — each with a copyable autopilot prompt, so you can install on the spot.',
+              'Шесть штук, про которые большинство всадников не знают. Часть встроена в Claude Code и не задокументирована. Часть — community-проекты, которые поднимают workflow или просто радуют. Сейчас идём по ним по одной — у каждой свой слайд и copyable autopilot-промпт, поставить можно прямо здесь.'
             )}
           </p>
         </div>
@@ -44,8 +44,8 @@ export default function P_HiddenGems() {
         <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-4">
           <p className="text-[13px] text-text-body leading-relaxed">
             {t(
-              'On each gem slide: tagline → what it is → why it matters → when to reach for it → install prompt. Use the right arrow / Space / Enter to advance through the seven.',
-              'На каждом слайде с гемом: tagline → что это → зачем → когда брать → install-промпт. Стрелка вправо / Space / Enter — листать дальше по семи.'
+              'On each gem slide: tagline → what it is → why it matters → when to reach for it → install prompt. Use the right arrow / Space / Enter to advance through the six.',
+              'На каждом слайде с гемом: tagline → что это → зачем → когда брать → install-промпт. Стрелка вправо / Space / Enter — листать дальше по шести.'
             )}
           </p>
         </div>

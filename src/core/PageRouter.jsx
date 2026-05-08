@@ -32,11 +32,10 @@ const pageComponents = {
   16: lazy(() => import('../pages/P_GemToolSearch')),
   17: lazy(() => import('../pages/P_GemQuinnJinx')),
   18: lazy(() => import('../pages/P_GemChannels')),
-  19: lazy(() => import('../pages/P_GemOutputStyle')),
-  20: lazy(() => import('../pages/P_ArenaIntro')),
-  21: lazy(() => import('../pages/P14_Leaderboard')),
-  22: lazy(() => import('../pages/P15_Graduation')),
-  23: lazy(() => import('../pages/P_ResourcesIntro')),
+  19: lazy(() => import('../pages/P_ArenaIntro')),
+  20: lazy(() => import('../pages/P14_Leaderboard')),
+  21: lazy(() => import('../pages/P15_Graduation')),
+  22: lazy(() => import('../pages/P_ResourcesIntro')),
 }
 
 // Loading fallback

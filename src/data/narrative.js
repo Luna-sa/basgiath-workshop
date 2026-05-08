@@ -113,11 +113,6 @@ export const NARRATIVE = {
     subtitle: 'Drive your dragon from your phone.',
     text: 'Anthropic-нативные каналы для Telegram / Discord / iMessage. Claude Code на ноуте, ты — в любом мессенджере. Проверять ночные autopilot-ы из кровати.',
   },
-  gem_output_style: {
-    title: '/output-style learning',
-    subtitle: 'Coach instead of crutch.',
-    text: 'Встроенный стиль вывода. Claude перестаёт решать всё за тебя — оставляет TODO(human) маркеры в коде в местах с нетривиальными решениями. Антидот к autocomplete-мозгу.',
-  },
   arena: {
     title: 'Riders in the Sky',
     subtitle: 'Each rider writes how their dragon flies.',
