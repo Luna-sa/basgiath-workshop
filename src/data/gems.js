@@ -9,6 +9,13 @@ export const GEMS = [
     name: 'Pixel Agents',
     tagline_en: 'Your subagents become pixel workers in a tiny office.',
     tagline_ru: 'Твои subagents становятся пиксельными работниками в крошечном офисе.',
+    pullQuote_en: 'A glance and you know what every agent is doing.',
+    pullQuote_ru: 'Взглянул — и знаешь чем занят каждый агент.',
+    stats: [
+      { value: 'VS Code', label: 'extension' },
+      { value: '∞', label: 'parallel agents' },
+      { value: 'Fast Co.', label: 'feature, Feb \'26' },
+    ],
 
     body_en: `pablodelucca/pixel-agents — a VS Code extension that
 visualises Claude Code's subagent activity as a tiny pixel-art office.
@@ -83,6 +90,13 @@ spinner и не знаешь кто что делает. Pixel Agents превр
     name: 'MemPalace',
     tagline_en: 'Open-source memory layer co-authored by Milla Jovovich.',
     tagline_ru: 'Open-source AI-память. Соавтор — актриса Милла Йовович.',
+    pullQuote_en: 'Beats the paid clouds, runs entirely on your laptop.',
+    pullQuote_ru: 'Обходит платные облака. Работает целиком на твоём ноуте.',
+    stats: [
+      { value: '96.6%', label: 'LongMemEval', accent: true },
+      { value: '85%', label: 'Mem0' },
+      { value: '82%', label: 'Zep' },
+    ],
 
     body_en: `mempalace/mempalace — a free, fully local memory system
 for Claude Code released April 2026. Replaces the proprietary memory
@@ -181,6 +195,13 @@ I want to install MemPalace as an MCP-native memory system for Claude Code.
     name: 'suzu-mcp',
     tagline_en: 'A Spotify track plays every time Claude finishes a task.',
     tagline_ru: 'Spotify-трек играет каждый раз когда Claude закончил задачу.',
+    pullQuote_en: 'A bell that marks the moment of attention.',
+    pullQuote_ru: 'Колокольчик, который отмечает момент внимания.',
+    stats: [
+      { value: '🔔', label: 'suzu (鈴)' },
+      { value: '∞', label: 'tracks per event' },
+      { value: 'on-Stop', label: 'hook trigger' },
+    ],
 
     body_en: `denar90/suzu-mcp — a Claude Code MCP server named after
 the Japanese ritual bell (suzu, 鈴) used in Shinto shrines to mark
@@ -269,6 +290,13 @@ Install denar90/suzu-mcp from https://github.com/denar90/suzu-mcp
     name: 'ENABLE_TOOL_SEARCH',
     tagline_en: '85% context savings with one settings.json line. Lazy-loads MCP tools.',
     tagline_ru: '85% контекста обратно одной строкой в settings.json. Lazy-load MCP-тулзы.',
+    pullQuote_en: 'One env flag. Eighty-five percent of your context back.',
+    pullQuote_ru: 'Один env-флаг. Восемьдесят пять процентов контекста назад.',
+    stats: [
+      { value: '77K', label: 'tokens · OFF' },
+      { value: '8.7K', label: 'tokens · ON', accent: true },
+      { value: '−85%', label: 'overhead' },
+    ],
 
     body_en: `One environment flag with disproportionate impact:
 
@@ -375,6 +403,13 @@ Restart Claude Code. That's the whole install.`,
     name: 'Quinn + Jinx (qa-test skill)',
     tagline_en: 'Two QA personas baked into a skill. Quinn checks success criteria. Jinx breaks things.',
     tagline_ru: 'Две QA-персоны в одном skill. Quinn проверяет success criteria. Jinx ломает всё.',
+    pullQuote_en: 'A careful tester paired with a chaos tester. The gap between them is the find.',
+    pullQuote_ru: 'Аккуратный тестировщик и хаос-тестировщик в паре. Разрыв между ними — и есть находка.',
+    stats: [
+      { value: 'Quinn', label: 'methodical · acceptance' },
+      { value: 'Jinx', label: 'chaos · edge cases' },
+      { value: 'pair', label: 'adversarial' },
+    ],
 
     body_en: `adampaulwalker/qa-test — a Claude Code skill that ships
 with two named personas you can summon, swap between, or run side by
@@ -476,6 +511,13 @@ Install the qa-test skill from https://github.com/adampaulwalker/qa-test
     name: 'Claude Code Channels',
     tagline_en: 'Drive Claude Code from a Telegram, Discord, or iMessage chat.',
     tagline_ru: 'Управляй Claude Code прямо из Telegram, Discord или iMessage чата.',
+    pullQuote_en: 'Your night-time autopilot, checkable from bed.',
+    pullQuote_ru: 'Твой ночной autopilot — проверяешь прямо из кровати.',
+    stats: [
+      { value: 'TG', label: 'telegram' },
+      { value: 'DC', label: 'discord' },
+      { value: 'iM', label: 'imessage' },
+    ],
 
     body_en: `Anthropic-native channels — research preview shipped in
 **March 2026**, with iMessage support added a week later. The idea is
@@ -570,6 +612,13 @@ Set up Claude Code Channels for Telegram (or Discord, or iMessage if I'm on macO
     name: '/output-style learning',
     tagline_en: 'Claude becomes a coach — leaves TODO(human) markers in code so you finish it.',
     tagline_ru: 'Claude в режиме коуча — оставляет TODO(human) маркеры чтобы ты сама дописала.',
+    pullQuote_en: 'Stop tab-accepting. Start understanding.',
+    pullQuote_ru: 'Перестань жать Tab. Начни понимать.',
+    stats: [
+      { value: '0', label: 'install steps' },
+      { value: 'built-in', label: 'output style' },
+      { value: 'TODO(human)', label: 'markers' },
+    ],
 
     body_en: `Built-in Claude Code output style. Activate with
 \`/output-style learning\` in any session. Switch back with
