@@ -1,7 +1,11 @@
-// Workshop flow — 16 pages (rebuilt around Dragon Arena, no QA practice drill).
+// Workshop flow — 24 pages.
 //
 // 🔒 facilitator = locked until facilitator advances (talk slides)
 // 🔓 self-report / timed-task = student works independently after unlock
+//
+// Hidden Gems (id 12) is an overview slide; ids 13–19 are seven
+// per-gem deep-dive slides (Pixel Agents → MemPalace → suzu-mcp →
+// ENABLE_TOOL_SEARCH → Quinn+Jinx → Channels → /output-style learning).
 
 export const PAGES = [
   // ═══════════════════════════════════════════
@@ -149,7 +153,7 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔒 HIDDEN GEMS — community projects + undocumented Claude Code features
+  // 🔒 HIDDEN GEMS — overview, then 7 deep-dive slides
   {
     id: 12,
     slug: 'hidden-gems',
@@ -160,10 +164,80 @@ export const PAGES = [
     xpReward: 0,
     subSteps: null,
   },
+  {
+    id: 13,
+    slug: 'gem-pixel-agents',
+    phase: 'live',
+    title: 'Pixel Agents',
+    narrativeKey: 'gem_pixel_agents',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 14,
+    slug: 'gem-mempalace',
+    phase: 'live',
+    title: 'MemPalace',
+    narrativeKey: 'gem_mempalace',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 15,
+    slug: 'gem-suzu-mcp',
+    phase: 'live',
+    title: 'suzu-mcp',
+    narrativeKey: 'gem_suzu_mcp',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 16,
+    slug: 'gem-tool-search',
+    phase: 'live',
+    title: 'ENABLE_TOOL_SEARCH',
+    narrativeKey: 'gem_tool_search',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 17,
+    slug: 'gem-quinn-jinx',
+    phase: 'live',
+    title: 'Quinn + Jinx',
+    narrativeKey: 'gem_quinn_jinx',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 18,
+    slug: 'gem-channels',
+    phase: 'live',
+    title: 'Claude Code Channels',
+    narrativeKey: 'gem_channels',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 19,
+    slug: 'gem-output-style',
+    phase: 'live',
+    title: '/output-style learning',
+    narrativeKey: 'gem_output_style',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
 
   // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
   {
-    id: 13,
+    id: 20,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -175,7 +249,7 @@ export const PAGES = [
 
   // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 14,
+    id: 21,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -187,7 +261,7 @@ export const PAGES = [
 
   // 🎓 GRADUATION
   {
-    id: 15,
+    id: 22,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -199,7 +273,7 @@ export const PAGES = [
 
   // 📦 RESOURCES — take-home reference
   {
-    id: 16,
+    id: 23,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',

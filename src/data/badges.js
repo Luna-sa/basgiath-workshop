@@ -29,13 +29,13 @@ export const BADGES = [
     name: 'Rider',
     emoji: '🐉',
     description: 'Запрограммировал поведение своего дракона в Arena',
-    condition: (store) => store.completedPages.includes(13),
+    condition: (store) => store.completedPages.includes(20),
   },
   {
     id: 'dragon-rider',
     name: 'Наездник',
     emoji: '👑',
     description: 'Прошёл весь воркшоп от Парапета до Bonded',
-    condition: (store) => store.completedPages.includes(15),
+    condition: (store) => store.completedPages.includes(22),
   },
 ]

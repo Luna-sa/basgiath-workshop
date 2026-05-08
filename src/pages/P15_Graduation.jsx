@@ -40,7 +40,7 @@ export default function P15_Graduation() {
   const completed = CHECKPOINT_IDS.filter(id => checkpoints[id]).length
 
   return (
-    <PageShell pageIndex={15}>
+    <PageShell pageIndex={22}>
       <div className="space-y-7">
 
         {/* Hero — character portrait + name */}

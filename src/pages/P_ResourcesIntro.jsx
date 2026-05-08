@@ -10,7 +10,7 @@ export default function P_ResourcesIntro() {
   const t = useT()
 
   return (
-    <PageShell pageIndex={16}>
+    <PageShell pageIndex={23}>
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">

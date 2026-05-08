@@ -26,10 +26,17 @@ const pageComponents = {
   10: lazy(() => import('../pages/P_PersonaIntro')),
   11: lazy(() => import('../pages/P10_TalkMCP')),
   12: lazy(() => import('../pages/P_HiddenGems')),
-  13: lazy(() => import('../pages/P_ArenaIntro')),
-  14: lazy(() => import('../pages/P14_Leaderboard')),
-  15: lazy(() => import('../pages/P15_Graduation')),
-  16: lazy(() => import('../pages/P_ResourcesIntro')),
+  13: lazy(() => import('../pages/P_GemPixelAgents')),
+  14: lazy(() => import('../pages/P_GemMemPalace')),
+  15: lazy(() => import('../pages/P_GemSuzuMcp')),
+  16: lazy(() => import('../pages/P_GemToolSearch')),
+  17: lazy(() => import('../pages/P_GemQuinnJinx')),
+  18: lazy(() => import('../pages/P_GemChannels')),
+  19: lazy(() => import('../pages/P_GemOutputStyle')),
+  20: lazy(() => import('../pages/P_ArenaIntro')),
+  21: lazy(() => import('../pages/P14_Leaderboard')),
+  22: lazy(() => import('../pages/P15_Graduation')),
+  23: lazy(() => import('../pages/P_ResourcesIntro')),
 }
 
 // Loading fallback

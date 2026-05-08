@@ -81,7 +81,42 @@ export const NARRATIVE = {
   hidden_gems: {
     title: 'Hidden gems',
     subtitle: 'Things most riders don\'t know.',
-    text: 'Семь штук — встроенные фичи Claude Code и community-проекты, которые либо радуют, либо реально меняют workflow. Под каждым — autopilot prompt: copy → paste в Claude → он сам ставит.',
+    text: 'Семь штук — встроенные фичи Claude Code и community-проекты, которые либо радуют, либо реально меняют workflow. Идём по одной за слайд, у каждой — autopilot prompt: copy → paste в Claude → он сам ставит.',
+  },
+  gem_pixel_agents: {
+    title: 'Pixel Agents',
+    subtitle: 'Subagents, made visible.',
+    text: 'VS Code расширение, которое визуализирует subagent-ы Claude Code как пиксельный офис. Превращает чёрный ящик параллельной работы в ambient awareness.',
+  },
+  gem_mempalace: {
+    title: 'MemPalace',
+    subtitle: 'Memory palace, literally.',
+    text: 'Open-source MCP-память на markdown-файлах. 96.6% на LongMemEval, локально, без облака. Соавтор — Милла Йовович.',
+  },
+  gem_suzu_mcp: {
+    title: 'suzu-mcp',
+    subtitle: 'A bell when the dragon lands.',
+    text: 'Spotify-трек играет каждый раз когда Claude закончил задачу. Имя — от японского ритуального колокольчика, который отмечает момент внимания.',
+  },
+  gem_tool_search: {
+    title: 'ENABLE_TOOL_SEARCH',
+    subtitle: 'One line, 85% context back.',
+    text: 'Один env-флаг в settings.json. Lazy-load MCP-тулз вместо предзагрузки всей кучи. Overhead падает с 77K токенов до 8.7K каждый turn.',
+  },
+  gem_quinn_jinx: {
+    title: 'Quinn + Jinx',
+    subtitle: 'A methodical pair and a chaos pair.',
+    text: 'Skill с двумя QA-персонажами. Quinn идёт по acceptance criteria. Jinx ломает специально. Adversarial-пара для exploratory testing.',
+  },
+  gem_channels: {
+    title: 'Claude Code Channels',
+    subtitle: 'Drive your dragon from your phone.',
+    text: 'Anthropic-нативные каналы для Telegram / Discord / iMessage. Claude Code на ноуте, ты — в любом мессенджере. Проверять ночные autopilot-ы из кровати.',
+  },
+  gem_output_style: {
+    title: '/output-style learning',
+    subtitle: 'Coach instead of crutch.',
+    text: 'Встроенный стиль вывода. Claude перестаёт решать всё за тебя — оставляет TODO(human) маркеры в коде в местах с нетривиальными решениями. Антидот к autocomplete-мозгу.',
   },
   arena: {
     title: 'Riders in the Sky',
