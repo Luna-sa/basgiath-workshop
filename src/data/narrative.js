@@ -49,9 +49,9 @@ export const NARRATIVE = {
     text: 'Plan first, ask for the source, drag and drop, give the full error, /clear when context is full, and run sub-agents in parallel. These are the habits that separate users from riders.',
   },
   talk_ecosystem: {
-    title: 'What flew in',
-    subtitle: 'Look at what just bonded.',
-    text: 'Разберём по частям: что делает каждая команда, зачем нужны агенты, как MCP-серверы дают AI доступ к браузеру и API.',
+    title: 'The QA Grimoire',
+    subtitle: 'Seven incantations, four familiars, three conduits.',
+    text: 'Каждая команда твоего Claude Code — заклинание из старого гримуара. Каждый агент — фамильяр. Каждый MCP-сервер — проводник к иной сфере. Инвокации настоящие; имена при них — язык старших книг.',
   },
   persona_builder: {
     title: 'The Signet Ceremony',
