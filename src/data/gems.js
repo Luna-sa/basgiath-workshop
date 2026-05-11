@@ -9,8 +9,10 @@ export const GEMS = [
     name: 'Pixel Agents',
     tagline_en: 'Your subagents become pixel workers in a tiny office.',
     tagline_ru: 'Твои subagents становятся пиксельными работниками в крошечном офисе.',
+    tagline_uk: 'Твої subagents стають піксельними працівниками у крихітному офісі.',
     pullQuote_en: 'A glance and you know what every agent is doing.',
     pullQuote_ru: 'Взглянул — и знаешь чем занят каждый агент.',
+    pullQuote_uk: 'Глянув - і знаєш, чим зайнятий кожен агент.',
     stats: [
       { value: 'VS Code', label: 'extension' },
       { value: '∞', label: 'parallel agents' },
@@ -46,6 +48,19 @@ problems".`,
 текстом — пиксельный офис это at-a-glance слой, текст — precision слой.
 Fast Company в феврале 2026 написали про него: «charming pixel-art game
 which solves one of AI coding's most annoying UX problems».`,
+    body_uk: `pablodelucca/pixel-agents - розширення для VS Code, яке
+візуалізує роботу subagents Claude Code як крихітний піксельний офіс.
+
+Щоразу, коли Claude спавнить subagent (через Task tool, паралельні
+дослідження, review-while-you-code тощо), піксельний персонаж іде
+офісом, сідає за стіл і починає друкувати. Другий агент читає файл?
+Бачиш, як він гортає сторінки. Чекає на дозвіл? Нетерпляче тупотить
+ногою. Закінчив? Встає і йде.
+
+Статус-бар паралельно показує, що робить кожен агент простим текстом -
+піксельний офіс це at-a-glance шар, текст - precision шар. Fast Company
+у лютому 2026 написали про нього: «charming pixel-art game which solves
+one of AI coding's most annoying UX problems».`,
 
     why_en: `Subagents are the most powerful and the most opaque part of
 Claude Code. Run a parallel review and you stare at a single "Working..."
@@ -59,6 +74,12 @@ spinner и не знаешь кто что делает. Pixel Agents превр
 ящик в ambient awareness — взглянул и видишь «ок, три агента работают,
 один застрял на разрешении, два читают доки». Убирает желание прервать
 раньше времени.`,
+    why_uk: `Subagents - найпотужніша і найнепрозоріша частина Claude
+Code. Запускаєш паралельний review - дивишся на один «Working...»
+spinner і не знаєш, хто що робить. Pixel Agents перетворює чорний ящик
+на ambient awareness - глянув і бачиш «ок, три агенти працюють, один
+застряг на дозволі, два читають доки». Прибирає бажання перервати
+зарано.`,
 
     use_cases_en: [
       'Long parallel reviews where you walk away — pixel art tells you when something needs attention without you switching focus.',
@@ -69,6 +90,11 @@ spinner и не знаешь кто что делает. Pixel Agents превр
       'Длинные параллельные review когда отходишь — пиксели показывают что нужно внимание, без переключения фокуса.',
       'Демо Claude Code коллегам — визуальное мгновенно объясняет «что такое агент».',
       'Фоновые autopilot-циклы — быстрое визуальное подтверждение что работа реально идёт.',
+    ],
+    use_cases_uk: [
+      'Довгі паралельні review, коли відходиш - пікселі показують, що потребує уваги, без перемикання фокусу.',
+      'Демо Claude Code колегам - візуалка миттєво пояснює «що таке агент».',
+      'Фонові autopilot-цикли - швидке візуальне підтвердження, що робота реально йде.',
     ],
 
     install_en: `Install Pixel Agents from VS Code Marketplace:
@@ -90,8 +116,10 @@ spinner и не знаешь кто что делает. Pixel Agents превр
     name: 'MemPalace',
     tagline_en: 'Open-source memory layer co-authored by Milla Jovovich.',
     tagline_ru: 'Open-source AI-память. Соавтор — актриса Милла Йовович.',
+    tagline_uk: 'Open-source AI-памʼять. Співавтор - акторка Мілла Йовович.',
     pullQuote_en: 'Beats the paid clouds, runs entirely on your laptop.',
     pullQuote_ru: 'Обходит платные облака. Работает целиком на твоём ноуте.',
+    pullQuote_uk: 'Обходить платні хмари. Працює цілком на твоєму ноуті.',
     stats: [
       { value: '96.6%', label: 'LongMemEval', accent: true },
       { value: '85%', label: 'Mem0' },
@@ -140,6 +168,27 @@ LongMemEval это стандартный тест на «умеет ли тво
 Resident Evil, Fifth Element) числится соавтором репозитория. Реально
 пишет коммиты. Оказывается, она 20 лет на Linux и тихо контрибьютит
 в опенсорс.`,
+    body_uk: `mempalace/mempalace - безкоштовна, повністю локальна
+система памʼяті для Claude Code, вийшла у квітні 2026. Замінює
+пропрієтарні memory-backend-и (Mem0, Zep, OpenAI memory) на
+markdown-first MCP-сервер, який ти запускаєш у себе.
+
+Памʼять зберігається як звичайні markdown-файли, організовані у «зали»
+та «кімнати» - так, буквально класична метафора memory palace. Кожен
+факт, який ти вчиш Claude, стає markdown-drawer-ом у кімнаті, яку
+можна відкрити у будь-якому текстовому редакторі. Vector search через
+Chroma, метадані через SQLite, embeddings через Ollama або вбудовану
+міні-модель (без API-ключа, без cloud round-trip).
+
+Цифри benchmark - головний заголовок: **96.6% на LongMemEval** -
+LongMemEval це стандартний тест на «чи вміє твій AI памʼятати крізь
+довгі розмови». Mem0 - близько 85%, Zep - близько 82%. Це помітний
+стрибок.
+
+Історія, яку всі пересилають: **Мілла Йовович** (так-так, та сама -
+Resident Evil, Fifth Element) числиться співавтором репозиторію.
+Реально пише коміти. Виявляється, вона 20 років на Linux і тихо
+контрибʼютить в опенсорс.`,
 
     why_en: `Claude Code without memory is a smart amnesiac. Every
 session you start from zero — explain who you are, what you're working
@@ -154,6 +203,12 @@ can read it — not just Claude.`,
 твои данные уходят с ноута. MemPalace даёт то же качество (лучше, по
 факту) на твоих файлах, на твоей машине. И работает через MCP — то есть
 любой MCP-клиент может читать, не только Claude.`,
+    why_uk: `Claude Code без памʼяті - розумний амнезик. Кожна сесія
+починається з нуля - пояснюєш, хто ти, над чим працюєш, які конвенції
+важливі. Memory-шари це вирішують, але Mem0 і Zep - платні хмари, твої
+дані йдуть з ноута. MemPalace дає ту саму якість (краще, по факту) на
+твоїх файлах, на твоїй машині. І працює через MCP - тобто будь-який
+MCP-клієнт може читати, не лише Claude.`,
 
     use_cases_en: [
       'Cross-project memory — Claude remembers your CLAUDE.md style, naming conventions, and "we always X never Y" rules.',
@@ -164,6 +219,11 @@ can read it — not just Claude.`,
       'Cross-project память — Claude помнит твой CLAUDE.md стиль, naming conventions, правила «всегда X, никогда Y».',
       'Длинные творческие проекты (романы, курсы, брендинг) — факты про персонажей/стиль/голос держатся месяцами.',
       'Личный knowledge ledger — кидаешь наблюдения, достаёшь по semantic search вместо grep.',
+    ],
+    use_cases_uk: [
+      'Cross-project памʼять - Claude памʼятає твій CLAUDE.md стиль, naming conventions, правила «завжди X, ніколи Y».',
+      'Довгі творчі проєкти (романи, курси, брендинг) - факти про персонажів/стиль/голос тримаються місяцями.',
+      'Особистий knowledge ledger - кидаєш спостереження, дістаєш через semantic search замість grep.',
     ],
 
     install_en: `Install MemPalace via Claude Code (let it set up Chroma + Ollama):
@@ -195,8 +255,10 @@ I want to install MemPalace as an MCP-native memory system for Claude Code.
     name: 'suzu-mcp',
     tagline_en: 'A Spotify track plays every time Claude finishes a task.',
     tagline_ru: 'Spotify-трек играет каждый раз когда Claude закончил задачу.',
+    tagline_uk: 'Spotify-трек грає щоразу, коли Claude закінчив задачу.',
     pullQuote_en: 'A bell that marks the moment of attention.',
     pullQuote_ru: 'Колокольчик, который отмечает момент внимания.',
+    pullQuote_uk: 'Дзвіночок, який позначає момент уваги.',
     stats: [
       { value: '🔔', label: 'suzu (鈴)' },
       { value: '∞', label: 'tracks per event' },
@@ -237,6 +299,22 @@ jingle из Nintendo, первые три секунды «Also sprach Zarathust
 Можно назначить **разные треки на разные действия Claude**: один звук
 на «задача готова», другой на «тесты прошли», третий на «PR смержен».
 Combo с hooks (event on-Stop) — полностью кастомный acoustic feedback
+loop.`,
+    body_uk: `denar90/suzu-mcp - MCP-сервер для Claude Code, названий на
+честь японського ритуального дзвіночка (suzu, 鈴), яким у синтоїстських
+святилищах позначають момент уваги. Метафора влучна: коли твій дракон
+закінчив задачу - отримуєш крихітний акустичний розділовий знак.
+
+Як реально працює: suzu чіпляється до task-completion event Claude і
+триґерить Spotify (через твої персональні Spotify Developer credentials)
+програти трек на твій вибір. Може бути mumbling вченого з Half-Life,
+Galaxy-at-war sting з Mass Effect, item-get jingle з Nintendo, перші
+три секунди «Also sprach Zarathustra» Штрауса - будь-що, що є в Spotify
+і достатньо коротке, щоб не відволікати.
+
+Можна призначити **різні треки на різні дії Claude**: один звук на
+«задача готова», інший на «тести пройшли», третій на «PR змержено».
+Combo з hooks (event on-Stop) - повністю кастомний acoustic feedback
 loop.`,
 
     why_en: `Claude tasks can run for 30 seconds or 30 minutes. You

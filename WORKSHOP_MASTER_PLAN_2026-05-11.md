@@ -1,228 +1,219 @@
 # Workshop Master Plan — 2026-05-11 → 2026-05-13
 
-The voice-driven priorities Anastasia laid out before her meeting:
-
-1. Research **wow-level features** to add after Bond Ritual (dragon
-   generation) and Signet Ceremony (CLAUDE.md setup).
-2. Pass the existing slides under a microscope — improve copy depth,
-   add Ukrainian where missing, audit tone consistency.
-3. Brainstorm additional **competitions** — beyond Aerie voting +
-   Arena bot battle.
-4. Synthesise everything into a detailed plan with concrete tasks,
-   then execute sequentially before workshop day (2 days away).
-
-This document is the synthesis. Sections marked `⟲ pending` are
-waiting on background research agents — they fill in as agents
-return.
+**Update at end of session:** while you were in your meeting,
+4 research agents ran in parallel + I implemented the highest-impact
+wow features from their picks. Big diff in repo. This document is
+the new state of the truth.
 
 ---
 
-## Section 1 · Current state of the workshop
+## What got shipped during your meeting
 
-### Flow (25 slides)
+### Wow features (from `RESEARCH_2026-05-11_wow_features.md`)
 
-| # | Slide | Status | Lang | Notes |
-|---|-------|--------|------|-------|
-| 0 | Landing | live · ✔ | EN/RU/UK | Just got UK pass |
-| 1 | Character select (Threshing, option 7 added) | live · ✔ | EN/RU | UK pending |
-| 2 | Registration | live · ✔ | EN/RU | UK pending |
-| 3 | Pre-work checklist | live · ✔ | — | Static |
-| 4 | The Bonding (talk intro) | live · ✔ | EN/RU | UK pending |
-| 5 | What is your dragon (anatomy) | live · ✔ | EN/RU | UK pending |
-| 6 | Three modes, eight keys | live · ✔ | EN/RU/UK | Just updated to four modes (Auto default) |
-| 7 | Forging the bond (install ecosystem) | live · ✔ | EN/RU/UK | |
-| 8 | The QA Grimoire (was: What flew in) | live · ✔ | EN/RU/UK | Just reframed as spell-book |
-| 9 | Power moves | live · ✔ | EN/RU/UK | |
-| 10 | Signet Ceremony intro | live · ✔ | EN/RU/UK | |
-| 11 | Riders' arts (MCP demo) | live · ✔ | EN/RU/UK | |
-| 12 | Hidden Gems overview | live · ✔ | EN/RU/UK | |
-| 13-18 | Six gem deep-dives | live · ✔ | EN/RU/UK | |
-| 19 | Bond Ritual intro | live · ✔ | EN/RU/UK | New today |
-| 20 | Aerie intro | live · ✔ | EN/RU/UK | New today |
-| 21 | Arena intro | live · ✔ | EN/RU | UK pending |
-| 22 | Leaderboard | live · ✔ | EN/RU | UK pending |
-| 23 | Graduation | live · ✔ | EN/RU | UK pending |
-| 24 | Resources intro | live · ✔ | EN/RU/UK | |
+| Feature | Status | Where |
+|---------|--------|-------|
+| **Dragon Sigil Card** — 1080×1350 PNG share-card with portrait + name + motto + rider class. Click "Sigil card" on Bond Ritual preview, downloads instantly. | ✔ shipped | Bond Ritual preview state |
+| **Rider Class — The Choosing** — Claude reads Signet + Bond answers, assigns one of 6 classes (Scribe / Healer / Infantry / Scout / Flier / Tailwind) with a custom epithet. Live in the dragon preview, also stamped on the Sigil Card. | ✔ shipped | New `/api/workshop/assign-class` endpoint in chatbot-mentor + UI in Bond Ritual |
+| **Aerie Mosaic** — full-screen projector view of every sealed dragon. Two modes: wall grid (default) + cycle spotlight (`?cycle=1`). | ✔ shipped | New route `/?page=mosaic` |
 
-### Standalone experiences (linked from in-flow slides)
+### Competitions (from `RESEARCH_2026-05-11_competitions.md`)
 
-| Route | Status | Notes |
-|-------|--------|-------|
-| /?page=signet | live · ✔ | 7-ritual wizard, presets per question, Whisper voice input, archetype picker |
-| /?page=bond | live · ✔ | 7 questions → gpt-image-2 portrait → seal to Aerie |
-| /?page=aerie | live · ✔ | Realtime gallery + one-vote-per-rider |
-| /?page=arena | live · ✔ | Existing — Phaser 3 dragon-bot programming arena |
-| /?page=persona | live · legacy | Old Persona Builder, kept for safety, can retire |
-| /?page=resources | live · ✔ | Resource hub |
-| /?page=register | live · ✔ | Standalone registration |
+| Competition | Status | Where |
+|-------------|--------|-------|
+| **Eyes of the Aerie** — blind matching contest. Guess which rider sealed which dragon. One guess per dragon. Reveal toggle. Leaderboard. | ✔ shipped | New route `/?page=eyes` + new Supabase migration |
+| Wing vs Wing (top pick) | ✘ not shipped | Med-high cost — needs sample-project per wing. Deferred. |
+| Bug Bash (top pick) | ✘ not shipped | Med cost — needs planted bugs in sample-project. Deferred. |
+| 1v1 Arena bracket | ✘ not shipped | Existing Arena works. Bracket overlay would be nice, deferred. |
 
-### Infrastructure dependencies (pre-workshop)
+### Localisation (from `RESEARCH_2026-05-11_copy_audit.md`)
 
-- ✘ Run `SUPABASE_MIGRATION_2026-05-08_checkpoints.sql` (Anastasia
-  hit "column students.checkpoints does not exist" → checkpoint
-  buttons fail).
-- ✘ Run `SUPABASE_MIGRATION_2026-05-11_dragons.sql` (Bond Ritual
-  sealing + Aerie voting won't work without it).
-- ✘ Enable Supabase Realtime on `dragons` + `dragon_votes` tables.
-- ✘ Verify `OPENAI_API_KEY` is set in `chatbot-mentor` Render env
-  (already true if Kai voice still works in chatbot-mentor).
-- ✘ Facilitator-side: bump `unlocked_page` to 25 via admin URL
-  before the workshop opens.
+| Task | Status |
+|------|--------|
+| Add UK to P02 / P04 / P05 / P14 / P15 / P_ArenaIntro / P_ResourcesIntro / GemSlide / CheckpointButton (9 files, 122 t() calls) | ✔ done (agent) |
+| Add UK + EN to narrative.js | ⟲ in flight (agent) |
+| Add UK to gems.js (6 gems × 4 fields each) | ⟲ in flight (agent) |
+| Fix P07 typo "Ваpд-Камень" (Latin p) | ✔ done |
+| Refactor P01 / P03 / P06 / P10 — hardcoded RU-only, needs useT + translations | ✘ deferred — large refactor |
+| characters.js — RU-only, leaks via P01 / P14 / P15 | ✘ deferred |
 
 ---
 
-## Section 2 · Research outputs
+## What you have on production right now
 
-Three agents are currently running in parallel; outputs land in
-`RESEARCH_2026-05-11_*.md`. Summarised here once they return.
+Workshop URL: **https://basgiath-workshop.onrender.com**
 
-### 2.1 · Wow-level features  ⟲ pending
+**Main 25-slide flow** (Signet Ceremony intro at #10, Hidden Gems #12-18,
+Bond intro #19, Aerie intro #20, Arena #21, Leaderboard #22, Graduation
+#23, Resources #24).
 
-`RESEARCH_2026-05-11_wow_features.md`
+**Standalone routes:**
 
-> Looking for: what to do AFTER dragon generation that makes the
-> workshop feel like a real ritual, not a tutorial.
-
-⟲ Awaiting agent output. Will integrate top picks below once
-returned.
-
-### 2.2 · Competition ideas  ⟲ pending
-
-`RESEARCH_2026-05-11_competitions.md`
-
-> Looking for: 8-12 competition formats beyond Aerie voting + Arena
-> bot battle. Skill-revealing, tight viewable moments, paired rivalry.
-
-⟲ Awaiting agent output.
-
-### 2.3 · Copy audit  ⟲ pending
-
-`RESEARCH_2026-05-11_copy_audit.md`
-
-> Looking for: stilted translations, missing Ukrainian, inconsistent
-> lore terms, voice slips.
-
-⟲ Awaiting agent output.
-
-### 2.4 · Ukrainian translation pass  ⟲ in flight
-
-> 9 files being upgraded from `t(en, ru)` to `t(en, ru, uk)` with
-> natural Ukrainian. P00_Landing.jsx already done by hand.
-
-⟲ Agent running, will report file counts when done.
+- `/?page=signet` — 7-ritual ceremony, preset chips per question,
+  voice input via Whisper, archetype picker, final CLAUDE.md prompt
+  copy
+- `/?page=bond` — 7-question dragon builder, gpt-image-2 portrait,
+  Rider Class auto-assigned, Sigil card download, seal to Aerie
+- `/?page=aerie` — gallery with one-vote-per-rider, live updates
+- `/?page=eyes` — blind matching contest
+- `/?page=mosaic` — projector full-screen reveal (+ `&cycle=1`)
+- `/?page=arena` — existing dragon-bot programming arena
+- `/?page=resources` — resource hub
+- `/?token=...` — facilitator admin
 
 ---
 
-## Section 3 · Plan of action
+## Pre-workshop checklist (run this before 2026-05-13)
 
-Ordered by impact × ease. Each task carries:
+### Blocking — must run
 
-- **Cost** — rough effort: XS (10min) / S (30min) / M (2h) / L (half-day)
-- **Risk** — what breaks if we do this wrong
-- **Why** — why this earns its slot in the 2-day window
+1. **Supabase migration 1** — checkpoints column
+   ```
+   SUPABASE_MIGRATION_2026-05-08_checkpoints.sql
+   ```
+   Without this, every "Mark X crossed" button errors.
 
-### Phase A · Unblockers (today, before bedtime)
+2. **Supabase migration 2** — dragons + dragon_votes tables + storage
+   bucket + RLS
+   ```
+   SUPABASE_MIGRATION_2026-05-11_dragons.sql
+   ```
+   Without this, Bond Ritual sealing and Aerie voting fail.
 
-| Task | Cost | Risk | Why |
-|------|------|------|-----|
-| Run both Supabase migrations | XS (Anastasia) | None | Bond Ritual + checkpoints are dead without this |
-| Enable Realtime on dragons / dragon_votes | XS (Anastasia) | None | Aerie won't live-update |
-| Full smoke test through Signet + Bond + Aerie | S (Anastasia) | None | Catch any production-only bugs |
-| Finish Ukrainian translation pass | S (agent) | XS | Lvov + Kyiv participants will notice the gaps |
-| Apply top 3 copy-audit fixes | S | XS | Polish where it shows |
+3. **Supabase migration 3** — dragon_matches table for Eyes of the Aerie
+   ```
+   SUPABASE_MIGRATION_2026-05-11_dragon_matches.sql
+   ```
+   Without this, Eyes of the Aerie voting fails.
 
-### Phase B · Wow additions (tomorrow morning)
+4. **Enable Supabase Realtime** on the new tables
+   - Database → Replication → `supabase_realtime`
+   - Toggle ON for: `dragons`, `dragon_votes`, `dragon_matches`
 
-⟲ Filled in after research agents return. Targets 2-3 of the top
-ideas, ranked by wow × ease.
+5. **OPENAI_API_KEY** is set in `chatbot-mentor` Render env (already
+   true if Kai voice works there).
 
-Placeholder slots:
-- **B1 · [TBD]** — top pick from wow_features
-- **B2 · [TBD]** — top pick from competitions
-- **B3 · [TBD]** — one ritual moment (e.g. "Time Capsule" / "Pledge")
+6. **Render auto-deploy** verify chatbot-mentor picked up the new
+   workshop endpoints (transcribe, generate-dragon, assign-class).
 
-### Phase C · Final polish (tomorrow afternoon)
+### Facilitator-day setup
 
-| Task | Cost | Risk | Why |
-|------|------|------|-----|
-| Cross-language proofreading pass | S | XS | Catch the Ukrainian/Russian inconsistencies copy-audit raised |
-| Walk the whole 25-slide flow on three devices (laptop / phone / projector resolution) | S | None | Layout regressions |
-| Test image gen + voice on the actual networks Anastasia will use | XS | XS | Render free tier can have cold-start lag — pre-warm |
-| Prepare facilitator script — one printed page summarising slide-by-slide notes | M | None | Anastasia uses this live |
+1. Open admin URL (`?token=...`).
+2. Click slide **24** in the Advance All Students grid → sets
+   `unlocked_page = 25`, every slide becomes navigable.
+3. Pre-warm chatbot-mentor backend with a dummy request
+   (or just open `/?page=signet` and let it cold-start).
+4. Open `/?page=mosaic` on the projector laptop with `?cycle=1` after
+   Bond Ritual finishes, to show the reveal.
 
-### Phase D · Day-of (workshop day)
+### Smoke test (run once before participants arrive)
 
-| Task | Cost | Risk |
-|------|------|------|
-| Open admin URL, set unlocked_page=25 | XS | None |
-| Pre-warm chatbot-mentor backend (POST /api/workshop/transcribe with empty body to wake it) | XS | None |
-| Pre-create a "facilitator demo" dragon in Aerie so participants see an example | XS | None |
-| Have backup .env values + Render dashboard tab open | XS | None |
+In a fresh incognito window:
 
----
-
-## Section 4 · Open architectural decisions
-
-These need Anastasia's call when she returns:
-
-1. **Should Arena (page 21) stay or merge with Bond Ritual?**
-   Arena programs a fighting bot tied to the Empyrean character
-   (Violet / Xaden / etc.) — it doesn't use the dragon portrait yet.
-   Options:
-   - (a) Keep both. Arena = technical skill, Bond = creative skill.
-     Costs 10-15 minutes of workshop time but no architectural work.
-   - (b) Merge: Arena uses the participant's sealed dragon as their
-     bot avatar, and bot performance feeds back into the Aerie vote
-     count somehow. Costs M (half-day) but unifies the two competitive
-     loops.
-   - (c) Replace Arena entirely with Bond + Aerie. Bond becomes the
-     ONLY signature task. Loses the programming exercise but tightens
-     the narrative.
-   - **My pick: (a).** They're different skills, both worth doing.
-     If time pressure on the day, facilitator can skip Arena.
-
-2. **Bond Ritual: re-roll cost / fairness.**
-   Currently unlimited regenerations. Each one costs OpenAI ~$0.05
-   for a high-quality 1024×1024 gpt-image-2 call. With 25 participants
-   re-rolling 3× each on average → $4. Fine.
-   But: someone could re-roll 30 times → $50. Add a cap of 5 or 7
-   regenerations per nickname? Slight friction, but stops abuse if
-   the workshop URL leaks.
-
-3. **Persona Builder vs Signet Ceremony — retire the old one?**
-   Both routes exist (`/?page=persona` legacy, `/?page=signet` new).
-   Risk of confusion if someone has a stale bookmark. Recommend
-   removing `P_PersonaBuilder.jsx` + the persona route in App.jsx
-   after smoke testing.
-
-4. **What happens to dragons after the workshop?**
-   Permanent in Supabase storage. Each dragon has a public URL.
-   Options:
-   - Leave it. Participants can share dragon links forever.
-   - Add a "Year-of-Bond" reminder — Claude emails participants in
-     12 months with their dragon + a "how are you both doing now?"
-     prompt. Requires email opt-in step in workshop.
-   - Cross-cohort: next workshop's participants see this cohort's
-     dragons in the Aerie as "elders". Adds lore continuity.
+  1. Pick a character → register as `smoke_test`.
+  2. Walk to slide 10 → click "Begin the Ceremony" → walk all 7 rituals.
+     Test voice input on a textarea (mic icon appears, records,
+     transcribes back).
+  3. Copy the sealed prompt at the end → paste it into a Claude Code
+     window. Verify Claude saves the CLAUDE.md correctly.
+  4. Back to flow, advance to slide 19 → click "Begin the Bond" →
+     walk all 7 dragon questions → click "Manifest" → wait ~30s.
+  5. On preview, the Rider Class card should appear under the dragon
+     stats with an epithet.
+  6. Click "Sigil card" → PNG downloads. Open it. Check name + motto
+     fit, class label is there.
+  7. Click "Seal & Share" → redirects to /?page=aerie. Your dragon
+     should be there.
+  8. Open `/?page=eyes` in second incognito with a different nickname
+     → cast a guess. Reveal toggle.
+  9. Open `/?page=mosaic` to confirm projector view works.
 
 ---
 
-## Section 5 · Notes for myself across sessions
+## Files added during this session
 
-- gpt-image-2 may not be available for all OpenAI accounts. The
-  workshop backend falls back to gpt-image-1 silently. Test both.
-- Whisper API works on `chatbot-mentor.onrender.com/api/workshop/transcribe`.
-  Render free tier sleeps after 15 minutes inactive → first request
-  cold-starts in ~30s. **Pre-warm before workshop.**
-- Auto mode in Claude Code became default in spring 2026. Shift+Tab
-  cycles Auto → Plan → Edit → Auto.
-- Voice archetypes: 7 + custom. Used in Signet Ceremony ritual IV.
-- Bond Ritual answers feed `buildDragonPrompt()` which renders a
-  cinematic prompt for gpt-image-2. Prompt builder lives at
-  `src/data/dragons/prompt-builder.js`. Tune there if portraits
-  come back too painterly / too cartoonish.
+```
+RESEARCH_2026-05-11_wow_features.md
+RESEARCH_2026-05-11_competitions.md
+RESEARCH_2026-05-11_copy_audit.md
+WORKSHOP_MASTER_PLAN_2026-05-11.md      ← this file
+
+SUPABASE_MIGRATION_2026-05-11_dragon_matches.sql
+
+src/api/dragonMatches.js
+src/api/workshopBackend.js  (extended — assignRiderClass)
+src/data/dragons/questions.js
+src/data/dragons/prompt-builder.js
+src/data/signet/archetypes.js
+src/data/signet/rituals.js
+src/data/signet/signet-generator.js
+
+src/components/VoiceTextInput.jsx
+src/hooks/useVoiceRecorder.js
+src/utils/sigilCard.js
+
+src/pages/P_SignetCeremony.jsx
+src/pages/P_BondIntro.jsx
+src/pages/P_BondRitual.jsx
+src/pages/P_AerieIntro.jsx
+src/pages/P_Aerie.jsx
+src/pages/P_AerieMosaic.jsx
+src/pages/P_EyesOfAerie.jsx
+```
+
+In `chatbot-mentor` repo:
+
+```
+src/api/workshopRoutes.js    (transcribe + generate-dragon + assign-class)
+server.js                    (CORS + mount)
+```
 
 ---
 
-*This document updates as agents return.*
-*Last updated: 2026-05-11 by Kai during Anastasia's meeting.*
+## What's deferred — the long tail
+
+These would be valuable but I'm not shipping them today. Listed in
+order of payoff-per-effort so you can pick up after the workshop:
+
+1. **gems.js UK translation** — agent currently running. Should land
+   in the next 10 min.
+2. **narrative.js EN + UK** — agent currently running. Should land
+   in the next 10 min. Will fully wire the 3-language toggle across
+   every slide.
+3. **P01 / P03 / P06 / P10 useT refactor** — hardcoded RU pages. Big
+   surface, ~3 hours of careful work.
+4. **characters.js EN + UK** — affects HUD, character cards in
+   Aerie/Leaderboard/Graduation.
+5. **Wing vs Wing competition** — the top-pick that needs the most
+   prep. ~1.5 days. If you do a second workshop later, build this
+   for it.
+6. **Bug Bash competition** — second-pick. ~1 day. Same as above.
+7. **Dragon Companion section in CLAUDE.md** — after Bond Ritual,
+   auto-update CLAUDE.md with a "Your Dragon" section. Small but
+   makes the bond actually shape Claude's behaviour day-to-day.
+8. **1v1 Arena bracket** — overlay on existing arena. Med cost.
+9. **Stoneflame Vault Easter eggs** — extend the existing
+   `summonSignet()` egg with 5-7 more. Half-day, cheap fun.
+
+---
+
+## Notes for myself
+
+- gpt-image-2 release was very recent — backend silently falls back
+  to gpt-image-1 if not available on your OpenAI account / region.
+- Rider Class uses gpt-4o-mini with response_format=json_object —
+  fast (~1.5s) and reliable JSON.
+- Voice input uses Whisper-1 via `chatbot-mentor` proxy. Render
+  free tier on chatbot-mentor sleeps after 15 min — pre-warm before
+  workshop.
+- Sigil Card uses Canvas API for cross-browser PNG render. Image
+  must be CORS-anonymous fetched, which Supabase Storage public URLs
+  support out of the box.
+- All four new Supabase tables (dragons, dragon_votes, dragon_matches,
+  + the older students.checkpoints jsonb column) use RLS = public
+  read/insert. Fine for a one-day workshop with known participants.
+
+---
+
+*Final state of master plan — updated as final commits land.*
+*— K.*
