@@ -59,7 +59,7 @@ export default function P_BondIntro() {
               ◆ {t('How it works', 'Как это работает', 'Як це працює')}
             </div>
             <ul className="text-[13.5px] text-text-body leading-relaxed space-y-1.5 list-none">
-              <li>1. {t('Answer seven visual questions (voice or typing).', 'Ответь на семь визуальных вопросов (голос или текст).', 'Відповідай на сім візуальних запитань (голосом або текстом).')}</li>
+              <li>1. {t('Answer eight short questions (voice or typing).', 'Ответь на восемь коротких вопросов (голос или текст).', 'Відповідай на вісім коротких запитань (голосом або текстом).')}</li>
               <li>2. {t('Claude assembles a cinematic prompt from your answers.', 'Claude собирает кинематографический промпт по ответам.', 'Claude збирає кінематографічний промпт за відповідями.')}</li>
               <li>3. {t('gpt-image-2 generates a 1024×1024 portrait (~30 sec).', 'gpt-image-2 генерирует портрет 1024×1024 (~30 сек).', 'gpt-image-2 генерує портрет 1024×1024 (~30 сек).')}</li>
               <li>4. {t('Re-roll until it feels right. No limit on attempts.', 'Перегенерь пока не почувствуешь. Лимита на попытки нет.', 'Перегенеруй, доки не відчуєш. Ліміту на спроби немає.')}</li>

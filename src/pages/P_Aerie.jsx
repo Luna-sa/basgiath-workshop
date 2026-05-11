@@ -26,6 +26,10 @@ export default function P_Aerie() {
   const [myVotes, setMyVotes] = useState([]) // [{ dragon_id, created_at }, ...]
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
+  // Distinguish "still loading" from "loaded but empty" — the empty
+  // state should only show after the network call resolves, not in
+  // the first 200-500ms while the first fetch is in flight.
+  const [loaded, setLoaded] = useState(false)
 
   const params = useMemo(() => new URLSearchParams(window.location.search), [])
   const previewN = parseInt(params.get('preview') || '0', 10)
@@ -41,6 +45,7 @@ export default function P_Aerie() {
     if (previewN > 0) {
       setDragons(generateFakeDragons(previewN))
       setMyVotes([])
+      setLoaded(true)
       return
     }
     const list = await listDragons()
@@ -49,6 +54,7 @@ export default function P_Aerie() {
       const votes = await getMyVotes(myNickname)
       setMyVotes(votes)
     }
+    setLoaded(true)
   }
 
   useEffect(() => {
@@ -224,8 +230,26 @@ export default function P_Aerie() {
           </div>
         )}
 
-        {/* Empty state */}
-        {sortedDragons.length === 0 && (
+        {/* Loading state — first fetch in flight */}
+        {!loaded && (
+          <div className="text-center py-20 border border-border bg-surface/30 rounded-[2px]">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              {[0, 1, 2].map(i => (
+                <span
+                  key={i}
+                  className="w-2 h-2 rounded-full bg-qa-teal animate-pulse"
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                />
+              ))}
+            </div>
+            <p className="font-display italic text-[18px] text-text-secondary">
+              {t('Listening for dragons in the sky…', 'Слушаю драконов в небе…', 'Слухаю драконів у небі…')}
+            </p>
+          </div>
+        )}
+
+        {/* Empty state — loaded but no dragons yet */}
+        {loaded && sortedDragons.length === 0 && (
           <div className="text-center py-20 border border-border bg-surface/30 rounded-[2px]">
             <p className="font-display italic text-[24px] text-text-secondary mb-2">
               {t('No dragons in the Aerie yet.', 'В Аэрии ещё нет драконов.', 'В Аерії ще немає драконів.')}

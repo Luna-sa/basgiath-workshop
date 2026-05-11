@@ -1,8 +1,8 @@
 // Bond Ritual — questions used to define your dragon. Answers feed
 // the gpt-image-2 prompt builder + the on-screen Dragon Card.
 //
-// Seven steps total; the last one is the dragon's name, which we
-// suggest from Claude (server-side) or let the user write.
+// Eight steps total — last one is the dragon's name, which we suggest
+// from Claude (server-side) or let the user write.
 
 export const BOND_QUESTIONS = [
   // 01 — scale colour / material
