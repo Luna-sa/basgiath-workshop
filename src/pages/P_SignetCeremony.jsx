@@ -6,6 +6,8 @@ import { useLocale } from '../i18n/store'
 import { RITUALS, MANDATORY_IDS } from '../data/signet/rituals'
 import { VOICE_ARCHETYPES } from '../data/signet/archetypes'
 import { generateSignetClaudeMd, SIGNET_APPLY_PROMPT } from '../data/signet/signet-generator'
+import { CHARACTERS, pickCharacter } from '../data/characters'
+import { getCharacterHighlight } from '../data/signet/character_defaults'
 import VoiceTextInput from '../components/VoiceTextInput'
 
 const STORAGE_KEY = 'signet-ceremony-answers'
@@ -51,22 +53,36 @@ function copyViaTextarea(text) {
 // archetype picker
 // ────────────────────────────────────────────────────────────────
 
-function ArchetypePicker({ value, onChange, lang }) {
+function ArchetypePicker({ value, onChange, lang, characterId, characterName }) {
+  const recommendedId = getCharacterHighlight(characterId, 'archetype')
   return (
     <div className="grid sm:grid-cols-2 gap-3">
       {VOICE_ARCHETYPES.map(a => {
         const isActive = value === a.id
+        const isRecommended = a.id === recommendedId && !isActive
         return (
           <button
             key={a.id}
             type="button"
             onClick={() => onChange(a.id)}
-            className={`text-left p-4 border transition-all cursor-pointer ${
+            title={isRecommended && characterName
+              ? (lang === 'ru' ? `◆ ${characterName} выбрал(а) бы это`
+                 : lang === 'uk' ? `◆ ${characterName} обрав(ла) би це`
+                 : `◆ ${characterName} would pick this`)
+              : ''}
+            className={`relative text-left p-4 border transition-all cursor-pointer ${
               isActive
                 ? 'border-qa-teal bg-qa-teal/[0.08] shadow-[0_0_20px_rgba(0,229,204,0.15)]'
-                : 'border-border bg-surface/40 hover:border-qa-teal/40'
+                : isRecommended
+                  ? 'border-qa-teal/60 bg-qa-teal/[0.03] ring-1 ring-qa-teal/40'
+                  : 'border-border bg-surface/40 hover:border-qa-teal/40'
             }`}
           >
+            {isRecommended && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-qa-teal text-black text-[10px] font-bold flex items-center justify-center" title={characterName}>
+                ◆
+              </span>
+            )}
             <div className="flex items-baseline gap-2 mb-1.5">
               <span className={`text-[16px] ${isActive ? 'text-qa-teal' : 'text-text-dim'}`}>{a.glyph}</span>
               <span className={`font-display italic text-[18px] ${isActive ? 'text-white' : 'text-text-body'}`}>
@@ -118,8 +134,9 @@ function ArchetypePicker({ value, onChange, lang }) {
 // ────────────────────────────────────────────────────────────────
 
 // ─── Preset chip strip ────────────────────────────────────────────
-function PresetChips({ presets, currentValue, onPick, lang }) {
+function PresetChips({ presets, currentValue, onPick, lang, questionId, characterId, characterName }) {
   if (!presets?.length) return null
+  const recommendedLabel = getCharacterHighlight(characterId, questionId)
   return (
     <div className="flex flex-wrap gap-1.5 mb-2.5">
       <span className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-dim self-center mr-1">
@@ -129,19 +146,27 @@ function PresetChips({ presets, currentValue, onPick, lang }) {
         const label = lang === 'ru' ? p.label_ru : lang === 'uk' ? (p.label_uk || p.label_en) : p.label_en
         const text = lang === 'ru' ? p.text_ru : lang === 'uk' ? (p.text_uk || p.text_en) : p.text_en
         const isActive = (currentValue || '').trim() === text.trim()
+        const isRecommended = p.label_en === recommendedLabel && !isActive
+        const tip = isRecommended && characterName
+          ? (lang === 'ru' ? `◆ ${characterName} выбрал(а) бы это`
+             : lang === 'uk' ? `◆ ${characterName} обрав(ла) би це`
+             : `◆ ${characterName} would pick this`)
+          : text
         return (
           <button
             key={i}
             type="button"
             onClick={() => onPick(text)}
-            className={`px-2.5 py-1 font-mono text-[10.5px] tracking-[1px] uppercase border transition-all cursor-pointer ${
+            className={`relative px-2.5 py-1 font-mono text-[10.5px] tracking-[1px] uppercase border transition-all cursor-pointer ${
               isActive
                 ? 'bg-qa-teal text-black border-qa-teal'
-                : 'border-border bg-surface/40 text-text-secondary hover:border-qa-teal/60 hover:text-qa-teal'
+                : isRecommended
+                  ? 'border-qa-teal/70 bg-qa-teal/[0.04] text-qa-teal ring-1 ring-qa-teal/40'
+                  : 'border-border bg-surface/40 text-text-secondary hover:border-qa-teal/60 hover:text-qa-teal'
             }`}
-            title={text}
+            title={tip}
           >
-            {label}
+            {isRecommended && <span className="mr-1">◆</span>}{label}
           </button>
         )
       })}
@@ -149,7 +174,7 @@ function PresetChips({ presets, currentValue, onPick, lang }) {
   )
 }
 
-function QuestionField({ question, value, onChange, lang }) {
+function QuestionField({ question, value, onChange, lang, characterId, characterName }) {
   const label = lang === 'ru' ? question.label_ru : lang === 'uk' ? (question.label_uk || question.label_en) : question.label_en
   const hint = lang === 'ru' ? question.hint_ru : lang === 'uk' ? (question.hint_uk || question.hint_en) : question.hint_en
   const placeholder = lang === 'ru' ? question.placeholder_ru : lang === 'uk' ? (question.placeholder_uk || question.placeholder_en) : question.placeholder_en
@@ -160,7 +185,7 @@ function QuestionField({ question, value, onChange, lang }) {
         <label className="block font-display italic text-[20px] text-white mb-2">
           {label}
         </label>
-        <ArchetypePicker value={value} onChange={onChange} lang={lang} />
+        <ArchetypePicker value={value} onChange={onChange} lang={lang} characterId={characterId} characterName={characterName} />
       </div>
     )
   }
@@ -181,6 +206,9 @@ function QuestionField({ question, value, onChange, lang }) {
         currentValue={value}
         onPick={(text) => onChange(text)}
         lang={lang}
+        questionId={question.id}
+        characterId={characterId}
+        characterName={characterName}
       />
 
       {question.voiceEnabled ? (
@@ -220,6 +248,10 @@ export default function P_SignetCeremony() {
   const t = useT()
   const lang = useLocale(s => s.lang)
   const characterId = useWorkshopStore(s => s.user.characterId) || 'self'
+  const characterName = (() => {
+    const c = pickCharacter(CHARACTERS.find(x => x.id === characterId), lang)
+    return c?.name ? c.name.split(' ')[0] : null
+  })()
   const setPersonaAnswers = useWorkshopStore(s => s.setPersonaAnswers)
   const storedAnswers = useWorkshopStore(s => s.user.personaAnswers)
 
@@ -379,6 +411,8 @@ export default function P_SignetCeremony() {
                     value={answers[q.id]}
                     onChange={(v) => updateAnswer(q.id, v)}
                     lang={lang}
+                    characterId={characterId}
+                    characterName={characterName}
                   />
                 ))}
               </div>

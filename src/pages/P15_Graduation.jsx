@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti'
 import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
 import { CHARACTERS, pickCharacter } from '../data/characters'
+import { getGraduationCloser } from '../data/signet/character_defaults'
 import { useLocale } from '../i18n/store'
 import { useT } from '../i18n/useT'
 import { CHECKPOINT_IDS, CHECKPOINT_LABELS, getCheckpoints } from '../api/checkpoints'
@@ -69,6 +70,21 @@ export default function P15_Graduation() {
               {t('Bonded with', 'Связан с', 'Bonded з')} {character.name} · {character.title}
             </p>
           )}
+          {/* Character voice closer — block D from red-thread spec */}
+          {(() => {
+            const closer = getGraduationCloser(characterId || 'self', lang)
+            if (!closer) return null
+            return (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.5 }}
+                className="font-display italic text-[clamp(18px,2.2vw,24px)] text-text-secondary mt-5 max-w-2xl mx-auto leading-relaxed"
+              >
+                {closer}
+              </motion.p>
+            )
+          })()}
         </motion.div>
 
         {/* What you carry home */}

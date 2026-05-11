@@ -3,6 +3,7 @@ import { NARRATIVE } from '../data/narrative'
 import { useLocale } from '../i18n/store'
 import { usePersona } from '../store/usePersona'
 import GateGuard from './GateGuard'
+import CharacterCommentary from '../components/CharacterCommentary'
 
 /**
  * Pick a localised field. Falls back to the canonical (RU) field if
@@ -77,6 +78,11 @@ export default function PageShell({ pageIndex, subStepId, children }) {
           )}
         </div>
       </div>
+
+      {/* Character whisper — bottom-right floating quote from the
+          chosen Empyrean archetype. Renders nothing if no character /
+          no commentary for this slide. */}
+      <CharacterCommentary slideKey={narrativeKey} position="fixed" />
     </div>
   )
 }
