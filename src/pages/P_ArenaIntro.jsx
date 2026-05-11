@@ -70,30 +70,47 @@ export default function P_ArenaIntro() {
 
           <div className="border border-border bg-surface/50 p-5">
             <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">
-              ◆ {t('Bot API quick reference', 'API бота — кратко', 'API бота — стисло')}
+              ◆ {t('Starter bot — beat this', 'Стартовый бот — победи его', 'Стартовий бот — переможи його')}
             </div>
-            <pre className="text-[12px] font-mono text-qa-teal leading-relaxed whitespace-pre-wrap">{`tick({ me, stars, walls, sky })
-  → { angle, throttle }
-
-me    : { x, y, score, fuel }
-stars : [{ x, y, value, fire }]
-walls : [{ x, y, r }]
-sky   : { width, height }`}</pre>
+            <pre className="text-[11.5px] font-mono text-qa-teal leading-relaxed whitespace-pre-wrap">{`function tick({ me, stars, walls, rivals }) {
+  // greedy: nearest star, full throttle
+  let best = stars[0], bestD = Infinity
+  for (const s of stars) {
+    const d = Math.hypot(s.x-me.x, s.y-me.y)
+    if (d < bestD) { bestD = d; best = s }
+  }
+  const angle = Math.atan2(
+    best.y-me.y, best.x-me.x) * 180/Math.PI
+  return { angle, throttle: 1 }
+}`}</pre>
             <p className="text-[11px] text-text-dim italic mt-3">
               {t(
-                'Hint: bonded riders sometimes find more in the docs.',
-                'Подсказка: всадники со связью находят в документации больше.',
-                'Підказка: bonded-вершники знаходять у документації більше.'
+                'Paste into Arena, ask Claude to make it smarter. Hint: bonded riders find more in the docs.',
+                'Вставь в Arena, попроси Claude сделать умнее. Подсказка: всадники со связью находят в документации больше.',
+                'Встав у Arena, попроси Claude зробити розумнішим. Підказка: bonded-вершники знаходять у документації більше.'
               )}
             </p>
           </div>
         </div>
 
+        <div className="border border-qa-teal/30 bg-qa-teal/[0.03] p-4 flex items-center gap-3">
+          <span className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal shrink-0">
+            ⏱ {t('Time budget', 'Бюджет времени', 'Бюджет часу')}
+          </span>
+          <span className="text-[13px] text-text-body">
+            {t(
+              '~20 minutes total. 10 runs × 45 seconds + coding loop between them.',
+              '~20 минут всего. 10 запусков × 45 секунд + код-петля между ними.',
+              '~20 хвилин усього. 10 запусків × 45 секунд + код-петля між ними.'
+            )}
+          </span>
+        </div>
+
         <p className="text-[12px] text-text-dim italic">
           {t(
-            'When the facilitator calls the final battle, all submitted bots load on the projector.',
-            'Когда фасилитатор объявит финальную битву — все отправленные боты загрузятся на проекторе.',
-            'Коли фасилітатор оголосить фінальну битву — усі надіслані боти завантажаться на проекторі.'
+            'When you finish — come back to this tab and press →. Final reveal is on the Champions slide.',
+            'Когда закончишь — вернись сюда и жми →. Финальный reveal — на слайде Champions.',
+            'Коли закінчиш — повернись сюди і тисни →. Фінальний reveal — на слайді Champions.'
           )}
         </p>
 

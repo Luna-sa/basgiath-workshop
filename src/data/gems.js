@@ -503,7 +503,8 @@ test data, скриншотами и tool output — этот headroom это р
       'Будь-хто, хто бачить «context approaching limit» — спробуй це до того, як дробити роботу.',
     ],
 
-    install_en: `Manually edit ~/.claude/settings.json:
+    install_en: `Open ~/.claude/settings.json (create if missing).
+If an "env" block already exists — merge, don't overwrite.
 
 {
   "env": {
@@ -511,8 +512,12 @@ test data, скриншотами и tool output — этот headroom это р
   }
 }
 
-Restart Claude Code. That's the whole install.`,
-    install_ru: `Руками отредактировать ~/.claude/settings.json:
+Save. Restart Claude Code (kill the process + start fresh).
+
+Verify: in a new session, run /status — context usage should be
+visibly lower than before (8-15k tokens instead of 77k+).`,
+    install_ru: `Открой ~/.claude/settings.json (создай если нет).
+Если блок "env" уже есть — слей, не перетирай.
 
 {
   "env": {
@@ -520,7 +525,23 @@ Restart Claude Code. That's the whole install.`,
   }
 }
 
-Перезапусти Claude Code. Это вся установка.`,
+Сохрани. Перезапусти Claude Code (убей процесс + старт заново).
+
+Проверь: в новой сессии запусти /status — контекст должен
+заметно упасть (8-15k токенов вместо 77k+).`,
+    install_uk: `Відкрий ~/.claude/settings.json (створи якщо нема).
+Якщо блок "env" вже є — злий, не перетирай.
+
+{
+  "env": {
+    "ENABLE_TOOL_SEARCH": "true"
+  }
+}
+
+Збережи. Перезапусти Claude Code (вбий процес + запусти заново).
+
+Перевір: у новій сесії запусти /status — контекст має помітно
+впасти (8-15k токенів замість 77k+).`,
     url: 'https://paddo.dev/blog/claude-code-hidden-mcp-flag/',
   },
 

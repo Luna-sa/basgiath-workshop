@@ -56,6 +56,22 @@ export default function P10_TalkMCP() {
           </p>
         </div>
 
+        {/* Wiring diagram + config file */}
+        <div className="border border-border bg-surface/30 p-4">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-3">
+            ◆ {t('How it actually wires', 'Как это собрано', 'Як це зібрано')}
+          </div>
+          <pre className="font-mono text-[12px] text-qa-teal leading-relaxed mb-3">{`Claude  ───▶  MCP server  ───▶  Real tool / service
+              (process)         (browser, API, file, DB…)`}</pre>
+          <p className="text-[12.5px] text-text-body leading-relaxed">
+            {t(
+              <>Config lives at <code className="text-qa-teal font-mono text-[12px]">~/.claude/mcp_servers.json</code>. We show three core ones today — over 100 exist (GitHub, filesystem, Jira, Slack, your-internal-API).</>,
+              <>Конфиг в <code className="text-qa-teal font-mono text-[12px]">~/.claude/mcp_servers.json</code>. Сегодня покажем три ключевых — всего их 100+ (GitHub, filesystem, Jira, Slack, твой внутренний API).</>,
+              <>Конфіг у <code className="text-qa-teal font-mono text-[12px]">~/.claude/mcp_servers.json</code>. Сьогодні покажемо три ключових — усього їх 100+ (GitHub, filesystem, Jira, Slack, твій внутрішній API).</>
+            )}
+          </p>
+        </div>
+
         {/* Server cards */}
         {SERVERS.map(s => (
           <div key={s.name} className="border border-[#2E2E2E] bg-[#141414] rounded-lg overflow-hidden hover:border-qa-teal/20 hover:shadow-[0_0_15px_rgba(0,229,204,0.05)] transition-all">

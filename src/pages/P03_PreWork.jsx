@@ -50,9 +50,9 @@ const STEPS = [
     text_en: 'Verify: claude --version',
     text_ru: 'Проверить: claude --version',
     text_uk: 'Перевірити: claude --version',
-    note_en: 'Should print a version',
-    note_ru: 'Должен показать версию',
-    note_uk: 'Має показати версію',
+    note_en: 'Should print a version. Minimum: 2.0 (Jan 2026+)',
+    note_ru: 'Должен показать версию. Минимум: 2.0 (с янв 2026)',
+    note_uk: 'Має показати версію. Мінімум: 2.0 (з січ 2026)',
   },
 ]
 

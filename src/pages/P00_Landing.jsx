@@ -41,11 +41,11 @@ export default function P00_Landing() {
             { value: '7', label_en: 'Commands', label_ru: 'Команд', label_uk: 'Команд' },
             { value: '4', label_en: 'Agents', label_ru: 'Агента', label_uk: 'Агенти' },
             { value: '3', label_en: 'MCP', label_ru: 'MCP', label_uk: 'MCP' },
-            { value: '60', unit: 'min', label_en: 'Workshop', label_ru: 'Воркшоп', label_uk: 'Воркшоп' },
+            { value: '4', unit: 'h', label_en: 'Workshop', label_ru: 'Воркшоп', label_uk: 'Воркшоп' },
           ].map(s => (
             <div key={s.label_en} className="text-center">
               <div className="font-display text-3xl sm:text-4xl text-white">
-                {s.value}<span className="text-text-dim text-lg">{s.unit ? t(s.unit, 'мин', 'хв') : ''}</span>
+                {s.value}<span className="text-text-dim text-lg">{s.unit === 'h' ? t('h', 'ч', 'год') : s.unit === 'min' ? t('min', 'мин', 'хв') : ''}</span>
               </div>
               <div className="font-mono text-[13px] text-text-dim tracking-[2px] uppercase mt-1">
                 {t(s.label_en, s.label_ru, s.label_uk)}

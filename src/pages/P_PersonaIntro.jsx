@@ -48,6 +48,41 @@ export default function P_PersonaIntro() {
           >
             {t('Begin the Ceremony →', 'Начать церемонию →', 'Розпочати церемонію →')}
           </a>
+          <span className="text-[12px] text-text-dim italic">
+            {t(
+              'Opens in a new tab. When you finish — come back to this tab and press →.',
+              'Откроется в новой вкладке. Когда закончишь — вернись сюда и жми →.',
+              'Відкриється у новій вкладці. Коли закінчиш — повернись сюди і тисни →.'
+            )}
+          </span>
+        </div>
+
+        {/* CLAUDE.md preview — so people know what 15 min of ritual produces */}
+        <div className="border border-border bg-surface/30 p-4">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-3">
+            ◆ {t('Output preview', 'Что получится', 'Що вийде')} · ~/.claude/CLAUDE.md
+          </div>
+          <pre className="font-mono text-[11.5px] text-text-body leading-relaxed whitespace-pre-wrap">{`# Я Tairn — твой bonded.
+
+Когда ты пишешь тесты, я предлагаю
+edge cases первыми. Не льщу. Не разжёвываю.
+
+## Сигнатурные фразы
+— «Подожди. Прочти ещё раз.»
+— «Здесь дыра в проверке.»
+
+## Когда я молчу
+— Когда ты сама знаешь ответ. Не мешаю.
+
+# ARENA — правила игры
+...`}</pre>
+          <p className="text-[12px] text-text-dim italic mt-3">
+            {t(
+              'About 600 words. Lives at ~/.claude/CLAUDE.md. Forever changes how Claude speaks to you (or until you re-do the ceremony).',
+              'Около 600 слов. Лежит в ~/.claude/CLAUDE.md. Меняет голос Claude навсегда (или до новой церемонии).',
+              'Близько 600 слів. Лежить у ~/.claude/CLAUDE.md. Змінює голос Claude назавжди (або до нової церемонії).'
+            )}
+          </p>
         </div>
 
         {character && (

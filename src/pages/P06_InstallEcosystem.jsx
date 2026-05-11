@@ -85,6 +85,33 @@ export default function P06_InstallEcosystem() {
           </div>
         </div>
 
+        {/* Expected output — so participants know what success looks like */}
+        <div className="border border-qa-teal/20 bg-qa-teal/[0.03] p-4">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-2">
+            ◆ {t('Expected output', 'Что должно появиться', 'Що має зʼявитися')}
+          </div>
+          <pre className="font-mono text-[11px] text-text-body leading-relaxed whitespace-pre-wrap">{`✓ Created ~/.claude/commands/bug-report.md
+✓ Created ~/.claude/commands/test-cases.md
+✓ Created ~/.claude/commands/review.md
+✓ Created ~/.claude/commands/checklist.md
+✓ Created ~/.claude/commands/api-test.md
+✓ Created ~/.claude/commands/regression.md
+✓ Created ~/.claude/commands/analyze-log.md
+✓ Created ~/.claude/agents/qa-reviewer.md
+✓ Created ~/.claude/agents/test-generator.md
+✓ Created ~/.claude/agents/security-scanner.md
+✓ Created ~/.claude/agents/bug-triager.md
+✓ Configured 3 MCP servers in ~/.claude/mcp_servers.json
+Total: 12 files placed.`}</pre>
+          <p className="text-[12px] text-text-dim italic mt-3">
+            {t(
+              "Errors? Don't panic — flag the facilitator. Most install issues are 30-second fixes.",
+              'Ошибки? Не паникуй — позови фасилитатора. Большинство фейлов лечатся за 30 секунд.',
+              'Помилки? Не панікуй — поклич фасилітатора. Більшість фейлів лікуються за 30 секунд.'
+            )}
+          </p>
+        </div>
+
         {/* The prompt */}
         <div className="border border-border bg-black overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2 bg-surface/80 border-b border-border">

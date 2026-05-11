@@ -4,7 +4,7 @@ import { useLocale } from '../i18n/store'
 import { GEMS } from '../data/gems'
 
 /**
- * Hidden Gems intro / overview slide. The seven gems each have their
+ * Hidden Gems intro / overview slide. The six gems each have their
  * own deep-dive slide right after this one — this page is the
  * "table of contents" so participants see the shape of the next
  * 15 minutes before we dive in.
@@ -53,6 +53,13 @@ export default function P_HiddenGems() {
               'On each gem slide: tagline → what it is → why it matters → when to reach for it → install prompt. Use the right arrow / Space / Enter to advance through the six.',
               'На каждом слайде с гемом: tagline → что это → зачем → когда брать → install-промпт. Стрелка вправо / Space / Enter — листать дальше по шести.',
               'На кожному слайді з гемом: tagline → що це → навіщо → коли брати → install-промпт. Стрілка вправо / Space / Enter — гортати далі по шести.'
+            )}
+          </p>
+          <p className="text-[12px] text-text-dim italic mt-2">
+            {t(
+              'About 15 minutes total. Each gem has a copy-paste install prompt — if one grabs you, install right at your seat while we cover the next.',
+              'Примерно 15 минут на всё. У каждого гема — install-промпт под Copy. Зацепил какой-то — поставь прямо за партой, пока идём дальше.',
+              'Близько 15 хвилин на все. У кожного гема — install-промпт під Copy. Зачепив якийсь — постав прямо за партою, поки йдемо далі.'
             )}
           </p>
         </div>

@@ -109,11 +109,38 @@ export default function P_TalkModes() {
           </div>
         </div>
 
+        {/* When to use which mode */}
+        <div>
+          <p className="font-mono text-[11px] tracking-[3px] uppercase text-text-dim mb-3">
+            ◆ {t('When to use which mode', 'Когда какой режим', 'Коли який режим')}
+          </p>
+          <div className="border border-border">
+            {[
+              { task_en: 'Writing a test plan for a new feature', task_ru: 'Пишешь тест-план для новой фичи', task_uk: 'Пишеш тест-план для нової фічі', mode: 'Plan' },
+              { task_en: 'Editing test data, fixtures, helper files', task_ru: 'Правишь тестовые данные, фикстуры, хелперы', task_uk: 'Правиш тестові дані, фікстури, хелпери', mode: 'Auto' },
+              { task_en: 'Refactoring shared fixtures across many tests', task_ru: 'Рефакторишь общие фикстуры по многим тестам', task_uk: 'Рефакториш спільні фікстури по багатьох тестах', mode: 'Edit' },
+              { task_en: 'Overnight bulk-rename of 200 files on a branch', task_ru: 'Ночной массовый rename 200 файлов в ветке', task_uk: 'Нічний масовий rename 200 файлів у гілці', mode: 'Yolo' },
+            ].map((row, i) => (
+              <div key={row.task_en} className={`flex items-baseline gap-4 p-3 ${i % 2 === 0 ? 'bg-surface/30' : 'bg-bg/40'}`}>
+                <span className="text-[13px] text-text-body flex-1">{t(row.task_en, row.task_ru, row.task_uk)}</span>
+                <code className="font-mono text-[12px] text-qa-teal min-w-[60px] text-right">{row.mode}</code>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Hotkeys + commands */}
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-text-dim mb-3">
             ◆ {t('Hotkeys & built-in commands', 'Хоткеи и встроенные команды', 'Хоткеї та вбудовані команди')}
           </p>
+          <div className="mb-3 text-[12px] text-text-secondary italic">
+            {t(
+              'Right now: open Claude Code, hit Shift+Tab twice, watch the indicator change.',
+              'Прямо сейчас: открой Claude Code, нажми Shift+Tab дважды, посмотри как меняется индикатор.',
+              'Прямо зараз: відкрий Claude Code, натисни Shift+Tab двічі, подивись як змінюється індикатор.'
+            )}
+          </div>
           <div className="border border-border">
             {HOTKEYS.map((h, i) => (
               <div

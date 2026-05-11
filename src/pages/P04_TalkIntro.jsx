@@ -18,6 +18,35 @@ export default function P04_TalkIntro() {
           </p>
         </div>
 
+        {/* Yesterday's habit vs today's move — concrete pain example */}
+        <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5">
+          <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-3">
+            ◆ {t("Yesterday's habit → today's move", 'Вчерашняя привычка → сегодняшний ход', 'Вчорашня звичка → сьогоднішній хід')}
+          </div>
+          <div className="grid md:grid-cols-2 gap-3 text-[13px] leading-relaxed">
+            <div>
+              <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-corp-red">ChatGPT</span>
+              <p className="text-text-secondary mt-1">
+                {t(
+                  'Paste a stack trace. Get a generic answer. Re-paste your function. Re-paste your package.json. Re-paste your test. Get another generic answer.',
+                  'Вставляешь stack trace. Получаешь общий ответ. Опять вставляешь функцию. Опять package.json. Опять тест. Опять общий ответ.',
+                  'Вставляєш stack trace. Отримуєш загальну відповідь. Знову вставляєш функцію. Знову package.json. Знову тест. Знову загальна відповідь.'
+                )}
+              </p>
+            </div>
+            <div>
+              <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-qa-teal">Claude Code</span>
+              <p className="text-text-body mt-1">
+                {t(
+                  '/analyze-log → it reads the trace, opens your package.json, walks the actual file at the line in the trace, and tells you which assumption failed.',
+                  '/analyze-log → читает trace, открывает твой package.json, идёт в файл по строке из trace и говорит какое допущение не сошлось.',
+                  '/analyze-log → читає trace, відкриває твій package.json, йде у файл за рядком із trace і каже яке припущення не зійшлося.'
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Comparison */}
         <div className="grid md:grid-cols-2 gap-5">
           <div className="p-5 border border-border border-l-[3px] border-l-corp-red/60 bg-surface/40">
