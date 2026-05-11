@@ -173,7 +173,18 @@ export default function P_BondRitual() {
         }
       }
     } catch (e) {
-      setGenError(e.message || 'generation failed')
+      // Friendlier message for the rate-limit case — the backend already
+      // retried 3× under the hood, so this only fires when the OpenAI
+      // queue is genuinely overwhelmed.
+      const raw = e?.message || 'generation failed'
+      const isRate = /rate limit|RATE_LIMITED|429/.test(raw)
+      setGenError(isRate
+        ? t(
+            'A lot of riders pressed Manifest at once. Wait 30-60 seconds and Re-roll — the queue drains fast.',
+            'Много всадников нажали Manifest одновременно. Подожди 30-60 секунд и попробуй ещё раз — очередь рассасывается быстро.',
+            'Багато вершників натиснули Manifest одночасно. Зачекай 30-60 секунд і спробуй ще раз — черга швидко розсмокчеться.'
+          )
+        : raw)
       setStage('questions')
     }
   }
@@ -225,8 +236,9 @@ export default function P_BondRitual() {
         modelUsed,
         studentId,
       })
-      // Redirect to Aerie
-      window.location.href = '/?page=aerie'
+      // Don't auto-redirect — facilitator opens the Aerie collectively
+      // on the next slide. Just confirm the seal and stay on the page.
+      setStage('sealed')
     } catch (e) {
       setSealError(e.message || 'Sealing failed — check Supabase migration')
       setStage('preview')
@@ -352,6 +364,77 @@ export default function P_BondRitual() {
                   />
                 ))}
               </div>
+            </motion.div>
+          )}
+
+          {/* ── Sealed stage — confirmation, no auto-redirect ── */}
+          {stage === 'sealed' && (
+            <motion.div
+              key="sealed"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              className="text-center py-12 space-y-6"
+            >
+              <div className="font-display italic text-[clamp(28px,4vw,40px)] text-qa-teal leading-none">
+                ✦
+              </div>
+              <h2 className="font-display italic text-[clamp(32px,5vw,48px)] text-white leading-tight">
+                {t('Your dragon is sealed.', 'Твой дракон запечатан.', 'Твій дракон запечатаний.')}
+              </h2>
+              <p className="text-[16px] text-text-secondary italic leading-relaxed max-w-lg mx-auto">
+                {t(
+                  'They\'re waiting in the Aerie. The facilitator will open it for voting when everyone is ready.',
+                  'Он ждёт в Аэрии. Фасилитатор откроет её для голосования когда все будут готовы.',
+                  'Він чекає в Аерії. Фасилітатор відкриє її для голосування, коли всі будуть готові.'
+                )}
+              </p>
+
+              {/* Dragon mini-card */}
+              {imageB64 && (
+                <div className="max-w-md mx-auto border border-qa-teal/30 bg-bg/40 overflow-hidden">
+                  <div className="aspect-square">
+                    <img
+                      src={`data:image/png;base64,${imageB64}`}
+                      alt={answers.name || 'dragon'}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-3 text-center">
+                    <div className="font-display italic text-[22px] text-white">{answers.name || '—'}</div>
+                    {answers.motto && (
+                      <p className="text-[12px] text-text-secondary italic mt-1">"{answers.motto}"</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action row */}
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={handleDownloadSigil}
+                  className="border border-qa-teal/40 text-qa-teal px-5 py-2.5 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:bg-qa-teal/10 transition-all cursor-pointer"
+                >
+                  ⬇ {t('Sigil card', 'Сигил-карточка', 'Сигіл-картка')}
+                </button>
+                <a
+                  href="/?page=aerie"
+                  target="_blank"
+                  rel="noopener"
+                  className="font-mono text-[11px] tracking-[2px] uppercase text-text-dim hover:text-qa-teal transition-colors"
+                >
+                  {t('Sneak peek the Aerie →', 'Заглянуть в Аэрию →', 'Зазирнути в Аерію →')}
+                </a>
+              </div>
+
+              <p className="text-[12px] text-text-dim italic pt-2">
+                {t(
+                  'Stay on the workshop slide. The Aerie opens next.',
+                  'Оставайся на слайде воркшопа. Аэрия откроется следующей.',
+                  'Лишайся на слайді воркшопу. Аерія відкриється наступною.'
+                )}
+              </p>
             </motion.div>
           )}
 

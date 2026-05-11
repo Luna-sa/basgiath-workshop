@@ -10,17 +10,19 @@ import { gsheetsEnabled, callAction } from './gsheetsClient'
  * use the legacy Supabase JSONB column.
  */
 
-export const CHECKPOINT_IDS = ['parapet', 'forge', 'signet', 'arena']
+export const CHECKPOINT_IDS = ['parapet', 'forge', 'signet', 'bond', 'arena']
 export const CHECKPOINT_LABELS = {
   parapet: 'Parapet',
   forge: 'Forge',
   signet: 'Signet',
+  bond: 'Bond',
   arena: 'Arena',
 }
 export const CHECKPOINT_DESCRIPTIONS = {
   parapet: 'Claude Code installed + claude --version verified',
   forge: 'QA ecosystem installed (1 prompt)',
   signet: 'Personal CLAUDE.md generated + applied',
+  bond: 'Dragon sealed into the Aerie',
   arena: 'Bot submitted to the Dragon Arena',
 }
 
