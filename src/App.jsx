@@ -208,6 +208,8 @@ export default function App() {
           {/* Champions finale — three winners revealed in sequence */}
           <LanguageToggle />
           <P_Champions />
+          {/* Toast slot so Golden Wyrmling click can show "+500 XP" */}
+          <AchievementToast />
         </div>
       </ErrorBoundary>
     )
