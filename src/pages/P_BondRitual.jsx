@@ -106,6 +106,8 @@ export default function P_BondRitual() {
   const [generations, setGenerations] = useState(0)
   const [riderClass, setRiderClass] = useState(null) // { class, class_name, class_meaning, epithet, reason }
   const [classLoading, setClassLoading] = useState(false)
+  const [editedPrompt, setEditedPrompt] = useState(null) // null = use auto-built; string = user override
+  const [showPromptEditor, setShowPromptEditor] = useState(false)
 
   const totalSteps = BOND_QUESTIONS.length
 
@@ -141,7 +143,7 @@ export default function P_BondRitual() {
     setStage('generating')
     setGenError(null)
     try {
-      const prompt = buildDragonPrompt(answers)
+      const prompt = (editedPrompt ?? buildDragonPrompt(answers))
       const res = await generateDragonImage({ prompt })
       setImageB64(res.image_b64)
       setUsedPrompt(prompt)
@@ -389,6 +391,55 @@ export default function P_BondRitual() {
                   <Stat label={t('Eyes', 'Глаза', 'Очі')} value={answers.eyes} />
                   <Stat label={t('Signet', 'Сигнет', 'Сигнет')} value={answers.signet} />
                 </div>
+              </div>
+
+              {/* Manual prompt editor — for advanced users */}
+              <div className="border border-border bg-surface/30 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowPromptEditor(v => !v)}
+                  className="w-full px-4 py-2.5 text-left font-mono text-[10.5px] tracking-[2px] uppercase text-text-dim hover:text-qa-teal flex items-center justify-between transition-colors"
+                >
+                  <span>
+                    ✎ {showPromptEditor
+                      ? t('Hide prompt', 'Скрыть промпт', 'Сховати промпт')
+                      : t('Show / edit prompt', 'Показать / править промпт', 'Показати / правити промпт')}
+                  </span>
+                  <span className="text-text-dim">{showPromptEditor ? '▲' : '▼'}</span>
+                </button>
+                {showPromptEditor && (
+                  <div className="border-t border-border px-4 py-4 space-y-3">
+                    <p className="text-[12px] text-text-dim italic leading-relaxed">
+                      {t(
+                        'Tune the prompt before re-rolling. Reset to auto returns to the answer-based prompt.',
+                        'Подправь промпт перед перегенерацией. Reset to auto вернёт авто-промпт из ответов.',
+                        'Підправ промпт перед перегенерацією. Reset to auto поверне авто-промпт з відповідей.'
+                      )}
+                    </p>
+                    <textarea
+                      value={editedPrompt ?? usedPrompt ?? buildDragonPrompt(answers)}
+                      onChange={e => setEditedPrompt(e.target.value)}
+                      rows={10}
+                      className="w-full bg-black border border-border focus:border-qa-teal/60 rounded-[2px] px-3 py-2.5 text-[12px] text-text-body font-mono leading-relaxed transition-colors focus:outline-none resize-y"
+                    />
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => setEditedPrompt(null)}
+                        className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim hover:text-qa-teal cursor-pointer"
+                      >
+                        ⟲ {t('Reset to auto', 'Сбросить на авто', 'Скинути на авто')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleRegenerate}
+                        className="ml-auto bg-qa-teal text-black px-5 py-2 font-mono text-[10.5px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] transition-all cursor-pointer"
+                      >
+                        ⟲ {t('Regenerate with this prompt', 'Перегенерь с этим промптом', 'Перегенеруй з цим промптом')}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Rider Class — The Choosing */}
