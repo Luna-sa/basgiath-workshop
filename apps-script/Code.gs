@@ -32,6 +32,7 @@ const SHEETS = {
   DRAGON_VOTES:    'dragon_votes',
   DRAGON_MATCHES:  'dragon_matches',
   BOT_SUBMISSIONS: 'bot_submissions',
+  ARENA_RUNS:      'arena_runs',
   FACILITATOR:     'facilitator_state',
 }
 
@@ -56,6 +57,12 @@ const HEADERS = {
   [SHEETS.BOT_SUBMISSIONS]: [
     'id', 'submitted_at', 'student_id', 'nickname', 'character_id',
     'bot_code', 'score',
+  ],
+  [SHEETS.ARENA_RUNS]: [
+    'id', 'created_at', 'student_id', 'nickname', 'character_id',
+    'run_number', 'score', 'stars_collected', 'fire_stars',
+    'max_combo', 'walls_hit', 'pattern_hit', 'signet_used',
+    'ticks_alive', 'bot_crashed', 'run_log_json', 'bot_code_snapshot',
   ],
   [SHEETS.FACILITATOR]: [
     'key', 'unlocked_page', 'workshop_phase', 'announcement',
@@ -99,6 +106,11 @@ function doPost(e) {
       // bot submissions
       submitBot,
       getLatestSubmissionsByCharacter,
+      // arena runs
+      recordArenaRun,
+      getMyArenaRuns,
+      getArenaLeaderboard,
+      resetArenaRuns,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -542,4 +554,156 @@ function getLatestSubmissionsByCharacter() {
     }
   })
   return { submissions: Object.values(byChar) }
+}
+
+// ───────────────────────── Arena runs ─────────────────────────
+
+// Each participant submits up to MAX_ARENA_RUNS scored runs.
+// Their leaderboard total is the SUM of all their run scores.
+var MAX_ARENA_RUNS = 10
+
+function recordArenaRun(body) {
+  const {
+    studentId, nickname, characterId, runNumber,
+    score, starsCollected, fireStars, maxCombo, wallsHit,
+    patternHit, signetUsed, ticksAlive, botCrashed,
+    runLog, botCodeSnapshot,
+  } = body || {}
+  if (!nickname) throw new Error('nickname required')
+  if (!characterId) throw new Error('characterId required')
+  const rn = Number(runNumber)
+  if (!Number.isInteger(rn) || rn < 1 || rn > MAX_ARENA_RUNS) {
+    throw new Error('runNumber out of range (1.. ' + MAX_ARENA_RUNS + ')')
+  }
+  const nick = String(nickname).toLowerCase().trim()
+  // Idempotent: if (nickname, character_id, run_number) already exists,
+  // overwrite. Lets a re-submit replace a flaky network attempt without
+  // double-counting.
+  const existingIdx = _findRowIndex(SHEETS.ARENA_RUNS,
+    r => String(r.nickname).toLowerCase() === nick
+      && r.character_id === characterId
+      && Number(r.run_number) === rn)
+  const record = {
+    id: existingIdx > 0 ? _allRows(SHEETS.ARENA_RUNS).find(
+      r => String(r.nickname).toLowerCase() === nick
+        && r.character_id === characterId
+        && Number(r.run_number) === rn
+    ).id : _uuid(),
+    created_at: _now(),
+    student_id: studentId || '',
+    nickname: nick,
+    character_id: characterId,
+    run_number: rn,
+    score: Number(score) || 0,
+    stars_collected: Number(starsCollected) || 0,
+    fire_stars: Number(fireStars) || 0,
+    max_combo: Number(maxCombo) || 0,
+    walls_hit: Number(wallsHit) || 0,
+    pattern_hit: !!patternHit,
+    signet_used: !!signetUsed,
+    ticks_alive: Number(ticksAlive) || 0,
+    bot_crashed: !!botCrashed,
+    run_log_json: runLog ? (typeof runLog === 'string' ? runLog : JSON.stringify(runLog)) : '',
+    bot_code_snapshot: botCodeSnapshot || '',
+  }
+  if (existingIdx > 0) {
+    _updateRow(SHEETS.ARENA_RUNS, existingIdx, record)
+  } else {
+    _appendRow(SHEETS.ARENA_RUNS, record)
+  }
+  return { id: record.id, run_number: rn, score: record.score }
+}
+
+function getMyArenaRuns({ nickname, characterId }) {
+  if (!nickname) return { runs: [], max: MAX_ARENA_RUNS }
+  const nick = String(nickname).toLowerCase().trim()
+  const rows = _allRows(SHEETS.ARENA_RUNS)
+    .filter(r => String(r.nickname).toLowerCase() === nick
+      && (!characterId || r.character_id === characterId))
+    .sort((a, b) => Number(a.run_number) - Number(b.run_number))
+  // Strip the heavy run_log_json + bot_code_snapshot for list views.
+  // Caller can fetch a single run by id later if they want details.
+  const slim = rows.map(r => ({
+    id: r.id,
+    run_number: Number(r.run_number),
+    score: Number(r.score) || 0,
+    stars_collected: Number(r.stars_collected) || 0,
+    fire_stars: Number(r.fire_stars) || 0,
+    max_combo: Number(r.max_combo) || 0,
+    walls_hit: Number(r.walls_hit) || 0,
+    pattern_hit: r.pattern_hit === true || r.pattern_hit === 'TRUE',
+    signet_used: r.signet_used === true || r.signet_used === 'TRUE',
+    bot_crashed: r.bot_crashed === true || r.bot_crashed === 'TRUE',
+    ticks_alive: Number(r.ticks_alive) || 0,
+    created_at: r.created_at,
+  }))
+  return { runs: slim, max: MAX_ARENA_RUNS }
+}
+
+function getArenaLeaderboard() {
+  const rows = _allRows(SHEETS.ARENA_RUNS)
+  // Aggregate by (nickname). Character is captured from the most-recent
+  // run (participants don't switch characters mid-arena in v2, but the
+  // schema doesn't enforce it).
+  const byNick = {}
+  rows.forEach(r => {
+    const k = String(r.nickname).toLowerCase()
+    const score = Number(r.score) || 0
+    const rn = Number(r.run_number) || 0
+    if (!byNick[k]) {
+      byNick[k] = {
+        nickname: k,
+        character_id: r.character_id || '',
+        runs_completed: 0,
+        total_score: 0,
+        best_run_score: -1,
+        best_run_number: 0,
+        total_fire_stars: 0,
+        total_stars: 0,
+        best_combo: 0,
+        hit_pattern: false,
+        latest_run_at: '',
+      }
+    }
+    const agg = byNick[k]
+    agg.runs_completed += 1
+    agg.total_score += score
+    if (score > agg.best_run_score) {
+      agg.best_run_score = score
+      agg.best_run_number = rn
+    }
+    agg.total_fire_stars += Number(r.fire_stars) || 0
+    agg.total_stars += Number(r.stars_collected) || 0
+    const combo = Number(r.max_combo) || 0
+    if (combo > agg.best_combo) agg.best_combo = combo
+    if (r.pattern_hit === true || r.pattern_hit === 'TRUE') agg.hit_pattern = true
+    if (String(r.created_at) > String(agg.latest_run_at)) {
+      agg.latest_run_at = String(r.created_at)
+      agg.character_id = r.character_id || agg.character_id
+    }
+  })
+  const out = Object.values(byNick).sort((a, b) => {
+    if (b.total_score !== a.total_score) return b.total_score - a.total_score
+    if (b.best_run_score !== a.best_run_score) return b.best_run_score - a.best_run_score
+    if (b.total_fire_stars !== a.total_fire_stars) return b.total_fire_stars - a.total_fire_stars
+    return a.best_run_number - b.best_run_number  // earlier PB = better
+  })
+  return { leaderboard: out, max: MAX_ARENA_RUNS }
+}
+
+// Facilitator escape hatch: wipe all arena runs for a nickname.
+// Used if a participant's first runs were thrown away during testing.
+function resetArenaRuns({ nickname }) {
+  if (!nickname) throw new Error('nickname required')
+  const nick = String(nickname).toLowerCase().trim()
+  const sheet = _sheet(SHEETS.ARENA_RUNS)
+  const all = _allRows(SHEETS.ARENA_RUNS)
+  let deleted = 0
+  for (let i = all.length - 1; i >= 0; i--) {
+    if (String(all[i].nickname).toLowerCase() === nick) {
+      sheet.deleteRow(i + 2)
+      deleted++
+    }
+  }
+  return { deleted }
 }

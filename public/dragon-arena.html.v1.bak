@@ -1,0 +1,1912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dragon Flight Trial · QA Clan</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+<style>
+:root {
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --border: #1E1E1E;
+  --teal: #00E5CC;
+  --pink: #FF65BE;
+  --ember: #E85D26;
+  --white: #FFFFFF;
+  --dim: #888888;
+  --body: #DCDCDC;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(124,58,237,0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(0,229,204,0.05), transparent 50%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--body);
+  min-height: 100vh;
+}
+.shell {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+}
+header {
+  position: relative;
+  border-top: 3px solid var(--teal);
+  padding: 32px 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 60px; height: 3px;
+  background: var(--teal);
+  box-shadow: 0 0 18px var(--teal);
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 12px;
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 38px;
+  margin: 0 0 8px;
+  color: var(--white);
+}
+h1 em { color: var(--teal); font-style: italic; }
+.lead {
+  font-size: 14px;
+  color: var(--dim);
+  margin: 0;
+  font-style: italic;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+}
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: 1fr; }
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 18px;
+}
+.panel h2 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+.slot {
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  background: #0A0A0A;
+  transition: all 0.2s ease;
+}
+.slot:hover { border-color: rgba(0,229,204,0.3); }
+.slot.open { border-color: var(--teal); box-shadow: 0 0 18px rgba(0,229,204,0.12); }
+.slot-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.18s;
+}
+.slot-head:hover { background: rgba(0,229,204,0.05); }
+.slot-color {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: 0 0 8px currentColor;
+}
+.slot-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--white);
+  flex: 1;
+}
+.slot-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.slot-status.ok { color: var(--teal); }
+.slot-status.err { color: var(--ember); }
+.slot-body {
+  display: none;
+  padding: 0 12px 12px;
+}
+.slot.open .slot-body { display: block; }
+textarea {
+  width: 100%;
+  min-height: 180px;
+  background: #000;
+  color: var(--teal);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+textarea:focus { border-color: var(--teal); outline: none; }
+.slot-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+button {
+  background: var(--surface);
+  color: var(--body);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+button:hover { border-color: var(--teal); color: var(--teal); }
+button.submit-btn {
+  border-color: rgba(254, 237, 0, 0.4);
+  color: var(--white);
+}
+button.submit-btn:hover {
+  border-color: #FEED00;
+  color: #FEED00;
+}
+.submitted-by {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--teal);
+  padding: 4px 8px;
+  background: rgba(0,229,204,0.06);
+  border-left: 2px solid var(--teal);
+}
+.submitted-by strong { color: var(--white); }
+
+button.primary {
+  background: var(--teal);
+  color: #000;
+  border-color: var(--teal);
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+button.primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4), transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+button.primary:hover {
+  color: #000;
+  box-shadow: 0 0 24px rgba(0,229,204,0.5), 0 0 48px rgba(0,229,204,0.2);
+  transform: translateY(-1px);
+}
+button.primary:hover::after { transform: translateX(100%); }
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.controls button { flex: 1; padding: 12px; }
+.controls select {
+  background: var(--surface);
+  color: var(--body);
+  border: 1px solid var(--border);
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-width: 140px;
+}
+.controls select:focus { border-color: var(--teal); outline: none; }
+#arena-wrap {
+  border: 1px solid var(--border);
+  background: #050505;
+}
+#arena {
+  display: block;
+  margin: 0 auto;
+}
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-top: 14px;
+}
+.score {
+  background: #050505;
+  border: 1px solid var(--border);
+  padding: 10px 6px;
+  text-align: center;
+  position: relative;
+  transition: all 0.25s ease;
+}
+.score::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.score.lead { transform: translateY(-2px); }
+.score.lead::before { transform: scaleX(1); }
+.score-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.score-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--white);
+  margin-top: 4px;
+  font-weight: 400;
+  transition: all 0.2s;
+}
+.score.lead .score-value {
+  color: var(--teal);
+  text-shadow: 0 0 12px rgba(0,229,204,0.5);
+}
+.score.lead .score-name { color: var(--teal); opacity: 0.9; }
+
+/* Battle Brief breakdown card */
+.breakdown {
+  display: none;
+  background: linear-gradient(180deg, rgba(0,229,204,0.06), transparent 80%);
+  border: 1px solid rgba(0,229,204,0.3);
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 2px;
+  animation: fade-in 0.5s ease-out;
+}
+.breakdown.show { display: block; }
+.bd-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.bd-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+}
+.bd-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.bd-close:hover { color: var(--white); border-color: var(--dim); }
+.bd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.bd-table th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 6px 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.bd-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.bd-table tr.bd-lead td {
+  background: rgba(0,229,204,0.06);
+}
+.bd-table tr.bd-lead .bd-rank,
+.bd-table tr.bd-lead .bd-total {
+  color: var(--teal);
+  font-weight: 600;
+}
+.bd-rank { font-weight: 600; color: var(--white); }
+.bd-color {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  box-shadow: 0 0 6px currentColor;
+}
+.bd-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--white);
+  font-size: 14px;
+}
+.bd-num { text-align: right; color: var(--body); }
+.bd-fire { color: var(--ember); }
+.bd-dim { color: var(--dim); }
+.bd-total {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--white);
+}
+.docs {
+  background: #050505;
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-top: 18px;
+}
+.docs h3 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 8px;
+}
+.docs pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--body);
+  white-space: pre-wrap;
+}
+.docs code { color: var(--teal); }
+.banner {
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--white);
+  padding: 22px;
+  background: linear-gradient(135deg, rgba(0,229,204,0.08), rgba(0,229,204,0.02));
+  border: 1px solid rgba(0,229,204,0.4);
+  border-left: 3px solid var(--teal);
+  margin-bottom: 16px;
+  display: none;
+  box-shadow: 0 0 32px rgba(0,229,204,0.15);
+  position: relative;
+}
+.banner::before {
+  content: '◆';
+  position: absolute;
+  left: 16px; top: 50%; transform: translateY(-50%);
+  color: var(--teal);
+  font-size: 14px;
+  font-style: normal;
+}
+.banner::after {
+  content: '◆';
+  position: absolute;
+  right: 16px; top: 50%; transform: translateY(-50%);
+  color: var(--teal);
+  font-size: 14px;
+  font-style: normal;
+}
+.banner.show {
+  display: block;
+  animation: fade-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(-12px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.flash {
+  animation: flash 0.5s ease-out;
+}
+@keyframes flash {
+  0% { background: rgba(0,229,204,0.4); }
+  100% { background: transparent; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <header>
+    <p class="eyebrow">· QA Clan · Dragon Flight Trial</p>
+    <h1>Riders <em>in</em> the Sky</h1>
+    <p class="lead">Each rider writes how their dragon flies. The sky judges who collects the most stars before time runs out.</p>
+  </header>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="layout">
+
+    <!-- Left: bot slots -->
+    <aside class="panel">
+      <h2>Your dragons</h2>
+      <div id="slots"></div>
+
+      <div class="docs">
+        <h3>API</h3>
+<pre>tick(<code>{ me, stars, walls, sky }</code>)
+  → <code>{ angle, throttle }</code>
+
+<code>me</code>: { x, y, score, fuel }
+   ↳ <code>fuel</code> 0-100, drains at full throttle
+<code>stars</code>: [{ x, y, value, fire }]
+   ↳ <code>value</code>=1 (regular) or <code>value</code>=3 (fire)
+   ↳ regular star refuels +25, fire +100
+<code>walls</code>: [{ x, y, r }] - avoid
+<code>sky</code>: { width, height }
+
+<code>angle</code>: 0-360 (degrees)
+<code>throttle</code>: 0-1
+
+<span style="color:#888">// Riders bonded deeply with their dragons
+// sometimes find more.
+// me.summonSignet() // one-time per round</span></pre>
+      </div>
+    </aside>
+
+    <!-- Right: arena -->
+    <main class="panel">
+      <div class="controls">
+        <button class="primary" id="btn-go">▶ Run flight</button>
+        <button id="btn-reset">Reset</button>
+        <button id="btn-load-all">Load all defaults</button>
+        <select id="biome-select" title="Map biome">
+          <option value="star_vault">Star Vault</option>
+          <option value="misty_pass">Misty Pass</option>
+          <option value="lava_crags">Lava Crags</option>
+        </select>
+      </div>
+
+      <div id="arena-wrap">
+        <div id="arena"></div>
+      </div>
+
+      <div class="scoreboard" id="scoreboard"></div>
+
+      <div class="breakdown" id="breakdown"></div>
+    </main>
+
+  </div>
+
+</div>
+
+<script type="module">
+// ─────────────────────────────────────────────────────────
+// Characters & defaults — silhouette + flight-stat tuning per archetype
+// maxSpeedMul: how fast at full throttle (1.0 = baseline)
+// turnSmoothing: 0..1, lower = sharper instant turns; higher = smoother arcs
+// ─────────────────────────────────────────────────────────
+const CHARACTERS = [
+  // Violet — slender, precise. Lower top speed, sharpest turns.
+  { id: 'violet',   name: 'Violet',   color: 0x9D6BFF, hex: '#9D6BFF',
+    bodyScale: 0.95, wingScale: 0.92, wingSweep: 1.1, headSharpness: 1.15,
+    maxSpeedMul: 0.95, turnSmoothing: 0.78 },
+  // Xaden — broad, dominant. Highest speed, smoother arcs.
+  { id: 'xaden',    name: 'Xaden',    color: 0xFF8C2A, hex: '#FF8C2A',
+    bodyScale: 1.15, wingScale: 1.2, wingSweep: 0.95, headSharpness: 1.0,
+    maxSpeedMul: 1.15, turnSmoothing: 0.88 },
+  // Rhiannon — balanced.
+  { id: 'rhiannon', name: 'Rhiannon', color: 0x14B8C7, hex: '#14B8C7',
+    bodyScale: 1.05, wingScale: 1.05, wingSweep: 1.0, headSharpness: 0.95,
+    maxSpeedMul: 1.0, turnSmoothing: 0.85 },
+  // Ridoc — playful, lighter. Quick start, looser turns.
+  { id: 'ridoc',    name: 'Ridoc',    color: 0xFF9E5E, hex: '#FF9E5E',
+    bodyScale: 0.9, wingScale: 1.0, wingSweep: 1.2, headSharpness: 1.05,
+    jagged: true,
+    maxSpeedMul: 1.05, turnSmoothing: 0.82 },
+  // Liam — sturdy, dependable. Steady — middle of road.
+  { id: 'liam',     name: 'Liam',     color: 0x10C98C, hex: '#10C98C',
+    bodyScale: 1.1, wingScale: 1.0, wingSweep: 0.9, headSharpness: 0.9,
+    maxSpeedMul: 1.0, turnSmoothing: 0.86 },
+  // Imogen — compact, sharp. Knife-quick turns, modest top speed.
+  { id: 'imogen',   name: 'Imogen',   color: 0xE53E48, hex: '#E53E48',
+    bodyScale: 0.85, wingScale: 0.88, wingSweep: 1.05, headSharpness: 1.2,
+    maxSpeedMul: 0.95, turnSmoothing: 0.72 },
+]
+
+// Biome configurations — visual variants for round atmosphere
+const BIOMES = {
+  star_vault: {
+    name: 'Star Vault',
+    bgFrom: 0x0a0014, bgTo: 0x040408,
+    nebulaColors: [0x2A1A4A, 0x1A2A4A, 0x4A1A2A, 0x1A4A3A],
+    accentColor: 0x00E5CC,
+    obstacleFill: 0x1f1825,
+    obstacleStroke: 0x4a3a55,
+    moss: 0x2d5a3d,
+    fogAlpha: 0,
+  },
+  misty_pass: {
+    name: 'Misty Pass',
+    bgFrom: 0x0d1a1f, bgTo: 0x05080a,
+    nebulaColors: [0x1a3a4a, 0x2a4a5a, 0x1a4a4a, 0x2a3a4a],
+    accentColor: 0x88DDEE,
+    obstacleFill: 0x1a2025,
+    obstacleStroke: 0x456575,
+    moss: 0x456575,
+    fogAlpha: 0.18,
+  },
+  lava_crags: {
+    name: 'Lava Crags',
+    bgFrom: 0x1a0a05, bgTo: 0x0a0505,
+    nebulaColors: [0x4a1a0a, 0x3a1505, 0x4a2505, 0x551510],
+    accentColor: 0xFF6B2A,
+    obstacleFill: 0x251510,
+    obstacleStroke: 0x8a3520,
+    moss: 0xCC3520,
+    fogAlpha: 0.06,
+  },
+}
+let currentBiome = 'star_vault'
+
+const DEFAULT_BOT = `// Beat the default by writing smarter logic with Claude.
+// Return: { angle, throttle }
+function tick({ me, stars, walls, sky }) {
+  if (stars.length === 0) {
+    return { angle: 0, throttle: 0 }
+  }
+  // Aim at the nearest star
+  let target = stars[0]
+  let bestDist = Infinity
+  for (const s of stars) {
+    const d = Math.hypot(s.x - me.x, s.y - me.y)
+    if (d < bestDist) { bestDist = d; target = s }
+  }
+  const angle = Math.atan2(target.y - me.y, target.x - me.x) * 180 / Math.PI
+  return { angle, throttle: 0.7 }
+}`
+
+// ─────────────────────────────────────────────────────────
+// Web Audio — synthesized sound effects (no external assets)
+// ─────────────────────────────────────────────────────────
+let audioCtx = null
+function ac() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)() } catch(e){}
+  }
+  return audioCtx
+}
+
+function playStarChime() {
+  const ctx = ac(); if (!ctx) return
+  const t = ctx.currentTime
+  // Two-note pleasant chime (E5 + B5)
+  const notes = [{ f: 659.25, d: 0.18 }, { f: 987.77, d: 0.22 }]
+  notes.forEach((n, i) => {
+    const o = ctx.createOscillator()
+    const g = ctx.createGain()
+    o.type = 'sine'
+    o.frequency.value = n.f
+    g.gain.setValueAtTime(0, t + i * 0.05)
+    g.gain.linearRampToValueAtTime(0.18, t + i * 0.05 + 0.01)
+    g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.05 + n.d)
+    o.connect(g); g.connect(ctx.destination)
+    o.start(t + i * 0.05); o.stop(t + i * 0.05 + n.d + 0.05)
+  })
+}
+
+function playWhoosh() {
+  const ctx = ac(); if (!ctx) return
+  const t = ctx.currentTime
+  // Filtered noise burst — short, low
+  const buf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate)
+  const data = buf.getChannelData(0)
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length)
+  const src = ctx.createBufferSource(); src.buffer = buf
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'lowpass'; filter.frequency.value = 600
+  const g = ctx.createGain()
+  g.gain.setValueAtTime(0.12, t)
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.15)
+  src.connect(filter); filter.connect(g); g.connect(ctx.destination)
+  src.start(t)
+}
+
+function playStartTone() {
+  const ctx = ac(); if (!ctx) return
+  const t = ctx.currentTime
+  // Rising sweep
+  const o = ctx.createOscillator()
+  const g = ctx.createGain()
+  o.type = 'sawtooth'
+  o.frequency.setValueAtTime(220, t)
+  o.frequency.exponentialRampToValueAtTime(660, t + 0.4)
+  g.gain.setValueAtTime(0.0, t)
+  g.gain.linearRampToValueAtTime(0.12, t + 0.05)
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.4)
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'lowpass'; filter.frequency.value = 1200
+  o.connect(filter); filter.connect(g); g.connect(ctx.destination)
+  o.start(t); o.stop(t + 0.45)
+}
+
+function playVictoryFanfare() {
+  const ctx = ac(); if (!ctx) return
+  const t = ctx.currentTime
+  // Triumphant arpeggio: G4 - C5 - E5 - G5
+  const notes = [392, 523.25, 659.25, 783.99]
+  notes.forEach((f, i) => {
+    const o = ctx.createOscillator()
+    const g = ctx.createGain()
+    o.type = 'triangle'
+    o.frequency.value = f
+    g.gain.setValueAtTime(0, t + i * 0.12)
+    g.gain.linearRampToValueAtTime(0.16, t + i * 0.12 + 0.02)
+    g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.12 + 0.5)
+    o.connect(g); g.connect(ctx.destination)
+    o.start(t + i * 0.12); o.stop(t + i * 0.12 + 0.55)
+  })
+  // Final long sustained chord
+  const last = t + notes.length * 0.12
+  ;[392, 523.25, 783.99].forEach(f => {
+    const o = ctx.createOscillator()
+    const g = ctx.createGain()
+    o.type = 'sine'
+    o.frequency.value = f
+    g.gain.setValueAtTime(0, last)
+    g.gain.linearRampToValueAtTime(0.12, last + 0.05)
+    g.gain.exponentialRampToValueAtTime(0.001, last + 1.2)
+    o.connect(g); g.connect(ctx.destination)
+    o.start(last); o.stop(last + 1.3)
+  })
+}
+
+// ─────────────────────────────────────────────────────────
+// Sandbox: each bot runs in its own Web Worker
+// ─────────────────────────────────────────────────────────
+function createBotWorker(code) {
+  // Inject helper API into worker scope.
+  // me.summonSignet() — undocumented "easter egg" that returns a flag the
+  // arena reads as a 3-second 1.6x speed boost. Once per round per dragon.
+  const workerSrc = `
+    let userTick = null
+    let signetRequested = false
+    try {
+      ${code}
+      userTick = tick
+    } catch(e) {
+      self.postMessage({ type: 'error', message: e.message })
+    }
+    self.onmessage = (e) => {
+      if (e.data.type === 'tick' && userTick) {
+        try {
+          const payload = e.data.payload
+          // Bind summonSignet onto me — only once per round
+          payload.me.summonSignet = () => {
+            if (signetRequested) return false
+            signetRequested = true
+            return true
+          }
+          const result = userTick(payload)
+          // After tick, check whether user invoked it
+          if (signetRequested && !payload.me._signetReported) {
+            payload.me._signetReported = true
+            result._signet = true
+          }
+          self.postMessage({ type: 'result', tick: e.data.tick, result })
+        } catch(err) {
+          self.postMessage({ type: 'error', message: err.message })
+        }
+      }
+    }
+  `
+  const blob = new Blob([workerSrc], { type: 'application/javascript' })
+  return new Worker(URL.createObjectURL(blob))
+}
+
+// ─────────────────────────────────────────────────────────
+// UI: slot panel
+// ─────────────────────────────────────────────────────────
+const slotsEl = document.getElementById('slots')
+const STORAGE_KEY = 'dragon-arena:slots'
+function loadSavedSlots() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    return parsed
+  } catch (e) { return null }
+}
+function persistSlots() {
+  try {
+    const data = {}
+    for (const s of slotState) {
+      if (s.code && s.code !== DEFAULT_BOT) data[s.id] = s.code
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (e) {}
+}
+
+const savedSlots = loadSavedSlots() || {}
+const slotState = CHARACTERS.map((c, i) => ({
+  ...c,
+  index: i,
+  code: savedSlots[c.id] || DEFAULT_BOT,
+  status: savedSlots[c.id] ? 'saved' : 'default',
+  open: i === 0,
+}))
+
+function renderSlots() {
+  slotsEl.innerHTML = ''
+  for (const s of slotState) {
+    const div = document.createElement('div')
+    div.className = 'slot' + (s.open ? ' open' : '')
+    div.innerHTML = `
+      <div class="slot-head" data-toggle="${s.id}">
+        <span class="slot-color" style="background:${s.hex}; color:${s.hex}"></span>
+        <span class="slot-name">${s.name}</span>
+        <span class="slot-status ${s.status === 'ok' ? 'ok' : s.status === 'err' ? 'err' : ''}">${s.status}</span>
+      </div>
+      <div class="slot-body">
+        <textarea data-slot="${s.id}" spellcheck="false">${s.code}</textarea>
+        <div class="slot-actions">
+          <button data-save="${s.id}">Save</button>
+          <button data-submit="${s.id}" class="submit-btn">Submit ✦</button>
+          <button data-default="${s.id}">Reset to default</button>
+        </div>
+        ${s.submittedBy ? `<div class="submitted-by">Submitted by <strong>${s.submittedBy}</strong></div>` : ''}
+      </div>
+    `
+    slotsEl.appendChild(div)
+  }
+}
+renderSlots()
+
+slotsEl.addEventListener('click', (e) => {
+  const t = e.target
+  if (t.matches('[data-toggle], [data-toggle] *')) {
+    const head = t.closest('[data-toggle]')
+    const id = head.dataset.toggle
+    for (const s of slotState) s.open = (s.id === id) ? !s.open : false
+    renderSlots()
+  } else if (t.matches('[data-save]')) {
+    const id = t.dataset.save
+    const s = slotState.find(x => x.id === id)
+    const ta = slotsEl.querySelector(`textarea[data-slot="${id}"]`)
+    s.code = ta.value
+    s.status = 'saved'
+    persistSlots()
+    renderSlots()
+  } else if (t.matches('[data-default]')) {
+    const id = t.dataset.default
+    const s = slotState.find(x => x.id === id)
+    s.code = DEFAULT_BOT
+    s.status = 'default'
+    persistSlots()
+    renderSlots()
+  } else if (t.matches('[data-submit]')) {
+    submitSlot(t.dataset.submit)
+  }
+})
+
+// ── Submit flow: post code to parent React, parent calls Supabase
+let submitInFlight = false
+function submitSlot(slotId) {
+  if (submitInFlight) return
+  const s = slotState.find(x => x.id === slotId)
+  if (!s) return
+  // Sync code from textarea
+  const ta = slotsEl.querySelector(`textarea[data-slot="${slotId}"]`)
+  if (ta) s.code = ta.value
+  if (!s.code || s.code.length < 20) {
+    showBanner('Bot code is too short. Make it do something first.')
+    return
+  }
+  // Get nickname from URL param or prompt
+  let nickname = (new URLSearchParams(window.location.search)).get('nickname')
+  if (!nickname) {
+    nickname = window.prompt('Your workshop nickname (lowercase, the one from registration):')
+    if (!nickname) return
+  }
+  nickname = nickname.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '')
+  if (nickname.length < 3) {
+    showBanner('Nickname looks invalid. Use letters, numbers, _ and -.')
+    return
+  }
+  submitInFlight = true
+  s.status = 'sending'
+  renderSlots()
+  // Tell parent (the React Arena.jsx) to write to Supabase
+  window.parent.postMessage({
+    type: 'submit-bot',
+    nickname,
+    characterId: slotId,
+    code: s.code,
+  }, '*')
+}
+
+window.addEventListener('message', (e) => {
+  if (!e.data || typeof e.data !== 'object') return
+  if (e.data.type === 'submit-result') {
+    submitInFlight = false
+    const s = slotState.find(x => x.id === e.data.characterId)
+    if (!s) return
+    if (e.data.ok) {
+      s.status = 'submitted'
+      s.submittedBy = e.data.nickname
+      showBanner(`${s.name} bot submitted by ${e.data.nickname}.`)
+    } else {
+      s.status = 'err'
+      showBanner('Submit failed: ' + (e.data.error || 'unknown error'))
+    }
+    renderSlots()
+  } else if (e.data.type === 'load-submissions') {
+    // Final-battle mode: parent pushed all submitted bots
+    let loaded = 0
+    for (const sub of e.data.submissions || []) {
+      const s = slotState.find(x => x.id === sub.characterId)
+      if (!s || !sub.code) continue
+      s.code = sub.code
+      s.status = 'submitted'
+      s.submittedBy = sub.nickname
+      loaded++
+    }
+    renderSlots()
+    if (loaded > 0) {
+      showBanner(`Final battle loaded · ${loaded} riders bonded`)
+    }
+  }
+})
+
+// Auto-save on textarea blur (catches "I forgot to click Save")
+slotsEl.addEventListener('blur', (e) => {
+  const t = e.target
+  if (t.matches && t.matches('textarea[data-slot]')) {
+    const id = t.dataset.slot
+    const s = slotState.find(x => x.id === id)
+    if (s && s.code !== t.value) {
+      s.code = t.value
+      s.status = 'saved'
+      persistSlots()
+    }
+  }
+}, true)
+
+document.getElementById('btn-load-all').addEventListener('click', () => {
+  for (const s of slotState) { s.code = DEFAULT_BOT; s.status = 'default' }
+  renderSlots()
+})
+
+// ─────────────────────────────────────────────────────────
+// Phaser arena
+// ─────────────────────────────────────────────────────────
+const ARENA_W = 880
+const ARENA_H = 560
+const TICK_MS = 50  // 20 ticks per second
+const MAX_SPEED = 3
+const STAR_COUNT = 14
+const WALL_COUNT = 8
+const ROUND_TICKS = 20 * 60   // 60 seconds
+
+let game, scene, dragons = [], stars = [], walls = [], scoreboard = []
+let round = null
+
+class ArenaScene extends Phaser.Scene {
+  create() {
+    scene = this
+    this.cameras.main.setBackgroundColor('#040408')
+
+    // ── Layer 1: biome-themed gradient + nebula puffs
+    const biome = BIOMES[currentBiome] || BIOMES.star_vault
+    this.bgGrad = this.add.graphics()
+    this.bgGrad.fillGradientStyle(biome.bgFrom, biome.bgFrom, biome.bgTo, biome.bgTo, 1)
+    this.bgGrad.fillRect(0, 0, ARENA_W, ARENA_H)
+    // Nebula clouds in biome palette
+    for (let i = 0; i < 4; i++) {
+      const nebula = this.add.graphics()
+      nebula.fillStyle(biome.nebulaColors[i % biome.nebulaColors.length], 0.18)
+      nebula.fillCircle(
+        100 + Math.random() * (ARENA_W - 200),
+        80 + Math.random() * (ARENA_H - 160),
+        80 + Math.random() * 60
+      )
+    }
+    // Optional fog layer (Misty Pass)
+    if (biome.fogAlpha > 0) {
+      this.fogLayer = this.add.graphics()
+      this.fogLayer.fillStyle(0xFFFFFF, biome.fogAlpha)
+      // Banded fog stripes
+      for (let f = 0; f < 4; f++) {
+        const y = 80 + f * 130
+        this.fogLayer.fillEllipse(ARENA_W / 2, y, ARENA_W * 1.3, 60 + Math.random() * 30)
+      }
+    }
+
+    // ── Layer 2: distant twinkling stars
+    this.twinkleStars = []
+    for (let i = 0; i < 80; i++) {
+      const x = Math.random() * ARENA_W
+      const y = Math.random() * ARENA_H
+      const size = 0.5 + Math.random() * 1.2
+      const dot = this.add.circle(x, y, size, 0xFFFFFF, 0.5 + Math.random() * 0.5)
+      this.twinkleStars.push(dot)
+      this.tweens.add({
+        targets: dot,
+        alpha: { from: 0.2, to: 1 },
+        duration: 1500 + Math.random() * 2500,
+        yoyo: true,
+        repeat: -1,
+      })
+    }
+
+    // ── Layer 3: brighter foreground stars + occasional accent
+    for (let i = 0; i < 25; i++) {
+      const x = Math.random() * ARENA_W
+      const y = Math.random() * ARENA_H
+      const star = this.add.circle(x, y, 1.5, 0xFFFFFF, 0.85)
+      this.tweens.add({
+        targets: star,
+        alpha: { from: 0.4, to: 1 },
+        duration: 800 + Math.random() * 1200,
+        yoyo: true,
+        repeat: -1,
+      })
+    }
+    // 4 accent diamond-stars in biome accent color
+    for (let i = 0; i < 4; i++) {
+      const x = Math.random() * ARENA_W
+      const y = Math.random() * ARENA_H
+      const cross = this.add.graphics()
+      cross.lineStyle(1, biome.accentColor, 0.7)
+      cross.beginPath()
+      cross.moveTo(x - 4, y); cross.lineTo(x + 4, y)
+      cross.moveTo(x, y - 4); cross.lineTo(x, y + 4)
+      cross.strokePath()
+      this.tweens.add({
+        targets: cross,
+        alpha: { from: 0.2, to: 1 },
+        duration: 2000,
+        yoyo: true,
+        repeat: -1,
+      })
+    }
+
+    // ── Layer 4: drifting clouds (parallax)
+    this.clouds = []
+    for (let i = 0; i < 3; i++) {
+      const cloud = this.add.graphics()
+      cloud.fillStyle(0xFFFFFF, 0.04)
+      const cx = Math.random() * ARENA_W
+      const cy = 50 + Math.random() * (ARENA_H - 100)
+      cloud.fillCircle(cx - 20, cy, 28)
+      cloud.fillCircle(cx, cy - 10, 35)
+      cloud.fillCircle(cx + 24, cy, 26)
+      cloud.fillCircle(cx + 6, cy + 14, 30)
+      this.clouds.push({ gfx: cloud, dx: 0.15 + Math.random() * 0.25 })
+    }
+
+    this.starGroup = this.add.group()
+    this.wallGroup = this.add.group()
+    this.dragonGroup = this.add.group()
+
+    // ── Minimap (top-right of arena, 140×88)
+    this.miniW = 140; this.miniH = 88
+    this.miniPad = 12
+    const mx = ARENA_W - this.miniW - this.miniPad
+    const my = this.miniPad
+    this.miniBg = this.add.graphics()
+    this.miniBg.fillStyle(0x000000, 0.55)
+    this.miniBg.fillRect(mx, my, this.miniW, this.miniH)
+    this.miniBg.lineStyle(1, 0x00E5CC, 0.5)
+    this.miniBg.strokeRect(mx, my, this.miniW, this.miniH)
+    this.miniLabel = this.add.text(mx + 6, my + 4, 'RADAR', {
+      fontFamily: 'JetBrains Mono, monospace', fontSize: '8px', color: '#00E5CC',
+    }).setAlpha(0.6)
+    this.miniGfx = this.add.graphics()
+    this.miniBgX = mx; this.miniBgY = my
+  }
+
+  update() {
+    // Drift clouds slowly
+    if (this.clouds) {
+      for (const c of this.clouds) {
+        c.gfx.x += c.dx
+        if (c.gfx.x > ARENA_W + 80) c.gfx.x = -160
+      }
+    }
+    // Update minimap
+    if (this.miniGfx && dragons && dragons.length) {
+      const sx = this.miniW / ARENA_W
+      const sy = this.miniH / ARENA_H
+      this.miniGfx.clear()
+      // Stars
+      for (const s of stars || []) {
+        if (s.collected) continue
+        this.miniGfx.fillStyle(s.fire ? 0xFF8C2A : 0xFEED00, 0.85)
+        this.miniGfx.fillCircle(this.miniBgX + s.x * sx, this.miniBgY + s.y * sy, s.fire ? 1.8 : 1.2)
+      }
+      // Walls (faint dots)
+      for (const w of walls || []) {
+        this.miniGfx.fillStyle(0x444444, 0.6)
+        this.miniGfx.fillCircle(this.miniBgX + w.x * sx, this.miniBgY + w.y * sy, 1)
+      }
+      // Dragons
+      for (const d of dragons) {
+        if (!d.alive) continue
+        this.miniGfx.fillStyle(d.color, 1)
+        this.miniGfx.fillCircle(this.miniBgX + d.x * sx, this.miniBgY + d.y * sy, 2.5)
+      }
+    }
+  }
+}
+
+game = new Phaser.Game({
+  type: Phaser.AUTO,
+  parent: 'arena',
+  width: ARENA_W,
+  height: ARENA_H,
+  backgroundColor: '#050505',
+  scene: [ArenaScene],
+  physics: { default: 'arcade' },
+})
+
+function spawnRound() {
+  if (!scene) return
+  // clear
+  scene.starGroup.clear(true, true)
+  scene.wallGroup.clear(true, true)
+  scene.dragonGroup.clear(true, true)
+
+  // walls (floating rocky islands), biome-tinted
+  const biome = BIOMES[currentBiome] || BIOMES.star_vault
+  walls = []
+  for (let i = 0; i < WALL_COUNT; i++) {
+    const w = {
+      x: 100 + Math.random() * (ARENA_W - 200),
+      y: 80 + Math.random() * (ARENA_H - 160),
+      r: 18 + Math.random() * 10,
+    }
+    walls.push(w)
+    const g = scene.add.graphics()
+    // dark island shadow
+    g.fillStyle(0x000000, 0.4)
+    g.fillCircle(w.x + 2, w.y + 4, w.r)
+    // rocky body — irregular polygon (biome-tinted)
+    g.fillStyle(biome.obstacleFill, 1)
+    g.lineStyle(1, biome.obstacleStroke, 0.8)
+    g.beginPath()
+    const sides = 8
+    for (let s = 0; s <= sides; s++) {
+      const a = (s / sides) * Math.PI * 2
+      const r = w.r * (0.85 + Math.random() * 0.3)
+      const px = w.x + Math.cos(a) * r
+      const py = w.y + Math.sin(a) * r
+      if (s === 0) g.moveTo(px, py); else g.lineTo(px, py)
+    }
+    g.closePath()
+    g.fillPath()
+    g.strokePath()
+    // top moss/glow highlight (biome accent)
+    g.fillStyle(biome.moss, 0.4)
+    g.fillCircle(w.x, w.y - w.r * 0.5, w.r * 0.4)
+    scene.wallGroup.add(g)
+    // Slow float bob
+    scene.tweens.add({
+      targets: g,
+      y: { from: -3, to: 3 },
+      duration: 2500 + Math.random() * 1500,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+  }
+
+  // stars (with glow + spin). Some are "fire stars" worth +3.
+  stars = []
+  const fireIndices = new Set()
+  while (fireIndices.size < 2) fireIndices.add(Math.floor(Math.random() * STAR_COUNT))
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const isFire = fireIndices.has(i)
+    const s = {
+      x: 40 + Math.random() * (ARENA_W - 80),
+      y: 40 + Math.random() * (ARENA_H - 80),
+      collected: false,
+      fire: isFire,
+      value: isFire ? 3 : 1,
+    }
+    let safe = true
+    for (const w of walls) if (Math.hypot(s.x - w.x, s.y - w.y) < w.r + 16) safe = false
+    if (!safe) { i--; continue }
+    const haloColor = isFire ? 0xFF6B2A : 0xFEED00
+    const starColor = isFire ? 0xFF8C2A : 0xFEED00
+    // Glow halo (bigger + brighter for fire)
+    const halo = scene.add.circle(s.x, s.y, isFire ? 22 : 14, haloColor, isFire ? 0.32 : 0.18)
+    scene.tweens.add({
+      targets: halo,
+      scale: { from: isFire ? 0.7 : 0.8, to: isFire ? 1.5 : 1.3 },
+      alpha: { from: isFire ? 0.32 : 0.18, to: isFire ? 0.1 : 0.05 },
+      duration: isFire ? 900 : 1400,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+    s.halo = halo
+    // The star itself — fire stars 7-pointed bigger
+    const star = isFire
+      ? scene.add.star(s.x, s.y, 7, 5, 14, starColor)
+      : scene.add.star(s.x, s.y, 5, 4, 9, starColor)
+    star.setStrokeStyle(1.5, 0xFFFFFF, isFire ? 1 : 0.8)
+    scene.tweens.add({
+      targets: star,
+      angle: { from: 0, to: 360 },
+      duration: isFire ? 3500 : 6000,
+      repeat: -1,
+    })
+    if (isFire) {
+      // Subtle heartbeat scale
+      scene.tweens.add({
+        targets: star,
+        scale: { from: 1, to: 1.2 },
+        duration: 600,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      })
+    }
+    s.gfx = star
+    stars.push(s)
+  }
+
+  // dragons (one per character) — each dragon is a Container with body + 2 wings
+  dragons = CHARACTERS.map((c, i) => {
+    const x = 60 + (ARENA_W - 120) * (i / (CHARACTERS.length - 1))
+    const y = ARENA_H - 40
+
+    const container = scene.add.container(x, y)
+
+    // Soft outer glow halo (largest, deepest layer)
+    const glow = scene.add.graphics()
+    glow.fillStyle(c.color, 0.22)
+    glow.fillCircle(0, 0, 22)
+    glow.fillStyle(c.color, 0.12)
+    glow.fillCircle(0, 0, 30)
+
+    // Wings with membrane gradient feel (drawn first so body sits above)
+    const wingUp = scene.add.graphics()
+    // wing membrane shadow (dark)
+    wingUp.fillStyle(0x000000, 0.4)
+    wingUp.beginPath()
+    wingUp.moveTo(2, -1); wingUp.lineTo(-3, -12); wingUp.lineTo(-12, -16)
+    wingUp.lineTo(-15, -10); wingUp.lineTo(-12, -6); wingUp.lineTo(-5, -4)
+    wingUp.closePath(); wingUp.fillPath()
+    // wing fill
+    wingUp.fillStyle(c.color, 0.92)
+    wingUp.lineStyle(1.2, 0xFFFFFF, 0.55)
+    if (c.jagged) {
+      // Jagged wing edge — Ridoc's playful chaos
+      wingUp.beginPath()
+      wingUp.moveTo(0, 0)
+      wingUp.lineTo(-2, -10)
+      wingUp.lineTo(-5, -13)
+      wingUp.lineTo(-7, -10)
+      wingUp.lineTo(-10, -15)
+      wingUp.lineTo(-12, -11)
+      wingUp.lineTo(-13, -9)
+      wingUp.lineTo(-9, -5)
+      wingUp.lineTo(-4, -3)
+      wingUp.closePath()
+    } else {
+      wingUp.beginPath()
+      wingUp.moveTo(0, 0); wingUp.lineTo(-2, -11); wingUp.lineTo(-10, -15)
+      wingUp.lineTo(-13, -9); wingUp.lineTo(-9, -5); wingUp.lineTo(-4, -3)
+      wingUp.closePath()
+    }
+    wingUp.fillPath(); wingUp.strokePath()
+    // wing veins
+    wingUp.lineStyle(0.6, 0x000000, 0.4)
+    wingUp.beginPath(); wingUp.moveTo(-2, -2); wingUp.lineTo(-9, -13); wingUp.strokePath()
+    wingUp.beginPath(); wingUp.moveTo(-3, -4); wingUp.lineTo(-11, -10); wingUp.strokePath()
+
+    const wingDown = scene.add.graphics()
+    wingDown.fillStyle(0x000000, 0.4)
+    wingDown.beginPath()
+    wingDown.moveTo(2, 1); wingDown.lineTo(-3, 12); wingDown.lineTo(-12, 16)
+    wingDown.lineTo(-15, 10); wingDown.lineTo(-12, 6); wingDown.lineTo(-5, 4)
+    wingDown.closePath(); wingDown.fillPath()
+    wingDown.fillStyle(c.color, 0.92)
+    wingDown.lineStyle(1.2, 0xFFFFFF, 0.55)
+    if (c.jagged) {
+      wingDown.beginPath()
+      wingDown.moveTo(0, 0)
+      wingDown.lineTo(-2, 10)
+      wingDown.lineTo(-5, 13)
+      wingDown.lineTo(-7, 10)
+      wingDown.lineTo(-10, 15)
+      wingDown.lineTo(-12, 11)
+      wingDown.lineTo(-13, 9)
+      wingDown.lineTo(-9, 5)
+      wingDown.lineTo(-4, 3)
+      wingDown.closePath()
+    } else {
+      wingDown.beginPath()
+      wingDown.moveTo(0, 0); wingDown.lineTo(-2, 11); wingDown.lineTo(-10, 15)
+      wingDown.lineTo(-13, 9); wingDown.lineTo(-9, 5); wingDown.lineTo(-4, 3)
+      wingDown.closePath()
+    }
+    wingDown.fillPath(); wingDown.strokePath()
+    wingDown.lineStyle(0.6, 0x000000, 0.4)
+    wingDown.beginPath(); wingDown.moveTo(-2, 2); wingDown.lineTo(-9, 13); wingDown.strokePath()
+    wingDown.beginPath(); wingDown.moveTo(-3, 4); wingDown.lineTo(-11, 10); wingDown.strokePath()
+
+    // Body — refined dragon silhouette
+    const body = scene.add.graphics()
+    // body shadow underneath
+    body.fillStyle(0x000000, 0.5)
+    body.fillEllipse(-1, 1, 28, 8)
+    // main body fill — gradient feel via two tones
+    body.fillStyle(c.color, 1)
+    body.lineStyle(1.1, 0xFFFFFF, 0.55)
+    body.beginPath()
+    body.moveTo(15, 0)        // head tip (snout)
+    body.lineTo(11, -2)       // upper jaw
+    body.lineTo(7, -5)        // forehead
+    body.lineTo(2, -5)        // back of head/neck
+    body.lineTo(-3, -4)       // shoulder
+    body.lineTo(-9, -2)       // back
+    body.lineTo(-13, 0)       // tail base
+    body.lineTo(-9, 2)        // belly back
+    body.lineTo(-3, 4)        // belly
+    body.lineTo(2, 5)         // chest
+    body.lineTo(7, 5)         // jaw chin
+    body.lineTo(11, 2)        // lower jaw
+    body.closePath()
+    body.fillPath()
+    body.strokePath()
+
+    // Belly highlight (lighter shade)
+    body.fillStyle(0xFFFFFF, 0.18)
+    body.beginPath()
+    body.moveTo(-3, 3); body.lineTo(2, 4); body.lineTo(7, 4); body.lineTo(11, 1.5)
+    body.lineTo(7, 1); body.lineTo(2, 2); body.lineTo(-3, 2)
+    body.closePath()
+    body.fillPath()
+
+    // Eye — glowing dot
+    body.fillStyle(0xFFEED5, 1)
+    body.fillCircle(8, -2, 1.4)
+    body.fillStyle(0x000000, 1)
+    body.fillCircle(8.3, -2, 0.7)
+
+    // Tail spike
+    body.fillStyle(c.color, 1)
+    body.lineStyle(1, 0xFFFFFF, 0.4)
+    body.beginPath()
+    body.moveTo(-13, 0)
+    body.lineTo(-19, -3)
+    body.lineTo(-16, 0)
+    body.lineTo(-19, 3)
+    body.closePath()
+    body.fillPath()
+    body.strokePath()
+
+    // Tiny claws (front legs tucked)
+    body.fillStyle(0x222222, 0.9)
+    body.fillCircle(2, 5, 1.3)
+    body.fillCircle(-2, 5, 1.2)
+
+    // Scale dots along back
+    body.fillStyle(0xFFFFFF, 0.35)
+    for (let s = 0; s < 3; s++) {
+      body.fillCircle(2 - s * 4, -3, 0.7)
+    }
+
+    container.add([glow, wingUp, wingDown, body])
+
+    // Persona-specific scale tweaks
+    body.scale = c.bodyScale || 1
+    wingUp.scaleX = (c.wingScale || 1) * (c.wingSweep || 1)
+    wingUp.scaleY = (c.wingScale || 1)
+    wingDown.scaleX = (c.wingScale || 1) * (c.wingSweep || 1)
+    wingDown.scaleY = (c.wingScale || 1)
+
+    // Wing flap animation — alternate scale Y. Speed varies with throttle
+    // (set up baseline; updated per-tick in physics block).
+    const flapTween = scene.tweens.add({
+      targets: [wingUp, wingDown],
+      scaleY: { from: (c.wingScale || 1), to: (c.wingScale || 1) * 0.4 },
+      duration: 220,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+
+    // Subtle hover bob
+    scene.tweens.add({
+      targets: container,
+      scaleX: { from: 1, to: 1.03 },
+      scaleY: { from: 1, to: 1.03 },
+      duration: 1100,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    })
+
+    // Tiny fuel ring graphic that hovers under dragon (drawn each tick)
+    const fuelGfx = scene.add.graphics()
+
+    return {
+      ...c,
+      x, y,
+      vx: 0, vy: 0,
+      angle: 270,
+      throttle: 0,
+      score: 0,
+      fuel: 100,
+      fuelGfx,
+      replayTrack: [],
+      regularStars: 0,
+      fireStars: 0,
+      wallsHit: 0,
+      alive: true,
+      gfx: container,
+      body, wingUp, wingDown, glow, flapTween,
+      signetBoostUntil: 0,
+      signetUsed: false,
+      trail: scene.add.graphics(),
+      trailPts: [],
+      worker: null,
+      pending: false,
+    }
+  })
+  renderScoreboard()
+}
+
+function playReplay(winner) {
+  if (!scene || !winner.replayTrack?.length) return
+  const track = winner.replayTrack.slice(-50) // last ~5 seconds
+  if (track.length < 6) return
+
+  // Banner
+  showBanner('REPLAY · ' + winner.name + '\'s flight')
+
+  // Ghost dragon — same color, lower opacity, slow-mo trail through points
+  const ghost = scene.add.circle(track[0].x, track[0].y, 8, winner.color, 0.85)
+  ghost.setStrokeStyle(2, 0xFFFFFF, 0.6)
+  const tail = scene.add.graphics()
+
+  // Spotlight — dim everything else briefly
+  const spotlight = scene.add.rectangle(ARENA_W / 2, ARENA_H / 2, ARENA_W, ARENA_H, 0x000000, 0.6)
+  spotlight.setDepth(50)
+  ghost.setDepth(60)
+  tail.setDepth(60)
+
+  let i = 0
+  const replayTimer = setInterval(() => {
+    if (i >= track.length) {
+      clearInterval(replayTimer)
+      // Fade out
+      scene.tweens.add({
+        targets: [ghost, tail, spotlight],
+        alpha: 0,
+        duration: 600,
+        onComplete: () => { ghost.destroy(); tail.destroy(); spotlight.destroy() },
+      })
+      return
+    }
+    const p = track[i]
+    ghost.x = p.x
+    ghost.y = p.y
+    // Cumulative tail
+    tail.lineStyle(3, winner.color, 0.5 + (i / track.length) * 0.4)
+    if (i > 0) {
+      const prev = track[i - 1]
+      tail.beginPath()
+      tail.moveTo(prev.x, prev.y)
+      tail.lineTo(p.x, p.y)
+      tail.strokePath()
+    }
+    i++
+  }, 60) // 60ms per frame = 3x slow-mo (original was 50ms × every-2nd-tick = 100ms per replay frame)
+}
+
+function triggerSignetVfx(d) {
+  if (!scene) return
+  // Flash ring around dragon expanding outward
+  const ring = scene.add.circle(d.x, d.y, 14, 0x00E5CC, 0.5)
+  ring.setStrokeStyle(2, 0xFEED00, 1)
+  scene.tweens.add({
+    targets: ring,
+    scale: 4,
+    alpha: 0,
+    duration: 700,
+    ease: 'Cubic.easeOut',
+    onComplete: () => ring.destroy(),
+  })
+  // Floating "SIGNET!" text in dragon color
+  const txt = scene.add.text(d.x, d.y - 18, 'SIGNET ✦', {
+    fontFamily: 'JetBrains Mono, monospace',
+    fontSize: '11px',
+    color: '#FEED00',
+    fontStyle: 'bold',
+  }).setOrigin(0.5)
+  scene.tweens.add({
+    targets: txt,
+    y: d.y - 50,
+    alpha: 0,
+    duration: 1100,
+    ease: 'Cubic.easeOut',
+    onComplete: () => txt.destroy(),
+  })
+  // Quick chord
+  const ctx = ac()
+  if (ctx) {
+    const t = ctx.currentTime
+    ;[523.25, 659.25, 783.99].forEach((f, i) => {
+      const o = ctx.createOscillator()
+      const g = ctx.createGain()
+      o.type = 'triangle'
+      o.frequency.value = f
+      g.gain.setValueAtTime(0, t + i * 0.04)
+      g.gain.linearRampToValueAtTime(0.14, t + i * 0.04 + 0.02)
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.04 + 0.4)
+      o.connect(g); g.connect(ctx.destination)
+      o.start(t + i * 0.04); o.stop(t + i * 0.04 + 0.5)
+    })
+  }
+}
+
+function killWorkers() {
+  for (const d of dragons) {
+    if (d.worker) { try { d.worker.terminate() } catch(e){} d.worker = null }
+  }
+}
+
+function startWorkers() {
+  killWorkers()
+  for (const d of dragons) {
+    const slot = slotState.find(s => s.id === d.id)
+    try {
+      d.worker = createBotWorker(slot.code)
+      d.worker.onmessage = (e) => {
+        if (e.data.type === 'result') {
+          const { angle, throttle, _signet } = e.data.result || {}
+          d.angle = (typeof angle === 'number') ? angle : d.angle
+          d.throttle = Math.max(0, Math.min(1, typeof throttle === 'number' ? throttle : 0))
+          if (_signet && !d.signetUsed) {
+            d.signetUsed = true
+            d.signetBoostUntil = Date.now() + 3000
+            triggerSignetVfx(d)
+          }
+          d.pending = false
+          slot.status = 'ok'
+        } else if (e.data.type === 'error') {
+          slot.status = 'err'
+          d.pending = false
+        }
+      }
+    } catch(e) {
+      slot.status = 'err'
+    }
+  }
+  renderSlots()
+}
+
+function tick() {
+  if (!round) return
+  round.tickIdx++
+  if (round.tickIdx > ROUND_TICKS) { endRound(); return }
+
+  // ask each dragon's worker
+  for (const d of dragons) {
+    if (!d.alive || !d.worker) continue
+    if (d.pending) continue
+    const remaining = stars.filter(s => !s.collected).map(s => ({ x: s.x, y: s.y, value: s.value, fire: s.fire }))
+    const wallView = walls.map(w => ({ x: w.x, y: w.y, r: w.r }))
+    d.pending = true
+    d.worker.postMessage({
+      type: 'tick',
+      tick: round.tickIdx,
+      payload: {
+        me: { x: d.x, y: d.y, score: d.score, fuel: d.fuel },
+        stars: remaining,
+        walls: wallView,
+        sky: { width: ARENA_W, height: ARENA_H },
+      },
+    })
+  }
+
+  // physics — apply throttle along angle
+  const now = Date.now()
+  for (const d of dragons) {
+    if (!d.alive) continue
+    // Throttle-dependent wing flap: idle 800ms gentle flutter (high amplitude
+    // wouldn't make sense at rest), increasing speed and amplitude with throttle.
+    const t = d.throttle || 0
+    const desiredFlapDur = t < 0.05 ? 800 : (220 - t * 140)
+    const minScale = t < 0.05 ? (d.wingScale || 1) * 0.85 : (d.wingScale || 1) * 0.4
+    if (d.flapTween && Math.abs((d.flapTween.duration || 220) - desiredFlapDur) > 50) {
+      d.flapTween.remove()
+      d.flapTween = scene.tweens.add({
+        targets: [d.wingUp, d.wingDown],
+        scaleY: { from: (d.wingScale || 1), to: minScale },
+        duration: desiredFlapDur,
+        yoyo: true,
+        repeat: -1,
+        ease: t < 0.05 ? 'Sine.easeInOut' : 'Quad.easeInOut',
+      })
+    }
+
+    // Fuel: throttle burns 0.6 per tick at full; clamp to low if empty
+    if (d.fuel > 0) {
+      d.fuel = Math.max(0, d.fuel - d.throttle * 0.6)
+    }
+    const effectiveThrottle = d.fuel > 0 ? d.throttle : Math.min(d.throttle, 0.25)
+
+    const rad = d.angle * Math.PI / 180
+    // Signet boost: 1.6x speed for 3 seconds; combine with persona maxSpeedMul
+    const signetMul = (now < d.signetBoostUntil) ? 1.6 : 1.0
+    const baseMul = d.maxSpeedMul || 1.0
+    const speedMul = signetMul * baseMul
+    const tax = Math.cos(rad) * effectiveThrottle * MAX_SPEED * speedMul
+    const tay = Math.sin(rad) * effectiveThrottle * MAX_SPEED * speedMul
+    // Persona-specific turn smoothing — lower = sharper instant turns
+    const ts = d.turnSmoothing != null ? d.turnSmoothing : 0.85
+    d.vx = d.vx * ts + tax * (1 - ts + 0.1)
+    d.vy = d.vy * ts + tay * (1 - ts + 0.1)
+
+    // Track replay frames (every 2nd tick to keep buffer lean)
+    if (round.tickIdx % 2 === 0) {
+      d.replayTrack.push({ x: d.x, y: d.y, angle: d.angle, score: d.score })
+      if (d.replayTrack.length > 100) d.replayTrack.shift()
+    }
+    d.x += d.vx
+    d.y += d.vy
+    d.x = Math.max(10, Math.min(ARENA_W - 10, d.x))
+    d.y = Math.max(10, Math.min(ARENA_H - 10, d.y))
+
+    d.gfx.x = d.x
+    d.gfx.y = d.y
+    // Body's "head" is at +X, so rotation = motion angle directly
+    d.gfx.rotation = rad
+
+    // Fuel arc under dragon — small 16-radius arc, color shifts red as fuel drops
+    if (d.fuelGfx) {
+      d.fuelGfx.clear()
+      const f = Math.max(0, Math.min(1, d.fuel / 100))
+      const arcColor = f > 0.5 ? 0x00E5CC : (f > 0.2 ? 0xFEED00 : 0xFF3344)
+      d.fuelGfx.lineStyle(2, arcColor, 0.7)
+      d.fuelGfx.beginPath()
+      d.fuelGfx.arc(d.x, d.y + 16, 12, Math.PI - Math.PI * f * 0.5, Math.PI + Math.PI * f * 0.5)
+      d.fuelGfx.strokePath()
+    }
+
+    // trail (two passes: outer glow + inner core)
+    d.trailPts.push({ x: d.x, y: d.y })
+    if (d.trailPts.length > 24) d.trailPts.shift()
+    d.trail.clear()
+    // Outer glow pass — thick, low alpha
+    for (let i = 1; i < d.trailPts.length; i++) {
+      const a = d.trailPts[i - 1], b = d.trailPts[i]
+      d.trail.lineStyle(6, d.color, (i / d.trailPts.length) * 0.25)
+      d.trail.beginPath()
+      d.trail.moveTo(a.x, a.y)
+      d.trail.lineTo(b.x, b.y)
+      d.trail.strokePath()
+    }
+    // Core pass — thin, brighter
+    for (let i = 1; i < d.trailPts.length; i++) {
+      const a = d.trailPts[i - 1], b = d.trailPts[i]
+      d.trail.lineStyle(2, d.color, (i / d.trailPts.length) * 0.85)
+      d.trail.beginPath()
+      d.trail.moveTo(a.x, a.y)
+      d.trail.lineTo(b.x, b.y)
+      d.trail.strokePath()
+    }
+
+    // collect stars (with pop effect + sound)
+    for (const s of stars) {
+      const collectRadius = s.fire ? 18 : 14
+      if (!s.collected && Math.hypot(d.x - s.x, d.y - s.y) < collectRadius) {
+        s.collected = true
+        playStarChime()
+        // Pop the star
+        scene.tweens.add({
+          targets: [s.gfx, s.halo],
+          scale: 2.5,
+          alpha: 0,
+          duration: 280,
+          ease: 'Cubic.easeOut',
+          onComplete: () => { s.gfx.destroy(); s.halo.destroy() },
+        })
+        // Burst particles in dragon's color
+        for (let p = 0; p < 8; p++) {
+          const dot = scene.add.circle(s.x, s.y, 2 + Math.random() * 1.5, d.color, 1)
+          const a = Math.random() * Math.PI * 2
+          const dist = 30 + Math.random() * 25
+          scene.tweens.add({
+            targets: dot,
+            x: s.x + Math.cos(a) * dist,
+            y: s.y + Math.sin(a) * dist,
+            alpha: 0,
+            scale: 0.3,
+            duration: 600,
+            ease: 'Cubic.easeOut',
+            onComplete: () => dot.destroy(),
+          })
+        }
+        // Score popup
+        const popup = scene.add.text(s.x, s.y - 8, '+' + s.value, {
+          fontFamily: 'JetBrains Mono, monospace',
+          fontSize: s.fire ? '18px' : '14px',
+          color: s.fire ? '#FF8C2A' : '#FEED00',
+          fontStyle: 'bold',
+        }).setOrigin(0.5)
+        scene.tweens.add({
+          targets: popup,
+          y: s.y - (s.fire ? 56 : 40),
+          alpha: 0,
+          scale: s.fire ? 1.4 : 1,
+          duration: s.fire ? 1100 : 800,
+          ease: 'Cubic.easeOut',
+          onComplete: () => popup.destroy(),
+        })
+        d.score += s.value
+        if (s.fire) d.fireStars++; else d.regularStars++
+        // Stars regenerate fuel — fire stars give a full top-up
+        d.fuel = Math.min(100, d.fuel + (s.fire ? 100 : 25))
+      }
+    }
+
+    // wall hits — bounce + camera shake on hard impact + whoosh
+    for (const w of walls) {
+      const dist = Math.hypot(d.x - w.x, d.y - w.y)
+      if (dist < w.r + 8) {
+        const speed = Math.hypot(d.vx, d.vy)
+        const nx = (d.x - w.x) / dist
+        const ny = (d.y - w.y) / dist
+        d.x = w.x + nx * (w.r + 9)
+        d.y = w.y + ny * (w.r + 9)
+        d.vx = -d.vx * 0.5
+        d.vy = -d.vy * 0.5
+        if (speed > 1.5) {
+          d.wallsHit++
+          playWhoosh()
+          const intensity = Math.min(speed / 4, 1)
+          // Expanding shockwave ring
+          const ring = scene.add.circle(d.x, d.y, 8, 0xFFE08C, 0.6)
+          ring.setStrokeStyle(2, 0xFFFFFF, 1)
+          scene.tweens.add({
+            targets: ring,
+            scale: 3 + intensity * 2,
+            alpha: 0,
+            duration: 350,
+            ease: 'Cubic.easeOut',
+            onComplete: () => ring.destroy(),
+          })
+          // 12 yellow/white sparks radiating
+          const partCount = 8 + Math.floor(intensity * 8)
+          for (let p = 0; p < partCount; p++) {
+            const a = (p / partCount) * Math.PI * 2 + Math.random() * 0.4
+            const dist = 18 + Math.random() * 26
+            const colorOpts = [0xFFE08C, 0xFFFFFF, 0xFFB347, d.color]
+            const dot = scene.add.circle(d.x, d.y, 1 + Math.random() * 1.5, colorOpts[p % colorOpts.length], 1)
+            scene.tweens.add({
+              targets: dot,
+              x: d.x + Math.cos(a) * dist,
+              y: d.y + Math.sin(a) * dist,
+              alpha: 0,
+              scale: 0.3,
+              duration: 400 + Math.random() * 200,
+              ease: 'Cubic.easeOut',
+              onComplete: () => dot.destroy(),
+            })
+          }
+          // Brief flame puff (2 short-lived orange ovals overlap)
+          for (let f = 0; f < 2; f++) {
+            const flame = scene.add.ellipse(
+              d.x + (Math.random() - 0.5) * 8,
+              d.y + (Math.random() - 0.5) * 8,
+              10, 6, 0xFF6B2A, 0.7
+            )
+            scene.tweens.add({
+              targets: flame,
+              scale: 1.8 + intensity,
+              alpha: 0,
+              duration: 250,
+              ease: 'Cubic.easeOut',
+              onComplete: () => flame.destroy(),
+            })
+          }
+          // Brief stun flash on hard hit (>2.5 speed)
+          if (speed > 2.5) {
+            // Tint flicker
+            d.body.alpha = 0.4
+            scene.tweens.add({
+              targets: d.body,
+              alpha: 1,
+              duration: 600,
+              ease: 'Sine.easeIn',
+            })
+            // Slow down further
+            d.vx *= 0.4; d.vy *= 0.4
+          }
+          scene.cameras.main.shake(120 + intensity * 100, 0.003 + intensity * 0.004)
+        }
+      }
+    }
+  }
+
+  renderScoreboard()
+
+  // round ends if all stars collected
+  if (stars.every(s => s.collected)) endRound()
+}
+
+function renderScoreboard() {
+  const board = document.getElementById('scoreboard')
+  board.innerHTML = ''
+  const sorted = [...dragons].sort((a, b) => b.score - a.score)
+  const top = sorted[0]?.score
+  for (const d of sorted) {
+    const div = document.createElement('div')
+    div.className = 'score' + (d.score === top && top > 0 ? ' lead' : '')
+    div.style.borderColor = d.hex
+    div.innerHTML = `
+      <div class="score-name" style="color:${d.hex}">${d.name}</div>
+      <div class="score-value">${d.score}</div>
+    `
+    board.appendChild(div)
+  }
+}
+
+function endRound() {
+  if (!round) return
+  clearInterval(round.timer)
+  killWorkers()
+  round = null
+  const sorted = [...dragons].sort((a, b) => b.score - a.score)
+  const winner = sorted[0]
+  playVictoryFanfare()
+  showBanner(`${winner.name} took the sky · ${winner.score} stars`)
+  renderBreakdown(sorted)
+  // Schedule slow-mo replay of winner's last few seconds
+  setTimeout(() => playReplay(winner), 1800)
+
+  // Confetti — colored particles from top
+  if (scene && winner.score > 0) {
+    for (let i = 0; i < 80; i++) {
+      const colors = [winner.color, 0xFEED00, 0xFFFFFF, 0x00E5CC]
+      const dot = scene.add.circle(
+        Math.random() * ARENA_W,
+        -10,
+        2 + Math.random() * 2,
+        colors[Math.floor(Math.random() * colors.length)],
+        1
+      )
+      scene.tweens.add({
+        targets: dot,
+        y: ARENA_H + 20,
+        x: dot.x + (Math.random() - 0.5) * 80,
+        rotation: Math.random() * Math.PI * 4,
+        alpha: 0.2,
+        duration: 2500 + Math.random() * 1500,
+        ease: 'Cubic.easeIn',
+        delay: Math.random() * 800,
+        onComplete: () => dot.destroy(),
+      })
+    }
+  }
+}
+
+function showBanner(text) {
+  const b = document.getElementById('banner')
+  b.textContent = text
+  b.classList.add('show')
+  setTimeout(() => b.classList.remove('show'), 6000)
+}
+
+function renderBreakdown(sorted) {
+  const wrap = document.getElementById('breakdown')
+  if (!wrap) return
+  wrap.innerHTML = `
+    <div class="bd-head">
+      <span class="bd-eyebrow">▲ Battle Brief</span>
+      <button class="bd-close" id="bd-close">close ✕</button>
+    </div>
+    <table class="bd-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Rider</th><th>Stars</th><th>★3 fire</th><th>Walls hit</th><th>Signet</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map((d, i) => `
+          <tr class="${i === 0 ? 'bd-lead' : ''}">
+            <td><span class="bd-rank">${i + 1}</span></td>
+            <td><span class="bd-color" style="background:${d.hex}"></span><span class="bd-name">${d.name}</span></td>
+            <td class="bd-num">${d.regularStars}</td>
+            <td class="bd-num bd-fire">${d.fireStars > 0 ? d.fireStars : '—'}</td>
+            <td class="bd-num bd-dim">${d.wallsHit}</td>
+            <td class="bd-num">${d.signetUsed ? '✦' : '—'}</td>
+            <td class="bd-num bd-total">${d.score}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `
+  wrap.classList.add('show')
+  document.getElementById('bd-close')?.addEventListener('click', () => {
+    wrap.classList.remove('show')
+  })
+}
+
+document.getElementById('biome-select').addEventListener('change', (e) => {
+  currentBiome = e.target.value
+  // Re-create the scene to apply biome
+  if (game && game.scene && game.scene.scenes[0]) {
+    game.scene.scenes[0].scene.restart()
+    setTimeout(() => spawnRound(), 100)
+  }
+})
+
+document.getElementById('btn-go').addEventListener('click', () => {
+  if (round) return
+  // resume audio context (browsers require gesture)
+  ac()
+  // save current open textarea contents
+  for (const s of slotState) {
+    const ta = slotsEl.querySelector(`textarea[data-slot="${s.id}"]`)
+    if (ta) s.code = ta.value
+  }
+  spawnRound()
+  startWorkers()
+  round = { tickIdx: 0, timer: setInterval(tick, TICK_MS) }
+  playStartTone()
+  showBanner('The sky is open. Fly.')
+})
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (round) { clearInterval(round.timer); round = null }
+  killWorkers()
+  spawnRound()
+  document.getElementById('banner').classList.remove('show')
+})
+
+// initial setup
+setTimeout(() => spawnRound(), 200)
+</script>
+
+</body>
+</html>

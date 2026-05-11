@@ -1,102 +1,97 @@
 import { useEffect, useRef } from 'react'
 import arenaHtml from '../../public/dragon-arena.html?raw'
 import { useWorkshopStore } from '../store/workshopStore'
-import { submitBot, getLatestSubmissionsByCharacter } from '../api/submissions'
+import {
+  recordArenaRun,
+  getMyArenaRuns,
+  getArenaLeaderboard,
+} from '../api/arena'
 import { markCheckpoint } from '../api/checkpoints'
 
 /**
- * Arena page wrapper. Render's static-site routing returns 404 for
- * /dragon-arena.html (same SPA-rewrite issue as /register), so we
- * serve the arena via /?page=arena → iframe srcDoc which renders
- * the bundled HTML inline without a network round-trip.
+ * Arena v2 wrapper.
  *
- * Also bridges submit events: arena posts {type:'submit-bot',code,characterId}
- * via window.parent.postMessage; we forward to Supabase and reply back.
+ * The arena game is a single HTML file (Phaser 3 + UI), served inline
+ * via iframe srcDoc to dodge Render's static-site SPA-rewrite 404.
+ * The React side bridges the iframe's postMessage events to Apps
+ * Script via src/api/arena.js.
+ *
+ * v2 messages from iframe → parent:
+ *   { type: 'record-run', nickname, characterId, runNumber, score,
+ *     breakdown, runLog, botCodeSnapshot }
+ *   { type: 'request-arena-progress', nickname, characterId }
+ *   { type: 'fetch-arena-leaderboard' }
+ *
+ * Parent → iframe replies:
+ *   { type: 'record-run-result', ok, error?, runNumber }
+ *   { type: 'arena-progress', runs }
+ *   { type: 'arena-leaderboard', rows }
  */
-function isFinalBattle() {
-  return new URLSearchParams(window.location.search).get('final') === '1'
-}
-
 export default function Arena() {
   const iframeRef = useRef(null)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const studentId = useWorkshopStore(s => s.user.id)
 
-  // If ?final=1 is in URL, push the latest submitted bots into the arena
-  // once the iframe says it's ready.
-  useEffect(() => {
-    if (!isFinalBattle()) return
-    let pushed = false
-    async function push() {
-      if (pushed) return
-      pushed = true
-      const { data } = await getLatestSubmissionsByCharacter()
-      try {
-        if (iframeRef.current?.contentWindow) {
-          iframeRef.current.contentWindow.postMessage({
-            type: 'load-submissions',
-            submissions: (data || []).map(s => ({
-              characterId: s.character_id,
-              code: s.code,
-              nickname: s.nickname,
-            })),
-          }, '*')
-        }
-      } catch {}
-    }
-    // Try after iframe loads, with a fallback delay
-    const onLoad = () => push()
-    iframeRef.current?.addEventListener('load', onLoad)
-    setTimeout(push, 800)
-    return () => iframeRef.current?.removeEventListener('load', onLoad)
-  }, [])
-
   useEffect(() => {
     function onMessage(e) {
       if (!e.data || typeof e.data !== 'object') return
-      if (e.data.type === 'submit-bot') {
-        const { code, characterId } = e.data
-        const useNickname = e.data.nickname || nickname || ''
-        submitBot({ nickname: useNickname, characterId, code })
-          .then(({ data, error }) => {
-            const reply = {
-              type: 'submit-result',
-              ok: !error,
-              characterId,
-              error: error?.message || null,
-              submittedAt: data?.submitted_at || null,
-              nickname: useNickname,
-            }
-            try {
-              if (iframeRef.current?.contentWindow) {
-                iframeRef.current.contentWindow.postMessage(reply, '*')
-              }
-            } catch {}
-            // Auto-mark Arena checkpoint
-            if (!error && studentId) {
-              markCheckpoint(studentId, 'arena').catch(() => {})
-            }
-          })
-      } else if (e.data.type === 'request-nickname') {
-        // Arena asks for the logged-in nickname (e.g., to prefill a prompt)
-        try {
-          if (iframeRef.current?.contentWindow) {
-            iframeRef.current.contentWindow.postMessage(
-              { type: 'nickname', nickname: nickname || '' },
-              '*'
-            )
+      const iframe = iframeRef.current?.contentWindow
+
+      if (e.data.type === 'record-run') {
+        const { nickname: nick, characterId, runNumber, score, breakdown, runLog, botCodeSnapshot } = e.data
+        recordArenaRun({
+          nickname: nick || nickname,
+          characterId,
+          runNumber,
+          score,
+          breakdown: breakdown || {},
+          runLog,
+          botCodeSnapshot,
+          studentId: studentId || '',
+        }).then((res) => {
+          if (iframe) {
+            iframe.postMessage({
+              type: 'record-run-result',
+              ok: !!res.ok,
+              error: res.error || null,
+              runNumber,
+            }, '*')
           }
-        } catch {}
+          // Auto-mark Arena checkpoint after the first successful run.
+          if (res.ok && studentId && runNumber === 1) {
+            markCheckpoint(studentId, 'arena').catch(() => {})
+          }
+        })
+      } else if (e.data.type === 'request-arena-progress') {
+        const { nickname: nick, characterId } = e.data
+        getMyArenaRuns(nick || nickname, characterId).then((res) => {
+          if (iframe) {
+            iframe.postMessage({
+              type: 'arena-progress',
+              runs: res.runs || [],
+              max: res.max,
+            }, '*')
+          }
+        })
+      } else if (e.data.type === 'fetch-arena-leaderboard') {
+        getArenaLeaderboard().then((res) => {
+          if (iframe) {
+            iframe.postMessage({
+              type: 'arena-leaderboard',
+              rows: res.leaderboard || [],
+            }, '*')
+          }
+        })
       }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [nickname])
+  }, [nickname, studentId])
 
   return (
     <iframe
       ref={iframeRef}
-      title="Dragon Flight Trial"
+      title="Dragon Arena"
       srcDoc={arenaHtml}
       style={{
         position: 'fixed',
