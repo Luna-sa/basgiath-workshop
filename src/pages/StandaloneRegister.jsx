@@ -66,7 +66,19 @@ export default function StandaloneRegister() {
         setErrorMsg('')
       } else {
         setStatus('error')
-        setErrorMsg(err?.message || 'Submission failed')
+        // Detect the network-level "failed to fetch" — usually means
+        // a corporate DNS/proxy (Cisco Umbrella, Zscaler, etc.) is
+        // blocking *.supabase.co. Surface a helpful hint instead of
+        // the raw TypeError.
+        const raw = err?.message || 'Submission failed'
+        const isNetworkBlock = /failed to fetch|networkerror|err_cert|err_connection|err_blocked/i.test(raw)
+        setErrorMsg(isNetworkBlock
+          ? t(
+              'Looks like your network is blocking *.supabase.co (often a corporate DNS like Cisco Umbrella). Try a mobile hotspot, or ask IT to whitelist supabase.co.',
+              'Похоже, твоя сеть блокирует *.supabase.co (часто корпоративный DNS, например Cisco Umbrella). Попробуй мобильный hotspot или попроси IT добавить supabase.co в whitelist.',
+              'Схоже, твоя мережа блокує *.supabase.co (часто корпоративний DNS, наприклад Cisco Umbrella). Спробуй мобільний hotspot або попроси IT додати supabase.co до whitelist.'
+            )
+          : raw)
       }
     }
   }
