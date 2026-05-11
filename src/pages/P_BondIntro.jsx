@@ -29,9 +29,9 @@ export default function P_BondIntro() {
           </h2>
           <p className="text-[15px] text-text-body leading-relaxed">
             {t(
-              'Seven short questions — scales, breath, signet, size, wings, eyes, motto. From those answers a real cinematic portrait is generated. You can re-roll until it feels right. When you seal it, your dragon enters the Aerie alongside everyone else\'s.',
-              'Семь коротких вопросов — чешуя, дыхание, сигнет, размер, крылья, глаза, девиз. По ответам генерируется реальный кинематографический портрет. Можешь перегенерить пока не почувствуешь — это он. Запечатаешь — он попадает в Аэрию рядом со всеми остальными.',
-              'Сім коротких запитань — луска, подих, сигнет, розмір, крила, очі, девіз. За відповідями генерується справжній кінематографічний портрет. Можеш перегенерувати, доки не відчуєш — це він. Коли запечатаєш — він стане поряд з усіма іншими в Аерії.'
+              'Eight short questions — scales, breath, signet, size, wings, eyes, motto, name. From those answers a real cinematic portrait is generated. You can re-roll until it feels right. When you seal it, your dragon enters the Aerie alongside everyone else\'s.',
+              'Восемь коротких вопросов — чешуя, дыхание, сигнет, размер, крылья, глаза, девиз, имя. По ответам генерируется реальный кинематографический портрет. Можешь перегенерить пока не почувствуешь — это он. Запечатаешь — он попадает в Аэрию рядом со всеми остальными.',
+              'Вісім коротких запитань — луска, подих, сигнет, розмір, крила, очі, девіз, імʼя. За відповідями генерується справжній кінематографічний портрет. Можеш перегенерувати, доки не відчуєш — це він. Коли запечатаєш — він стане поряд з усіма іншими в Аерії.'
             )}
           </p>
         </div>

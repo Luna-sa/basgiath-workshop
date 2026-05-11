@@ -18,16 +18,16 @@ export default function P_AerieIntro() {
           </p>
           <h2 className="font-display text-3xl text-white leading-tight mb-3">
             {t(
-              'One vote each. The sky chooses.',
-              'Один голос у каждого. Небо выбирает.',
-              'Один голос у кожного. Небо обирає.'
+              'Three votes each. The sky chooses.',
+              'Три голоса у каждого. Небо выбирает.',
+              'Три голоси у кожного. Небо обирає.'
             )}
           </h2>
           <p className="text-[15px] text-text-body leading-relaxed">
             {t(
-              'Every sealed dragon now lives in the Aerie. You each have one vote — cast it for someone else\'s, not your own. The dragon with the most votes takes the Signet of the Sky. The board updates live as you vote.',
-              'Каждый запечатанный дракон теперь живёт в Аэрии. У каждого один голос — отдай его за чужого дракона, не за своего. Дракон с наибольшим количеством голосов получает Сигнет Неба. Доска обновляется в реальном времени.',
-              'Кожен запечатаний дракон уже в Аерії. У кожного по одному голосу — віддай за чужого, не за свого. Дракон із найбільшою кількістю голосів отримує Сигнет Неба. Дошка оновлюється в реальному часі.'
+              'Every sealed dragon now lives in the Aerie. You each have three votes — cast them for three different dragons, not your own. The dragon with the most total votes takes the Signet of the Sky. The board updates live as you vote.',
+              'Каждый запечатанный дракон теперь живёт в Аэрии. У каждого три голоса — отдай их за трёх разных драконов, не за своего. Дракон с наибольшим количеством голосов получает Сигнет Неба. Доска обновляется в реальном времени.',
+              'Кожен запечатаний дракон уже в Аерії. У кожного по три голоси — віддай їх за трьох різних драконів, не за свого. Дракон із найбільшою кількістю голосів отримує Сигнет Неба. Дошка оновлюється в реальному часі.'
             )}
           </p>
         </div>
@@ -49,9 +49,9 @@ export default function P_AerieIntro() {
               ◆ {t('Voting rules', 'Правила голосования', 'Правила голосування')}
             </div>
             <ul className="text-[13.5px] text-text-body leading-relaxed space-y-1.5 list-none">
-              <li>◆ {t('One vote per rider.', 'Один голос на всадника.', 'Один голос на вершника.')}</li>
+              <li>◆ {t('Three votes per rider — for three different dragons.', 'Три голоса на всадника — за трёх разных драконов.', 'Три голоси на вершника — за трьох різних драконів.')}</li>
               <li>◆ {t('You cannot vote for your own dragon.', 'За своего дракона голосовать нельзя.', 'За свого дракона голосувати не можна.')}</li>
-              <li>◆ {t('You can change your vote any time before the facilitator closes voting.', 'Можешь сменить голос в любой момент пока фасилитатор не закрыл.', 'Можеш змінити голос будь-коли, доки фасилітатор не закрив голосування.')}</li>
+              <li>◆ {t('Click a voted dragon again to withdraw that vote and switch.', 'Клик по проголосованному снимает голос — можно перевыбрать.', 'Клік по проголосованому знімає голос — можна перевибрати.')}</li>
               <li>◆ {t('The current leader gets the ✦ Lead badge.', 'Текущий лидер получает значок ✦ Lead.', 'Поточний лідер отримує значок ✦ Lead.')}</li>
             </ul>
           </div>
