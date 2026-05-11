@@ -105,8 +105,8 @@ export default function GemSlide({ gemId, pageIndex, position }) {
   const gem = GEM_BY_ID[gemId]
   if (!gem) return null
 
-  const useCases = t(gem.use_cases_en, gem.use_cases_ru) || []
-  const pullQuote = gem.pullQuote_en ? t(gem.pullQuote_en, gem.pullQuote_ru) : null
+  const useCases = t(gem.use_cases_en, gem.use_cases_ru, gem.use_cases_uk) || []
+  const pullQuote = gem.pullQuote_en ? t(gem.pullQuote_en, gem.pullQuote_ru, gem.pullQuote_uk) : null
   const [posCurrent, posTotal] = (position || '').split('/').map(s => s.trim())
 
   return (
@@ -148,7 +148,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
               </a>
             </div>
             <p className="text-[16px] text-text-secondary italic leading-relaxed">
-              {t(gem.tagline_en, gem.tagline_ru)}
+              {t(gem.tagline_en, gem.tagline_ru, gem.tagline_uk)}
             </p>
           </div>
         </div>
@@ -186,11 +186,11 @@ export default function GemSlide({ gemId, pageIndex, position }) {
         <section>
           <header className="flex items-center gap-3 mb-4">
             <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal">
-              ◆ {t('What it is', 'Что это')}
+              ◆ {t('What it is', 'Что это', 'Що це')}
             </div>
             <div className="flex-1 h-px bg-border" />
           </header>
-          <GemBody text={t(gem.body_en, gem.body_ru)} />
+          <GemBody text={t(gem.body_en, gem.body_ru, gem.body_uk)} />
         </section>
 
         {/* ═══════════════════════════════════════════════════════
@@ -201,10 +201,10 @@ export default function GemSlide({ gemId, pageIndex, position }) {
             <span className="text-qa-teal text-[11px]">✦</span>
           </div>
           <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
-            {t('Why it matters', 'Зачем это')}
+            {t('Why it matters', 'Зачем это', 'Навіщо це')}
           </div>
           <div className="text-[15.5px] text-text-body italic leading-[1.7] font-display">
-            {t(gem.why_en, gem.why_ru)}
+            {t(gem.why_en, gem.why_ru, gem.why_uk)}
           </div>
         </section>
 
@@ -214,7 +214,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
         <section>
           <header className="flex items-center gap-3 mb-4">
             <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal">
-              ◆ {t('When to reach for it', 'Когда брать')}
+              ◆ {t('When to reach for it', 'Когда брать', 'Коли брати')}
             </div>
             <div className="flex-1 h-px bg-border" />
           </header>
@@ -256,16 +256,16 @@ export default function GemSlide({ gemId, pageIndex, position }) {
             <div className="flex items-center gap-2.5">
               <span className="text-qa-teal">⌘</span>
               <span className="font-mono text-[10px] tracking-[2.5px] uppercase text-qa-teal">
-                {t('install · paste into Claude Code', 'установка · вставь в Claude Code')}
+                {t('install · paste into Claude Code', 'установка · вставь в Claude Code', 'встановлення · встав у Claude Code')}
               </span>
             </div>
             <CopyButton
-              text={t(gem.install_en, gem.install_ru)}
-              label={t('Copy prompt', 'Копировать')}
+              text={t(gem.install_en, gem.install_ru, gem.install_uk)}
+              label={t('Copy prompt', 'Копировать', 'Копіювати')}
             />
           </div>
           <pre className="bg-black px-4 py-4 text-[12.5px] font-mono text-text-body whitespace-pre-wrap leading-[1.7] max-h-[320px] overflow-y-auto">
-{t(gem.install_en, gem.install_ru)}
+{t(gem.install_en, gem.install_ru, gem.install_uk)}
           </pre>
         </section>
 

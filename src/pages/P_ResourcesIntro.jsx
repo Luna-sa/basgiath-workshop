@@ -22,7 +22,8 @@ export default function P_ResourcesIntro() {
           <p className="text-[15px] text-text-body leading-relaxed">
             {t(
               'Every prompt, every reference, every file. Bookmark this page — your dragon waits here any day you come back.',
-              'Каждый промпт, каждая справка, каждый файл. Закрепи закладкой — твой дракон ждёт тебя в любой день, когда захочешь вернуться.'
+              'Каждый промпт, каждая справка, каждый файл. Закрепи закладкой — твой дракон ждёт тебя в любой день, когда захочешь вернуться.',
+              'Кожен промпт, кожен довідник, кожен файл. Збережи закладкою — твій дракон чекає на тебе будь-якого дня, коли захочеш повернутися.'
             )}
           </p>
         </div>
@@ -33,19 +34,19 @@ export default function P_ResourcesIntro() {
           rel="noopener"
           className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all animate-pulse-teal"
         >
-          {t('Open Resource Hub →', 'Открыть хаб ресурсов →')}
+          {t('Open Resource Hub →', 'Открыть хаб ресурсов →', 'Відкрити хаб ресурсів →')}
         </a>
 
         <div className="border border-border bg-surface/40 p-5">
           <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-3">
-            ◆ {t('What\'s inside', 'Что внутри')}
+            ◆ {t('What\'s inside', 'Что внутри', 'Що всередині')}
           </div>
           <ul className="text-[13px] text-text-body leading-relaxed space-y-2 list-none">
-            <li>◆ {t('Master setup prompt — full QA ecosystem in one go', 'Master setup промпт — вся QA-экосистема одной командой')}</li>
-            <li>◆ {t('Five autopilot prompts — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', 'Пять autopilot-промптов — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error')}</li>
-            <li>◆ {t('Hidden Gems — 22 power-user features', 'Hidden Gems — 22 продвинутых фишки Claude Code')}</li>
-            <li>◆ {t('Quick Reference — slash commands + hotkeys', 'Quick Reference — слэш-команды + хоткеи')}</li>
-            <li>◆ {t('Sample QA project — for at-home practice', 'Sample QA project — для практики дома')}</li>
+            <li>◆ {t('Master setup prompt — full QA ecosystem in one go', 'Master setup промпт — вся QA-экосистема одной командой', 'Master setup промпт — уся QA-екосистема однією командою')}</li>
+            <li>◆ {t('Five autopilot prompts — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', 'Пять autopilot-промптов — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', "П'ять autopilot-промптів — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error")}</li>
+            <li>◆ {t('Hidden Gems — 22 power-user features', 'Hidden Gems — 22 продвинутых фишки Claude Code', 'Hidden Gems — 22 просунуті фішки Claude Code')}</li>
+            <li>◆ {t('Quick Reference — slash commands + hotkeys', 'Quick Reference — слэш-команды + хоткеи', 'Quick Reference — слеш-команди + гарячі клавіші')}</li>
+            <li>◆ {t('Sample QA project — for at-home practice', 'Sample QA project — для практики дома', 'Sample QA project — для практики вдома')}</li>
           </ul>
         </div>
       </div>

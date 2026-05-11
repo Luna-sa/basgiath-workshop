@@ -40,7 +40,7 @@ export default function CheckpointButton({
 
   const handleMark = async () => {
     if (!studentId) {
-      setError(t('Register first to track progress', 'Сначала зарегистрируйся'))
+      setError(t('Register first to track progress', 'Сначала зарегистрируйся', 'Спочатку зареєструйся'))
       return
     }
     setBusy(true)
@@ -67,10 +67,10 @@ export default function CheckpointButton({
         {done ? (
           <div className="flex items-center gap-3">
             <span className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal">
-              ✓ {t('Done', 'Готово')}
+              ✓ {t('Done', 'Готово', 'Готово')}
             </span>
             <span className="font-mono text-[11px] text-text-dim">
-              {t('Marked at', 'отмечено в')} {formatTime(done)}
+              {t('Marked at', 'отмечено в', 'позначено о')} {formatTime(done)}
             </span>
             {doneLabel && <span className="text-[13px] text-text-secondary italic">{doneLabel}</span>}
           </div>
@@ -81,7 +81,7 @@ export default function CheckpointButton({
               disabled={busy}
               className="bg-qa-teal text-black px-5 py-2.5 font-mono text-[11px] tracking-[2px] uppercase font-semibold cursor-pointer hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
-              {busy ? t('Saving...', 'Сохраняю...') : (label || t('Mark done', 'Отметить готово'))}
+              {busy ? t('Saving...', 'Сохраняю...', 'Зберігаю...') : (label || t('Mark done', 'Отметить готово', 'Позначити готово'))}
             </button>
             {helpText && (
               <span className="text-[12px] text-text-dim italic">{helpText}</span>

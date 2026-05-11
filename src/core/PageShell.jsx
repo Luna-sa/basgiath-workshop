@@ -1,10 +1,28 @@
 import { PAGES } from '../data/pages'
 import { NARRATIVE } from '../data/narrative'
+import { useLocale } from '../i18n/store'
 import { usePersona } from '../store/usePersona'
 import GateGuard from './GateGuard'
 
+/**
+ * Pick a localised field. Falls back to the canonical (RU) field if
+ * the per-locale field is not present. So narrative entries can be
+ * progressively translated — current contract is:
+ *   - n.title       (RU canonical, always present)
+ *   - n.title_en    (optional)
+ *   - n.title_uk    (optional)
+ * Same shape for subtitle / text.
+ */
+function pickLocalised(entry, key, lang) {
+  if (!entry) return ''
+  if (lang === 'en' && entry[`${key}_en`]) return entry[`${key}_en`]
+  if (lang === 'uk' && entry[`${key}_uk`]) return entry[`${key}_uk`]
+  return entry[key]
+}
+
 export default function PageShell({ pageIndex, subStepId, children }) {
   const page = PAGES[pageIndex]
+  const lang = useLocale(s => s.lang)
   const persona = usePersona()
   if (!page) return null
 
@@ -15,7 +33,12 @@ export default function PageShell({ pageIndex, subStepId, children }) {
   } else {
     narrativeKey = page.narrativeKey
   }
-  const narrative = NARRATIVE[narrativeKey]
+  const rawNarrative = NARRATIVE[narrativeKey]
+  const narrative = rawNarrative ? {
+    title: pickLocalised(rawNarrative, 'title', lang),
+    subtitle: pickLocalised(rawNarrative, 'subtitle', lang),
+    text: pickLocalised(rawNarrative, 'text', lang),
+  } : null
 
   return (
     <div className="h-screen w-full flex flex-col bg-bg pt-[52px] overflow-hidden">
