@@ -66,7 +66,7 @@ export default function P15_Graduation() {
           </h2>
           {character && (
             <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mt-2">
-              {t('Bonded with', 'Связан с', "Зв'язана з")} {character.name} · {character.title}
+              {t('Bonded with', 'Связан с', "Звʼязана з")} {character.name} · {character.title}
             </p>
           )}
         </motion.div>
@@ -92,11 +92,11 @@ export default function P15_Graduation() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('A bot you wrote yourself — competing with five others on the projector.', 'Бот написанный тобой — соперничал на проекторе с пятью другими.', "Бот, написаний тобою — змагався на проекторі з п'ятьма іншими.")}</span>
+              <span>{t('A bot you wrote yourself — competing with five others on the projector.', 'Бот написанный тобой — соперничал на проекторе с пятью другими.', "Бот, написаний тобою — змагався на проекторі з пʼятьма іншими.")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('A bookmarkable Resource Hub — five autopilot prompts, hidden gems, quick reference.', 'Закладка на Resource Hub — пять autopilot-промптов, hidden gems, quick reference.', "Закладка на Resource Hub — п'ять autopilot-промптів, hidden gems, quick reference.")}</span>
+              <span>{t('A bookmarkable Resource Hub — five autopilot prompts, hidden gems, quick reference.', 'Закладка на Resource Hub — пять autopilot-промптов, hidden gems, quick reference.', "Закладка на Resource Hub — пʼять autopilot-промптів, hidden gems, quick reference.")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>

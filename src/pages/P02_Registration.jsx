@@ -90,7 +90,7 @@ export default function P02_Registration() {
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>
-              {t('Name', 'Имя', "Ім'я")} <span className="text-qa-teal">*</span>
+              {t('Name', 'Имя', "Імʼя")} <span className="text-qa-teal">*</span>
             </label>
             <input
               type="text"
@@ -100,7 +100,7 @@ export default function P02_Registration() {
               className={inputClass}
             />
             <p className="text-xs text-text-dim mt-2 italic">
-              {t('Goes on your badge', 'Это имя будет на твоём бейдже', "Це ім'я буде на твоєму бейджі")}
+              {t('Goes on your badge', 'Это имя будет на твоём бейдже', "Це імʼя буде на твоєму бейджі")}
             </p>
           </div>
           <div>
@@ -201,7 +201,7 @@ export default function P02_Registration() {
               'Що бісить в AI-помічниках під час тестування'
             )}{' '}
             <span className="text-text-dim normal-case tracking-normal">
-              ({t('optional, one phrase', 'не обязательно, одна фраза', "не обов'язково, одна фраза")})
+              ({t('optional, one phrase', 'не обязательно, одна фраза', "не обовʼязково, одна фраза")})
             </span>
           </label>
           <input

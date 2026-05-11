@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
@@ -9,6 +9,7 @@ import {
   withdrawVote,
   subscribeToAerie,
 } from '../api/dragons'
+import { generateFakeDragons } from '../data/dragons/fixtures'
 
 /**
  * The Aerie — live gallery of all sealed dragons. Each rider may
@@ -26,7 +27,15 @@ export default function P_Aerie() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
 
+  const params = useMemo(() => new URLSearchParams(window.location.search), [])
+  const previewN = parseInt(params.get('preview') || '0', 10)
+
   const refresh = async () => {
+    if (previewN > 0) {
+      setDragons(generateFakeDragons(previewN))
+      setMyVote(null)
+      return
+    }
     const list = await listDragons()
     setDragons(list)
     if (myNickname) {
@@ -37,6 +46,7 @@ export default function P_Aerie() {
 
   useEffect(() => {
     refresh()
+    if (previewN > 0) return
     const unsubscribe = subscribeToAerie(refresh)
     return unsubscribe
   // eslint-disable-next-line react-hooks/exhaustive-deps

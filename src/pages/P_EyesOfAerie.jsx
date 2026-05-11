@@ -9,6 +9,7 @@ import {
   getMatchLeaderboard,
   subscribeToMatches,
 } from '../api/dragonMatches'
+import { generateFakeDragons, generateFakeLeaderboard } from '../data/dragons/fixtures'
 
 /**
  * Eyes of the Aerie — blind matching round. Voters see the dragon
@@ -53,7 +54,17 @@ export default function P_EyesOfAerie() {
     return m
   }, [myGuesses])
 
+  const params = useMemo(() => new URLSearchParams(window.location.search), [])
+  const previewN = parseInt(params.get('preview') || '0', 10)
+
   const refresh = async () => {
+    if (previewN > 0) {
+      const fakeD = generateFakeDragons(previewN)
+      setDragons(fakeD)
+      setMyGuesses([])
+      setLeaderboard(generateFakeLeaderboard(fakeD))
+      return
+    }
     const [d, g, lb] = await Promise.all([
       listDragons(),
       myNickname ? getMyGuesses(myNickname) : Promise.resolve([]),
@@ -66,6 +77,7 @@ export default function P_EyesOfAerie() {
 
   useEffect(() => {
     refresh()
+    if (previewN > 0) return
     const unsub = subscribeToMatches(refresh)
     return unsub
   // eslint-disable-next-line react-hooks/exhaustive-deps

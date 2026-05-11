@@ -503,7 +503,7 @@ export default function P_PersonaBuilder() {
                 </span>
                 {!allMandatoryFilled && (
                   <span className="font-mono text-[10px] text-text-dim tracking-[1.5px] italic">
-                    {t('preview is partial', 'превью частичный', 'прев\'ю часткове')}
+                    {t('preview is partial', 'превью частичный', 'превʼю часткове')}
                   </span>
                 )}
               </div>

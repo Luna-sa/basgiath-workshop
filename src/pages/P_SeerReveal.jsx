@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { useT } from '../i18n/useT'
 import { listDragons } from '../api/dragons'
 import { getMatchLeaderboard, subscribeToMatches } from '../api/dragonMatches'
+import { generateFakeDragons, generateFakeLeaderboard } from '../data/dragons/fixtures'
 
 /**
  * Seer of the Aerie — projector reveal of the Eyes of the Aerie
@@ -21,8 +22,16 @@ export default function P_SeerReveal() {
   const [leaderboard, setLeaderboard] = useState([])
   const [dragonCount, setDragonCount] = useState(0)
   const [showWinner, setShowWinner] = useState(false)
+  const params = useMemo(() => new URLSearchParams(window.location.search), [])
+  const previewN = parseInt(params.get('preview') || '0', 10)
 
   const refresh = async () => {
+    if (previewN > 0) {
+      const fakeDragons = generateFakeDragons(previewN)
+      setDragonCount(fakeDragons.length)
+      setLeaderboard(generateFakeLeaderboard(fakeDragons))
+      return
+    }
     const [board, dragons] = await Promise.all([
       getMatchLeaderboard(),
       listDragons(),
@@ -33,8 +42,10 @@ export default function P_SeerReveal() {
 
   useEffect(() => {
     refresh()
+    if (previewN > 0) return
     const unsub = subscribeToMatches(refresh)
     return unsub
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Dramatic reveal — wait 2 seconds before announcing winner, then confetti

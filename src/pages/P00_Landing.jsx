@@ -16,7 +16,7 @@ export default function P00_Landing() {
             {t(
               <>This is a <strong className="text-white">Claude Code workshop for QA</strong>. We set up Claude Code together, build a personal AI partner with a real character, and run real tasks until everything clicks.</>,
               <>Это <strong className="text-white">воркшоп по Claude Code для QA</strong>. Настроим Claude Code вместе, соберём персонального AI-напарника с настоящим характером и пройдём через реальные задачи пока всё не сядет.</>,
-              <>Це <strong className="text-white">воркшоп з Claude Code для QA</strong>. Налаштуємо Claude Code разом, зберемо персонального AI-напарника зі справжнім характером і пройдемо реальні задачі поки все не сяде.</>
+              <>Це <strong className="text-white">воркшоп із Claude Code для QA</strong>. Разом налаштуємо Claude Code, зберемо персонального AI-напарника зі справжнім характером і пройдемо справжні задачі — доки все не складеться.</>
             )}
           </p>
           <p className="text-[18px] text-text-body leading-relaxed mb-3">
@@ -39,7 +39,7 @@ export default function P00_Landing() {
         <div className="flex items-center justify-center gap-8 sm:gap-12">
           {[
             { value: '7', label_en: 'Commands', label_ru: 'Команд', label_uk: 'Команд' },
-            { value: '4', label_en: 'Agents', label_ru: 'Агента', label_uk: 'Агента' },
+            { value: '4', label_en: 'Agents', label_ru: 'Агента', label_uk: 'Агенти' },
             { value: '3', label_en: 'MCP', label_ru: 'MCP', label_uk: 'MCP' },
             { value: '60', unit: 'min', label_en: 'Workshop', label_ru: 'Воркшоп', label_uk: 'Воркшоп' },
           ].map(s => (
@@ -82,7 +82,7 @@ export default function P00_Landing() {
               title_uk: 'Практика на багах',
               desc_en: 'Test app with 36 planted defects + AI review',
               desc_ru: 'Тестовое приложение с 36 дефектами + AI-ревью',
-              desc_uk: 'Тестовий застосунок з 36 дефектами + AI-рев\'ю',
+              desc_uk: 'Тестовий застосунок з 36 дефектами + AI-ревʼю',
             },
             {
               icon: '🏆',

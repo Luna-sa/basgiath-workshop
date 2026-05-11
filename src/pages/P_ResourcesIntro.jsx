@@ -14,7 +14,7 @@ export default function P_ResourcesIntro() {
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
-            ◆ {t('Bonded', 'Связан', "Зв'язана")}
+            ◆ {t('Bonded', 'Связан', "Звʼязана")}
           </p>
           <h2 className="font-display text-3xl text-white leading-tight mb-3">
             {t('Take it home, rider.', 'Унеси домой, всадник.', 'Забери додому, вершнице.')}
@@ -43,7 +43,7 @@ export default function P_ResourcesIntro() {
           </div>
           <ul className="text-[13px] text-text-body leading-relaxed space-y-2 list-none">
             <li>◆ {t('Master setup prompt — full QA ecosystem in one go', 'Master setup промпт — вся QA-экосистема одной командой', 'Master setup промпт — уся QA-екосистема однією командою')}</li>
-            <li>◆ {t('Five autopilot prompts — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', 'Пять autopilot-промптов — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', "П'ять autopilot-промптів — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error")}</li>
+            <li>◆ {t('Five autopilot prompts — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', 'Пять autopilot-промптов — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error', "Пʼять autopilot-промптів — Setup-Doctor, Workspace-Init, MCP installer, Apply-Persona, Resume-from-error")}</li>
             <li>◆ {t('Hidden Gems — 22 power-user features', 'Hidden Gems — 22 продвинутых фишки Claude Code', 'Hidden Gems — 22 просунуті фішки Claude Code')}</li>
             <li>◆ {t('Quick Reference — slash commands + hotkeys', 'Quick Reference — слэш-команды + хоткеи', 'Quick Reference — слеш-команди + гарячі клавіші')}</li>
             <li>◆ {t('Sample QA project — for at-home practice', 'Sample QA project — для практики дома', 'Sample QA project — для практики вдома')}</li>

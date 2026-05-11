@@ -41,7 +41,7 @@ const PARTS = [
     role: 'eyes',
     summary_en: "Model Context Protocol — Claude's connection to the outside world. Browsers, APIs, databases, services.",
     summary_ru: 'Model Context Protocol — связь Claude с внешним миром. Браузеры, API, базы данных, сервисы.',
-    summary_uk: "Model Context Protocol — зв'язок Claude із зовнішнім світом. Браузери, API, бази даних, сервіси.",
+    summary_uk: "Model Context Protocol — звʼязок Claude із зовнішнім світом. Браузери, API, бази даних, сервіси.",
     detail_en: 'Playwright (browser test), GitHub (PR/issues), Confluence/Notion (docs), Atlassian (Jira), filesystem (any folder).',
     detail_ru: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (любая папка).',
     detail_uk: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (будь-яка папка).',

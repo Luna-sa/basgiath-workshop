@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { motion } from 'motion/react'
 import { listDragons, subscribeToAerie } from '../api/dragons'
+import { generateFakeDragons } from '../data/dragons/fixtures'
 import { useT } from '../i18n/useT'
 
 /**
@@ -22,20 +23,25 @@ export default function P_AerieMosaic() {
   const t = useT()
   const [dragons, setDragons] = useState([])
   const [spotlightIdx, setSpotlightIdx] = useState(0)
-  const cycle = useMemo(() => {
-    const p = new URLSearchParams(window.location.search)
-    return p.get('cycle') === '1' || p.get('cycle') === 'true'
-  }, [])
+  const params = useMemo(() => new URLSearchParams(window.location.search), [])
+  const cycle = params.get('cycle') === '1' || params.get('cycle') === 'true'
+  const previewN = parseInt(params.get('preview') || '0', 10)
 
   const refresh = async () => {
+    if (previewN > 0) {
+      setDragons(generateFakeDragons(previewN))
+      return
+    }
     const d = await listDragons()
     setDragons(d)
   }
 
   useEffect(() => {
     refresh()
+    if (previewN > 0) return // no realtime in preview
     const unsub = subscribeToAerie(refresh)
     return unsub
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Cycle spotlight every 4 seconds if cycle mode is on

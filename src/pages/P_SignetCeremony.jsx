@@ -73,14 +73,14 @@ function ArchetypePicker({ value, onChange, lang }) {
                 {a.name}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-text-dim">
-                {a.name_ru}
+                {lang === 'uk' ? (a.name_uk || a.name_ru) : a.name_ru}
               </span>
             </div>
             <p className="text-[12.5px] text-text-secondary italic leading-relaxed mb-2">
-              {lang === 'ru' ? a.tagline_ru : a.tagline_en}
+              {lang === 'ru' ? a.tagline_ru : lang === 'uk' ? (a.tagline_uk || a.tagline_en) : a.tagline_en}
             </p>
             <p className="font-mono text-[11px] text-qa-teal/80 leading-tight">
-              {lang === 'ru' ? a.one_liner_ru : a.one_liner_en}
+              {lang === 'ru' ? a.one_liner_ru : lang === 'uk' ? (a.one_liner_uk || a.one_liner_en) : a.one_liner_en}
             </p>
           </button>
         )
@@ -98,13 +98,15 @@ function ArchetypePicker({ value, onChange, lang }) {
         <div className="flex items-baseline gap-2 mb-1.5">
           <span className="text-[16px] text-text-dim">✦</span>
           <span className="font-display italic text-[18px] text-text-body">
-            {lang === 'ru' ? 'Свой собственный' : 'Your own'}
+            {lang === 'ru' ? 'Свой собственный' : lang === 'uk' ? 'Свій власний' : 'Your own'}
           </span>
         </div>
         <p className="text-[12.5px] text-text-secondary italic leading-relaxed">
           {lang === 'ru'
             ? 'Не вижу себя ни в одном — опишу сам.'
-            : 'None of these fit — I\'ll describe my own.'}
+            : lang === 'uk'
+              ? 'Не бачу себе в жодному — опишу сам.'
+              : 'None of these fit — I\'ll describe my own.'}
         </p>
       </button>
     </div>
@@ -121,11 +123,11 @@ function PresetChips({ presets, currentValue, onPick, lang }) {
   return (
     <div className="flex flex-wrap gap-1.5 mb-2.5">
       <span className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-dim self-center mr-1">
-        {lang === 'ru' ? '◆ готовые' : '◆ presets'}
+        {lang === 'ru' ? '◆ готовые' : lang === 'uk' ? '◆ готові' : '◆ presets'}
       </span>
       {presets.map((p, i) => {
-        const label = lang === 'ru' ? p.label_ru : p.label_en
-        const text = lang === 'ru' ? p.text_ru : p.text_en
+        const label = lang === 'ru' ? p.label_ru : lang === 'uk' ? (p.label_uk || p.label_en) : p.label_en
+        const text = lang === 'ru' ? p.text_ru : lang === 'uk' ? (p.text_uk || p.text_en) : p.text_en
         const isActive = (currentValue || '').trim() === text.trim()
         return (
           <button
@@ -148,9 +150,9 @@ function PresetChips({ presets, currentValue, onPick, lang }) {
 }
 
 function QuestionField({ question, value, onChange, lang }) {
-  const label = lang === 'ru' ? question.label_ru : question.label_en
-  const hint = lang === 'ru' ? question.hint_ru : question.hint_en
-  const placeholder = lang === 'ru' ? question.placeholder_ru : question.placeholder_en
+  const label = lang === 'ru' ? question.label_ru : lang === 'uk' ? (question.label_uk || question.label_en) : question.label_en
+  const hint = lang === 'ru' ? question.hint_ru : lang === 'uk' ? (question.hint_uk || question.hint_en) : question.hint_en
+  const placeholder = lang === 'ru' ? question.placeholder_ru : lang === 'uk' ? (question.placeholder_uk || question.placeholder_en) : question.placeholder_en
 
   if (question.type === 'archetype-picker') {
     return (
@@ -361,10 +363,10 @@ export default function P_SignetCeremony() {
                   {currentRitual.numeral}
                 </p>
                 <h2 className="font-display italic text-[clamp(28px,4vw,40px)] text-white leading-tight mb-3">
-                  {lang === 'ru' ? currentRitual.name_ru : currentRitual.name_en}
+                  {lang === 'ru' ? currentRitual.name_ru : lang === 'uk' ? (currentRitual.name_uk || currentRitual.name_en) : currentRitual.name_en}
                 </h2>
                 <p className="text-[15px] text-text-secondary italic leading-relaxed max-w-xl mx-auto whitespace-pre-line">
-                  {lang === 'ru' ? currentRitual.lore_ru : currentRitual.lore_en}
+                  {lang === 'ru' ? currentRitual.lore_ru : lang === 'uk' ? (currentRitual.lore_uk || currentRitual.lore_en) : currentRitual.lore_en}
                 </p>
               </div>
 

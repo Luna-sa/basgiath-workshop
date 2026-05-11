@@ -40,7 +40,7 @@ function CardsPicker({ question, value, onChange, lang }) {
           >
             <div className="text-[26px] mb-1.5" style={opt.color ? { color: opt.color } : {}}>{opt.glyph}</div>
             <div className={`font-display italic text-[16px] leading-tight ${isActive ? 'text-white' : 'text-text-body'}`}>
-              {lang === 'ru' ? opt.ru : opt.en}
+              {lang === 'ru' ? opt.ru : lang === 'uk' ? (opt.uk || opt.en) : opt.en}
             </div>
           </button>
         )
@@ -50,9 +50,9 @@ function CardsPicker({ question, value, onChange, lang }) {
 }
 
 function QuestionField({ question, value, onChange, lang }) {
-  const label = lang === 'ru' ? question.label_ru : question.label_en
-  const hint = lang === 'ru' ? question.hint_ru : question.hint_en
-  const placeholder = lang === 'ru' ? question.placeholder_ru : question.placeholder_en
+  const label = lang === 'ru' ? question.label_ru : lang === 'uk' ? (question.label_uk || question.label_en) : question.label_en
+  const hint = lang === 'ru' ? question.hint_ru : lang === 'uk' ? (question.hint_uk || question.hint_en) : question.hint_en
+  const placeholder = lang === 'ru' ? question.placeholder_ru : lang === 'uk' ? (question.placeholder_uk || question.placeholder_en) : question.placeholder_en
 
   return (
     <div>

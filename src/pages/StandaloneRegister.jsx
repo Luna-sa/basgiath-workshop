@@ -220,7 +220,7 @@ export default function StandaloneRegister() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>
-                {t('Name', 'Имя', "Ім'я")} <span className="text-qa-teal">*</span>
+                {t('Name', 'Имя', "Імʼя")} <span className="text-qa-teal">*</span>
               </label>
               <input
                 type="text"
