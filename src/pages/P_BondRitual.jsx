@@ -7,6 +7,7 @@ import { BOND_QUESTIONS, BOND_QUESTION_IDS } from '../data/dragons/questions'
 import { buildDragonPrompt } from '../data/dragons/prompt-builder'
 import { generateDragonImage } from '../api/workshopBackend'
 import { sealDragon } from '../api/dragons'
+import { assignRiderClass } from '../api/workshopBackend'
 import VoiceTextInput from '../components/VoiceTextInput'
 import { renderSigilCard, downloadBlob } from '../utils/sigilCard'
 
@@ -103,6 +104,8 @@ export default function P_BondRitual() {
   const [genError, setGenError] = useState(null)
   const [sealError, setSealError] = useState(null)
   const [generations, setGenerations] = useState(0)
+  const [riderClass, setRiderClass] = useState(null) // { class, class_name, class_meaning, epithet, reason }
+  const [classLoading, setClassLoading] = useState(false)
 
   const totalSteps = BOND_QUESTIONS.length
 
@@ -145,6 +148,28 @@ export default function P_BondRitual() {
       setModelUsed(res.model)
       setGenerations(n => n + 1)
       setStage('preview')
+
+      // Fire-and-forget Rider Class assignment (in parallel — UI shows
+      // a loading skeleton in the meantime). Only run on first generation
+      // so re-rolls don't keep churning the class.
+      if (!riderClass) {
+        setClassLoading(true)
+        try {
+          // Read Signet answers from localStorage so we don't tightly
+          // couple — Signet Ceremony is on a separate route.
+          let signet = {}
+          try {
+            const raw = window.localStorage.getItem('signet-ceremony-answers')
+            if (raw) signet = JSON.parse(raw) || {}
+          } catch {}
+          const rc = await assignRiderClass({ signet, dragon: answers })
+          setRiderClass(rc)
+        } catch {
+          // Class assignment is bonus content — silently skip on failure.
+        } finally {
+          setClassLoading(false)
+        }
+      }
     } catch (e) {
       setGenError(e.message || 'generation failed')
       setStage('questions')
@@ -165,6 +190,8 @@ export default function P_BondRitual() {
         name: (answers.name || 'Unnamed').trim(),
         nickname: nickname || 'anon',
         motto: (answers.motto || '').trim(),
+        riderClass: riderClass?.class_name || null,
+        epithet: riderClass?.epithet || null,
         date: new Date(),
         url: 'basgiath-workshop.onrender.com',
       })
@@ -363,6 +390,39 @@ export default function P_BondRitual() {
                   <Stat label={t('Signet', 'Сигнет', 'Сигнет')} value={answers.signet} />
                 </div>
               </div>
+
+              {/* Rider Class — The Choosing */}
+              {(classLoading || riderClass) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="border border-qa-teal/40 bg-gradient-to-br from-qa-teal/[0.06] to-transparent p-5"
+                >
+                  <p className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
+                    ✦ {t('The Choosing — your rider class', 'Выбор — твой класс всадника', 'Вибір — твій клас вершника')}
+                  </p>
+                  {classLoading ? (
+                    <p className="font-display italic text-[20px] text-text-dim animate-pulse">
+                      {t('The dragon weighs you…', 'Дракон взвешивает тебя…', 'Дракон зважує тебе…')}
+                    </p>
+                  ) : (
+                    <>
+                      <h3 className="font-display italic text-[clamp(28px,4vw,36px)] text-white leading-tight mb-1.5">
+                        {riderClass.class_name}
+                      </h3>
+                      {riderClass.epithet && (
+                        <p className="text-[15px] text-qa-teal italic leading-relaxed mb-2">
+                          "{riderClass.epithet}"
+                        </p>
+                      )}
+                      <p className="text-[13px] text-text-secondary leading-relaxed">
+                        {riderClass.reason || riderClass.class_meaning}
+                      </p>
+                    </>
+                  )}
+                </motion.div>
+              )}
 
               {sealError && (
                 <div className="border border-corp-red/40 bg-corp-red/[0.06] p-3 text-[13px] text-corp-red">

@@ -25,6 +25,19 @@ export async function transcribeAudio(audioBlob, mimeType = 'audio/webm') {
   return data.transcript || ''
 }
 
+export async function assignRiderClass({ signet, dragon }) {
+  const res = await fetch(`${BASE}/api/workshop/assign-class`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ signet, dragon }),
+  })
+  if (!res.ok) {
+    const detail = await safeReadError(res)
+    throw new Error(`class assignment failed (${res.status}): ${detail}`)
+  }
+  return res.json() // { class, class_name, class_meaning, epithet, reason }
+}
+
 export async function generateDragonImage({ prompt, size = '1024x1024', quality = 'high' }) {
   const res = await fetch(`${BASE}/api/workshop/generate-dragon`, {
     method: 'POST',

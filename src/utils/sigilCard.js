@@ -65,6 +65,8 @@ export async function renderSigilCard({
   name = 'Unnamed',
   nickname = 'anon',
   motto = '',
+  riderClass = null,
+  epithet = null,
   date = new Date(),
   url = 'basgiath-workshop.onrender.com',
 }) {
@@ -119,9 +121,9 @@ export async function renderSigilCard({
   // Rider nickname — mono
   ctx.font = '500 18px "JetBrains Mono", monospace'
   ctx.fillStyle = COLORS.textDim
-  ctx.fillText('rider · ', FOOTER_X, PORTRAIT_H + 138)
-  const riderLabel = 'rider · '
-  const riderLabelWidth = ctx.measureText(riderLabel).width
+  const riderPrefix = riderClass ? `${riderClass.toLowerCase()} · ` : 'rider · '
+  ctx.fillText(riderPrefix, FOOTER_X, PORTRAIT_H + 138)
+  const riderLabelWidth = ctx.measureText(riderPrefix).width
   ctx.fillStyle = COLORS.teal
   ctx.fillText('@' + nickname, FOOTER_X + riderLabelWidth, PORTRAIT_H + 138)
 

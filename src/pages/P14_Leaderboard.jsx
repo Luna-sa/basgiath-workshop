@@ -56,7 +56,7 @@ export default function P14_Leaderboard() {
                 {sub ? (
                   <div className="border-t border-border pt-3">
                     <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-1">
-                      {t('Submitted by', 'От')}
+                      {t('Submitted by', 'От', 'Від')}
                     </div>
                     <div className="font-mono text-[14px] text-qa-teal mb-1">@{sub.nickname}</div>
                     <div className="font-mono text-[10px] text-text-dim">
@@ -64,14 +64,14 @@ export default function P14_Leaderboard() {
                     </div>
                     {isMine && (
                       <div className="mt-2 font-mono text-[10px] tracking-[1px] uppercase text-qa-teal">
-                        ✦ {t('Yours', 'Твой')}
+                        ✦ {t('Yours', 'Твой', 'Твій')}
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="border-t border-border/30 pt-3">
                     <div className="font-mono text-[11px] text-text-dim italic">
-                      {t('No submission yet', 'Бота ещё нет')}
+                      {t('No submission yet', 'Бота ещё нет', 'Бота ще немає')}
                     </div>
                   </div>
                 )}
@@ -83,14 +83,14 @@ export default function P14_Leaderboard() {
         {/* Counter */}
         {!loading && (
           <div className="text-center font-mono text-[12px] tracking-[2px] uppercase text-text-dim">
-            {submissions.length} / 6 {t('riders bonded', 'наездников связаны')}
+            {submissions.length} / 6 {t('riders bonded', 'наездников связаны', "вершників зв'язані")}
           </div>
         )}
 
         {/* Final battle CTA — open in new tab */}
         <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5 rounded-[2px] text-center space-y-3">
           <p className="font-display italic text-xl text-white">
-            {t('Time for the final flight.', 'Время финального полёта.')}
+            {t('Time for the final flight.', 'Время финального полёта.', 'Час фінального польоту.')}
           </p>
           <a
             href="/?page=arena&final=1"
@@ -98,12 +98,13 @@ export default function P14_Leaderboard() {
             rel="noopener"
             className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all animate-pulse-teal"
           >
-            {t('Open Final Battle →', 'Запустить финал →')}
+            {t('Open Final Battle →', 'Запустить финал →', 'Запустити фінал →')}
           </a>
           <p className="text-[12px] text-text-dim italic">
             {t(
               'Submitted bots load on the projector. The sky judges who took the most stars.',
-              'Submitted боты загружаются на проектор. Небо судит кто собрал больше звёзд.'
+              'Submitted боты загружаются на проектор. Небо судит кто собрал больше звёзд.',
+              'Submitted боти завантажуються на проектор. Небо судить, хто зібрав більше зірок.'
             )}
           </p>
         </div>

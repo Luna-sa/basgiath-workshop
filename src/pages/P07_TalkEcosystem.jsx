@@ -91,7 +91,7 @@ const GRIMOIRE = [
       },
       {
         lore_en: 'Wardstone · the Watcher',
-        lore_ru: 'Ваpд-Камень · Дозорный',
+        lore_ru: 'Вард-Камень · Дозорный',
         invocation: 'security-scanner',
         body_en: 'Sniffs the code for vulnerabilities — injection, exposed secrets, weak crypto. Raises a flag, never silences it.',
         body_ru: 'Нюхает код на уязвимости — инъекции, открытые секреты, слабая крипта. Поднимает флаг, не глушит его.',
