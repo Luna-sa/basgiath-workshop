@@ -15,6 +15,7 @@ import P_Aerie from './pages/P_Aerie'
 import P_AerieMosaic from './pages/P_AerieMosaic'
 import P_AerieReveal from './pages/P_AerieReveal'
 import P_Resources from './pages/P_Resources'
+import P_Champions from './pages/P_Champions'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
 import { startSync, fetchInitialState } from './store/sync'
@@ -91,6 +92,13 @@ function isResourcesRoute() {
   return path === '/resources' || path === '/resources/'
 }
 
+function isChampionsRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'champions') return true
+  const path = window.location.pathname
+  return path === '/champions' || path === '/champions/'
+}
+
 export default function App() {
   const [facilitator] = useState(isFacilitatorMode)
   const [registerOnly] = useState(isRegisterRoute)
@@ -102,15 +110,16 @@ export default function App() {
   const [mosaicOnly] = useState(isMosaicRoute)
   const [revealOnly] = useState(isRevealRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
+  const [championsOnly] = useState(isChampionsRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly && !championsOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly, championsOnly])
 
   if (arenaOnly) {
     return (
@@ -187,6 +196,18 @@ export default function App() {
         <div className="min-h-screen bg-black text-text-body">
           {/* Reveal — projector-mode, slow theatrical reveal */}
           <P_AerieReveal />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (championsOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-black text-text-body">
+          {/* Champions finale — three winners revealed in sequence */}
+          <LanguageToggle />
+          <P_Champions />
         </div>
       </ErrorBoundary>
     )
