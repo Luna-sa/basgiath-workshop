@@ -14,6 +14,7 @@ import P_SignetCeremony from './pages/P_SignetCeremony'
 import P_BondRitual from './pages/P_BondRitual'
 import P_Aerie from './pages/P_Aerie'
 import P_EyesOfAerie from './pages/P_EyesOfAerie'
+import P_AerieMosaic from './pages/P_AerieMosaic'
 import P_Resources from './pages/P_Resources'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
@@ -75,6 +76,13 @@ function isEyesRoute() {
   return path === '/eyes' || path === '/eyes/'
 }
 
+function isMosaicRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'mosaic') return true
+  const path = window.location.pathname
+  return path === '/mosaic' || path === '/mosaic/'
+}
+
 function isResourcesRoute() {
   const params = new URLSearchParams(window.location.search)
   if (params.get('page') === 'resources') return true
@@ -91,16 +99,17 @@ export default function App() {
   const [bondOnly] = useState(isBondRoute)
   const [aerieOnly] = useState(isAerieRoute)
   const [eyesOnly] = useState(isEyesRoute)
+  const [mosaicOnly] = useState(isMosaicRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !eyesOnly && !resourcesOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !eyesOnly && !mosaicOnly && !resourcesOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, eyesOnly, resourcesOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, eyesOnly, mosaicOnly, resourcesOnly])
 
   if (arenaOnly) {
     return (
@@ -165,6 +174,18 @@ export default function App() {
           <TealParticles />
           <LanguageToggle />
           <P_EyesOfAerie />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (mosaicOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-black text-text-body">
+          {/* Mosaic intentionally has no LanguageToggle / no Particles
+              — it's projector-mode, full screen, clean. */}
+          <P_AerieMosaic />
         </div>
       </ErrorBoundary>
     )
