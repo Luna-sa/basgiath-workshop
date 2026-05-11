@@ -66,7 +66,7 @@ export default function P15_Graduation() {
           </h2>
           {character && (
             <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mt-2">
-              {t('Bonded with', 'Связан с', "Звʼязана з")} {character.name} · {character.title}
+              {t('Bonded with', 'Связан с', 'Bonded з')} {character.name} · {character.title}
             </p>
           )}
         </motion.div>

@@ -51,7 +51,7 @@ export default function P_AerieIntro() {
             <ul className="text-[13.5px] text-text-body leading-relaxed space-y-1.5 list-none">
               <li>◆ {t('One vote per rider.', 'Один голос на всадника.', 'Один голос на вершника.')}</li>
               <li>◆ {t('You cannot vote for your own dragon.', 'За своего дракона голосовать нельзя.', 'За свого дракона голосувати не можна.')}</li>
-              <li>◆ {t('You can change your vote any time before the facilitator closes voting.', 'Можешь сменить голос в любой момент пока фасилитатор не закрыл.', 'Можеш змінити голос будь-коли поки фасилітатор не закрив.')}</li>
+              <li>◆ {t('You can change your vote any time before the facilitator closes voting.', 'Можешь сменить голос в любой момент пока фасилитатор не закрыл.', 'Можеш змінити голос будь-коли, доки фасилітатор не закрив голосування.')}</li>
               <li>◆ {t('The current leader gets the ✦ Lead badge.', 'Текущий лидер получает значок ✦ Lead.', 'Поточний лідер отримує значок ✦ Lead.')}</li>
             </ul>
           </div>

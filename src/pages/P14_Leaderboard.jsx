@@ -83,7 +83,7 @@ export default function P14_Leaderboard() {
         {/* Counter */}
         {!loading && (
           <div className="text-center font-mono text-[12px] tracking-[2px] uppercase text-text-dim">
-            {submissions.length} / 6 {t('riders bonded', 'наездников связаны', "вершників звʼязані")}
+            {submissions.length} / 6 {t('riders bonded', 'наездников связаны', 'bonded-вершників')}
           </div>
         )}
 

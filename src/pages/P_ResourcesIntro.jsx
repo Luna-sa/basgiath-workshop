@@ -14,7 +14,7 @@ export default function P_ResourcesIntro() {
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
-            ◆ {t('Bonded', 'Связан', "Звʼязана")}
+            ◆ {t('Bonded', 'Связан', 'Bonded')}
           </p>
           <h2 className="font-display text-3xl text-white leading-tight mb-3">
             {t('Take it home, rider.', 'Унеси домой, всадник.', 'Забери додому, вершнице.')}
