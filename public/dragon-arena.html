@@ -1075,6 +1075,118 @@ const RIVAL_TICK = {
 }
 
 // ─────────────────────────────────────────────────────────
+// Persona-shape easter eggs — checked after every star collect.
+// First time the player's last N collected stars match their persona's
+// hidden pattern → +50 score + shimmer VFX. Once per run.
+// ─────────────────────────────────────────────────────────
+function checkPersonaPattern(persona, events) {
+  if (!persona || !events || events.length < 3) return false
+  switch (persona) {
+    case 'violet':   return checkDiagonal(events.slice(-5))
+    case 'xaden':    return checkHorizontalSweep(events.slice(-5))
+    case 'rhiannon': return checkTriangle(events.slice(-3))
+    case 'ridoc':    return checkZigzag(events.slice(-5))
+    case 'liam':     return checkSquareCorners(events.slice(-4))
+    case 'imogen':   return checkTightCluster(events.slice(-3))
+    default: return false
+  }
+}
+function checkDiagonal(events) {
+  if (events.length < 5) return false
+  const sorted = [...events].sort((a, b) => a.tick - b.tick)
+  let signX = 0, signY = 0
+  for (let i = 1; i < sorted.length; i++) {
+    const dx = sorted[i].x - sorted[i-1].x
+    const dy = sorted[i].y - sorted[i-1].y
+    if (Math.abs(dx) < 25 || Math.abs(dy) < 25) return false
+    const sx = Math.sign(dx), sy = Math.sign(dy)
+    if (signX === 0) signX = sx; else if (signX !== sx) return false
+    if (signY === 0) signY = sy; else if (signY !== sy) return false
+    const ratio = Math.abs(dx) / Math.abs(dy)
+    if (ratio < 0.45 || ratio > 2.2) return false
+  }
+  return true
+}
+function checkHorizontalSweep(events) {
+  if (events.length < 5) return false
+  const sorted = [...events].sort((a, b) => a.tick - b.tick)
+  let signX = 0
+  for (let i = 1; i < sorted.length; i++) {
+    const dx = sorted[i].x - sorted[i-1].x
+    if (Math.abs(dx) < 30) return false
+    const s = Math.sign(dx)
+    if (signX === 0) signX = s; else if (signX !== s) return false
+  }
+  const ys = sorted.map(e => e.y)
+  return (Math.max(...ys) - Math.min(...ys)) < 80
+}
+function checkTriangle(events) {
+  if (events.length < 3) return false
+  const [a, b, c] = events.slice(-3)
+  const ab = Math.hypot(a.x - b.x, a.y - b.y)
+  const bc = Math.hypot(b.x - c.x, b.y - c.y)
+  const ca = Math.hypot(c.x - a.x, c.y - a.y)
+  if (ab < 70 || bc < 70 || ca < 70) return false
+  if (ab > 280 || bc > 280 || ca > 280) return false
+  const max = Math.max(ab, bc, ca)
+  const min = Math.min(ab, bc, ca)
+  return (max / min) < 1.45
+}
+function checkZigzag(events) {
+  if (events.length < 5) return false
+  const sorted = [...events].sort((a, b) => a.tick - b.tick)
+  let prevSign = null
+  for (let i = 1; i < sorted.length; i++) {
+    const dx = sorted[i].x - sorted[i-1].x
+    if (Math.abs(dx) < 25) return false
+    const sign = Math.sign(dx)
+    if (prevSign !== null && sign === prevSign) return false
+    prevSign = sign
+  }
+  const ys = sorted.map(e => e.y)
+  return (Math.max(...ys) - Math.min(...ys)) < 280
+}
+function checkSquareCorners(events) {
+  if (events.length < 4) return false
+  const pts = events.slice(-4)
+  const cx = pts.reduce((s, p) => s + p.x, 0) / 4
+  const cy = pts.reduce((s, p) => s + p.y, 0) / 4
+  const dists = pts.map(p => Math.hypot(p.x - cx, p.y - cy))
+  const maxD = Math.max(...dists), minD = Math.min(...dists)
+  if (maxD < 80 || maxD > 280) return false
+  if (maxD / minD > 1.45) return false
+  const angles = pts.map(p => Math.atan2(p.y - cy, p.x - cx))
+    .sort((a, b) => a - b)
+  const tol = Math.PI / 6  // 30°
+  for (let i = 1; i < 4; i++) {
+    if (Math.abs((angles[i] - angles[i-1]) - Math.PI / 2) > tol) return false
+  }
+  const wrap = (angles[0] + 2 * Math.PI) - angles[3]
+  return Math.abs(wrap - Math.PI / 2) <= tol
+}
+function checkTightCluster(events) {
+  if (events.length < 3) return false
+  const last3 = events.slice(-3)
+  const xs = last3.map(e => e.x), ys = last3.map(e => e.y)
+  const w = Math.max(...xs) - Math.min(...xs)
+  const h = Math.max(...ys) - Math.min(...ys)
+  if (w > 60 || h > 60) return false
+  const ticks = last3.map(e => e.tick)
+  return (Math.max(...ticks) - Math.min(...ticks)) <= 40
+}
+
+// Helper: nearest uncollected star (for Imogen auto-aim signet)
+function nearestStarPoint(d) {
+  let best = null, bestD = Infinity
+  for (const s of stars) {
+    if (s.collected) continue
+    const dst = Math.hypot(s.x - d.x, s.y - d.y)
+    if (dst < bestD) { bestD = dst; best = s }
+  }
+  return best
+}
+
+// ─────────────────────────────────────────────────────────
 // Left panel render — identity, character picker, code, run history
 // ─────────────────────────────────────────────────────────
 const identityEl = document.getElementById('identity')
@@ -1534,7 +1646,7 @@ function buildDragonState(c, x, y, gfx, fuelGfx, kind) {
     comboExpiresAt: 0,
     stallTicks: 0,
     signetUsed: false,
-    signetBoostUntil: 0,
+    signetActiveUntil: 0,
     boostActiveUntil: 0,
     starsCollected: 0,
     fireStars: 0,
@@ -1543,6 +1655,8 @@ function buildDragonState(c, x, y, gfx, fuelGfx, kind) {
     crashCount: 0,
     crashed: false,
     alive: true,
+    collectionEvents: [], // [{x, y, tick}] for persona-shape easter egg
+    patternHit: false,
     gfx: gfx.container,
     body: gfx.body,
     wingUp: gfx.wingUp,
@@ -1574,9 +1688,11 @@ function startWorkers() {
           if (boost === true) player.requestedBoost = true
           if ((_signet || signet) && !player.signetUsed) {
             player.signetUsed = true
-            player.signetBoostUntil = Date.now() + 3000
+            // Signet active window: 4s. The buff applied during this
+            // window depends on the player's persona (see tickPhysics).
+            player.signetActiveUntil = Date.now() + 4000
             triggerSignetVfx(player)
-            player.events.push({ tick: round?.tickIdx || 0, type: 'signet' })
+            player.events.push({ tick: round?.tickIdx || 0, type: 'signet', persona: characterId })
           }
           player.pending = false
         } else if (e.data.type === 'error') {
@@ -1619,6 +1735,49 @@ function triggerSignetVfx(d) {
   })
 }
 
+// Pattern-hit VFX — bigger, gold, +50 floating text. Fires when the
+// player completes their persona-shape easter egg.
+function triggerPatternHitVfx(d) {
+  if (!scene) return
+  const ring = scene.add.circle(d.x, d.y, 22, 0xFEED00, 0.55)
+  ring.setStrokeStyle(3, 0xFFFFFF, 1)
+  scene.tweens.add({
+    targets: ring, scale: 7, alpha: 0,
+    duration: 1100, ease: 'Cubic.easeOut',
+    onComplete: () => ring.destroy(),
+  })
+  scene.time.delayedCall(160, () => {
+    const ring2 = scene.add.circle(d.x, d.y, 22, 0xFFFFFF, 0.4)
+    ring2.setStrokeStyle(2, 0xFEED00, 0.9)
+    scene.tweens.add({
+      targets: ring2, scale: 5.5, alpha: 0,
+      duration: 950, ease: 'Cubic.easeOut',
+      onComplete: () => ring2.destroy(),
+    })
+  })
+  for (let p = 0; p < 18; p++) {
+    const a = (p / 18) * Math.PI * 2
+    const dot = scene.add.circle(d.x, d.y, 2.8, 0xFEED00, 1)
+    scene.tweens.add({
+      targets: dot,
+      x: d.x + Math.cos(a) * 70,
+      y: d.y + Math.sin(a) * 70,
+      alpha: 0, scale: 0.3,
+      duration: 850, ease: 'Cubic.easeOut',
+      onComplete: () => dot.destroy(),
+    })
+  }
+  const txt = scene.add.text(d.x, d.y - 30, '✦ CONSTELLATION  +50', {
+    fontFamily: 'JetBrains Mono, monospace',
+    fontSize: '13px', color: '#FEED00', fontStyle: 'bold',
+  }).setOrigin(0.5)
+  scene.tweens.add({
+    targets: txt, y: d.y - 80, alpha: 0,
+    duration: 1600, ease: 'Cubic.easeOut',
+    onComplete: () => txt.destroy(),
+  })
+}
+
 // ─────────────────────────────────────────────────────────
 // Tick: dispatch state to bot, run rivals inline, physics, collect
 // ─────────────────────────────────────────────────────────
@@ -1650,13 +1809,33 @@ function tickPhysics(d) {
       ease: t < 0.05 ? 'Sine.easeInOut' : 'Quad.easeInOut',
     })
   }
-  if (d.fuel > 0) d.fuel = Math.max(0, d.fuel - d.throttle * 0.6)
+  // Signet active window — persona-specific buff applies for 4s after
+  // bot calls me.summonSignet(). Rivals never invoke signet, so this
+  // path only fires for the player.
+  const signetActive = d.kind === 'player' && now < d.signetActiveUntil
+  const persona = d.id
+
+  // Imogen — Auto-aim: override angle to point at nearest star.
+  if (signetActive && persona === 'imogen') {
+    const t = nearestStarPoint(d)
+    if (t) d.angle = Math.atan2(t.y - d.y, t.x - d.x) * 180 / Math.PI
+  }
+
+  // Liam — Endless Fuel: fuel doesn't drain while signet active.
+  const fuelDrain = (signetActive && persona === 'liam') ? 0 : d.throttle * 0.6
+  if (d.fuel > 0) d.fuel = Math.max(0, d.fuel - fuelDrain)
   const effThrottle = d.fuel > 0 ? d.throttle : Math.min(d.throttle, 0.25)
   const rad = d.angle * Math.PI / 180
-  // Boost active: 2× speed; signet: 1.6× speed (stacks)
+
+  // Boost active: 2× speed.
   const boostMul = now < d.boostActiveUntil ? 2.0 : 1.0
-  const signetMul = now < d.signetBoostUntil ? 1.6 : 1.0
-  const speedMul = boostMul * signetMul * (d.maxSpeedMul || 1.0)
+  // Xaden — Triple Boost: 2.2× speed during signet window.
+  const xadenMul = (signetActive && persona === 'xaden') ? 2.2 : 1.0
+  // Rhiannon — small steady boost (the headline buff is the wider
+  // combo window, applied at collect; mild 1.15× speed keeps her
+  // signet's feel as a "buff", not pure mechanics).
+  const rhiannonMul = (signetActive && persona === 'rhiannon') ? 1.15 : 1.0
+  const speedMul = boostMul * xadenMul * rhiannonMul * (d.maxSpeedMul || 1.0)
   const tax = Math.cos(rad) * effThrottle * MAX_SPEED * speedMul
   const tay = Math.sin(rad) * effThrottle * MAX_SPEED * speedMul
   const ts = d.turnSmoothing != null ? d.turnSmoothing : 0.85
@@ -1699,7 +1878,9 @@ function tickPhysics(d) {
   // Collect stars
   for (const s of stars) {
     if (s.collected) continue
-    const collectRadius = s.tier === 'fire' ? 18 : s.tier === 'gold' ? 16 : 14
+    // Ridoc — Wide Catch: pickup radius × 2 while signet active.
+    const radMul = (signetActive && persona === 'ridoc') ? 2.0 : 1.0
+    const collectRadius = (s.tier === 'fire' ? 18 : s.tier === 'gold' ? 16 : 14) * radMul
     if (Math.hypot(d.x - s.x, d.y - s.y) < collectRadius) {
       s.collected = true
       const popVal = s.value
@@ -1712,7 +1893,10 @@ function tickPhysics(d) {
         } else {
           d.combo = 1
         }
-        d.comboExpiresAt = tk + COMBO_WINDOW_TICKS
+        // Rhiannon — Tactician's Read: combo window doubles to 5s.
+        const winTicks = (signetActive && persona === 'rhiannon')
+          ? COMBO_WINDOW_TICKS * 2 : COMBO_WINDOW_TICKS
+        d.comboExpiresAt = tk + winTicks
         if (d.combo >= 8) comboMul = 4
         else if (d.combo >= 5) comboMul = 3
         else if (d.combo >= 3) comboMul = 2
@@ -1726,7 +1910,17 @@ function tickPhysics(d) {
       d.boost = Math.min(30, (d.boost || 0) + 5)
       // Fuel refill
       d.fuel = Math.min(100, d.fuel + (s.tier === 'fire' ? 100 : 25))
+      // Persona-shape easter egg check (player only, one-time per run)
       if (d.kind === 'player') {
+        d.collectionEvents.push({ x: s.x, y: s.y, tick: round?.tickIdx || 0 })
+        if (d.collectionEvents.length > 10) d.collectionEvents.shift()
+        if (!d.patternHit && checkPersonaPattern(persona, d.collectionEvents)) {
+          d.patternHit = true
+          d.score += 50
+          d.events.push({ tick: round?.tickIdx || 0, type: 'pattern_hit', bonus: 50, persona })
+          triggerPatternHitVfx(d)
+          showBanner(`✦ ${(CHAR_BY_ID[persona]?.name || persona)} Constellation · +50 ✦`, 4500)
+        }
         d.events.push({ tick: round?.tickIdx || 0, type: 'star', tier: s.tier, value: popVal, mul: comboMul, score: d.score })
       }
       playStarChime()
@@ -1759,8 +1953,11 @@ function tickPhysics(d) {
       })
     }
   }
-  // Wall hits
+  // Wall hits — Violet's Ghost Walk skips all wall collisions during
+  // her signet window.
+  const ghostWalk = signetActive && persona === 'violet'
   for (const w of walls) {
+    if (ghostWalk) continue
     const dst = Math.hypot(d.x - w.x, d.y - w.y)
     if (dst < w.r + 8) {
       const speed = Math.hypot(d.vx, d.vy)
@@ -1926,7 +2123,7 @@ function endRound() {
     fireStars: player.fireStars,
     maxCombo: player.maxCombo,
     wallsHit: player.wallsHit,
-    patternHit: false,  // Phase C
+    patternHit: !!player.patternHit,
     signetUsed: player.signetUsed,
     ticksAlive: rIdx,
     botCrashed: player.crashed,
