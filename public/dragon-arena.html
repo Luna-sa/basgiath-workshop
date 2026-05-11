@@ -766,14 +766,14 @@ const BIOMES = {
 }
 let currentBiome = 'star_vault'
 
-const DEFAULT_BOT = `// Greedy starter — beats by writing smarter logic with Claude.
+const DEFAULT_BOT = `// Starter bot — beats it by writing smarter logic with Claude.
 // New v2 fields: me.boost (0-30), me.combo, stars[i].tier/value, rivals[].
 // Return: { angle, throttle, boost?, signet? }
 function tick({ me, stars, walls, rivals, sky }) {
   if (stars.length === 0) {
     return { angle: 0, throttle: 0 }
   }
-  // Aim at the highest-value reachable star
+  // Pick the highest value-per-distance star
   let best = stars[0]
   let bestScore = -Infinity
   for (const s of stars) {
@@ -781,10 +781,24 @@ function tick({ me, stars, walls, rivals, sky }) {
     const score = s.value / (1 + d * 0.01)
     if (score > bestScore) { bestScore = score; best = s }
   }
-  const angle = Math.atan2(best.y - me.y, best.x - me.x) * 180 / Math.PI
-  // Spend boost when you have a full bar
+  let angle = Math.atan2(best.y - me.y, best.x - me.x) * 180 / Math.PI
+
+  // Naive wall dodge: if a wall is in the line of flight, veer right.
+  // Looks 60px ahead in current heading.
+  const lookAhead = 60
+  const rad = angle * Math.PI / 180
+  const aheadX = me.x + Math.cos(rad) * lookAhead
+  const aheadY = me.y + Math.sin(rad) * lookAhead
+  for (const w of walls) {
+    if (Math.hypot(aheadX - w.x, aheadY - w.y) < w.r + 12) {
+      angle += 35  // sidestep
+      break
+    }
+  }
+
+  // Spend boost when full
   const boost = me.boost >= 25
-  return { angle, throttle: 0.85, boost }
+  return { angle, throttle: 0.8, boost }
 }`
 
 // ─────────────────────────────────────────────────────────
@@ -810,11 +824,11 @@ function setCharacter(id) {
 
 let nickname = identityNickname()
 let characterId = identityCharacter()
-
-if (!nickname) {
-  const v = window.prompt('Your workshop nickname (lowercase, the one from registration):')
-  if (v) nickname = setNickname(v)
-}
+// Parent (React Arena.jsx) pushes nickname + character via postMessage
+// after mount; srcDoc iframes don't see the parent's URL params, so
+// that's the authoritative path. We still fall back to prompt for the
+// standalone-test case (direct /dragon-arena.html load).
+let identityFromParent = false
 
 const CODE_KEY = () => `arena-v2:code:${nickname || 'anon'}:${characterId || 'none'}`
 function loadCode() {
@@ -2092,7 +2106,35 @@ function renderLeaderboard(rows) {
 // ─────────────────────────────────────────────────────────
 window.addEventListener('message', (e) => {
   if (!e.data || typeof e.data !== 'object') return
-  if (e.data.type === 'arena-leaderboard') {
+  if (e.data.type === 'init-identity') {
+    // Parent (React Arena.jsx) pushes the logged-in user's identity.
+    // This is the source of truth — srcDoc iframes can't read parent URL.
+    const newNick = (e.data.nickname || '').toLowerCase().trim().replace(/[^a-z0-9_-]/g, '')
+    const newChar = (e.data.characterId || '').toLowerCase()
+    let changed = false
+    if (newNick && newNick !== nickname) { nickname = setNickname(newNick); changed = true }
+    if (newChar && CHAR_BY_ID[newChar] && newChar !== characterId) {
+      characterId = newChar
+      setCharacter(newChar)
+      changed = true
+    }
+    if (changed || !identityFromParent) {
+      identityFromParent = true
+      myRuns = loadRuns()
+      renderIdentity()
+      renderRunHistory()
+      updateRunButtonState()
+      // Ask parent for authoritative run progress now that we know who we are
+      if (nickname && characterId) {
+        try {
+          window.parent.postMessage({
+            type: 'request-arena-progress',
+            nickname, characterId,
+          }, '*')
+        } catch (e2) {}
+      }
+    }
+  } else if (e.data.type === 'arena-leaderboard') {
     renderLeaderboard(e.data.rows || [])
   } else if (e.data.type === 'arena-progress') {
     // Parent gave us authoritative run history from Apps Script.
@@ -2118,17 +2160,22 @@ renderIdentity()
 renderRunHistory()
 updateRunButtonState()
 setTimeout(() => spawnRound(), 200)
-// Ask parent for authoritative run progress (only if we have identity).
+// Tell parent we're up — parent will push init-identity in reply.
+try { window.parent.postMessage({ type: 'arena-ready' }, '*') } catch (e) {}
+// Fallback: if parent hasn't pushed identity within 800ms AND we still
+// don't have nickname (standalone-test case), prompt the user.
 setTimeout(() => {
-  if (nickname && characterId) {
-    try {
-      window.parent.postMessage({
-        type: 'request-arena-progress',
-        nickname, characterId,
-      }, '*')
-    } catch (e) {}
+  if (!identityFromParent && !nickname) {
+    const v = window.prompt('Your workshop nickname (lowercase, the one from registration):')
+    if (v) {
+      nickname = setNickname(v)
+      myRuns = loadRuns()
+      renderIdentity()
+      renderRunHistory()
+      updateRunButtonState()
+    }
   }
-}, 600)
+}, 800)
 </script>
 
 </body>

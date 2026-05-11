@@ -31,13 +31,43 @@ export default function Arena() {
   const iframeRef = useRef(null)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const studentId = useWorkshopStore(s => s.user.id)
+  const characterId = useWorkshopStore(s => s.user.characterId)
+
+  // srcDoc iframes don't inherit the parent's URL query string, so we
+  // can't pass identity through the URL. Push it via postMessage as soon
+  // as the iframe says it's ready.
+  useEffect(() => {
+    function pushIdentity() {
+      const iframe = iframeRef.current?.contentWindow
+      if (!iframe) return
+      iframe.postMessage({
+        type: 'init-identity',
+        nickname: nickname || '',
+        characterId: characterId || '',
+      }, '*')
+    }
+    const onLoad = () => setTimeout(pushIdentity, 80)
+    iframeRef.current?.addEventListener('load', onLoad)
+    // Also fire after a delay in case load already happened
+    setTimeout(pushIdentity, 400)
+    return () => iframeRef.current?.removeEventListener('load', onLoad)
+  }, [nickname, characterId])
 
   useEffect(() => {
     function onMessage(e) {
       if (!e.data || typeof e.data !== 'object') return
       const iframe = iframeRef.current?.contentWindow
 
-      if (e.data.type === 'record-run') {
+      if (e.data.type === 'arena-ready') {
+        // Iframe announces readiness — re-push identity to be safe.
+        if (iframe) {
+          iframe.postMessage({
+            type: 'init-identity',
+            nickname: nickname || '',
+            characterId: characterId || '',
+          }, '*')
+        }
+      } else if (e.data.type === 'record-run') {
         const { nickname: nick, characterId, runNumber, score, breakdown, runLog, botCodeSnapshot } = e.data
         recordArenaRun({
           nickname: nick || nickname,
