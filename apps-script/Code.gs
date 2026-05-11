@@ -88,6 +88,7 @@ function doPost(e) {
       voteForDragon,
       withdrawVote,
       getMyVote,
+      getMyVotes,
       // matches
       submitGuess,
       getMyGuesses,
@@ -370,15 +371,30 @@ function listDragons() {
 
 // ───────────────────────── Votes ──────────────────────────────
 
+// Each voter may cast up to MAX_VOTES_PER_VOTER unique votes
+// (different dragons). Voting for the same dragon twice is silently
+// idempotent — does not add a second vote.
+var MAX_VOTES_PER_VOTER = 3
+
 function voteForDragon({ voterNickname, dragonId }) {
   if (!voterNickname || !dragonId) throw new Error('voterNickname + dragonId required')
   const nick = String(voterNickname).toLowerCase().trim()
-  // remove existing vote
-  const existingIdx = _findRowIndex(SHEETS.DRAGON_VOTES, v => String(v.voter_nickname).toLowerCase() === nick)
-  if (existingIdx > 0) {
-    const old = _allRows(SHEETS.DRAGON_VOTES).find(v => String(v.voter_nickname).toLowerCase() === nick)
-    _deleteRow(SHEETS.DRAGON_VOTES, existingIdx)
-    if (old && old.dragon_id) _incrementDragonVote(old.dragon_id, -1)
+  // Find all existing votes by this voter
+  const myVotes = _allRows(SHEETS.DRAGON_VOTES).filter(v =>
+    String(v.voter_nickname).toLowerCase() === nick
+  )
+  // Already voted for this dragon — idempotent no-op
+  if (myVotes.some(v => v.dragon_id === dragonId)) {
+    return { dragon_id: dragonId, votes_used: myVotes.length, alreadyCast: true }
+  }
+  // Quota check
+  if (myVotes.length >= MAX_VOTES_PER_VOTER) {
+    return {
+      error: 'QUOTA_EXCEEDED',
+      code: 'QUOTA_EXCEEDED',
+      votes_used: myVotes.length,
+      max: MAX_VOTES_PER_VOTER,
+    }
   }
   _appendRow(SHEETS.DRAGON_VOTES, {
     id: _uuid(),
@@ -387,26 +403,41 @@ function voteForDragon({ voterNickname, dragonId }) {
     dragon_id: dragonId,
   })
   _incrementDragonVote(dragonId, +1)
-  return { dragon_id: dragonId }
+  return { dragon_id: dragonId, votes_used: myVotes.length + 1, max: MAX_VOTES_PER_VOTER }
 }
 
-function withdrawVote({ voterNickname }) {
+function withdrawVote({ voterNickname, dragonId }) {
   if (!voterNickname) throw new Error('voterNickname required')
   const nick = String(voterNickname).toLowerCase().trim()
-  const idx = _findRowIndex(SHEETS.DRAGON_VOTES, v => String(v.voter_nickname).toLowerCase() === nick)
-  if (idx > 0) {
-    const old = _allRows(SHEETS.DRAGON_VOTES).find(v => String(v.voter_nickname).toLowerCase() === nick)
-    _deleteRow(SHEETS.DRAGON_VOTES, idx)
-    if (old && old.dragon_id) _incrementDragonVote(old.dragon_id, -1)
+  // If dragonId given — remove that specific vote.
+  // If omitted — remove ALL votes by this voter (legacy "withdraw all" usage).
+  const all = _allRows(SHEETS.DRAGON_VOTES)
+  const sheet = _sheet(SHEETS.DRAGON_VOTES)
+  // Iterate from bottom so deletions don't shift indices
+  for (let i = all.length - 1; i >= 0; i--) {
+    const v = all[i]
+    if (String(v.voter_nickname).toLowerCase() !== nick) continue
+    if (dragonId && v.dragon_id !== dragonId) continue
+    sheet.deleteRow(i + 2) // +2: header row + 1-based
+    if (v.dragon_id) _incrementDragonVote(v.dragon_id, -1)
   }
   return { ok: true }
 }
 
-function getMyVote({ voterNickname }) {
-  if (!voterNickname) return null
+// Returns array of {dragon_id, created_at} for all votes by this voter.
+function getMyVotes({ voterNickname }) {
+  if (!voterNickname) return { votes: [] }
   const nick = String(voterNickname).toLowerCase().trim()
-  const vote = _allRows(SHEETS.DRAGON_VOTES).find(v => String(v.voter_nickname).toLowerCase() === nick)
-  return vote || null
+  const votes = _allRows(SHEETS.DRAGON_VOTES)
+    .filter(v => String(v.voter_nickname).toLowerCase() === nick)
+    .map(v => ({ dragon_id: v.dragon_id, created_at: v.created_at }))
+  return { votes, max: MAX_VOTES_PER_VOTER }
+}
+
+// Back-compat shim — old single-vote API. Returns the first vote or null.
+function getMyVote({ voterNickname }) {
+  const r = getMyVotes({ voterNickname })
+  return (r.votes && r.votes[0]) || null
 }
 
 function _incrementDragonVote(dragonId, delta) {

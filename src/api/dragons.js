@@ -106,53 +106,86 @@ export async function listDragons() {
   return data || []
 }
 
-/** Get the current voter's existing vote (or null). */
-export async function getMyVote(voterNickname) {
-  if (!voterNickname) return null
+export const MAX_VOTES_PER_VOTER = 3
+
+/**
+ * Get all votes by this voter. Returns array of { dragon_id, created_at }.
+ * Empty array if no votes / nickname missing.
+ */
+export async function getMyVotes(voterNickname) {
+  if (!voterNickname) return []
   if (gsheetsEnabled()) {
     try {
-      const res = await callAction('getMyVote', { voterNickname })
-      return res || null
+      const res = await callAction('getMyVotes', { voterNickname })
+      return res?.votes || []
     } catch (e) {
-      console.warn('getMyVote (gsheets) failed:', e.message)
-      return null
+      console.warn('getMyVotes (gsheets) failed:', e.message)
+      return []
     }
   }
-  if (!supabase) return null
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('dragon_votes')
     .select('dragon_id, created_at')
     .eq('voter_nickname', voterNickname.toLowerCase())
-    .maybeSingle()
   if (error) {
-    console.warn('getMyVote failed:', error.message)
-    return null
+    console.warn('getMyVotes failed:', error.message)
+    return []
   }
-  return data
+  return data || []
 }
 
-/** Cast a vote — if user already voted, replaces previous. */
+/** Back-compat: single-vote getter — returns first vote or null. */
+export async function getMyVote(voterNickname) {
+  const votes = await getMyVotes(voterNickname)
+  return votes[0] || null
+}
+
+/**
+ * Cast a vote. Up to MAX_VOTES_PER_VOTER (3) different dragons.
+ * Idempotent — voting for the same dragon twice is a no-op.
+ * Returns { dragon_id, votes_used, max } or throws QUOTA_EXCEEDED.
+ */
 export async function voteForDragon(voterNickname, dragonId) {
   if (!voterNickname) throw new Error('Nickname required to vote')
   if (gsheetsEnabled()) {
-    return callAction('voteForDragon', { voterNickname, dragonId })
+    const res = await callAction('voteForDragon', { voterNickname, dragonId })
+    if (res?.error === 'QUOTA_EXCEEDED' || res?.code === 'QUOTA_EXCEEDED') {
+      const e = new Error('You have used all 3 votes. Withdraw one to switch.')
+      e.code = 'QUOTA_EXCEEDED'
+      throw e
+    }
+    return res
   }
   if (!supabase) throw new Error('Supabase not configured')
-  await supabase.from('dragon_votes').delete().eq('voter_nickname', voterNickname.toLowerCase())
+  // Client-side quota check on the legacy path
+  const existing = await getMyVotes(voterNickname)
+  if (existing.some(v => v.dragon_id === dragonId)) return { alreadyCast: true }
+  if (existing.length >= MAX_VOTES_PER_VOTER) {
+    const e = new Error('You have used all 3 votes. Withdraw one to switch.')
+    e.code = 'QUOTA_EXCEEDED'
+    throw e
+  }
   const { error } = await supabase
     .from('dragon_votes')
     .insert({ voter_nickname: voterNickname.toLowerCase(), dragon_id: dragonId })
   if (error) throw error
+  return { dragon_id: dragonId, votes_used: existing.length + 1, max: MAX_VOTES_PER_VOTER }
 }
 
-/** Withdraw a vote. */
-export async function withdrawVote(voterNickname) {
+/**
+ * Withdraw a vote. If dragonId is given — removes that specific vote.
+ * If omitted — removes ALL votes by this voter (used for "reset my picks").
+ */
+export async function withdrawVote(voterNickname, dragonId) {
   if (!voterNickname) return
   if (gsheetsEnabled()) {
-    return callAction('withdrawVote', { voterNickname })
+    return callAction('withdrawVote', { voterNickname, dragonId })
   }
   if (!supabase) return
-  await supabase.from('dragon_votes').delete().eq('voter_nickname', voterNickname.toLowerCase())
+  let q = supabase.from('dragon_votes').delete().eq('voter_nickname', voterNickname.toLowerCase())
+  if (dragonId) q = q.eq('dragon_id', dragonId)
+  await q
 }
 
 /**

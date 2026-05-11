@@ -4,17 +4,17 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
 import {
   listDragons,
-  getMyVote,
+  getMyVotes,
   voteForDragon,
   withdrawVote,
   subscribeToAerie,
+  MAX_VOTES_PER_VOTER,
 } from '../api/dragons'
 import { generateFakeDragons } from '../data/dragons/fixtures'
 
 /**
  * The Aerie — live gallery of all sealed dragons. Each rider may
- * cast one vote (for someone else, not themselves). Realtime via
- * Supabase channel.
+ * cast up to 3 votes for different dragons (not their own).
  *
  * Standalone route: /?page=aerie
  */
@@ -23,24 +23,31 @@ export default function P_Aerie() {
   const myNickname = useWorkshopStore(s => s.user.nickname) || ''
 
   const [dragons, setDragons] = useState([])
-  const [myVote, setMyVote] = useState(null) // { dragon_id } | null
+  const [myVotes, setMyVotes] = useState([]) // [{ dragon_id, created_at }, ...]
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
 
   const params = useMemo(() => new URLSearchParams(window.location.search), [])
   const previewN = parseInt(params.get('preview') || '0', 10)
 
+  const votedSet = useMemo(
+    () => new Set(myVotes.map(v => v.dragon_id)),
+    [myVotes]
+  )
+  const votesUsed = myVotes.length
+  const votesLeft = Math.max(0, MAX_VOTES_PER_VOTER - votesUsed)
+
   const refresh = async () => {
     if (previewN > 0) {
       setDragons(generateFakeDragons(previewN))
-      setMyVote(null)
+      setMyVotes([])
       return
     }
     const list = await listDragons()
     setDragons(list)
     if (myNickname) {
-      const vote = await getMyVote(myNickname)
-      setMyVote(vote)
+      const votes = await getMyVotes(myNickname)
+      setMyVotes(votes)
     }
   }
 
@@ -73,16 +80,32 @@ export default function P_Aerie() {
     setBusy(true)
     setError(null)
     try {
-      if (myVote && myVote.dragon_id === dragonId) {
-        await withdrawVote(myNickname)
-        setMyVote(null)
+      if (votedSet.has(dragonId)) {
+        // Withdraw this specific vote
+        await withdrawVote(myNickname, dragonId)
       } else {
+        if (votesUsed >= MAX_VOTES_PER_VOTER) {
+          setError(t(
+            `All ${MAX_VOTES_PER_VOTER} votes used. Withdraw one to switch.`,
+            `Все ${MAX_VOTES_PER_VOTER} голоса отданы. Убери один чтобы поменять.`,
+            `Усі ${MAX_VOTES_PER_VOTER} голоси віддано. Прибери один, щоб поміняти.`
+          ))
+          setBusy(false)
+          return
+        }
         await voteForDragon(myNickname, dragonId)
-        setMyVote({ dragon_id: dragonId })
       }
       await refresh()
     } catch (e) {
-      setError(e.message || 'vote failed')
+      if (e.code === 'QUOTA_EXCEEDED') {
+        setError(t(
+          `All ${MAX_VOTES_PER_VOTER} votes used. Withdraw one to switch.`,
+          `Все ${MAX_VOTES_PER_VOTER} голоса отданы. Убери один чтобы поменять.`,
+          `Усі ${MAX_VOTES_PER_VOTER} голоси віддано. Прибери один, щоб поміняти.`
+        ))
+      } else {
+        setError(e.message || 'vote failed')
+      }
     } finally {
       setBusy(false)
     }
@@ -107,27 +130,91 @@ export default function P_Aerie() {
           <h1 className="font-display italic text-[clamp(36px,5vw,56px)] text-white leading-tight mb-3">
             {t('Every rider, every dragon.', 'Каждый всадник, каждый дракон.', 'Кожен вершник, кожен дракон.')}
           </h1>
-          <p className="text-[15px] text-text-secondary italic leading-relaxed max-w-xl mx-auto">
+          <p className="text-[15px] text-text-secondary italic leading-relaxed max-w-2xl mx-auto">
             {t(
-              'One vote each. Cast it for the dragon that earns it — not your own. The vote that seals the Threshing wins the Signet of the Sky.',
-              'Один голос у каждого. Отдай его дракону кто заслужил — не своему. Голос запечатывающий Threshing получает Сигнет Неба.',
-              'Один голос у кожного. Віддай його дракону що заслужив — не своєму. Голос що запечатує Threshing отримує Сигіл Неба.'
+              `Three votes each. Cast them for the dragons that earn it — not your own.`,
+              `Три голоса у каждого. Отдавай их драконам, кто заслужил — не своему.`,
+              `Три голоси у кожного. Віддавай їх драконам, що заслужили — не своєму.`
             )}
           </p>
         </div>
+
+        {/* Rules box — explicit before voting starts */}
+        <div className="max-w-3xl mx-auto mb-8 border border-qa-teal/30 bg-qa-teal/[0.04] p-5">
+          <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
+            ◆ {t('Voting rules', 'Правила голосования', 'Правила голосування')}
+          </div>
+          <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[13.5px] text-text-body leading-relaxed list-none">
+            <li className="flex items-start gap-2">
+              <span className="text-qa-teal mt-0.5">①</span>
+              <span>{t(
+                `You get ${MAX_VOTES_PER_VOTER} votes — use them on ${MAX_VOTES_PER_VOTER} different dragons.`,
+                `У тебя ${MAX_VOTES_PER_VOTER} голоса — раздай за ${MAX_VOTES_PER_VOTER} разных драконов.`,
+                `У тебе ${MAX_VOTES_PER_VOTER} голоси — віддай за ${MAX_VOTES_PER_VOTER} різних драконів.`
+              )}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-qa-teal mt-0.5">②</span>
+              <span>{t(
+                'You cannot vote for your own dragon.',
+                'За своего дракона голосовать нельзя.',
+                'За свого дракона голосувати не можна.'
+              )}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-qa-teal mt-0.5">③</span>
+              <span>{t(
+                'Click a voted dragon again to withdraw that vote and pick someone else.',
+                'Клик по уже выбранному дракону снимает этот голос — можно перевыбрать.',
+                'Клік по вже обраному дракону знімає цей голос — можна перевибрати.'
+              )}</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-qa-teal mt-0.5">④</span>
+              <span>{t(
+                'The dragon with the most total votes takes the Signet of the Sky.',
+                'Дракон с наибольшим количеством голосов получает Сигнет Неба.',
+                'Дракон із найбільшою кількістю голосів отримує Сигнет Неба.'
+              )}</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Vote status — big and central */}
+        {myNickname && (
+          <div className="flex justify-center mb-6">
+            <div className="border border-qa-teal/30 bg-qa-teal/[0.04] px-5 py-3 flex items-center gap-4">
+              <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim">
+                {t('Your votes', 'Твои голоса', 'Твої голоси')}
+              </div>
+              {/* Three dots — filled if used */}
+              <div className="flex gap-1.5">
+                {Array.from({ length: MAX_VOTES_PER_VOTER }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`w-3 h-3 rounded-full transition-colors ${
+                      i < votesUsed ? 'bg-qa-teal' : 'border border-qa-teal/40 bg-transparent'
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="font-mono text-[11px] text-qa-teal">
+                {votesUsed} / {MAX_VOTES_PER_VOTER}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Status strip */}
         <div className="flex items-center justify-center gap-6 mb-8 font-mono text-[11px] tracking-[2px] uppercase">
           <div className="text-text-dim">
             {sortedDragons.length} <span className="text-text-secondary">{t('dragons sealed', 'драконов запечатано', 'драконів запечатано')}</span>
           </div>
-          <div className="text-text-dim">·</div>
-          {myNickname ? (
-            <div className="text-qa-teal">
-              {myVote ? t('Your vote cast', 'Твой голос отдан', 'Твій голос подано') : t('No vote yet', 'Голоса ещё нет', 'Голосу ще немає')}
-            </div>
-          ) : (
-            <div className="text-text-dim italic">{t('Sign in to vote', 'Войди чтобы голосовать', 'Увійди щоб голосувати')}</div>
+          {!myNickname && (
+            <>
+              <div className="text-text-dim">·</div>
+              <div className="text-text-dim italic">{t('Sign in to vote', 'Войди чтобы голосовать', 'Увійди щоб голосувати')}</div>
+            </>
           )}
         </div>
 
@@ -154,8 +241,9 @@ export default function P_Aerie() {
           <AnimatePresence>
             {sortedDragons.map((d, idx) => {
               const mineDragon = d.nickname.toLowerCase() === myNickname.toLowerCase()
-              const voted = myVote?.dragon_id === d.id
+              const voted = votedSet.has(d.id)
               const leader = isLeader(d)
+              const quotaFull = votesUsed >= MAX_VOTES_PER_VOTER && !voted && !mineDragon
               return (
                 <motion.div
                   key={d.id}
@@ -164,7 +252,9 @@ export default function P_Aerie() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   className={`relative border bg-surface/40 overflow-hidden ${
-                    leader ? 'border-qa-teal shadow-[0_0_28px_rgba(0,229,204,0.25)]' : 'border-border'
+                    voted ? 'border-qa-teal/60 shadow-[0_0_18px_rgba(0,229,204,0.18)]'
+                    : leader ? 'border-qa-teal shadow-[0_0_28px_rgba(0,229,204,0.25)]'
+                    : 'border-border'
                   }`}
                 >
                   {/* Rank badge */}
@@ -176,6 +266,13 @@ export default function P_Aerie() {
                   {leader && (
                     <div className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-qa-teal text-black font-mono text-[9px] tracking-[2px] uppercase font-semibold">
                       ✦ Lead
+                    </div>
+                  )}
+
+                  {/* Voted check overlay */}
+                  {voted && !leader && (
+                    <div className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-qa-teal text-black flex items-center justify-center font-bold">
+                      ✓
                     </div>
                   )}
 
@@ -217,20 +314,27 @@ export default function P_Aerie() {
                     <button
                       type="button"
                       onClick={() => handleVote(d.id)}
-                      disabled={busy || mineDragon}
+                      disabled={busy || mineDragon || quotaFull}
+                      title={quotaFull
+                        ? t('Withdraw a vote to switch', 'Убери голос чтобы поменять', 'Прибери голос, щоб поміняти')
+                        : ''}
                       className={`w-full mt-2 px-3 py-2 font-mono text-[10.5px] tracking-[2px] uppercase font-semibold transition-all cursor-pointer ${
                         mineDragon
                           ? 'bg-surface text-text-dim cursor-not-allowed'
                           : voted
                             ? 'bg-qa-teal text-black'
-                            : 'border border-qa-teal/40 text-qa-teal hover:bg-qa-teal/10'
+                            : quotaFull
+                              ? 'border border-border bg-bg/40 text-text-dim cursor-not-allowed'
+                              : 'border border-qa-teal/40 text-qa-teal hover:bg-qa-teal/10'
                       } ${busy ? 'opacity-60' : ''}`}
                     >
                       {mineDragon
                         ? t('Your dragon', 'Твой дракон', 'Твій дракон')
                         : voted
-                          ? t('✦ Voted (click to withdraw)', '✦ Голос отдан (клик чтобы убрать)', '✦ Голос віддано (клік щоб прибрати)')
-                          : t('Cast vote', 'Отдать голос', 'Віддати голос')}
+                          ? t('✦ Voted (click to withdraw)', '✦ Голос отдан (клик чтобы убрать)', '✦ Голос віддано (клік, щоб прибрати)')
+                          : quotaFull
+                            ? t('No votes left', 'Голосов не осталось', 'Голосів не лишилося')
+                            : t('Cast vote', 'Отдать голос', 'Віддати голос')}
                     </button>
                   </div>
                 </motion.div>

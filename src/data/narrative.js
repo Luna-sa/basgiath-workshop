@@ -271,6 +271,6 @@ export const NARRATIVE = {
     subtitle: 'Take it home, rider.',
     text: 'Час назад кто-то из вас впервые открыл терминал. Сейчас у вас полная QA-экосистема — 7 команд, 4 агента, 3 MCP-сервера и AI-напарник с характером. Это был только Отбор.',
     text_en: 'An hour ago, some of you opened a terminal for the first time. Now you have a full QA ecosystem — 7 commands, 4 agents, 3 MCP servers, and an AI partner with character. That was only the Threshing.',
-    text_uk: 'Годину тому хтось із вас уперше відкрив термінал. Зараз у вас повна QA-екосистема — 7 команд, 4 агенти, 3 MCP-сервери і AI-напарник з характером. Це був лише Відбір.',
+    text_uk: 'Годину тому хтось із вас уперше відкрив термінал. Зараз у вас повна QA-екосистема — 7 команд, 4 агенти, 3 MCP-сервери і AI-напарник із характером. Це був лише Threshing.',
   },
 }

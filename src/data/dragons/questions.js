@@ -136,7 +136,7 @@ export const BOND_QUESTIONS = [
     label_uk: 'Їхнє імʼя',
     hint_en: 'Names come last in Empyrean lore — only after everything else is sealed.',
     hint_ru: 'Имена приходят последними в лоре Empyrean — только когда всё остальное запечатано.',
-    hint_uk: 'Імена в лорі Empyrean з’являються останніми — лише коли все інше вже запечатано.',
+    hint_uk: 'Імена в лорі Empyrean зʼявляються останніми — лише коли все інше вже запечатано.',
     placeholder_en: 'Tairn, Sgaeyl, Andarna, Feirge...',
     placeholder_ru: 'Тэйрн, Сгайл, Андарна, Фейрге...',
     placeholder_uk: 'Тейрн, Сгайл, Андарна, Фейрге...',
