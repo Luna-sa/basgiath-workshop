@@ -1,7 +1,8 @@
 import { useWorkshopStore } from '../store/workshopStore'
-import { CHARACTERS } from '../data/characters'
+import { CHARACTERS, pickCharacter } from '../data/characters'
 import { BADGES } from '../data/badges'
 import { usePersona } from '../store/usePersona'
+import { useLocale } from '../i18n/store'
 
 export default function HUD() {
   const xp = useWorkshopStore(s => s.xp)
@@ -13,8 +14,9 @@ export default function HUD() {
   const soundEnabled = useWorkshopStore(s => s.soundEnabled)
   const toggleSound = useWorkshopStore(s => s.toggleSound)
   const persona = usePersona()
+  const lang = useLocale(s => s.lang)
 
-  const character = CHARACTERS.find(c => c.id === characterId)
+  const character = pickCharacter(CHARACTERS.find(c => c.id === characterId), lang)
 
   return (
     <>

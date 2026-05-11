@@ -1,8 +1,12 @@
 import { useWorkshopStore } from '../store/workshopStore'
-import { CHARACTERS } from '../data/characters'
+import { CHARACTERS, pickCharacter } from '../data/characters'
+import { useT } from '../i18n/useT'
+import { useLocale } from '../i18n/store'
 import PageShell from '../core/PageShell'
 
 export default function P01_CharacterSelect() {
+  const t = useT()
+  const lang = useLocale(s => s.lang)
   const characterId = useWorkshopStore(s => s.user.characterId)
   const selectCharacter = useWorkshopStore(s => s.selectCharacter)
 
@@ -11,19 +15,34 @@ export default function P01_CharacterSelect() {
       {/* Lore context */}
       <div className="mb-5 p-4 border border-border bg-surface/30 text-[13px] text-text-secondary leading-relaxed">
         <p className="mb-2">
-          В <strong className="text-white">«Четвёртом Крыле»</strong> кадеты разбиты на крылья и отряды.
-          <strong className="text-white"> Вайолет</strong> — хрупкая, её никто не воспринимал всерьёз, пока она не стала одной из сильнейших.
-          <strong className="text-white"> Ксаден</strong> — сын казнённого мятежника; ему не доверяют, но подчиняются.
-          <strong className="text-white"> Рианнон</strong> — к ней бегут, когда всё летит к чертям.
+          {t(
+            <>In <strong className="text-white">Fourth Wing</strong>, cadets are split into wings and squads.
+              <strong className="text-white"> Violet</strong> — fragile, dismissed by everyone, until she became one of the strongest.
+              <strong className="text-white"> Xaden</strong> — son of an executed rebel; nobody trusts him but everyone obeys.
+              <strong className="text-white"> Rhiannon</strong> — the one people run to when everything goes sideways.</>,
+            <>В <strong className="text-white">«Четвёртом Крыле»</strong> кадеты разбиты на крылья и отряды.
+              <strong className="text-white"> Вайолет</strong> — хрупкая, её никто не воспринимал всерьёз, пока она не стала одной из сильнейших.
+              <strong className="text-white"> Ксаден</strong> — сын казнённого мятежника; ему не доверяют, но подчиняются.
+              <strong className="text-white"> Рианнон</strong> — к ней бегут, когда всё летит к чертям.</>,
+            <>У <strong className="text-white">«Четвертому Крилі»</strong> кадети розбиті на крила і загони.
+              <strong className="text-white"> Вайолет</strong> — крихка, її ніхто не сприймав серйозно, поки вона не стала однією з найсильніших.
+              <strong className="text-white"> Ксаден</strong> — син страченого бунтаря; йому не довіряють, але підкоряються.
+              <strong className="text-white"> Ріаннон</strong> — до неї біжать, коли все летить шкереберть.</>
+          )}
         </p>
         <p className="text-text-dim italic text-[12px]">
-          Не читал(а)? Выбирай по описанию стиля. А потом, может, и прочитаешь.
+          {t(
+            'Haven\'t read it? Pick by the style description. You can read it later.',
+            'Не читал(а)? Выбирай по описанию стиля. А потом, может, и прочитаешь.',
+            'Не читав(ла)? Обирай за описом стилю. А потім, може, і прочитаєш.'
+          )}
         </p>
       </div>
 
       {/* Character grid — 2 columns, photo dominant */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {CHARACTERS.map(c => {
+        {CHARACTERS.map(raw => {
+          const c = pickCharacter(raw, lang)
           const isSelected = characterId === c.id
 
           return (
@@ -37,14 +56,21 @@ export default function P01_CharacterSelect() {
               }`}
             >
               {/* Portrait — large, clean, minimal overlay */}
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <img
-                  src={c.image}
-                  alt={c.name}
-                  className={`w-full h-full object-cover transition-transform duration-500 ${c.imagePosition || 'object-top'} ${
-                    isSelected ? 'scale-105' : 'group-hover:scale-[1.02]'
-                  }`}
-                />
+              <div className="relative aspect-[3/4] overflow-hidden bg-bg">
+                {c.image ? (
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    className={`w-full h-full object-cover transition-transform duration-500 ${c.imagePosition || 'object-top'} ${
+                      isSelected ? 'scale-105' : 'group-hover:scale-[1.02]'
+                    }`}
+                  />
+                ) : (
+                  // 'Это я' option — no portrait, big glyph instead
+                  <div className="w-full h-full flex items-center justify-center text-[80px] text-qa-teal/70 bg-gradient-to-br from-surface to-bg">
+                    {c.emoji}
+                  </div>
+                )}
 
                 {/* Thin gradient — only at very bottom for name, keeps face visible */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/90 to-transparent" />
@@ -76,7 +102,7 @@ export default function P01_CharacterSelect() {
       {characterId && (
         <div className="text-center mt-4 p-3 border border-qa-teal/20 bg-qa-teal/[0.03]">
           <p className="text-sm text-qa-teal">
-            ✦ {CHARACTERS.find(c => c.id === characterId)?.name}
+            ✦ {pickCharacter(CHARACTERS.find(c => c.id === characterId), lang)?.name}
           </p>
         </div>
       )}

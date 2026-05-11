@@ -1,8 +1,9 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
+import { useLocale } from '../i18n/store'
 import PageShell from '../core/PageShell'
 import CheckpointButton from '../components/CheckpointButton'
-import { CHARACTERS } from '../data/characters'
+import { CHARACTERS, pickCharacter } from '../data/characters'
 
 /**
  * Workshop-flow intro to the Signet Ceremony. The full ceremony is
@@ -11,8 +12,9 @@ import { CHARACTERS } from '../data/characters'
  */
 export default function P_PersonaIntro() {
   const t = useT()
+  const lang = useLocale(s => s.lang)
   const characterId = useWorkshopStore(s => s.user.characterId)
-  const character = CHARACTERS.find(c => c.id === characterId)
+  const character = pickCharacter(CHARACTERS.find(c => c.id === characterId), lang)
 
   return (
     <PageShell pageIndex={10}>

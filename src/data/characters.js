@@ -1,12 +1,28 @@
+// Character (rider archetype) data. Each entry carries the canonical
+// Russian (`name`, `title`, etc.) plus optional `_en` / `_uk` variants.
+// Components should read via the `pickCharacter()` helper below.
+
 export const CHARACTERS = [
   {
     id: 'violet',
     name: 'Вайолет Сорренгейл',
+    name_en: 'Violet Sorrengail',
+    name_uk: 'Вайолет Сорренгейл',
     title: 'Недооценённая',
+    title_en: 'The Underestimated',
+    title_uk: 'Недооцінена',
     dragon: 'Tairn — чёрный Хвостоскорпион',
+    dragon_en: 'Tairn — Black Tail',
+    dragon_uk: 'Tairn — чорний Хвостоскорпіон',
     trait: 'Стратег. Берёт умом, а не силой.',
+    trait_en: 'Strategist. Wins with mind, not muscle.',
+    trait_uk: 'Стратег. Бере розумом, а не силою.',
     match: 'Ты не технарь в классическом смысле, но разбираешься быстрее тех, кто таковым себя считает.',
+    match_en: 'You\'re not a "classic" engineer, but you figure things out faster than the ones who think they are.',
+    match_uk: 'Ти не «класичний» технар, але розбираєшся швидше за тих, хто себе таким вважає.',
     style: 'Сначала читает документацию, потом трогает.',
+    style_en: 'Reads the docs first, touches the keyboard second.',
+    style_uk: 'Спершу читає документацію, потім чіпає.',
     emoji: '⚡',
     image: '/characters/violet.webp',
     imagePosition: 'object-[center_20%]',
@@ -14,11 +30,23 @@ export const CHARACTERS = [
   {
     id: 'xaden',
     name: 'Ксаден Рирсон',
+    name_en: 'Xaden Riorson',
+    name_uk: 'Ксаден Ріорсон',
     title: 'Опасный',
+    title_en: 'The Dangerous',
+    title_uk: 'Небезпечний',
     dragon: 'Sgaeyl — синий Кинжалохвост',
+    dragon_en: 'Sgaeyl — Blue Daggertail',
+    dragon_uk: 'Sgaeyl — синій Кинджалохвіст',
     trait: 'Ставит под сомнение правила. Всегда с запасным планом.',
+    trait_en: 'Questions every rule. Always carries a fallback plan.',
+    trait_uk: 'Ставить під сумнів правила. Завжди із запасним планом.',
     match: 'Ты уже прикидываешь, что ещё можно выжать из этого инструмента.',
+    match_en: 'You\'re already calculating what else this tool can be pushed to do.',
+    match_uk: 'Ти вже прикидаєш, що ще можна витиснути з цього інструмента.',
     style: 'Делает, потом разбирается. Начинает раньше, чем объяснят.',
+    style_en: 'Does first, asks questions later. Starts before the brief ends.',
+    style_uk: 'Робить, потім розбирається. Починає раніше, ніж усе пояснять.',
     emoji: '🌑',
     image: '/characters/xaden.webp',
     imagePosition: 'object-[center_15%]',
@@ -26,11 +54,23 @@ export const CHARACTERS = [
   {
     id: 'rhiannon',
     name: 'Рианнон Маттиас',
+    name_en: 'Rhiannon Matthias',
+    name_uk: 'Ріаннон Маттіас',
     title: 'Лидерка',
+    title_en: 'The Leader',
+    title_uk: 'Лідерка',
     dragon: 'Feirge — коричневый Бурохребет',
+    dragon_en: 'Feirge — Brown Spineback',
+    dragon_uk: 'Feirge — коричневий Бурохребет',
     trait: 'К ней идут за помощью. Тянет за собой весь отряд.',
+    trait_en: 'People come to her for help. Carries the whole squad with her.',
+    trait_uk: 'До неї йдуть по допомогу. Тягне за собою весь загін.',
     match: 'Ты уже подсказываешь соседу. Учишься лучше, когда объясняешь другим.',
+    match_en: 'You\'re already coaching the person next to you. You learn best by teaching.',
+    match_uk: 'Ти вже підказуєш сусідові. Вчишся краще, коли пояснюєш іншим.',
     style: 'Командный игрок. Лучший бета-тестер чужих конфигов.',
+    style_en: 'Team player. The best beta-tester for someone else\'s config.',
+    style_uk: 'Командний гравець. Найкращий бета-тестер чужих конфігів.',
     emoji: '🔥',
     image: '/characters/rhiannon.webp',
     imagePosition: 'object-[center_15%]',
@@ -38,11 +78,23 @@ export const CHARACTERS = [
   {
     id: 'ridoc',
     name: 'Ридок Гэмлин',
+    name_en: 'Ridoc Gamlyn',
+    name_uk: 'Рідок Гемлін',
     title: 'Джокер',
+    title_en: 'The Joker',
+    title_uk: 'Жартівник',
     dragon: 'Aotrom — зелёный Булавохвост',
+    dragon_en: 'Aotrom — Green Maultail',
+    dragon_uk: 'Aotrom — зелений Булавохвіст',
     trait: 'За шутками — глубина. Удивляет, когда от него не ждут.',
+    trait_en: 'There\'s depth behind the jokes. Surprises you when you least expect it.',
+    trait_uk: 'За жартами — глибина. Дивує, коли від нього не чекаєш.',
     match: 'Ты назовёшь секции CLAUDE.md как-нибудь нелепо. И оно будет работать лучше, чем у остальных.',
+    match_en: 'You\'ll name your CLAUDE.md sections something absurd. And it\'ll work better than anyone else\'s.',
+    match_uk: 'Ти назвеш секції CLAUDE.md якось безглуздо. І воно працюватиме краще, ніж у решти.',
     style: 'Экспериментирует, играет. Его «отклонения от темы» дают самые интересные результаты.',
+    style_en: 'Experiments, plays. His "tangents" produce the best results in the room.',
+    style_uk: 'Експериментує, грається. Його «відхилення від теми» дають найцікавіші результати.',
     emoji: '❄️',
     image: '/characters/ridoc.webp',
     imagePosition: 'object-[center_10%]',
@@ -50,11 +102,23 @@ export const CHARACTERS = [
   {
     id: 'liam',
     name: 'Лиам Мейри',
+    name_en: 'Liam Mairi',
+    name_uk: 'Ліам Мейрі',
     title: 'Защитник',
+    title_en: 'The Protector',
+    title_uk: 'Захисник',
     dragon: 'Deigh — оранжевый Булавохвост',
+    dragon_en: 'Deigh — Orange Maultail',
+    dragon_uk: 'Deigh — помаранчевий Булавохвіст',
     trait: 'Верный до конца. Прикрывает команду, чего бы это ни стоило.',
+    trait_en: 'Loyal to the last. Covers the squad whatever it costs.',
+    trait_uk: 'Вірний до кінця. Прикриває команду, чого б це не коштувало.',
     match: 'На тебя можно положиться. Ты тот, кто не бросает задачу на полпути.',
+    match_en: 'You\'re the one people can count on. You don\'t leave a task halfway.',
+    match_uk: 'На тебе можна покластися. Ти з тих, хто не кидає задачу посередині.',
     style: 'Идёт по шагам, ничего не пропускает, доводит до конца.',
+    style_en: 'Steps through the work, skips nothing, finishes what was started.',
+    style_uk: 'Іде по кроках, нічого не пропускає, доводить до кінця.',
     emoji: '🛡️',
     image: '/characters/liam.webp',
     imagePosition: 'object-[center_15%]',
@@ -62,11 +126,23 @@ export const CHARACTERS = [
   {
     id: 'imogen',
     name: 'Имоджен',
+    name_en: 'Imogen',
+    name_uk: 'Імоджен',
     title: 'Закалённая',
+    title_en: 'The Hardened',
+    title_uk: 'Загартована',
     dragon: 'Неизвестен',
+    dragon_en: 'Unknown',
+    dragon_uk: 'Невідомий',
     trait: 'Не тратит слов впустую. Когда говорит — слушают.',
+    trait_en: 'Doesn\'t waste words. When she speaks, the room listens.',
+    trait_uk: 'Не витрачає слів намарно. Коли говорить — слухають.',
     match: 'Ты пропустила вступление и уже смотришь шаблоны команд.',
+    match_en: 'You skipped the intro and are already looking at command templates.',
+    match_uk: 'Ти пропустила вступ і вже дивишся шаблони команд.',
     style: 'Результат важнее процесса. Берёт готовое и допиливает.',
+    style_en: 'Outcome over process. Takes what exists and sharpens it.',
+    style_uk: 'Результат важливіший за процес. Бере готове і доточує.',
     emoji: '⚔️',
     image: '/characters/imogen.webp',
     imagePosition: 'object-[center_15%]',
@@ -74,13 +150,53 @@ export const CHARACTERS = [
   {
     id: 'self',
     name: 'Это я',
+    name_en: 'I am the protagonist',
+    name_uk: 'Це я',
     title: 'Главный персонаж',
+    title_en: 'Main character',
+    title_uk: 'Головний персонаж',
     dragon: 'Появится позже — твой',
+    dragon_en: 'Yours, revealed later',
+    dragon_uk: 'Зʼявиться пізніше — твій',
     trait: 'Не вписываюсь в шаблон. Я сама себе академия.',
+    trait_en: 'I don\'t fit a template. I am my own academy.',
+    trait_uk: 'Не вписуюся в шаблон. Я сама собі академія.',
     match: 'Ты не выбираешь из шести — потому что среди них тебя нет. Это твоя история, ты в ней главная.',
+    match_en: 'You\'re not picking from six — because none of them is you. This is your story, you\'re the lead.',
+    match_uk: 'Ти не обираєш із шести — бо серед них тебе немає. Це твоя історія, ти в ній головна.',
     style: 'Своими руками, своим путём, в своём ритме.',
+    style_en: 'Your own hands, your own path, your own pace.',
+    style_uk: 'Своїми руками, своїм шляхом, у своєму ритмі.',
     emoji: '✦',
     image: null,
     imagePosition: null,
   },
 ]
+
+/**
+ * Resolve a character record to a localised view. Falls back to the
+ * canonical Russian fields if the per-locale variant isn't present.
+ *
+ * Usage:
+ *   import { pickCharacter } from '../data/characters'
+ *   import { useLocale } from '../i18n/store'
+ *   const lang = useLocale(s => s.lang)
+ *   const c = pickCharacter(rawCharacter, lang)
+ */
+export function pickCharacter(c, lang = 'ru') {
+  if (!c) return null
+  const pick = (key) => {
+    if (lang === 'en' && c[`${key}_en`]) return c[`${key}_en`]
+    if (lang === 'uk' && c[`${key}_uk`]) return c[`${key}_uk`]
+    return c[key]
+  }
+  return {
+    ...c,
+    name: pick('name'),
+    title: pick('title'),
+    dragon: pick('dragon'),
+    trait: pick('trait'),
+    match: pick('match'),
+    style: pick('style'),
+  }
+}

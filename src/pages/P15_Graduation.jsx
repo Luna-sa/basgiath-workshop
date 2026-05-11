@@ -3,7 +3,8 @@ import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
-import { CHARACTERS } from '../data/characters'
+import { CHARACTERS, pickCharacter } from '../data/characters'
+import { useLocale } from '../i18n/store'
 import { useT } from '../i18n/useT'
 import { CHECKPOINT_IDS, CHECKPOINT_LABELS, getCheckpoints } from '../api/checkpoints'
 import PageShell from '../core/PageShell'
@@ -19,8 +20,9 @@ export default function P15_Graduation() {
   const name = useWorkshopStore(s => s.user.name)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const studentId = useWorkshopStore(s => s.user.id)
+  const lang = useLocale(s => s.lang)
   const characterId = useWorkshopStore(s => s.user.characterId)
-  const character = CHARACTERS.find(c => c.id === characterId)
+  const character = pickCharacter(CHARACTERS.find(c => c.id === characterId), lang)
   const [checkpoints, setCheckpoints] = useState({})
 
   useEffect(() => {
