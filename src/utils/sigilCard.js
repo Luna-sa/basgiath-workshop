@@ -67,6 +67,7 @@ export async function renderSigilCard({
   motto = '',
   riderClass = null,
   epithet = null,
+  aerieFavourite = false, // when true, badges this dragon as "Aerie Favourite"
   date = new Date(),
   url = 'basgiath-workshop.onrender.com',
 }) {
@@ -103,15 +104,28 @@ export async function renderSigilCard({
 
   const FOOTER_X = 60
 
-  // Eyebrow line: "◆ BASGIATH · <date>"
+  // Eyebrow line: "◆ BASGIATH · <date>" — or AERIE FAVOURITE crown badge
   const dateStr = typeof date === 'string'
     ? date
     : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
-  ctx.font = '600 16px "JetBrains Mono", monospace'
-  ctx.fillStyle = COLORS.teal
-  ctx.textBaseline = 'top'
-  ctx.fillText('◆ BASGIATH ACADEMY · ' + dateStr, FOOTER_X, PORTRAIT_H + 30)
+  if (aerieFavourite) {
+    // Special crown badge — teal background block with black text
+    const padX = 12, padY = 6
+    ctx.font = '700 16px "JetBrains Mono", monospace'
+    const label = '✦ AERIE FAVOURITE · BASGIATH · ' + dateStr
+    const labelW = ctx.measureText(label).width + padX * 2
+    ctx.fillStyle = COLORS.teal
+    ctx.fillRect(FOOTER_X, PORTRAIT_H + 22, labelW, 28)
+    ctx.fillStyle = '#0A0A0A'
+    ctx.textBaseline = 'top'
+    ctx.fillText(label, FOOTER_X + padX, PORTRAIT_H + 30)
+  } else {
+    ctx.font = '600 16px "JetBrains Mono", monospace'
+    ctx.fillStyle = COLORS.teal
+    ctx.textBaseline = 'top'
+    ctx.fillText('◆ BASGIATH ACADEMY · ' + dateStr, FOOTER_X, PORTRAIT_H + 30)
+  }
 
   // Dragon name — display italic, large
   ctx.font = 'italic 700 64px "Playfair Display", Georgia, serif'

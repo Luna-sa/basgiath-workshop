@@ -14,6 +14,7 @@ import P_SignetCeremony from './pages/P_SignetCeremony'
 import P_BondRitual from './pages/P_BondRitual'
 import P_Aerie from './pages/P_Aerie'
 import P_AerieMosaic from './pages/P_AerieMosaic'
+import P_AerieReveal from './pages/P_AerieReveal'
 import P_Resources from './pages/P_Resources'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
@@ -76,6 +77,13 @@ function isMosaicRoute() {
   return path === '/mosaic' || path === '/mosaic/'
 }
 
+function isRevealRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'reveal') return true
+  const path = window.location.pathname
+  return path === '/reveal' || path === '/reveal/'
+}
+
 
 function isResourcesRoute() {
   const params = new URLSearchParams(window.location.search)
@@ -93,16 +101,17 @@ export default function App() {
   const [bondOnly] = useState(isBondRoute)
   const [aerieOnly] = useState(isAerieRoute)
   const [mosaicOnly] = useState(isMosaicRoute)
+  const [revealOnly] = useState(isRevealRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !resourcesOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, resourcesOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly])
 
   if (arenaOnly) {
     return (
@@ -167,6 +176,17 @@ export default function App() {
           {/* Mosaic intentionally has no LanguageToggle / no Particles
               — it's projector-mode, full screen, clean. */}
           <P_AerieMosaic />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (revealOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-black text-text-body">
+          {/* Reveal — projector-mode, slow theatrical reveal */}
+          <P_AerieReveal />
         </div>
       </ErrorBoundary>
     )
