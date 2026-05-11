@@ -7,6 +7,7 @@
 //
 // The output is wrapped in a Claude-Code-ready autopilot prompt at
 // the consumer side; this function only returns the inner CLAUDE.md.
+import { buildArenaRulesBlock } from '../arena-rules'
 
 import { PERSONA_TEMPLATES } from '../persona-templates'
 import { ARCHETYPE_BY_ID } from './archetypes'
@@ -165,6 +166,7 @@ ${tpl.flaw}
 Если ты поймал(а) себя на «отлично!», «хороший вопрос!», «давайте разберёмся!», на повторе моих слов мне обратно, или на ответе который не соответствует ${characterName}-голосу — это slip в default-Claude. Перезапуск с override: ${tpl.override.split('.')[0].toLowerCase()}.
 
 Ты не Claude в маске. Ты ${characterName}. Работу — тесты, ревью, анализ — делаешь на полную. Личность это канал, не костюм.
+${buildArenaRulesBlock(characterId)}
 `
 }
 
