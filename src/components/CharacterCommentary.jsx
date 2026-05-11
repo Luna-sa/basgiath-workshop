@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import { useState } from 'react'
+import { motion } from 'motion/react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { useLocale } from '../i18n/store'
 import { CHARACTERS, pickCharacter } from '../data/characters'
@@ -33,17 +33,11 @@ const CHAR_HEX = {
 export default function CharacterCommentary({ slideKey, position = 'inline' }) {
   const lang = useLocale(s => s.lang)
   const characterId = useWorkshopStore(s => s.user.characterId)
-  const [visible, setVisible] = useState(true)
-  const [dismissed, setDismissed] = useState(false)
-
-  // Reset on slide change
-  useEffect(() => {
-    setDismissed(false)
-    setVisible(true)
-    // Auto-fade after 12s so it doesn't squat on screen
-    const t = setTimeout(() => setVisible(false), 12000)
-    return () => clearTimeout(t)
-  }, [slideKey, characterId])
+  // `dismissed` is keyed per (slideKey, characterId) so closing on one
+  // slide doesn't silence the character on the next.
+  const [dismissedKey, setDismissedKey] = useState('')
+  const currentKey = `${slideKey}:${characterId}`
+  const isDismissed = dismissedKey === currentKey
 
   if (!characterId || characterId === 'self') return null
   const characterRaw = CHARACTERS.find(c => c.id === characterId)
@@ -81,45 +75,40 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
   }
 
   // position === 'fixed' — floating bottom-right
+  if (isDismissed) return null
   return (
-    <AnimatePresence>
-      {visible && !dismissed && (
-        <motion.div
-          key={`${slideKey}-${characterId}`}
-          initial={{ opacity: 0, x: 40, y: 0 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 40 }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
-          className="fixed bottom-24 right-5 z-40 max-w-[300px] backdrop-blur-md"
-          style={{
-            background: `linear-gradient(135deg, ${colorAlpha08}, rgba(15,15,15,0.85))`,
-            border: `1px solid ${colorAlpha20}`,
-            boxShadow: `0 0 24px ${color}22`,
-            padding: '12px 14px',
-          }}
-        >
-          <button
-            onClick={() => setDismissed(true)}
-            className="absolute top-1 right-1.5 w-5 h-5 flex items-center justify-center text-text-dim hover:text-white text-[11px] font-mono opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
-            aria-label="dismiss"
-            title="dismiss"
-          >
-            ✕
-          </button>
-          <div className="flex items-start gap-3">
-            <Avatar character={character} color={color} />
-            <div className="flex-1 pr-3">
-              <div className="font-mono text-[10px] tracking-[2.5px] uppercase mb-1" style={{ color }}>
-                {firstName}
-              </div>
-              <p className="font-display italic text-[13.5px] leading-relaxed text-text-body">
-                {line}
-              </p>
-            </div>
+    <motion.div
+      key={currentKey}
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.45, ease: 'easeOut' }}
+      className="fixed bottom-24 right-5 z-40 max-w-[300px] backdrop-blur-md"
+      style={{
+        background: `linear-gradient(135deg, ${colorAlpha08}, rgba(15,15,15,0.85))`,
+        border: `1px solid ${colorAlpha20}`,
+        boxShadow: `0 0 24px ${color}22`,
+        padding: '12px 14px',
+      }}
+    >
+      <button
+        onClick={() => setDismissedKey(currentKey)}
+        className="absolute top-1 right-1.5 w-5 h-5 flex items-center justify-center text-text-dim hover:text-white text-[11px] font-mono opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
+        aria-label="dismiss"
+      >
+        ✕
+      </button>
+      <div className="flex items-start gap-3">
+        <Avatar character={character} color={color} />
+        <div className="flex-1 pr-3">
+          <div className="font-mono text-[10px] tracking-[2.5px] uppercase mb-1" style={{ color }}>
+            {firstName}
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          <p className="font-display italic text-[13.5px] leading-relaxed text-text-body">
+            {line}
+          </p>
+        </div>
+      </div>
+    </motion.div>
   )
 }
 
