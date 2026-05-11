@@ -1,8 +1,9 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { CHARACTERS, pickCharacter } from '../data/characters'
-import { BADGES } from '../data/badges'
+import { BADGES, pickBadge } from '../data/badges'
 import { usePersona } from '../store/usePersona'
 import { useLocale } from '../i18n/store'
+import { useT } from '../i18n/useT'
 
 export default function HUD() {
   const xp = useWorkshopStore(s => s.xp)
@@ -15,6 +16,7 @@ export default function HUD() {
   const toggleSound = useWorkshopStore(s => s.toggleSound)
   const persona = usePersona()
   const lang = useLocale(s => s.lang)
+  const t = useT()
 
   const character = pickCharacter(CHARACTERS.find(c => c.id === characterId), lang)
 
@@ -44,7 +46,7 @@ export default function HUD() {
         <button
           onClick={toggleSound}
           className="px-2 py-2 bg-surface/90 backdrop-blur-lg border border-border rounded-[2px] hover:border-qa-teal/25 transition-colors cursor-pointer"
-          title={soundEnabled ? 'Выключить звук' : 'Включить звук'}
+          title={soundEnabled ? t('Sound off', 'Выключить звук', 'Вимкнути звук') : t('Sound on', 'Включить звук', 'Увімкнути звук')}
         >
           <span className="text-sm">{soundEnabled ? '🔊' : '🔇'}</span>
         </button>
@@ -61,7 +63,9 @@ export default function HUD() {
             onClick={toggleBadgeOverlay}
             className="px-3 py-2 bg-surface/90 backdrop-blur-lg border border-border rounded-[2px] hover:border-qa-teal/25 transition-colors cursor-pointer"
           >
-            <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">Бейджи</div>
+            <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">
+              {t('Badges', 'Бейджи', 'Бейджі')}
+            </div>
             <div className="flex gap-0.5 mt-0.5">
               {badges.slice(0, 4).map(id => {
                 const badge = BADGES.find(b => b.id === id)
@@ -81,12 +85,13 @@ export default function HUD() {
           <div className="bg-surface border border-border max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-display text-lg text-white">
-                Твои <em className="text-qa-teal italic">бейджи</em>
+                {t('Your', 'Твои', 'Твої')} <em className="text-qa-teal italic">{t('badges', 'бейджи', 'бейджі')}</em>
               </h3>
               <button onClick={toggleBadgeOverlay} className="text-text-dim hover:text-white transition-colors cursor-pointer">✕</button>
             </div>
             <div className="space-y-3">
-              {BADGES.map(badge => {
+              {BADGES.map(rawBadge => {
+                const badge = pickBadge(rawBadge, lang)
                 const earned = badges.includes(badge.id)
                 return (
                   <div key={badge.id} className={`flex items-center gap-3 p-3 border ${

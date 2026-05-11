@@ -8,10 +8,11 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { generateEcosystemPrompt } from '../data/ecosystem-prompt'
 import CopyPrompt from '../components/CopyPrompt'
+import { useT } from '../i18n/useT'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Autopilot prompts. Plain pragmatic English/Russian inside — lore is in
-// the wrapping (card titles), not in the working code.
+// Autopilot prompts. Plain pragmatic English inside — lore is in the
+// wrapping (card titles), not in the working code.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SETUP_DOCTOR_PROMPT = `Setup-Doctor for the Claude Code QA workshop.
@@ -155,53 +156,85 @@ Tone: dry, calm, one step at a time. No "don't worry!", no "great question!". Ju
 
 const AUTOPILOTS = [
   {
-    name: 'Cross the Parapet',
+    name_en: 'Cross the Parapet',
+    name_ru: 'Перейти Парапет',
+    name_uk: 'Перейти Парапет',
     sub: 'Setup-Doctor',
-    desc: 'Verifies Claude Code, git, ~/.claude/, network reachability. Tells you exactly what is broken and how to fix it.',
+    desc_en: 'Verifies Claude Code, git, ~/.claude/, network reachability. Tells you exactly what is broken and how to fix it.',
+    desc_ru: 'Проверяет Claude Code, git, ~/.claude/, доступ к сети. Говорит ровно что сломано и как починить.',
+    desc_uk: 'Перевіряє Claude Code, git, ~/.claude/, доступ до мережі. Каже точно що зламано і як полагодити.',
     body: SETUP_DOCTOR_PROMPT,
   },
   {
-    name: 'Lay your perch',
+    name_en: 'Lay your perch',
+    name_ru: 'Заложить насест',
+    name_uk: 'Закласти сідало',
     sub: 'Workspace-Init',
-    desc: 'Creates ~/qa-workshop, downloads the sample project, initializes git. One paste — done.',
+    desc_en: 'Creates ~/qa-workshop, downloads the sample project, initializes git. One paste — done.',
+    desc_ru: 'Создаёт ~/qa-workshop, качает sample-проект, инициализирует git. Одна вставка — готово.',
+    desc_uk: 'Створює ~/qa-workshop, качає sample-проєкт, ініціалізує git. Одна вставка — готово.',
     body: WORKSPACE_INIT_PROMPT,
   },
   {
-    name: "Wake your dragon's senses",
+    name_en: "Wake your dragon's senses",
+    name_ru: 'Разбуди чувства дракона',
+    name_uk: 'Розбуди чуття дракона',
     sub: 'MCP installer',
-    desc: 'Installs Playwright, Fetch, Context7 MCP servers. Diagnoses corp-proxy failures. Reminds you to restart Claude Code.',
+    desc_en: 'Installs Playwright, Fetch, Context7 MCP servers. Diagnoses corp-proxy failures. Reminds you to restart Claude Code.',
+    desc_ru: 'Ставит MCP-серверы Playwright, Fetch, Context7. Диагностирует corp-proxy сбои. Напоминает перезапустить Claude Code.',
+    desc_uk: 'Ставить MCP-сервери Playwright, Fetch, Context7. Діагностує corp-proxy збої. Нагадує перезапустити Claude Code.',
     body: MCP_INSTALLER_PROMPT,
   },
   {
-    name: 'Wear your signet',
+    name_en: 'Wear your signet',
+    name_ru: 'Надеть сигнет',
+    name_uk: 'Вдягнути сигнет',
     sub: 'Apply-Persona',
-    desc: 'Drops your generated CLAUDE.md into ~/.claude/CLAUDE.md, backs up the existing one, asks you to restart Claude.',
+    desc_en: 'Drops your generated CLAUDE.md into ~/.claude/CLAUDE.md, backs up the existing one, asks you to restart Claude.',
+    desc_ru: 'Кладёт твой CLAUDE.md в ~/.claude/CLAUDE.md, бэкапит существующий, просит перезапустить Claude.',
+    desc_uk: 'Кладе твій CLAUDE.md у ~/.claude/CLAUDE.md, бекапить існуючий, просить перезапустити Claude.',
     body: APPLY_PERSONA_PROMPT,
   },
   {
-    name: 'Call the Healers',
+    name_en: 'Call the Healers',
+    name_ru: 'Призвать Целителей',
+    name_uk: 'Прикликати Цілителів',
     sub: 'Resume-from-error',
-    desc: 'Recovery autopilot. You describe what broke, Claude diagnoses and gives ONE next action. No 20-step lists.',
+    desc_en: 'Recovery autopilot. You describe what broke, Claude diagnoses and gives ONE next action. No 20-step lists.',
+    desc_ru: 'Восстановительный autopilot. Ты говоришь что сломалось, Claude диагностирует и даёт ОДНО следующее действие. Без 20-шаговых списков.',
+    desc_uk: 'Відновлювальний autopilot. Ти кажеш що зламалося, Claude діагностує і дає ОДНУ наступну дію. Без 20-крокових списків.',
     body: RESUME_FROM_ERROR_PROMPT,
   },
 ]
 
 const DOWNLOADS = [
   {
-    title: 'Hidden Gems',
-    desc: '22 power-user Claude Code features — skills, hooks, agents, plan mode, hotkeys, MCP tricks. The stuff that takes you from beginner to fluent.',
+    title_en: 'Hidden Gems',
+    title_ru: 'Hidden Gems',
+    title_uk: 'Hidden Gems',
+    desc_en: '22 power-user Claude Code features — skills, hooks, agents, plan mode, hotkeys, MCP tricks. The stuff that takes you from beginner to fluent.',
+    desc_ru: '22 power-user-фичи Claude Code — skills, hooks, agents, plan mode, хоткеи, MCP-трюки. То что переводит из новичка во fluent.',
+    desc_uk: '22 power-user-фічі Claude Code — skills, hooks, agents, plan mode, хоткеї, MCP-трюки. Те що переводить із новачка у fluent.',
     href: '/handouts/HIDDEN_GEMS.md',
     filename: 'HIDDEN_GEMS.md',
   },
   {
-    title: 'Quick Reference',
-    desc: 'One-page cheat sheet — slash commands, hotkeys, MCP commands, plan mode triggers. Pin it next to your monitor.',
+    title_en: 'Quick Reference',
+    title_ru: 'Quick Reference',
+    title_uk: 'Quick Reference',
+    desc_en: 'One-page cheat sheet — slash commands, hotkeys, MCP commands, plan mode triggers. Pin it next to your monitor.',
+    desc_ru: 'Cheat sheet на одной странице — slash-команды, хоткеи, MCP-команды, триггеры plan mode. Прикрепи рядом с монитором.',
+    desc_uk: 'Cheat sheet на одній сторінці — slash-команди, хоткеї, MCP-команди, тригери plan mode. Причепи поруч з монітором.',
     href: '/handouts/QUICK_REFERENCE.md',
     filename: 'QUICK_REFERENCE.md',
   },
   {
-    title: 'Sample QA project',
-    desc: 'A small web app with intentional bugs. Use it to practice /test-cases, /bug-report, /review on real-ish code.',
+    title_en: 'Sample QA project',
+    title_ru: 'Sample QA проект',
+    title_uk: 'Sample QA проєкт',
+    desc_en: 'A small web app with intentional bugs. Use it to practice /test-cases, /bug-report, /review on real-ish code.',
+    desc_ru: 'Маленькое web-приложение с намеренными багами. На нём практикуй /test-cases, /bug-report, /review на почти-настоящем коде.',
+    desc_uk: 'Маленький web-додаток з навмисними багами. На ньому практикуй /test-cases, /bug-report, /review на майже-справжньому коді.',
     href: '/handouts/sample-project-readme.md',
     filename: 'sample-project-readme.md',
   },
@@ -217,6 +250,7 @@ const EXTERNAL_LINKS = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function P_Resources() {
+  const t = useT()
   const user = useWorkshopStore(s => s.user)
   const ecosystemPrompt = generateEcosystemPrompt(user)
 
@@ -230,55 +264,74 @@ export default function P_Resources() {
             · BONDED ·
           </div>
           <h1 className="font-display italic text-4xl sm:text-6xl text-white leading-[1.05] mb-5">
-            Take it home, rider.
+            {t('Take it home, rider.', 'Забери это домой, вершник.', 'Забери це додому, вершнику.')}
           </h1>
           <p className="text-[16px] sm:text-[17px] text-text-secondary leading-relaxed max-w-[640px]">
-            Every prompt, every reference, every file you need to keep flying.
-            Bookmark this page — your dragon waits here.
+            {t(
+              'Every prompt, every reference, every file you need to keep flying. Bookmark this page — your dragon waits here.',
+              'Каждый промпт, каждая ссылка, каждый файл — всё чтобы продолжать летать. Сохрани страницу — твой дракон ждёт здесь.',
+              'Кожен промпт, кожне посилання, кожен файл — усе щоб продовжувати літати. Збережи сторінку — твій дракон чекає тут.'
+            )}
           </p>
         </header>
 
         {/* ─── Section 1: Master setup (featured) ─── */}
         <section className="mb-20">
           <SectionHeader
-            eyebrow="· Master setup ·"
-            title="Forge your full ecosystem"
-            sub="One prompt installs CLAUDE.md, 7 slash commands, 4 agents, and 3 MCP servers. Personalised to your role."
+            eyebrow={t('· Master setup ·', '· Главная установка ·', '· Головна установка ·')}
+            title={t('Forge your full ecosystem', 'Откуй свою экосистему', 'Викуй свою екосистему')}
+            sub={t(
+              'One prompt installs CLAUDE.md, 7 slash commands, 4 agents, and 3 MCP servers. Personalised to your role.',
+              'Один промпт ставит CLAUDE.md, 7 slash-команд, 4 агентов и 3 MCP-сервера. Под твою роль.',
+              'Один промпт ставить CLAUDE.md, 7 slash-команд, 4 агентів і 3 MCP-сервери. Під твою роль.'
+            )}
           />
 
           <CopyPrompt
             featured
             name="QA Ecosystem Installer"
-            desc="Paste into Claude Code. Wait two minutes. You'll have the whole rig: persona, commands, agents, MCP."
+            desc={t(
+              "Paste into Claude Code. Wait two minutes. You'll have the whole rig: persona, commands, agents, MCP.",
+              'Вставь в Claude Code. Подожди две минуты. Получишь всю оснастку: персона, команды, агенты, MCP.',
+              'Встав у Claude Code. Почекай дві хвилини. Отримаєш усю оснастку: персона, команди, агенти, MCP.'
+            )}
           >
             {ecosystemPrompt}
           </CopyPrompt>
 
           <p className="font-mono text-[11px] text-text-dim mt-4 leading-relaxed">
-            ▲ After it finishes — restart Claude Code so the MCP servers attach. Then verify with: ⌘ <span className="text-qa-teal">claude mcp list</span>
+            ▲ {t(
+              'After it finishes — restart Claude Code so the MCP servers attach. Then verify with:',
+              'После завершения — перезапусти Claude Code чтобы MCP-серверы подцепились. Затем проверь:',
+              'Після завершення — перезапусти Claude Code аби MCP-сервери причепилися. Потім перевір:'
+            )} ⌘ <span className="text-qa-teal">claude mcp list</span>
           </p>
         </section>
 
         {/* ─── Section 2: Autopilot prompts ─── */}
         <section className="mb-20">
           <SectionHeader
-            eyebrow="· Autopilots ·"
-            title="Five prompts for every step"
-            sub="Each one is a self-driving instruction set. Paste, watch Claude work, move on. Use them in any order — they're independent."
+            eyebrow={t('· Autopilots ·', '· Автопилоты ·', '· Автопілоти ·')}
+            title={t('Five prompts for every step', 'Пять промптов на каждый шаг', 'Пʼять промптів на кожен крок')}
+            sub={t(
+              "Each one is a self-driving instruction set. Paste, watch Claude work, move on. Use them in any order — they're independent.",
+              'Каждый — самоисполняющийся набор инструкций. Вставил, посмотрел как Claude работает, пошёл дальше. Используй в любом порядке — они независимы.',
+              'Кожен — самовиконуваний набір інструкцій. Вставив, подивився як Claude працює, пішов далі. Використовуй у будь-якому порядку — вони незалежні.'
+            )}
           />
 
           <div className="grid sm:grid-cols-2 gap-4">
             {AUTOPILOTS.map(a => (
               <CopyPrompt
-                key={a.name}
-                name={a.name}
+                key={a.sub}
+                name={t(a.name_en, a.name_ru, a.name_uk)}
                 desc={
                   <>
                     <span className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal">
                       {a.sub}
                     </span>
                     {' — '}
-                    {a.desc}
+                    {t(a.desc_en, a.desc_ru, a.desc_uk)}
                   </>
                 }
               >
@@ -291,27 +344,31 @@ export default function P_Resources() {
         {/* ─── Section 3: Reference downloads ─── */}
         <section className="mb-20">
           <SectionHeader
-            eyebrow="· Provisions ·"
-            title="Reference downloads"
-            sub="Three files to keep on your machine. The Hidden Gems list alone is worth printing."
+            eyebrow={t('· Provisions ·', '· Провизия ·', '· Провізія ·')}
+            title={t('Reference downloads', 'Справочные файлы', 'Довідкові файли')}
+            sub={t(
+              'Three files to keep on your machine. The Hidden Gems list alone is worth printing.',
+              'Три файла держать на ноуте. Один Hidden Gems-лист уже стоит распечатать.',
+              'Три файли тримати на ноуті. Один Hidden Gems-список вже варто роздрукувати.'
+            )}
           />
 
           <div className="grid sm:grid-cols-3 gap-4">
             {DOWNLOADS.map(d => (
               <a
-                key={d.title}
+                key={d.filename}
                 href={d.href}
                 download={d.filename}
                 className="group block p-6 border border-border bg-surface/40 hover:border-qa-teal/60 hover:bg-qa-teal/[0.03] transition-all rounded-[2px]"
               >
                 <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-3">
-                  ↓ Download
+                  ↓ {t('Download', 'Скачать', 'Завантажити')}
                 </div>
                 <div className="font-display text-[20px] text-white leading-tight mb-2">
-                  {d.title}
+                  {t(d.title_en, d.title_ru, d.title_uk)}
                 </div>
                 <p className="text-[13px] text-text-secondary leading-relaxed mb-4">
-                  {d.desc}
+                  {t(d.desc_en, d.desc_ru, d.desc_uk)}
                 </p>
                 <div className="font-mono text-[11px] text-text-dim group-hover:text-qa-teal transition-colors">
                   {d.filename} →
@@ -324,8 +381,8 @@ export default function P_Resources() {
         {/* ─── Section 4: External references ─── */}
         <section className="mb-12">
           <SectionHeader
-            eyebrow="· Beyond the parapet ·"
-            title="External references"
+            eyebrow={t('· Beyond the parapet ·', '· За парапетом ·', '· За парапетом ·')}
+            title={t('External references', 'Внешние ссылки', 'Зовнішні посилання')}
             sub={null}
           />
 
@@ -351,7 +408,11 @@ export default function P_Resources() {
         {/* ─── Footer ─── */}
         <footer className="pt-12 border-t border-border">
           <p className="font-display italic text-[15px] text-text-dim text-center leading-relaxed">
-            "The dragon doesn't pick the rider for comfort. He picks for what they'll become."
+            {t(
+              '"The dragon doesn\'t pick the rider for comfort. He picks for what they\'ll become."',
+              '«Дракон выбирает вершника не ради удобства. Он выбирает за то, кем тот станет».',
+              '«Дракон обирає вершника не заради зручності. Він обирає за те, ким той стане».'
+            )}
           </p>
           <p className="font-mono text-[10px] tracking-[3px] uppercase text-text-dim text-center mt-4">
             · QA Clan · Basgiath Workshop ·
