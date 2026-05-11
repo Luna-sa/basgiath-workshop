@@ -783,22 +783,37 @@ function tick({ me, stars, walls, rivals, sky }) {
   }
   let angle = Math.atan2(best.y - me.y, best.x - me.x) * 180 / Math.PI
 
-  // Naive wall dodge: if a wall is in the line of flight, veer right.
-  // Looks 60px ahead in current heading.
-  const lookAhead = 60
+  // Wall avoidance: scan a 90px arc ahead in 3 directions.
+  // If any wall is in the way, veer 50° AND slow down to give the turn time.
+  const lookAhead = 90
   const rad = angle * Math.PI / 180
-  const aheadX = me.x + Math.cos(rad) * lookAhead
-  const aheadY = me.y + Math.sin(rad) * lookAhead
+  let wallNear = false
   for (const w of walls) {
-    if (Math.hypot(aheadX - w.x, aheadY - w.y) < w.r + 12) {
-      angle += 35  // sidestep
+    const d = Math.hypot(me.x - w.x, me.y - w.y)
+    if (d > lookAhead + w.r) continue
+    const aheadX = me.x + Math.cos(rad) * lookAhead
+    const aheadY = me.y + Math.sin(rad) * lookAhead
+    if (Math.hypot(aheadX - w.x, aheadY - w.y) < w.r + 16) {
+      wallNear = true
+      // Veer toward the side that has fewer walls
+      const leftRad = rad - 50 * Math.PI / 180
+      const rightRad = rad + 50 * Math.PI / 180
+      const leftX = me.x + Math.cos(leftRad) * lookAhead
+      const leftY = me.y + Math.sin(leftRad) * lookAhead
+      const rightX = me.x + Math.cos(rightRad) * lookAhead
+      const rightY = me.y + Math.sin(rightRad) * lookAhead
+      const leftClear = !walls.some(w2 => Math.hypot(leftX - w2.x, leftY - w2.y) < w2.r + 16)
+      const rightClear = !walls.some(w2 => Math.hypot(rightX - w2.x, rightY - w2.y) < w2.r + 16)
+      angle += leftClear && !rightClear ? -50 : 50
       break
     }
   }
 
-  // Spend boost when full
-  const boost = me.boost >= 25
-  return { angle, throttle: 0.8, boost }
+  // Throttle: full speed in clear sky, half-throttle near walls
+  const throttle = wallNear ? 0.45 : 0.85
+  // Spend boost when full and no walls nearby
+  const boost = me.boost >= 25 && !wallNear
+  return { angle, throttle, boost }
 }`
 
 // ─────────────────────────────────────────────────────────
@@ -1897,8 +1912,10 @@ function endRound() {
     return
   }
   // Apply end-of-run penalties + bonuses
+  // Wall penalty -1 per hard hit (was -2; -2 was too punishing for the
+  // naive starter bot, which would end up at 0 even with a few stars).
   let final = player.score
-  final -= (player.wallsHit || 0) * 2
+  final -= (player.wallsHit || 0) * 1
   if ((player.stallTicks || 0) > STALL_THRESHOLD) final -= 5
   if (player.fuel > 80) final += 5  // Full-fuel bonus
   final = Math.max(0, Math.round(final))
