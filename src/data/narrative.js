@@ -113,6 +113,16 @@ export const NARRATIVE = {
     subtitle: 'Drive your dragon from your phone.',
     text: 'Anthropic-нативные каналы для Telegram / Discord / iMessage. Claude Code на ноуте, ты — в любом мессенджере. Проверять ночные autopilot-ы из кровати.',
   },
+  bond_ritual: {
+    title: 'The Bond Ritual',
+    subtitle: 'Manifest your dragon.',
+    text: 'Семь визуальных вопросов — чешуя, дыхание, сигнет, размер, крылья, глаза, девиз. По ответам gpt-image-2 рисует реальный портрет твоего дракона. Перегенерь пока не почувствуешь — это он.',
+  },
+  aerie: {
+    title: 'The Aerie',
+    subtitle: 'The sky chooses.',
+    text: 'Все запечатанные драконы собрались в Аэрии. Один голос у каждого — за чужого, не за своего. Самый красивый дракон получает Сигнет Неба.',
+  },
   arena: {
     title: 'Riders in the Sky',
     subtitle: 'Each rider writes how their dragon flies.',

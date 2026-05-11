@@ -225,9 +225,33 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
+  // 🔓 BOND RITUAL: Generate your dragon's portrait
   {
     id: 19,
+    slug: 'bond-ritual',
+    phase: 'live',
+    title: 'The Bond Ritual',
+    narrativeKey: 'bond_ritual',
+    gate: { type: 'self-report', message: 'Запечатай своего дракона в Аэрии' },
+    xpReward: 100,
+    subSteps: null,
+  },
+
+  // 🔒 AERIE + VOTING
+  {
+    id: 20,
+    slug: 'aerie',
+    phase: 'live',
+    title: 'The Aerie',
+    narrativeKey: 'aerie',
+    gate: { type: 'facilitator', message: 'Голосование за самого красивого дракона' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
+  {
+    id: 21,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -239,7 +263,7 @@ export const PAGES = [
 
   // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 20,
+    id: 22,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -251,7 +275,7 @@ export const PAGES = [
 
   // 🎓 GRADUATION
   {
-    id: 21,
+    id: 23,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -263,7 +287,7 @@ export const PAGES = [
 
   // 📦 RESOURCES — take-home reference
   {
-    id: 22,
+    id: 24,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',
