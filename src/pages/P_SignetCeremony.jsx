@@ -6,6 +6,7 @@ import { useLocale } from '../i18n/store'
 import { RITUALS, MANDATORY_IDS } from '../data/signet/rituals'
 import { VOICE_ARCHETYPES } from '../data/signet/archetypes'
 import { generateSignetClaudeMd, SIGNET_APPLY_PROMPT } from '../data/signet/signet-generator'
+import VoiceTextInput from '../components/VoiceTextInput'
 
 const STORAGE_KEY = 'signet-ceremony-answers'
 
@@ -140,7 +141,15 @@ function QuestionField({ question, value, onChange, lang }) {
       {hint && (
         <p className="text-[13px] text-text-dim italic mb-2.5 leading-relaxed">{hint}</p>
       )}
-      {isTextarea ? (
+      {question.voiceEnabled ? (
+        <VoiceTextInput
+          value={value}
+          onChange={onChange}
+          inputType={isTextarea ? 'textarea' : 'text'}
+          rows={question.rows || 3}
+          placeholder={placeholder}
+        />
+      ) : isTextarea ? (
         <textarea
           value={value || ''}
           onChange={e => onChange(e.target.value)}
