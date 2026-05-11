@@ -54,9 +54,9 @@ export const NARRATIVE = {
     text: 'Разберём по частям: что делает каждая команда, зачем нужны агенты, как MCP-серверы дают AI доступ к браузеру и API.',
   },
   persona_builder: {
-    title: 'Your signet emerges',
-    subtitle: 'Every rider gets a sign of their own.',
-    text: 'Семь вопросов — и Claude собирает CLAUDE.md под тебя лично. Голос твоего напарника, его ритуалы, что он знает о тебе. Унесёшь файл и положишь в ~/.claude/CLAUDE.md — после этого он встретит тебя в новой роли.',
+    title: 'The Signet Ceremony',
+    subtitle: 'Seven rituals of bonding.',
+    text: 'Семь ритуалов: Порог Имён, Обет, Запретное, Голос Связи, Сигил, Ежедневный Ритуал, Запечатывание. Каждый запечатывает кусочек голоса твоего bonded. В конце — твой персональный CLAUDE.md и Claude Code, который встречает тебя в этой связи.',
   },
   practice_tc: {
     title: 'Threshing the spec',

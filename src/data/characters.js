@@ -71,4 +71,16 @@ export const CHARACTERS = [
     image: '/characters/imogen.webp',
     imagePosition: 'object-[center_15%]',
   },
+  {
+    id: 'self',
+    name: 'Это я',
+    title: 'Главный персонаж',
+    dragon: 'Появится позже — твой',
+    trait: 'Не вписываюсь в шаблон. Я сама себе академия.',
+    match: 'Ты не выбираешь из шести — потому что среди них тебя нет. Это твоя история, ты в ней главная.',
+    style: 'Своими руками, своим путём, в своём ритме.',
+    emoji: '✦',
+    image: null,
+    imagePosition: null,
+  },
 ]

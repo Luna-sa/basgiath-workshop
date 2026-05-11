@@ -10,6 +10,7 @@ import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
 import Arena from './pages/Arena'
 import P_PersonaBuilder from './pages/P_PersonaBuilder'
+import P_SignetCeremony from './pages/P_SignetCeremony'
 import P_Resources from './pages/P_Resources'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
@@ -43,6 +44,13 @@ function isPersonaRoute() {
   return path === '/persona' || path === '/persona/'
 }
 
+function isSignetRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'signet') return true
+  const path = window.location.pathname
+  return path === '/signet' || path === '/signet/'
+}
+
 function isResourcesRoute() {
   const params = new URLSearchParams(window.location.search)
   if (params.get('page') === 'resources') return true
@@ -55,16 +63,17 @@ export default function App() {
   const [registerOnly] = useState(isRegisterRoute)
   const [arenaOnly] = useState(isArenaRoute)
   const [personaOnly] = useState(isPersonaRoute)
+  const [signetOnly] = useState(isSignetRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !resourcesOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !resourcesOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, resourcesOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, resourcesOnly])
 
   if (arenaOnly) {
     return (
@@ -81,6 +90,18 @@ export default function App() {
           <TealParticles />
           <LanguageToggle />
           <P_PersonaBuilder />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (signetOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle />
+          <P_SignetCeremony />
         </div>
       </ErrorBoundary>
     )
