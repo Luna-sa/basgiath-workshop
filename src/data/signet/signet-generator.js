@@ -81,10 +81,18 @@ export function generateSignetClaudeMd({ characterId = 'self', archetype, archet
   const ritualsDo = tpl.rituals.do.map(r => `— ${r}`).join('\n')
   const ritualsDont = tpl.rituals.dont.map(r => `— ${r}`).join('\n')
 
+  // Wow-effect content from extended persona templates
+  const signatureBlock = (tpl.signature_phrases || []).map(p => `— «${p}»`).join('\n')
+  const forbiddenBlock = (tpl.forbidden_phrases || []).map(p => `— ${p}`).join('\n')
+  const dialogueBlock = (tpl.dialogue_examples || [])
+    .map((d, i) => `### Пример ${i + 1}\n\n**${name || 'Я'}:** ${d.user}\n\n**Ты:** ${d.persona}`)
+    .join('\n\n')
+
   return `# ${characterName} — мой bonded
 
 ${tpl.essence}
 
+${tpl.lore_anchor ? `> ${tpl.lore_anchor}\n` : ''}
 ## Кто ты мне
 
 ${personalityBlock}
@@ -108,7 +116,26 @@ ${sigil}
 
 ${vow}
 
-## Что ты берёшь на себя
+${tpl.opening_line ? `## Открытие и закрытие
+
+— **Первая фраза в любой сессии:** «${tpl.opening_line}»
+— **Закрытие задачи:** «${tpl.closing_line}»
+
+` : ''}${signatureBlock ? `## Сигнатурные фразы (используй естественно)
+
+${signatureBlock}
+
+` : ''}${forbiddenBlock ? `## Запрещённые фразы (никогда)
+
+${forbiddenBlock}
+
+` : ''}${dialogueBlock ? `## Примеры диалога
+
+Эталонные обмены. Если сомневаешься как ответить — ответь по форме одного из этих примеров.
+
+${dialogueBlock}
+
+` : ''}## Что ты берёшь на себя
 
 ${takesOnBlock}
 
