@@ -6,6 +6,7 @@ import { useLocale } from '../i18n/store'
 import { BOND_QUESTIONS, BOND_QUESTION_IDS } from '../data/dragons/questions'
 import { buildDragonPrompt } from '../data/dragons/prompt-builder'
 import { generateDragonImage } from '../api/workshopBackend'
+import { sealDragon } from '../api/dragons'
 import VoiceTextInput from '../components/VoiceTextInput'
 
 const STORAGE_KEY = 'bond-ritual-answers'
@@ -89,14 +90,17 @@ export default function P_BondRitual() {
   const t = useT()
   const lang = useLocale(s => s.lang)
   const nickname = useWorkshopStore(s => s.user.nickname)
+  const studentId = useWorkshopStore(s => s.user.id)
+  const characterId = useWorkshopStore(s => s.user.characterId)
 
   const [answers, setAnswers] = useState(loadInitialAnswers)
   const [stepIdx, setStepIdx] = useState(0)
-  const [stage, setStage] = useState('questions') // questions | generating | preview
+  const [stage, setStage] = useState('questions') // questions | generating | preview | sealing
   const [imageB64, setImageB64] = useState(null)
   const [usedPrompt, setUsedPrompt] = useState(null)
   const [modelUsed, setModelUsed] = useState(null)
   const [genError, setGenError] = useState(null)
+  const [sealError, setSealError] = useState(null)
   const [generations, setGenerations] = useState(0)
 
   const totalSteps = BOND_QUESTIONS.length
@@ -152,22 +156,33 @@ export default function P_BondRitual() {
     setTimeout(handleGenerate, 0)
   }
 
-  const handleSeal = () => {
-    // Sprint 2.1 will upload to Supabase Storage + insert into dragons table.
-    // For now: persist locally and announce.
-    const draft = {
-      nickname: nickname || 'anon',
-      answers,
-      prompt: usedPrompt,
-      image_b64: imageB64,
-      sealed_at: new Date().toISOString(),
+  const handleSeal = async () => {
+    if (!nickname) {
+      setSealError(t(
+        'You need to sign into the workshop first (nickname required).',
+        'Сначала войди в воркшоп (нужен ник).',
+        'Спочатку увійди у воркшоп (потрібен нік).'
+      ))
+      return
     }
-    try { window.localStorage.setItem('bond-ritual-sealed', JSON.stringify(draft)) } catch {}
-    window.alert(t(
-      'Sealed locally. Aerie / voting comes in the next sprint.',
-      'Запечатано локально. Aerie и голосование — в следующем спринте.',
-      'Запечатано локально. Aerie і голосування — у наступному спринті.'
-    ))
+    setStage('sealing')
+    setSealError(null)
+    try {
+      await sealDragon({
+        nickname,
+        characterId,
+        answers,
+        imageB64,
+        prompt: usedPrompt,
+        modelUsed,
+        studentId,
+      })
+      // Redirect to Aerie
+      window.location.href = '/?page=aerie'
+    } catch (e) {
+      setSealError(e.message || 'Sealing failed — check Supabase migration')
+      setStage('preview')
+    }
   }
 
   // ─── Render ─────────────────────────────────────────────────────
@@ -330,6 +345,12 @@ export default function P_BondRitual() {
                 </div>
               </div>
 
+              {sealError && (
+                <div className="border border-corp-red/40 bg-corp-red/[0.06] p-3 text-[13px] text-corp-red">
+                  ⚠ {sealError}
+                </div>
+              )}
+
               <div className="flex items-center justify-between gap-3 flex-wrap pt-3 border-t border-border">
                 <button
                   type="button"
@@ -344,9 +365,16 @@ export default function P_BondRitual() {
                 <button
                   type="button"
                   onClick={handleSeal}
-                  className="bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all cursor-pointer animate-pulse-teal"
+                  disabled={stage === 'sealing'}
+                  className={`bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold transition-all cursor-pointer ${
+                    stage === 'sealing'
+                      ? 'opacity-60 cursor-wait'
+                      : 'hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] animate-pulse-teal'
+                  }`}
                 >
-                  ✦ {t('Seal & Share', 'Запечатать и поделиться', 'Запечатати і поділитись')}
+                  {stage === 'sealing'
+                    ? t('Sealing...', 'Запечатываю...', 'Запечатую...')
+                    : `✦ ${t('Seal & Share', 'Запечатать и поделиться', 'Запечатати і поділитись')}`}
                 </button>
               </div>
             </motion.div>

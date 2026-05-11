@@ -12,6 +12,7 @@ import Arena from './pages/Arena'
 import P_PersonaBuilder from './pages/P_PersonaBuilder'
 import P_SignetCeremony from './pages/P_SignetCeremony'
 import P_BondRitual from './pages/P_BondRitual'
+import P_Aerie from './pages/P_Aerie'
 import P_Resources from './pages/P_Resources'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
@@ -59,6 +60,13 @@ function isBondRoute() {
   return path === '/bond' || path === '/bond/'
 }
 
+function isAerieRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'aerie') return true
+  const path = window.location.pathname
+  return path === '/aerie' || path === '/aerie/'
+}
+
 function isResourcesRoute() {
   const params = new URLSearchParams(window.location.search)
   if (params.get('page') === 'resources') return true
@@ -73,16 +81,17 @@ export default function App() {
   const [personaOnly] = useState(isPersonaRoute)
   const [signetOnly] = useState(isSignetRoute)
   const [bondOnly] = useState(isBondRoute)
+  const [aerieOnly] = useState(isAerieRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !resourcesOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !resourcesOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, resourcesOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, resourcesOnly])
 
   if (arenaOnly) {
     return (
@@ -123,6 +132,18 @@ export default function App() {
           <TealParticles />
           <LanguageToggle />
           <P_BondRitual />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (aerieOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle />
+          <P_Aerie />
         </div>
       </ErrorBoundary>
     )
