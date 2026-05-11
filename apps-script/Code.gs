@@ -40,7 +40,7 @@ const HEADERS = {
   [SHEETS.STUDENTS]: [
     'id', 'created_at', 'nickname', 'name', 'studio', 'role',
     'os', 'claude_code_ready', 'character_id', 'checkpoints',
-    'current_page',
+    'current_page', 'xp', 'hidden_dragons_found',
   ],
   [SHEETS.DRAGONS]: [
     'id', 'created_at', 'sealed_at', 'student_id', 'nickname',
@@ -111,6 +111,9 @@ function doPost(e) {
       getMyArenaRuns,
       getArenaLeaderboard,
       resetArenaRuns,
+      // progress (XP, hidden dragons)
+      updateStudentProgress,
+      getXpLeaderboard,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -689,6 +692,52 @@ function getArenaLeaderboard() {
     return a.best_run_number - b.best_run_number  // earlier PB = better
   })
   return { leaderboard: out, max: MAX_ARENA_RUNS }
+}
+
+// ───────────────────────── Student progress ──────────────────
+
+// Sync local workshopStore changes (XP, found dragons, page index) to the
+// students sheet. Idempotent — overwrites whatever's there.
+function updateStudentProgress({ studentId, nickname, xp, hiddenDragonsFound, currentPage }) {
+  if (!studentId && !nickname) throw new Error('studentId or nickname required')
+  let rowIdx = -1
+  if (studentId) {
+    rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
+  }
+  if (rowIdx < 0 && nickname) {
+    const nick = String(nickname).toLowerCase().trim()
+    rowIdx = _findRowIndex(SHEETS.STUDENTS, s => String(s.nickname).toLowerCase() === nick)
+  }
+  if (rowIdx < 0) return { ok: false, error: 'student not found' }
+  const patch = {}
+  if (xp != null) patch.xp = Number(xp) || 0
+  if (Array.isArray(hiddenDragonsFound)) {
+    patch.hidden_dragons_found = JSON.stringify(hiddenDragonsFound)
+  }
+  if (currentPage != null) patch.current_page = Number(currentPage) || 0
+  _updateRow(SHEETS.STUDENTS, rowIdx, patch)
+  return { ok: true }
+}
+
+function getXpLeaderboard() {
+  const rows = _allRows(SHEETS.STUDENTS).map(s => {
+    let dragons = []
+    try { dragons = JSON.parse(s.hidden_dragons_found || '[]') } catch (e) {}
+    return {
+      nickname: s.nickname,
+      name: s.name,
+      character_id: s.character_id,
+      xp: Number(s.xp) || 0,
+      dragons_found: Array.isArray(dragons) ? dragons.length : 0,
+    }
+  })
+  // Top XP first; tiebreak by dragons_found desc, then nickname asc.
+  rows.sort((a, b) => {
+    if (b.xp !== a.xp) return b.xp - a.xp
+    if (b.dragons_found !== a.dragons_found) return b.dragons_found - a.dragons_found
+    return String(a.nickname).localeCompare(String(b.nickname))
+  })
+  return { leaderboard: rows }
 }
 
 // Facilitator escape hatch: wipe all arena runs for a nickname.

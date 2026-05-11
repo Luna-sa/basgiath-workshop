@@ -29,6 +29,17 @@ export default function AchievementToast() {
       const badge = pickBadge(rawBadge, lang)
       setContent({ type: 'badge', emoji: badge?.emoji, name: badge?.name })
       if (soundEnabled) playBadgeSound()
+    } else if (lastToast.type === 'dragon') {
+      const isGolden = lastToast.value === 'golden-wyrmling'
+      setContent({
+        type: 'dragon',
+        xp: `+${lastToast.xp} XP`,
+        golden: isGolden,
+        title: isGolden
+          ? t('GOLDEN WYRMLING', 'ЗОЛОТОЙ ВЫРМЛИНГ', 'ЗОЛОТИЙ ВИРМЛІНҐ')
+          : t('Wyrmling found', 'Дракон найден', 'Дракона знайдено'),
+      })
+      if (soundEnabled) playXPSound()
     }
 
     setVisible(true)
@@ -51,6 +62,28 @@ export default function AchievementToast() {
           style={{ backgroundColor: persona.accentLight, borderColor: persona.accentBorder }}>
           <span className="font-display text-lg font-bold" style={{ color: persona.accent }}>{content.value}</span>
           <span className="text-xs text-text-secondary max-w-[180px]">{content.message}</span>
+        </div>
+      ) : content.type === 'dragon' ? (
+        <div className={`px-4 py-3 backdrop-blur-lg border-2 flex items-center gap-3 ${
+          content.golden
+            ? 'bg-gradient-to-br from-yellow-400/20 to-orange-400/10 border-yellow-400 shadow-[0_0_24px_rgba(254,237,0,0.4)]'
+            : 'bg-surface border-qa-teal'
+        }`}>
+          <span className={`text-2xl ${content.golden ? 'animate-pulse' : ''}`}>
+            {content.golden ? '✦' : '◆'}
+          </span>
+          <div>
+            <div className={`font-mono text-[11px] tracking-[2px] uppercase ${
+              content.golden ? 'text-yellow-300' : 'text-qa-teal'
+            }`}>
+              {content.title}
+            </div>
+            <div className={`font-display text-lg font-bold leading-none mt-1 ${
+              content.golden ? 'text-yellow-300' : 'text-white'
+            }`}>
+              {content.xp}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="px-4 py-3 bg-surface backdrop-blur-lg flex items-center gap-3"

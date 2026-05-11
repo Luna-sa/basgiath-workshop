@@ -4,10 +4,12 @@ import { BADGES, pickBadge } from '../data/badges'
 import { usePersona } from '../store/usePersona'
 import { useLocale } from '../i18n/store'
 import { useT } from '../i18n/useT'
+import { TOTAL_DRAGONS } from '../data/hidden-dragons'
 
 export default function HUD() {
   const xp = useWorkshopStore(s => s.xp)
   const badges = useWorkshopStore(s => s.badges)
+  const dragonsFound = useWorkshopStore(s => s.hiddenDragonsFound?.length || 0)
   const characterId = useWorkshopStore(s => s.user.characterId)
   const name = useWorkshopStore(s => s.user.name)
   const toggleBadgeOverlay = useWorkshopStore(s => s.toggleBadgeOverlay)
@@ -55,6 +57,25 @@ export default function HUD() {
         <div className="px-3 py-2 bg-surface/90 backdrop-blur-lg rounded-[2px]" style={{ borderColor: persona.accentBorder, borderWidth: 1, borderStyle: 'solid' }}>
           <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">XP</div>
           <div className="font-display text-lg font-bold leading-none" style={{ color: persona.accent }}>{xp}</div>
+        </div>
+
+        {/* Wyrmling counter — hidden dragons collected */}
+        <div
+          id="hud-wyrmlings"
+          className="px-3 py-2 bg-surface/90 backdrop-blur-lg border border-border rounded-[2px]"
+          title={t(
+            'Hidden dragons found — click them where they hide on slides',
+            'Найденные драконы — кликай на них в скрытых местах слайдов',
+            'Знайдені дракони — клацай на них у схованках слайдів'
+          )}
+        >
+          <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">
+            {t('Wyrmlings', 'Драконы', 'Дракони')}
+          </div>
+          <div className="font-display text-lg font-bold leading-none text-text-primary">
+            <span className="text-qa-teal">{dragonsFound}</span>
+            <span className="text-text-dim text-xs ml-0.5">/ {TOTAL_DRAGONS}</span>
+          </div>
         </div>
 
         {/* Badges button */}

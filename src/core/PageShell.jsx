@@ -4,6 +4,8 @@ import { useLocale } from '../i18n/store'
 import { usePersona } from '../store/usePersona'
 import GateGuard from './GateGuard'
 import CharacterCommentary from '../components/CharacterCommentary'
+import HiddenDragon from '../components/HiddenDragon'
+import { findDragonsBySlide } from '../data/hidden-dragons'
 
 /**
  * Pick a localised field. Falls back to the canonical (RU) field if
@@ -83,6 +85,17 @@ export default function PageShell({ pageIndex, subStepId, children }) {
           chosen Empyrean archetype. Renders nothing if no character /
           no commentary for this slide. */}
       <CharacterCommentary slideKey={narrativeKey} position="fixed" />
+
+      {/* Hidden Dragons — tiny clickable silhouettes scattered across
+          slides. PageShell auto-renders them by matching narrativeKey
+          against the registry; slide JSX never knows they exist. */}
+      {findDragonsBySlide(narrativeKey).map(dragon => (
+        <HiddenDragon
+          key={dragon.id}
+          id={dragon.id}
+          style={{ position: 'fixed', ...dragon.position }}
+        />
+      ))}
     </div>
   )
 }

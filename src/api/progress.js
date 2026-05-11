@@ -55,3 +55,33 @@ export async function getFacilitatorState() {
   }
   return data
 }
+
+/**
+ * Push XP + hiddenDragonsFound to the students sheet. Fire-and-forget;
+ * localStorage holds truth, server is asynchronously eventually-consistent.
+ */
+export async function updateStudentProgress({ studentId, nickname, xp, hiddenDragonsFound, currentPage }) {
+  if (!gsheetsEnabled()) return { ok: false, reason: 'backend-not-configured' }
+  if (!studentId && !nickname) return { ok: false, reason: 'no-id' }
+  try {
+    const res = await callAction('updateStudentProgress', {
+      studentId, nickname, xp, hiddenDragonsFound, currentPage,
+    })
+    return { ok: !!res?.ok, ...res }
+  } catch (e) {
+    return { ok: false, error: e.message }
+  }
+}
+
+/**
+ * Top XP students. Used by the Champions slide (Phase H).
+ */
+export async function getXpLeaderboard() {
+  if (!gsheetsEnabled()) return { leaderboard: [] }
+  try {
+    const res = await callAction('getXpLeaderboard')
+    return { leaderboard: res?.leaderboard || [] }
+  } catch (e) {
+    return { leaderboard: [], error: e.message }
+  }
+}

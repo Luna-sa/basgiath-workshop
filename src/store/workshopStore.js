@@ -40,6 +40,7 @@ export const useWorkshopStore = create(
       quizAnswers: {},
       quizScore: null,
       taskSubmissions: {},
+      hiddenDragonsFound: [], // [{id, foundAt, xpReward}]
 
       // ── Pre-work ──
       preworkChecklist: {},
@@ -319,6 +320,32 @@ export const useWorkshopStore = create(
         }))
       },
 
+      // ── Hidden Dragons ──
+      // Idempotent: clicking the same dragon twice doesn't double-count.
+      // Returns the awarded XP (0 if already found) so the caller can
+      // decide whether to play the animation.
+      markDragonFound: (id, xpReward) => {
+        let awarded = 0
+        set((s) => {
+          if (s.hiddenDragonsFound.some(d => d.id === id)) return s
+          awarded = Number(xpReward) || 0
+          return {
+            hiddenDragonsFound: [
+              ...s.hiddenDragonsFound,
+              { id, foundAt: Date.now(), xpReward: awarded },
+            ],
+            xp: s.xp + awarded,
+            lastToast: { type: 'dragon', value: id, xp: awarded, timestamp: Date.now() },
+          }
+        })
+        return awarded
+      },
+
+      hasFoundDragon: (id) => {
+        const s = get()
+        return s.hiddenDragonsFound.some(d => d.id === id)
+      },
+
       awardBadge: (badgeId) => {
         const state = get()
         if (state.badges.includes(badgeId)) return
@@ -387,6 +414,7 @@ export const useWorkshopStore = create(
         quizAnswers: {},
         quizScore: null,
         taskSubmissions: {},
+        hiddenDragonsFound: [],
         preworkChecklist: {},
         preworkPath: 'claude',
         workshopPhase: 'pre',
