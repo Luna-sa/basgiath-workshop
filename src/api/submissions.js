@@ -1,9 +1,9 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 const VALID_CHARACTERS = ['violet', 'xaden', 'rhiannon', 'ridoc', 'liam', 'imogen']
 
-export async function submitBot({ nickname, characterId, code, notes = null }) {
-  if (!supabase) return { error: { message: 'Backend not configured' } }
+export async function submitBot({ nickname, characterId, code, notes = null, studentId = null }) {
   if (!nickname || !nickname.trim()) {
     return { error: { message: 'Nickname required' } }
   }
@@ -17,6 +17,21 @@ export async function submitBot({ nickname, characterId, code, notes = null }) {
     return { error: { message: 'Code is too long (8000 char limit)' } }
   }
 
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('submitBot', {
+        nickname: nickname.trim().toLowerCase(),
+        characterId,
+        botCode: code,
+        studentId,
+      })
+      return { data: { id: res.id, submitted_at: res.submitted_at }, error: null }
+    } catch (e) {
+      return { error: { message: e.message } }
+    }
+  }
+
+  if (!supabase) return { error: { message: 'Backend not configured' } }
   const { data, error } = await supabase
     .from('bot_submissions')
     .insert({
@@ -33,10 +48,15 @@ export async function submitBot({ nickname, characterId, code, notes = null }) {
 }
 
 export async function getLatestSubmissionsByCharacter() {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getLatestSubmissionsByCharacter')
+      return { data: res?.submissions || [], error: null }
+    } catch (e) {
+      return { data: [], error: { message: e.message } }
+    }
+  }
   if (!supabase) return { data: [], error: null }
-  // Get most recent submission per character via row_number window — but
-  // Supabase JS client doesn't support window functions directly. Instead
-  // fetch all sorted, then dedupe by character_id client-side.
   const { data, error } = await supabase
     .from('bot_submissions')
     .select('*')

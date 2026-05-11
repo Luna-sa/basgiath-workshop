@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 /**
  * Eyes of the Aerie — blind matching round.
@@ -10,19 +11,24 @@ import { supabase } from './supabase'
 
 /** Submit a single guess. Replaces prior guess on the same dragon for this voter. */
 export async function submitGuess({ voterNickname, dragonId, dragonOwnerNickname, guessedNickname }) {
-  if (!supabase) throw new Error('Supabase not configured')
   if (!voterNickname || !dragonId || !guessedNickname) {
     throw new Error('voterNickname, dragonId and guessedNickname required')
   }
-  const isCorrect = (dragonOwnerNickname || '').toLowerCase() === guessedNickname.toLowerCase()
 
-  // Upsert via delete + insert (unique index uniq_match_voter_dragon)
+  if (gsheetsEnabled()) {
+    const res = await callAction('submitGuess', {
+      voterNickname, dragonId, dragonOwnerNickname, guessedNickname,
+    })
+    return { isCorrect: !!res?.is_correct }
+  }
+
+  if (!supabase) throw new Error('Supabase not configured')
+  const isCorrect = (dragonOwnerNickname || '').toLowerCase() === guessedNickname.toLowerCase()
   await supabase
     .from('dragon_matches')
     .delete()
     .eq('voter_nickname', voterNickname.toLowerCase())
     .eq('dragon_id', dragonId)
-
   const { error } = await supabase.from('dragon_matches').insert({
     voter_nickname: voterNickname.toLowerCase(),
     dragon_id: dragonId,
@@ -35,7 +41,17 @@ export async function submitGuess({ voterNickname, dragonId, dragonOwnerNickname
 
 /** Get the current voter's guesses for all dragons in the round. */
 export async function getMyGuesses(voterNickname) {
-  if (!supabase || !voterNickname) return []
+  if (!voterNickname) return []
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getMyGuesses', { voterNickname })
+      return res?.guesses || []
+    } catch (e) {
+      console.warn('getMyGuesses (gsheets) failed:', e.message)
+      return []
+    }
+  }
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('dragon_matches')
     .select('dragon_id, guessed_nickname, is_correct, submitted_at')
@@ -49,6 +65,15 @@ export async function getMyGuesses(voterNickname) {
 
 /** Get the leaderboard — voters ranked by number of correct guesses. */
 export async function getMatchLeaderboard() {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getMatchLeaderboard')
+      return res?.leaderboard || []
+    } catch (e) {
+      console.warn('getMatchLeaderboard (gsheets) failed:', e.message)
+      return []
+    }
+  }
   if (!supabase) return []
   const { data, error } = await supabase
     .from('dragon_matches')
@@ -57,7 +82,6 @@ export async function getMatchLeaderboard() {
     console.warn('getMatchLeaderboard failed:', error.message)
     return []
   }
-  // Aggregate client-side — small data.
   const byVoter = {}
   for (const m of (data || [])) {
     const k = m.voter_nickname
@@ -71,8 +95,14 @@ export async function getMatchLeaderboard() {
   })
 }
 
-/** Realtime subscribe to all match changes. */
+/** Subscribe to match changes — Apps Script falls back to polling. */
 export function subscribeToMatches(onChange) {
+  if (gsheetsEnabled()) {
+    const interval = setInterval(() => {
+      try { onChange() } catch {}
+    }, 5000)
+    return () => clearInterval(interval)
+  }
   if (!supabase) return () => {}
   const channel = supabase
     .channel('aerie-matches')

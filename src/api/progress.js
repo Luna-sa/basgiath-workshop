@@ -1,8 +1,18 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 export async function syncProgress(studentId, state) {
-  if (!supabase || !studentId) return
+  if (!studentId) return
 
+  if (gsheetsEnabled()) {
+    // The Apps Script backend only tracks current_page + checkpoints
+    // per student (XP / badges / quiz aren't part of the new minimal
+    // schema). Skip the sync — current_page is set on navigation
+    // events directly when needed.
+    return
+  }
+
+  if (!supabase) return
   const { error } = await supabase
     .from('students')
     .update({
@@ -22,8 +32,17 @@ export async function syncProgress(studentId, state) {
 }
 
 export async function getFacilitatorState() {
-  if (!supabase) return null
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getFacilitatorState')
+      return res || null
+    } catch (e) {
+      console.warn('getFacilitatorState (gsheets) failed:', e.message)
+      return null
+    }
+  }
 
+  if (!supabase) return null
   const { data, error } = await supabase
     .from('facilitator_state')
     .select('*')

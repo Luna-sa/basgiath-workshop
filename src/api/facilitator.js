@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 const FACILITATOR_TOKEN = import.meta.env.VITE_FACILITATOR_TOKEN
 
@@ -7,49 +8,54 @@ export function isFacilitator() {
   return params.get('token') === FACILITATOR_TOKEN || params.get('role') === 'facilitator'
 }
 
-export async function advanceAll(toPage) {
+// ─── Common helper for facilitator state patches ──────────────────
+async function patchFacilitatorState(patch) {
+  if (gsheetsEnabled()) {
+    return callAction('setFacilitatorState', { patch })
+  }
   if (!supabase) return
   await supabase
     .from('facilitator_state')
-    .update({ unlocked_page: toPage, updated_at: new Date().toISOString() })
+    .update({ ...patch, updated_at: new Date().toISOString() })
     .eq('id', 1)
+}
+
+export async function advanceAll(toPage) {
+  return patchFacilitatorState({ unlocked_page: toPage })
 }
 
 export async function setWorkshopPhase(phase) {
-  if (!supabase) return
-  await supabase
-    .from('facilitator_state')
-    .update({ workshop_phase: phase, updated_at: new Date().toISOString() })
-    .eq('id', 1)
+  return patchFacilitatorState({ workshop_phase: phase })
 }
 
 export async function startTimer(durationSeconds, pageIndex) {
-  if (!supabase) return
-  await supabase
-    .from('facilitator_state')
-    .update({
-      active_timer_start: new Date().toISOString(),
-      active_timer_duration: durationSeconds,
-      active_timer_page: pageIndex,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', 1)
+  return patchFacilitatorState({
+    active_timer_start: new Date().toISOString(),
+    active_timer_duration: durationSeconds,
+    active_timer_page: pageIndex,
+  })
 }
 
 export async function stopTimer() {
-  if (!supabase) return
-  await supabase
-    .from('facilitator_state')
-    .update({
-      active_timer_start: null,
-      active_timer_duration: null,
-      active_timer_page: null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', 1)
+  return patchFacilitatorState({
+    active_timer_start: '',
+    active_timer_duration: '',
+    active_timer_page: '',
+  })
 }
 
 export async function getAllStudents() {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('listStudents')
+      const list = res?.students || []
+      // sort newest first
+      return list.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))
+    } catch (e) {
+      console.warn('getAllStudents (gsheets) failed:', e.message)
+      return []
+    }
+  }
   if (!supabase) return []
   const { data, error } = await supabase
     .from('students')
@@ -60,8 +66,10 @@ export async function getAllStudents() {
 }
 
 export async function awardXp(studentId, amount) {
+  // XP isn't tracked in the Apps Script backend yet — workshop uses
+  // checkpoints + dragon votes instead. No-op on gsheets.
+  if (gsheetsEnabled()) return { error: null, xp: 0 }
   if (!supabase) return { error: 'no supabase' }
-  // Read current XP, add, write back. (Not atomic but ok for facilitator.)
   const { data: cur, error: readErr } = await supabase
     .from('students').select('xp').eq('id', studentId).maybeSingle()
   if (readErr) return { error: readErr }
@@ -74,19 +82,15 @@ export async function awardXp(studentId, amount) {
 }
 
 export async function setAnnouncement(message) {
-  if (!supabase) return { error: 'no supabase' }
-  const { error } = await supabase
-    .from('facilitator_state')
-    .update({
-      announcement: message || null,
-      announcement_at: message ? new Date().toISOString() : null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', 1)
-  return { error }
+  return patchFacilitatorState({
+    announcement: message || '',
+    announcement_at: message ? new Date().toISOString() : '',
+  })
 }
 
 export async function getPrizes() {
+  // No prizes table on gsheets backend — feature is Supabase-only legacy.
+  if (gsheetsEnabled()) return { data: [], error: null }
   if (!supabase) return { data: [], error: null }
   const { data, error } = await supabase
     .from('prizes')
@@ -96,6 +100,7 @@ export async function getPrizes() {
 }
 
 export async function updatePrize(position, fields) {
+  if (gsheetsEnabled()) return { error: null }
   if (!supabase) return { error: 'no supabase' }
   const { error } = await supabase
     .from('prizes')
@@ -105,6 +110,11 @@ export async function updatePrize(position, fields) {
 }
 
 export async function deleteStudent(studentId) {
+  // Not yet wired to Apps Script — facilitator can delete the row
+  // directly in the Google Sheet when on gsheets.
+  if (gsheetsEnabled()) {
+    return { error: { message: 'Delete a student by removing the row in the Google Sheet directly.' } }
+  }
   if (!supabase) return { error: 'no supabase' }
   const { data, error } = await supabase
     .from('students')

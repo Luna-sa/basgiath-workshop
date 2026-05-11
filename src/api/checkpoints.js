@@ -1,16 +1,13 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 /**
  * Workshop checkpoint tracking. Each student records when they
- * confirmed completion of each install/build step. Stored as a
- * JSONB column on students:
- *   checkpoints: { parapet?, forge?, signet?, arena? }
+ * confirmed completion of each install/build step.
  *
- * Checkpoint IDs:
- *   parapet — Claude Code installed and `claude --version` verified
- *   forge   — QA ecosystem installed (CLAUDE.md + commands + agents + MCP)
- *   signet  — Personal CLAUDE.md generated and applied
- *   arena   — Bot submitted to Dragon Arena (auto-set on submit)
+ * Backend-agnostic: when VITE_GSHEETS_API is set we round-trip
+ * through Apps Script (markCheckpoint / getStudent), otherwise we
+ * use the legacy Supabase JSONB column.
  */
 
 export const CHECKPOINT_IDS = ['parapet', 'forge', 'signet', 'arena']
@@ -34,12 +31,22 @@ function looksLikeMissingColumn(err) {
 }
 
 export async function markCheckpoint(studentId, checkpointId) {
-  if (!supabase) return { error: { message: 'Backend not configured' } }
   if (!studentId) return { error: { message: 'No student id — register first' } }
   if (!CHECKPOINT_IDS.includes(checkpointId)) {
     return { error: { message: 'Unknown checkpoint' } }
   }
-  // Read-modify-write the JSONB blob (good enough for workshop scale)
+
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('markCheckpoint', { studentId, checkpointId })
+      return { error: null, checkpoints: res?.checkpoints || {} }
+    } catch (e) {
+      return { error: { message: e.message || 'Apps Script error' } }
+    }
+  }
+
+  if (!supabase) return { error: { message: 'Backend not configured' } }
+
   const { data: cur, error: readErr } = await supabase
     .from('students').select('checkpoints').eq('id', studentId).maybeSingle()
   if (readErr) {
@@ -60,11 +67,25 @@ export async function markCheckpoint(studentId, checkpointId) {
 }
 
 export async function getCheckpoints(studentId) {
-  if (!supabase || !studentId) return { data: {}, error: null }
+  if (!studentId) return { data: {}, error: null }
+
+  if (gsheetsEnabled()) {
+    try {
+      const student = await callAction('getStudent', { studentId })
+      let cp = student?.checkpoints
+      if (typeof cp === 'string') {
+        try { cp = JSON.parse(cp) } catch { cp = {} }
+      }
+      return { data: cp || {}, error: null }
+    } catch (e) {
+      return { data: {}, error: null }
+    }
+  }
+
+  if (!supabase) return { data: {}, error: null }
   const { data, error } = await supabase
     .from('students').select('checkpoints').eq('id', studentId).maybeSingle()
   if (looksLikeMissingColumn(error)) {
-    // Soft-fail so the page still renders without the column
     return { data: {}, error: null }
   }
   return { data: data?.checkpoints || {}, error }

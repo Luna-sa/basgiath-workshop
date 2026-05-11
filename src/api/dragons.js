@@ -1,11 +1,13 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 const BUCKET = 'dragons'
 
 /**
  * Upload a base64-encoded PNG to Supabase storage. Returns the public URL.
+ * Only used by the legacy Supabase path.
  */
-async function uploadImage(nickname, imageB64) {
+async function uploadImageSupabase(nickname, imageB64) {
   const blob = await b64ToBlob(imageB64, 'image/png')
   const path = `${nickname.toLowerCase()}-${Date.now()}.png`
   const { error } = await supabase.storage
@@ -24,9 +26,9 @@ async function b64ToBlob(b64, mimeType) {
 }
 
 /**
- * Seal a dragon — upload image, insert (or replace) the dragon row.
+ * Seal a dragon — upload image + store the row.
  *
- *   nickname        — required, used as the public identifier in Aerie
+ *   nickname        — required, public identifier in Aerie
  *   characterId     — optional (selected Threshing archetype)
  *   answers         — full Bond Ritual answers map
  *   imageB64        — base64 PNG returned by /api/workshop/generate-dragon
@@ -35,17 +37,33 @@ async function b64ToBlob(b64, mimeType) {
  *   studentId       — optional (links to students table)
  */
 export async function sealDragon({ nickname, characterId, answers, imageB64, prompt, modelUsed, studentId }) {
-  if (!supabase) throw new Error('Supabase not configured')
   if (!nickname) throw new Error('Nickname required')
   if (!imageB64) throw new Error('Image required')
 
-  // 1. Upload image
-  const imageUrl = await uploadImage(nickname, imageB64)
+  if (gsheetsEnabled()) {
+    // Apps Script uploads to Google Drive and writes the row in one call.
+    const res = await callAction('sealDragon', {
+      nickname,
+      studentId,
+      characterId,
+      answers,
+      imageB64,
+      prompt,
+      modelUsed,
+    })
+    // Apps Script returns the persisted record with `answers` still
+    // as a JSON string; normalise it.
+    let parsedAnswers = res?.answers
+    if (typeof parsedAnswers === 'string') {
+      try { parsedAnswers = JSON.parse(parsedAnswers) } catch { /* keep string */ }
+    }
+    return { ...res, answers: parsedAnswers }
+  }
 
-  // 2. Delete any existing dragon with same nickname (re-seal flow)
+  // Legacy Supabase path
+  if (!supabase) throw new Error('Supabase not configured')
+  const imageUrl = await uploadImageSupabase(nickname, imageB64)
   await supabase.from('dragons').delete().eq('nickname', nickname.toLowerCase())
-
-  // 3. Insert new row
   const { data, error } = await supabase
     .from('dragons')
     .insert({
@@ -60,13 +78,21 @@ export async function sealDragon({ nickname, characterId, answers, imageB64, pro
     })
     .select()
     .single()
-
   if (error) throw error
   return data
 }
 
 /** Get all dragons in Aerie, sorted by vote count desc then sealed_at. */
 export async function listDragons() {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('listDragons')
+      return res?.dragons || []
+    } catch (e) {
+      console.warn('listDragons (gsheets) failed:', e.message)
+      return []
+    }
+  }
   if (!supabase) return []
   const { data, error } = await supabase
     .from('dragons')
@@ -82,7 +108,17 @@ export async function listDragons() {
 
 /** Get the current voter's existing vote (or null). */
 export async function getMyVote(voterNickname) {
-  if (!supabase || !voterNickname) return null
+  if (!voterNickname) return null
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getMyVote', { voterNickname })
+      return res || null
+    } catch (e) {
+      console.warn('getMyVote (gsheets) failed:', e.message)
+      return null
+    }
+  }
+  if (!supabase) return null
   const { data, error } = await supabase
     .from('dragon_votes')
     .select('dragon_id, created_at')
@@ -97,9 +133,11 @@ export async function getMyVote(voterNickname) {
 
 /** Cast a vote — if user already voted, replaces previous. */
 export async function voteForDragon(voterNickname, dragonId) {
-  if (!supabase) throw new Error('Supabase not configured')
   if (!voterNickname) throw new Error('Nickname required to vote')
-  // Remove existing first (unique index will reject double-vote)
+  if (gsheetsEnabled()) {
+    return callAction('voteForDragon', { voterNickname, dragonId })
+  }
+  if (!supabase) throw new Error('Supabase not configured')
   await supabase.from('dragon_votes').delete().eq('voter_nickname', voterNickname.toLowerCase())
   const { error } = await supabase
     .from('dragon_votes')
@@ -109,12 +147,28 @@ export async function voteForDragon(voterNickname, dragonId) {
 
 /** Withdraw a vote. */
 export async function withdrawVote(voterNickname) {
+  if (!voterNickname) return
+  if (gsheetsEnabled()) {
+    return callAction('withdrawVote', { voterNickname })
+  }
   if (!supabase) return
   await supabase.from('dragon_votes').delete().eq('voter_nickname', voterNickname.toLowerCase())
 }
 
-/** Realtime subscription to dragon insertions and vote_count updates. */
+/**
+ * Subscribe to Aerie changes. With Supabase realtime we used a
+ * push channel. With Apps Script there's no realtime — we fall
+ * back to polling every 5 seconds.
+ *
+ * Returns an unsubscribe function.
+ */
 export function subscribeToAerie(onChange) {
+  if (gsheetsEnabled()) {
+    const interval = setInterval(() => {
+      try { onChange() } catch {}
+    }, 5000)
+    return () => clearInterval(interval)
+  }
   if (!supabase) return () => {}
   const channel = supabase
     .channel('aerie-dragons')

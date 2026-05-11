@@ -1,5 +1,6 @@
 import { supabase } from '../api/supabase'
 import { syncProgress, getFacilitatorState } from '../api/progress'
+import { gsheetsEnabled } from '../api/gsheetsClient'
 import { useWorkshopStore } from './workshopStore'
 
 let syncInterval = null
@@ -9,10 +10,12 @@ let started = false
 let realtimeConnected = false
 
 export function startSync() {
-  if (!supabase || started) return
+  if (started) return
   started = true
 
-  // Sync student progress every 10 seconds
+  // Periodic student-progress writeback. On gsheets this is a no-op
+  // because syncProgress short-circuits, so we just keep the interval
+  // cheap on the Supabase path.
   syncInterval = setInterval(() => {
     const state = useWorkshopStore.getState()
     if (state.user.id) {
@@ -20,7 +23,15 @@ export function startSync() {
     }
   }, 30000)
 
-  // Try Realtime first
+  // Apps Script has no realtime — poll only.
+  if (gsheetsEnabled()) {
+    startPolling()
+    return
+  }
+
+  if (!supabase) return
+
+  // Try Realtime first (Supabase only)
   try {
     realtimeChannel = supabase
       .channel('facilitator-updates')
@@ -66,18 +77,20 @@ function startPolling() {
       const data = await getFacilitatorState()
       if (data) applyFacilitatorState(data)
     } catch (e) {}
-  }, 8000)
+  }, gsheetsEnabled() ? 5000 : 8000)
 }
 
 function applyFacilitatorState(newState) {
+  if (!newState) return
   const store = useWorkshopStore.getState()
-  if (newState.unlocked_page !== undefined && newState.unlocked_page !== store.facilitatorUnlockedPage) {
-    store.setFacilitatorUnlock(newState.unlocked_page)
+  if (newState.unlocked_page !== undefined && newState.unlocked_page !== '' &&
+      Number(newState.unlocked_page) !== store.facilitatorUnlockedPage) {
+    store.setFacilitatorUnlock(Number(newState.unlocked_page))
   }
   if (newState.workshop_phase && newState.workshop_phase !== store.workshopPhase) {
     store.setWorkshopPhase(newState.workshop_phase)
   }
-  // Round competition sync
+  // Round competition sync (Supabase only — gsheets schema doesn't carry round state)
   if (newState.active_round_id !== undefined) {
     if (newState.active_round_id && newState.active_round_id !== store.activeRoundId) {
       store.setActiveRound(newState.active_round_id, newState.active_timer_start, newState.active_timer_duration)

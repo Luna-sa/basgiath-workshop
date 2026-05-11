@@ -1,6 +1,27 @@
 import { supabase } from './supabase'
+import { gsheetsEnabled, callAction } from './gsheetsClient'
 
 export async function registerStudent(userData) {
+  // Apps Script backend (primary path once VITE_GSHEETS_API is set)
+  if (gsheetsEnabled()) {
+    const res = await callAction('registerStudent', {
+      nickname: userData.nickname,
+      name: userData.name,
+      studio: userData.studio,
+      role: userData.role,
+      os: userData.os,
+      claudeCodeReady: userData.claudeCodeReady,
+      characterId: userData.characterId,
+    })
+    if (res?.error === 'NICKNAME_TAKEN' || res?.code === 'NICKNAME_TAKEN') {
+      const e = new Error('NICKNAME_TAKEN')
+      e.code = 'NICKNAME_TAKEN'
+      throw e
+    }
+    return { id: res.id, ...res }
+  }
+
+  // Legacy Supabase fallback (kept while migration is in flight)
   if (!supabase) return { id: crypto.randomUUID() }
 
   const { data, error } = await supabase
@@ -34,10 +55,20 @@ export async function registerStudent(userData) {
 }
 
 export async function findStudentByNickname(nickname) {
-  if (!supabase) return null
   const trimmed = (nickname || '').trim().toLowerCase()
   if (!trimmed) return null
 
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getStudent', { nickname: trimmed })
+      return res || null
+    } catch (e) {
+      console.warn('gsheets lookup failed:', e.message)
+      return null
+    }
+  }
+
+  if (!supabase) return null
   const { data, error } = await supabase
     .from('students')
     .select('*')
