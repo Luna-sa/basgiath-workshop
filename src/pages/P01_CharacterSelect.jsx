@@ -24,9 +24,9 @@ export default function P01_CharacterSelect() {
               <strong className="text-white"> Вайолет</strong> — хрупкая, её никто не воспринимал всерьёз, пока она не стала одной из сильнейших.
               <strong className="text-white"> Ксаден</strong> — сын казнённого мятежника; ему не доверяют, но подчиняются.
               <strong className="text-white"> Рианнон</strong> — к ней бегут, когда всё летит к чертям.</>,
-            <>У <strong className="text-white">«Четвертому Крилі»</strong> кадети розбиті на крила і загони.
-              <strong className="text-white"> Вайолет</strong> — крихка, її ніхто не сприймав серйозно, поки вона не стала однією з найсильніших.
-              <strong className="text-white"> Ксаден</strong> — син страченого бунтаря; йому не довіряють, але підкоряються.
+            <>У <strong className="text-white">«Четвертому Крилі»</strong> кадетів розбито на крила і загони.
+              <strong className="text-white"> Вайолет</strong> — крихка, її ніхто не сприймав усерйоз, доки вона не стала однією з найсильніших.
+              <strong className="text-white"> Ксаден</strong> — син страченого бунтівника; йому не довіряють, але йому підкоряються.
               <strong className="text-white"> Ріаннон</strong> — до неї біжать, коли все летить шкереберть.</>
           )}
         </p>
