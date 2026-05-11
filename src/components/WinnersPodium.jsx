@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { CHARACTERS } from '../data/characters'
 import { playBadgeSound } from '../effects/SoundManager'
+import { useT } from '../i18n/useT'
 
 const MEDALS = ['🥇', '🥈', '🥉', '🏅', '🏅']
 const DELAYS = [2.5, 1.5, 0.5, 0.3, 0.2]
@@ -18,6 +19,7 @@ export default function WinnersPodium() {
   const roundWinners = useWorkshopStore(s => s.roundWinners)
   const dismissPodium = useWorkshopStore(s => s.dismissPodium)
   const soundEnabled = useWorkshopStore(s => s.soundEnabled)
+  const t = useT()
 
   return (
     <AnimatePresence>
@@ -37,8 +39,8 @@ export default function WinnersPodium() {
               transition={{ delay: 0.3 }}
               className="mb-10"
             >
-              <div className="font-mono text-[12px] tracking-[4px] uppercase text-text-dim mb-2">Раунд завершён</div>
-              <h2 className="font-display text-3xl text-white">Результаты</h2>
+              <div className="font-mono text-[12px] tracking-[4px] uppercase text-text-dim mb-2">{t('Round complete', 'Раунд завершён', 'Раунд завершено')}</div>
+              <h2 className="font-display text-3xl text-white">{t('Results', 'Результаты', 'Результати')}</h2>
             </motion.div>
 
             {/* Winners — reveal 3rd, then 2nd, then 1st */}

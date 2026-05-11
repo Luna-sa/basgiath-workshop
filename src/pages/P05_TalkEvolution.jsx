@@ -78,7 +78,7 @@ export default function P05_TalkEvolution() {
 
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
           {t(
-            "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда.",
+            "Claude Code isn't one program. It's six layers that fold into a partner. Know all six — you have a tool. Use them — you have a team.",
             "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда.",
             "Claude Code — це не одна програма. Це шість шарів, які складаються в напарника. Якщо знаєш усі шість — маєш інструмент. Якщо використовуєш — маєш команду."
           )}

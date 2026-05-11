@@ -46,7 +46,7 @@ function PageLoader() {
     <div className="min-h-screen flex items-center justify-center bg-bg">
       <div className="text-center">
         <div className="w-2 h-2 rounded-full bg-qa-teal animate-pulse mx-auto mb-3" />
-        <span className="font-mono text-[12px] text-text-dim tracking-widest uppercase">Loading...</span>
+        <span className="font-mono text-[12px] text-text-dim tracking-widest uppercase">Loading…</span>
       </div>
     </div>
   )

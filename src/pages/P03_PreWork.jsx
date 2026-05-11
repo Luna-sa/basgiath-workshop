@@ -191,7 +191,7 @@ export default function P03_PreWork() {
       <div className="mt-6 p-4 border border-qa-teal/15 bg-qa-teal/[0.03]">
         <p className="text-xs text-text-secondary">
           <span className="text-qa-teal font-mono text-[12px] tracking-wider uppercase">
-            {t('Tip', 'Лайфхак', 'Лайфхак')}
+            {t('Tip', 'Лайфхак', 'Порада')}
           </span>
           {' — '}
           {t(

@@ -203,7 +203,7 @@ export default function P07_TalkEcosystem() {
         {/* Grimoire frame */}
         <div className="border border-qa-teal/30 bg-gradient-to-br from-qa-teal/[0.05] via-transparent to-transparent p-5">
           <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-2">
-            ◆ {t('The QA Grimoire', 'Гримуар QA', 'Гримуар QA')}
+            ◆ {t('The QA Grimoire', 'Гримуар QA', 'Ґримуар QA')}
           </div>
           <p className="text-[14px] text-text-body italic leading-relaxed max-w-2xl">
             {t(
