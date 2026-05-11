@@ -9,7 +9,6 @@ import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
 import Arena from './pages/Arena'
-import P_PersonaBuilder from './pages/P_PersonaBuilder'
 import P_SignetCeremony from './pages/P_SignetCeremony'
 import P_BondRitual from './pages/P_BondRitual'
 import P_Aerie from './pages/P_Aerie'
@@ -122,15 +121,16 @@ export default function App() {
   }
 
   if (personaOnly) {
-    return (
-      <ErrorBoundary>
-        <div className="min-h-screen bg-bg text-text-body">
-          <TealParticles />
-          <LanguageToggle />
-          <P_PersonaBuilder />
-        </div>
-      </ErrorBoundary>
-    )
+    // Legacy route — Persona Builder retired in favour of the
+    // Signet Ceremony. Redirect any bookmark / stale link
+    // immediately to /?page=signet so the user lands in the
+    // current persona-building flow without a broken page.
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      params.set('page', 'signet')
+      window.location.replace(`${window.location.pathname}?${params.toString()}`)
+    }
+    return null
   }
 
   if (signetOnly) {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { useT } from '../i18n/useT'
@@ -24,9 +24,14 @@ export default function P_AerieReveal() {
   const t = useT()
   const [dragons, setDragons] = useState([])
   const [stage, setStage] = useState(0) // 0..5 reveal beats
+  // Once the dramatic reveal starts (stage >= 2 — portrait fade-in),
+  // freeze the leaderboard so a late vote can't swap the winner
+  // mid-animation. The shown sorted list is captured at freeze time.
+  const [frozenDragons, setFrozenDragons] = useState(null)
 
   const params = useMemo(() => new URLSearchParams(window.location.search), [])
   const previewN = parseInt(params.get('preview') || '0', 10)
+  const unsubRef = useRef(null)
 
   const refresh = async () => {
     if (previewN > 0) {
@@ -40,10 +45,21 @@ export default function P_AerieReveal() {
   useEffect(() => {
     refresh()
     if (previewN > 0) return
-    const unsub = subscribeToAerie(refresh)
-    return unsub
+    unsubRef.current = subscribeToAerie(refresh)
+    return () => { if (unsubRef.current) unsubRef.current() }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Detach subscription + snapshot the leaderboard the moment reveal
+  // moves past the suspense lines.
+  useEffect(() => {
+    if (stage >= 2 && !frozenDragons) {
+      const snapshot = [...dragons]
+      setFrozenDragons(snapshot)
+      if (unsubRef.current) { unsubRef.current(); unsubRef.current = null }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage])
 
   // Drive the reveal timeline
   useEffect(() => {
@@ -55,12 +71,17 @@ export default function P_AerieReveal() {
     return () => [t1, t2, t3, t4, t5].forEach(clearTimeout)
   }, [])
 
-  // Sort by vote count desc, sealed_at asc tiebreak
-  const sorted = useMemo(() => [...dragons].sort((a, b) => {
-    const av = Number(a.vote_count || 0), bv = Number(b.vote_count || 0)
-    if (bv !== av) return bv - av
-    return new Date(a.sealed_at) - new Date(b.sealed_at)
-  }), [dragons])
+  // Sort by vote count desc, sealed_at asc tiebreak. Use the frozen
+  // snapshot once reveal has started — so the winner can't change
+  // mid-confetti from a late vote tipping the count.
+  const sorted = useMemo(() => {
+    const source = frozenDragons || dragons
+    return [...source].sort((a, b) => {
+      const av = Number(a.vote_count || 0), bv = Number(b.vote_count || 0)
+      if (bv !== av) return bv - av
+      return new Date(a.sealed_at) - new Date(b.sealed_at)
+    })
+  }, [dragons, frozenDragons])
 
   const winner = sorted[0]
   const runnersUp = sorted.slice(1, 4)

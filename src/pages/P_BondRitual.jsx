@@ -12,6 +12,13 @@ import VoiceTextInput from '../components/VoiceTextInput'
 import { renderSigilCard, downloadBlob } from '../utils/sigilCard'
 
 const STORAGE_KEY = 'bond-ritual-answers'
+const SESSION_KEY = 'bond-ritual-session'
+// Minimum seconds between consecutive generate calls — prevents
+// thirty-clicks-on-Re-roll from burning the OpenAI rate-limit.
+const REROLL_COOLDOWN_MS = 8000
+// Hard ceiling on a single generate request. If OpenAI hangs past
+// this, surface the error instead of leaving the user stranded.
+const GENERATE_TIMEOUT_MS = 180000 // 3 minutes
 
 function loadInitialAnswers() {
   if (typeof window === 'undefined') return {}
@@ -19,6 +26,38 @@ function loadInitialAnswers() {
     const raw = window.localStorage.getItem(STORAGE_KEY)
     return raw ? (JSON.parse(raw) || {}) : {}
   } catch { return {} }
+}
+
+// Persist stage / imageB64 / riderClass so a refresh in the middle
+// of the preview doesn't kick the user back to question 1 and lose
+// the image they just waited 30+ seconds for.
+function loadSession() {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = window.sessionStorage.getItem(SESSION_KEY)
+    return raw ? (JSON.parse(raw) || {}) : {}
+  } catch { return {} }
+}
+function saveSession(patch) {
+  if (typeof window === 'undefined') return
+  try {
+    const prev = loadSession()
+    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...prev, ...patch }))
+  } catch {}
+}
+function clearSession() {
+  try { window.sessionStorage.removeItem(SESSION_KEY) } catch {}
+}
+
+// Promise.race wrapper for a hard timeout on fetch-style calls.
+function withTimeout(promise, ms, label = 'request') {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(
+      () => reject(new Error(`${label} timed out after ${Math.round(ms / 1000)}s — try Re-roll`)),
+      ms
+    )),
+  ])
 }
 
 // ─── Cards picker (used for breath / size / wings / eyes) ─────────
@@ -95,25 +134,46 @@ export default function P_BondRitual() {
   const studentId = useWorkshopStore(s => s.user.id)
   const characterId = useWorkshopStore(s => s.user.characterId)
 
+  // Hydrate session-state from sessionStorage so a refresh in
+  // mid-flow doesn't kick the user back to step 1 / lose their image.
+  const _session = useMemo(() => loadSession(), [])
+
   const [answers, setAnswers] = useState(loadInitialAnswers)
-  const [stepIdx, setStepIdx] = useState(0)
-  const [stage, setStage] = useState('questions') // questions | generating | preview | sealing
-  const [imageB64, setImageB64] = useState(null)
-  const [usedPrompt, setUsedPrompt] = useState(null)
-  const [modelUsed, setModelUsed] = useState(null)
+  const [stepIdx, setStepIdx] = useState(_session.stepIdx ?? 0)
+  const [stage, setStage] = useState(_session.stage || 'questions') // questions | generating | preview | sealing | sealed
+  const [imageB64, setImageB64] = useState(_session.imageB64 || null)
+  const [usedPrompt, setUsedPrompt] = useState(_session.usedPrompt || null)
+  const [modelUsed, setModelUsed] = useState(_session.modelUsed || null)
   const [genError, setGenError] = useState(null)
   const [sealError, setSealError] = useState(null)
-  const [generations, setGenerations] = useState(0)
-  const [riderClass, setRiderClass] = useState(null) // { class, class_name, class_meaning, epithet, reason }
+  const [generations, setGenerations] = useState(_session.generations ?? 0)
+  const [riderClass, setRiderClass] = useState(_session.riderClass || null)
   const [classLoading, setClassLoading] = useState(false)
-  const [editedPrompt, setEditedPrompt] = useState(null) // null = use auto-built; string = user override
+  const [editedPrompt, setEditedPrompt] = useState(_session.editedPrompt ?? null)
   const [showPromptEditor, setShowPromptEditor] = useState(false)
+  const lastGenerateAtRef = useRef(_session.lastGenerateAt || 0)
+
+  // If we hydrated mid-generate (refresh while waiting), kick the
+  // user back to questions — the in-flight request was lost.
+  useEffect(() => {
+    if (stage === 'generating') setStage('questions')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const totalSteps = BOND_QUESTIONS.length
 
   useEffect(() => {
     try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(answers)) } catch {}
   }, [answers])
+
+  // Persist session-state on changes so refresh restores progress
+  useEffect(() => {
+    saveSession({
+      stepIdx, stage, imageB64, usedPrompt, modelUsed,
+      generations, riderClass, editedPrompt,
+      lastGenerateAt: lastGenerateAtRef.current,
+    })
+  }, [stepIdx, stage, imageB64, usedPrompt, modelUsed, generations, riderClass, editedPrompt])
 
   const updateAnswer = (id, value) => setAnswers(prev => ({ ...prev, [id]: value }))
 
@@ -140,11 +200,31 @@ export default function P_BondRitual() {
 
   const handleGenerate = async () => {
     if (!allFilled) return
+
+    // Throttle: refuse re-rolls fired within REROLL_COOLDOWN_MS of the
+    // last one. Protects the OpenAI rate limit + the user's wallet.
+    const now = Date.now()
+    const elapsed = now - lastGenerateAtRef.current
+    if (lastGenerateAtRef.current > 0 && elapsed < REROLL_COOLDOWN_MS) {
+      const wait = Math.ceil((REROLL_COOLDOWN_MS - elapsed) / 1000)
+      setGenError(t(
+        `Wait ${wait}s before re-rolling — the queue is still busy.`,
+        `Подожди ${wait} сек перед регенерацией — очередь занята.`,
+        `Зачекай ${wait} сек перед регенерацією — черга зайнята.`
+      ))
+      return
+    }
+    lastGenerateAtRef.current = now
+
     setStage('generating')
     setGenError(null)
     try {
       const prompt = (editedPrompt ?? buildDragonPrompt(answers))
-      const res = await generateDragonImage({ prompt })
+      const res = await withTimeout(
+        generateDragonImage({ prompt }),
+        GENERATE_TIMEOUT_MS,
+        t('dragon generation', 'генерация дракона', 'генерація дракона'),
+      )
       setImageB64(res.image_b64)
       setUsedPrompt(prompt)
       setModelUsed(res.model)
@@ -239,6 +319,10 @@ export default function P_BondRitual() {
       // Don't auto-redirect — facilitator opens the Aerie collectively
       // on the next slide. Just confirm the seal and stay on the page.
       setStage('sealed')
+      // Clear the persisted session so the next page-open is fresh.
+      // The Sigil card download still works because imageB64 stays in
+      // React state for the current page lifetime.
+      clearSession()
     } catch (e) {
       setSealError(e.message || 'Sealing failed — check Supabase migration')
       setStage('preview')
