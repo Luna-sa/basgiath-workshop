@@ -120,8 +120,8 @@ export default function P06_InstallEcosystem() {
         {/* Checkpoint */}
         <CheckpointButton
           id="forge"
-          label="Mark ecosystem installed"
-          helpText="When Claude has finished placing the files in your ~/.claude/ folder"
+          label={t('Mark ecosystem installed', 'Отметить: экосистема установлена', 'Позначити: екосистему встановлено')}
+          helpText={t('When Claude has finished placing the files in your ~/.claude/ folder', 'Когда Claude закончил создавать файлы в твоём ~/.claude/', 'Коли Claude завершив створювати файли у твоєму ~/.claude/')}
         />
       </div>
     </PageShell>

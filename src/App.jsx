@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import PageRouter from './core/PageRouter'
 import AchievementToast from './components/AchievementToast'
+import XpSync from './effects/XpSync'
 import AnnouncementToast from './components/AnnouncementToast'
 import WinnersPodium from './components/WinnersPodium'
 import LanguageToggle from './components/LanguageToggle'
@@ -270,6 +271,7 @@ export default function App() {
         <AchievementToast />
         <AnnouncementToast />
         <WinnersPodium />
+        <XpSync />
       </div>
     </ErrorBoundary>
   )

@@ -2,8 +2,21 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { evaluateGate } from '../store/gateUtils'
 import { PAGES } from '../data/pages'
 import { useT } from '../i18n/useT'
+import { useLocale } from '../i18n/store'
+
+// Pick the locale-appropriate gate message. Gates can declare
+// message_en/_ru/_uk OR a single legacy `message` (Russian by convention).
+// Returns "" so callers can fall back to a generic t() default.
+function pickGateMessage(gate, lang) {
+  if (!gate) return ''
+  if (lang === 'en' && gate.message_en) return gate.message_en
+  if (lang === 'uk' && gate.message_uk) return gate.message_uk
+  if (lang === 'ru' && gate.message_ru) return gate.message_ru
+  return gate.message || ''
+}
 
 export default function GateGuard({ pageIndex, subStepId }) {
+  const lang = useLocale(s => s.lang)
   // Subscribe to specific state slices to avoid unnecessary re-renders
   const user = useWorkshopStore(s => s.user)
   const completedPages = useWorkshopStore(s => s.completedPages)
@@ -85,7 +98,7 @@ export default function GateGuard({ pageIndex, subStepId }) {
         <div className="flex items-center gap-2 px-4 py-3 border border-border bg-surface/50">
           <span className="w-2 h-2 rounded-full bg-ember animate-pulse" />
           <span className="font-mono text-[12px] text-text-dim tracking-wider">
-            {gate.message || t(
+            {pickGateMessage(gate, lang) || t(
               'Waiting for facilitator command...',
               'Ожидай команду фасилитатора...',
               'Чекай на команду фасилітатора...'
@@ -105,7 +118,7 @@ export default function GateGuard({ pageIndex, subStepId }) {
         <div className="flex items-center gap-2 px-4 py-3 border border-border bg-surface/50">
           <span className="text-text-dim">🔒</span>
           <span className="font-mono text-[12px] text-text-dim tracking-wider">
-            {gate.message || t(
+            {pickGateMessage(gate, lang) || t(
               'Finish the current stage to continue',
               'Заверши текущий этап, чтобы продолжить',
               'Заверши поточний етап, щоб продовжити'

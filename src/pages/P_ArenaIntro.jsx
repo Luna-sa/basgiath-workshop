@@ -99,8 +99,8 @@ sky   : { width, height }`}</pre>
 
         <CheckpointButton
           id="arena"
-          label="Mark bot submitted"
-          helpText="After you've clicked Submit ✦ on your character's slot"
+          label={t('Mark bot submitted', 'Отметить: бот отправлен', 'Позначити: бота надіслано')}
+          helpText={t("After you've clicked Submit ✦ on your character's slot", 'После клика Submit ✦ в слоте твоего персонажа', 'Після кліку Submit ✦ у слоті твого персонажа')}
         />
       </div>
     </PageShell>

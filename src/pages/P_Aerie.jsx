@@ -289,7 +289,7 @@ export default function P_Aerie() {
                   {/* Leader badge */}
                   {leader && (
                     <div className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-qa-teal text-black font-mono text-[9px] tracking-[2px] uppercase font-semibold">
-                      ✦ Lead
+                      ✦ {t('Lead', 'Лидер', 'Лідер')}
                     </div>
                   )}
 
@@ -310,7 +310,7 @@ export default function P_Aerie() {
                         loading="lazy"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-text-dim">no image</div>
+                      <div className="w-full h-full flex items-center justify-center text-text-dim">{t('no image', 'нет картинки', 'немає зображення')}</div>
                     )}
                   </div>
 
@@ -323,7 +323,7 @@ export default function P_Aerie() {
                       </div>
                     </div>
                     <div className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim">
-                      rider: <span className="text-text-secondary">@{d.nickname}</span>
+                      {t('rider', 'всадник', 'вершник')}: <span className="text-text-secondary">@{d.nickname}</span>
                       {mineDragon && (
                         <span className="ml-2 text-qa-teal">({t('you', 'ты', 'ти')})</span>
                       )}

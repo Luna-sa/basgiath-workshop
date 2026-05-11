@@ -81,8 +81,8 @@ export default function P_BondIntro() {
 
         <CheckpointButton
           id="bond"
-          label="Mark dragon sealed"
-          helpText="After you've sealed your dragon into the Aerie"
+          label={t('Mark dragon sealed', 'Отметить: дракон запечатан', 'Позначити: дракона запечатано')}
+          helpText={t("After you've sealed your dragon into the Aerie", 'После того как запечатаешь дракона в Аэрии', 'Після того як запечатаєш дракона в Аерії')}
         />
       </div>
     </PageShell>

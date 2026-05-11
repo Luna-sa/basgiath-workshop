@@ -76,8 +76,8 @@ export default function P_PersonaIntro() {
 
         <CheckpointButton
           id="signet"
-          label="Mark CLAUDE.md applied"
-          helpText="After Claude has written ~/.claude/CLAUDE.md and you've restarted it"
+          label={t('Mark CLAUDE.md applied', 'Отметить: CLAUDE.md применён', 'Позначити: CLAUDE.md застосовано')}
+          helpText={t("After Claude has written ~/.claude/CLAUDE.md and you've restarted it", 'После того как Claude записал ~/.claude/CLAUDE.md и ты его перезапустила', 'Після того як Claude записав ~/.claude/CLAUDE.md і ти його перезапустила')}
         />
 
         <div className="border border-border bg-bg/50 p-5">

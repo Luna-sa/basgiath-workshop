@@ -112,7 +112,7 @@ export default function WinnersPodium() {
               onClick={dismissPodium}
               className="mt-8 px-8 py-3 border border-border text-text-secondary font-mono text-[12px] tracking-wider uppercase hover:border-qa-teal/30 hover:text-white transition-colors cursor-pointer"
             >
-              Продолжить
+              {t('Continue', 'Продолжить', 'Продовжити')}
             </motion.button>
           </div>
         </motion.div>
