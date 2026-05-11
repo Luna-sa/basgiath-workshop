@@ -8,8 +8,10 @@ const PARTS = [
     role: 'spine',
     summary_en: "A markdown file Claude reads at every start. Describes you, your rules, your project context.",
     summary_ru: 'Markdown файл который Claude читает при каждом старте. Описывает тебя, твои правила, контекст проекта.',
+    summary_uk: 'Markdown-файл, який Claude читає при кожному старті. Описує тебе, твої правила, контекст проєкту.',
     detail_en: 'Hierarchy: ~/.claude/CLAUDE.md (everywhere) → project/CLAUDE.md (this repo) → subdir/CLAUDE.md. Lower overrides upper.',
     detail_ru: 'Иерархия: ~/.claude/CLAUDE.md (везде) → project/CLAUDE.md (этот репо) → subdir/CLAUDE.md. Нижние перебивают верхние.',
+    detail_uk: 'Ієрархія: ~/.claude/CLAUDE.md (скрізь) → project/CLAUDE.md (це репо) → subdir/CLAUDE.md. Нижні перебивають верхні.',
   },
   {
     n: '02',
@@ -17,8 +19,10 @@ const PARTS = [
     role: 'wings',
     summary_en: 'Reusable abilities Claude installs and gains. Like extensions for the brain.',
     summary_ru: 'Многоразовые навыки которые Claude получает. Как расширения для мозга.',
+    summary_uk: 'Багаторазові навички, які Claude отримує. Як розширення для мозку.',
     detail_en: 'Examples: Excalidraw (drawing), git skill (workflows), writing-skills (style). Browse and install via /plugin marketplace.',
     detail_ru: 'Примеры: Excalidraw (рисование), git skill (workflow), writing-skills (стиль). Найти и установить через /plugin marketplace.',
+    detail_uk: 'Приклади: Excalidraw (малювання), git skill (workflow), writing-skills (стиль). Знайти і встановити через /plugin marketplace.',
   },
   {
     n: '03',
@@ -26,8 +30,10 @@ const PARTS = [
     role: 'claws',
     summary_en: 'Specialised mini-Claudes for specific roles. They run in parallel, return results.',
     summary_ru: 'Специализированные мини-Claude под конкретные роли. Работают параллельно, возвращают результат.',
+    summary_uk: 'Спеціалізовані міні-Claude під конкретні ролі. Працюють паралельно, повертають результат.',
     detail_en: 'Examples: code-reviewer, qa-tester, security-scanner, docs-writer. You delegate, they execute, main session stays clean.',
     detail_ru: 'Примеры: code-reviewer, qa-tester, security-scanner, docs-writer. Делегируешь — работают — main session чистая.',
+    detail_uk: 'Приклади: code-reviewer, qa-tester, security-scanner, docs-writer. Делегуєш — працюють — main session чиста.',
   },
   {
     n: '04',
@@ -35,8 +41,10 @@ const PARTS = [
     role: 'eyes',
     summary_en: "Model Context Protocol — Claude's connection to the outside world. Browsers, APIs, databases, services.",
     summary_ru: 'Model Context Protocol — связь Claude с внешним миром. Браузеры, API, базы данных, сервисы.',
+    summary_uk: "Model Context Protocol — зв'язок Claude із зовнішнім світом. Браузери, API, бази даних, сервіси.",
     detail_en: 'Playwright (browser test), GitHub (PR/issues), Confluence/Notion (docs), Atlassian (Jira), filesystem (any folder).',
     detail_ru: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (любая папка).',
+    detail_uk: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (будь-яка папка).',
   },
   {
     n: '05',
@@ -44,8 +52,10 @@ const PARTS = [
     role: 'reflexes',
     summary_en: 'Auto-trigger commands on events. Pre-commit, post-edit, on-error — Claude reacts without being asked.',
     summary_ru: 'Авто-триггер команд на события. Pre-commit, post-edit, on-error — Claude реагирует без просьбы.',
+    summary_uk: 'Автотригер команд на події. Pre-commit, post-edit, on-error — Claude реагує без прохання.',
     detail_en: 'Examples: branch-guard (block commits to main), auto-format (run prettier on save), notify-on-stop (sound when ready).',
     detail_ru: 'Примеры: branch-guard (блокирует commit в main), auto-format (prettier при сохранении), notify-on-stop (звук когда готово).',
+    detail_uk: 'Приклади: branch-guard (блокує commit у main), auto-format (prettier при збереженні), notify-on-stop (звук, коли готово).',
   },
   {
     n: '06',
@@ -53,8 +63,10 @@ const PARTS = [
     role: 'companions',
     summary_en: 'Bundles of skills + agents + hooks shared across teams. Install one — gain a whole stack.',
     summary_ru: 'Пакеты skills + agents + hooks для команд. Один install — целый стек.',
+    summary_uk: 'Пакети skills + agents + hooks для команд. Один install — цілий стек.',
     detail_en: 'Browse the marketplace with /plugin. Examples: superpowers (meta-skills), digital-marketing-pro (115 commands).',
     detail_ru: 'Marketplace через /plugin. Примеры: superpowers (мета-скиллы), digital-marketing-pro (115 команд).',
+    detail_uk: 'Marketplace через /plugin. Приклади: superpowers (мета-skills), digital-marketing-pro (115 команд).',
   },
 ]
 
@@ -67,7 +79,8 @@ export default function P05_TalkEvolution() {
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
           {t(
             "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда.",
-            "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда."
+            "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда.",
+            "Claude Code — це не одна програма. Це шість шарів, які складаються в напарника. Якщо знаєш усі шість — маєш інструмент. Якщо використовуєш — маєш команду."
           )}
         </p>
 
@@ -84,10 +97,10 @@ export default function P05_TalkEvolution() {
                 <span className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim ml-auto">{p.role}</span>
               </div>
               <p className="text-[13px] text-text-body leading-relaxed mb-2">
-                {t(p.summary_en, p.summary_ru)}
+                {t(p.summary_en, p.summary_ru, p.summary_uk)}
               </p>
               <p className="text-[12px] text-text-dim leading-relaxed italic">
-                {t(p.detail_en, p.detail_ru)}
+                {t(p.detail_en, p.detail_ru, p.detail_uk)}
               </p>
             </div>
           ))}
@@ -96,7 +109,7 @@ export default function P05_TalkEvolution() {
         {/* Where it all lives */}
         <div className="border border-qa-teal/20 bg-qa-teal/[0.03] p-5">
           <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-3">
-            ◆ {t('Where the dragon lives on disk', 'Где живёт дракон на диске')}
+            ◆ {t('Where the dragon lives on disk', 'Где живёт дракон на диске', 'Де живе дракон на диску')}
           </div>
           <pre className="font-mono text-[12px] text-text-body leading-relaxed whitespace-pre-wrap">{`~/.claude/
 ├── CLAUDE.md          # spine — your global rules + persona

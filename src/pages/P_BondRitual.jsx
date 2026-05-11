@@ -8,6 +8,7 @@ import { buildDragonPrompt } from '../data/dragons/prompt-builder'
 import { generateDragonImage } from '../api/workshopBackend'
 import { sealDragon } from '../api/dragons'
 import VoiceTextInput from '../components/VoiceTextInput'
+import { renderSigilCard, downloadBlob } from '../utils/sigilCard'
 
 const STORAGE_KEY = 'bond-ritual-answers'
 
@@ -154,6 +155,24 @@ export default function P_BondRitual() {
     setStage('questions') // reuse same answers
     // Trigger again on next tick to avoid double-state mess
     setTimeout(handleGenerate, 0)
+  }
+
+  const handleDownloadSigil = async () => {
+    if (!imageB64) return
+    try {
+      const blob = await renderSigilCard({
+        imageUrl: `data:image/png;base64,${imageB64}`,
+        name: (answers.name || 'Unnamed').trim(),
+        nickname: nickname || 'anon',
+        motto: (answers.motto || '').trim(),
+        date: new Date(),
+        url: 'basgiath-workshop.onrender.com',
+      })
+      const filename = `sigil-${(answers.name || 'dragon').toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.png`
+      downloadBlob(blob, filename)
+    } catch (e) {
+      setSealError(e.message || 'Sigil render failed')
+    }
   }
 
   const handleSeal = async () => {
@@ -359,9 +378,14 @@ export default function P_BondRitual() {
                 >
                   ⟲ {t('Regenerate', 'Перегенерить', 'Перегенерувати')}
                 </button>
-                <p className="font-mono text-[10px] text-text-dim">
-                  {generations} {t('attempt(s)', 'попыток', 'спроб')}
-                </p>
+                <button
+                  type="button"
+                  onClick={handleDownloadSigil}
+                  disabled={!imageB64 || stage === 'sealing'}
+                  className="border border-qa-teal/40 text-qa-teal px-5 py-2.5 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:bg-qa-teal/10 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  ⬇ {t('Sigil card', 'Сигил-карточка', 'Сигіл-картка')}
+                </button>
                 <button
                   type="button"
                   onClick={handleSeal}
@@ -377,6 +401,9 @@ export default function P_BondRitual() {
                     : `✦ ${t('Seal & Share', 'Запечатать и поделиться', 'Запечатати і поділитись')}`}
                 </button>
               </div>
+              <p className="font-mono text-[10px] text-text-dim text-center pt-1">
+                {generations} {t('attempt(s)', 'попыток', 'спроб')}
+              </p>
             </motion.div>
           )}
 

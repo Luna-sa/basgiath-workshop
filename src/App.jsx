@@ -13,6 +13,7 @@ import P_PersonaBuilder from './pages/P_PersonaBuilder'
 import P_SignetCeremony from './pages/P_SignetCeremony'
 import P_BondRitual from './pages/P_BondRitual'
 import P_Aerie from './pages/P_Aerie'
+import P_EyesOfAerie from './pages/P_EyesOfAerie'
 import P_Resources from './pages/P_Resources'
 import WorkshopGate from './core/WorkshopGate'
 import { useWorkshopStore } from './store/workshopStore'
@@ -67,6 +68,13 @@ function isAerieRoute() {
   return path === '/aerie' || path === '/aerie/'
 }
 
+function isEyesRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'eyes') return true
+  const path = window.location.pathname
+  return path === '/eyes' || path === '/eyes/'
+}
+
 function isResourcesRoute() {
   const params = new URLSearchParams(window.location.search)
   if (params.get('page') === 'resources') return true
@@ -82,16 +90,17 @@ export default function App() {
   const [signetOnly] = useState(isSignetRoute)
   const [bondOnly] = useState(isBondRoute)
   const [aerieOnly] = useState(isAerieRoute)
+  const [eyesOnly] = useState(isEyesRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !resourcesOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !eyesOnly && !resourcesOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, resourcesOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, eyesOnly, resourcesOnly])
 
   if (arenaOnly) {
     return (
@@ -144,6 +153,18 @@ export default function App() {
           <TealParticles />
           <LanguageToggle />
           <P_Aerie />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (eyesOnly) {
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle />
+          <P_EyesOfAerie />
         </div>
       </ErrorBoundary>
     )
