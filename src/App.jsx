@@ -160,18 +160,6 @@ export default function App() {
     )
   }
 
-  if (eyesOnly) {
-    return (
-      <ErrorBoundary>
-        <div className="min-h-screen bg-bg text-text-body">
-          <TealParticles />
-          <LanguageToggle />
-          <P_EyesOfAerie />
-        </div>
-      </ErrorBoundary>
-    )
-  }
-
   if (mosaicOnly) {
     return (
       <ErrorBoundary>

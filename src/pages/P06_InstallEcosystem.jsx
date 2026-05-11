@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { usePersona } from '../store/usePersona'
 import { generateEcosystemPrompt, CURSOR_ECOSYSTEM_PROMPT } from '../data/ecosystem-prompt'
+import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
 import CheckpointButton from '../components/CheckpointButton'
 
 export default function P06_InstallEcosystem() {
+  const t = useT()
   const user = useWorkshopStore(s => s.user)
   const persona = usePersona()
   const [copied, setCopied] = useState(false)
@@ -25,15 +27,20 @@ export default function P06_InstallEcosystem() {
         {/* What you get */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
-            { n: '7', label: 'Команд', items: '/bug-report, /test-cases, /review...' },
-            { n: '4', label: 'Агента', items: 'qa-reviewer, test-generator...' },
-            { n: '3', label: 'MCP', items: 'Playwright, Fetch, Context7' },
-            { n: '1', label: 'CLAUDE.md', items: 'Настроен под QA' },
+            { n: '7', label_en: 'Commands', label_ru: 'Команд', label_uk: 'Команд', items: '/bug-report, /test-cases, /review...' },
+            { n: '4', label_en: 'Agents', label_ru: 'Агента', label_uk: 'Агенти', items: 'qa-reviewer, test-generator...' },
+            { n: '3', label_en: 'MCP', label_ru: 'MCP', label_uk: 'MCP', items: 'Playwright, Fetch, Context7' },
+            { n: '1', label_en: 'CLAUDE.md', label_ru: 'CLAUDE.md', label_uk: 'CLAUDE.md',
+              items_en: 'Configured for QA', items_ru: 'Настроен под QA', items_uk: 'Налаштований під QA' },
           ].map(s => (
-            <div key={s.label} className="p-3 border border-border bg-surface/30 text-center">
+            <div key={s.label_en} className="p-3 border border-border bg-surface/30 text-center">
               <div className="font-display text-xl text-white">{s.n}</div>
-              <div className="font-mono text-[11px] text-qa-teal tracking-wider uppercase">{s.label}</div>
-              <div className="text-[10px] text-text-dim mt-1">{s.items}</div>
+              <div className="font-mono text-[11px] text-qa-teal tracking-wider uppercase">
+                {t(s.label_en, s.label_ru, s.label_uk)}
+              </div>
+              <div className="text-[10px] text-text-dim mt-1">
+                {s.items_en ? t(s.items_en, s.items_ru, s.items_uk) : s.items}
+              </div>
             </div>
           ))}
         </div>
@@ -42,26 +49,58 @@ export default function P06_InstallEcosystem() {
         <div className="space-y-2">
           <div className="flex items-start gap-3 p-3 border border-border bg-surface/30">
             <span className="font-mono text-[12px] text-qa-teal shrink-0 mt-0.5">1.</span>
-            <span className="text-sm text-text-body">Открой {isClaudeCode ? 'терминал → запусти claude' : 'Cursor (Cmd+I)'}</span>
+            <span className="text-sm text-text-body">
+              {isClaudeCode
+                ? t(
+                    'Open a terminal → run `claude`',
+                    'Открой терминал → запусти claude',
+                    'Відкрий термінал → запусти claude'
+                  )
+                : t(
+                    'Open Cursor (Cmd+I)',
+                    'Открой Cursor (Cmd+I)',
+                    'Відкрий Cursor (Cmd+I)'
+                  )}
+            </span>
           </div>
           <div className="flex items-start gap-3 p-3 border border-border bg-surface/30">
             <span className="font-mono text-[12px] text-qa-teal shrink-0 mt-0.5">2.</span>
-            <span className="text-sm text-text-body">Скопируй промпт ниже и вставь</span>
+            <span className="text-sm text-text-body">
+              {t(
+                'Copy the prompt below and paste it in',
+                'Скопируй промпт ниже и вставь',
+                'Скопіюй промпт нижче і встав'
+              )}
+            </span>
           </div>
           <div className="flex items-start gap-3 p-3 border border-border bg-surface/30">
             <span className="font-mono text-[12px] text-qa-teal shrink-0 mt-0.5">3.</span>
-            <span className="text-sm text-text-body">Подожди 1-2 минуты — AI создаст все файлы</span>
+            <span className="text-sm text-text-body">
+              {t(
+                'Wait 1-2 minutes — Claude lays down every file.',
+                'Подожди 1-2 минуты — AI создаст все файлы',
+                'Зачекай 1-2 хвилини — Claude створить усі файли.'
+              )}
+            </span>
           </div>
         </div>
 
         {/* The prompt */}
         <div className="border border-border bg-black overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2 bg-surface/80 border-b border-border">
-            <span className="font-mono text-[12px] tracking-wider" style={{ color: persona.accent }}>QA Ecosystem — один промпт</span>
+            <span className="font-mono text-[12px] tracking-wider" style={{ color: persona.accent }}>
+              {t(
+                'QA Ecosystem — one prompt',
+                'QA Ecosystem — один промпт',
+                'QA Ecosystem — один промпт'
+              )}
+            </span>
             <button onClick={handleCopy}
               className="font-mono text-[12px] tracking-wider uppercase transition-colors cursor-pointer"
               style={{ color: copied ? persona.accent : '#888' }}>
-              {copied ? '✓ Скопировано!' : 'Копировать'}
+              {copied
+                ? t('✓ Copied!', '✓ Скопировано!', '✓ Скопійовано!')
+                : t('Copy', 'Копировать', 'Копіювати')}
             </button>
           </div>
           <pre className="p-4 overflow-x-auto max-h-[250px] overflow-y-auto">
@@ -72,7 +111,9 @@ export default function P06_InstallEcosystem() {
         {/* Persona tip */}
         <div className="p-3 border bg-surface/30" style={{ borderColor: persona.accentBorder }}>
           <p className="text-xs text-text-secondary">
-            <span className="font-mono text-[11px] uppercase" style={{ color: persona.accent }}>Подход</span>{' '}— {persona.approach.promptStyle}
+            <span className="font-mono text-[11px] uppercase" style={{ color: persona.accent }}>
+              {t('Approach', 'Подход', 'Підхід')}
+            </span>{' '}— {persona.approach.promptStyle}
           </p>
         </div>
 
