@@ -115,6 +115,38 @@ function ArchetypePicker({ value, onChange, lang }) {
 // question field
 // ────────────────────────────────────────────────────────────────
 
+// ─── Preset chip strip ────────────────────────────────────────────
+function PresetChips({ presets, currentValue, onPick, lang }) {
+  if (!presets?.length) return null
+  return (
+    <div className="flex flex-wrap gap-1.5 mb-2.5">
+      <span className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-dim self-center mr-1">
+        {lang === 'ru' ? '◆ готовые' : '◆ presets'}
+      </span>
+      {presets.map((p, i) => {
+        const label = lang === 'ru' ? p.label_ru : p.label_en
+        const text = lang === 'ru' ? p.text_ru : p.text_en
+        const isActive = (currentValue || '').trim() === text.trim()
+        return (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onPick(text)}
+            className={`px-2.5 py-1 font-mono text-[10.5px] tracking-[1px] uppercase border transition-all cursor-pointer ${
+              isActive
+                ? 'bg-qa-teal text-black border-qa-teal'
+                : 'border-border bg-surface/40 text-text-secondary hover:border-qa-teal/60 hover:text-qa-teal'
+            }`}
+            title={text}
+          >
+            {label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 function QuestionField({ question, value, onChange, lang }) {
   const label = lang === 'ru' ? question.label_ru : question.label_en
   const hint = lang === 'ru' ? question.hint_ru : question.hint_en
@@ -141,6 +173,14 @@ function QuestionField({ question, value, onChange, lang }) {
       {hint && (
         <p className="text-[13px] text-text-dim italic mb-2.5 leading-relaxed">{hint}</p>
       )}
+
+      <PresetChips
+        presets={question.presets}
+        currentValue={value}
+        onPick={(text) => onChange(text)}
+        lang={lang}
+      />
+
       {question.voiceEnabled ? (
         <VoiceTextInput
           value={value}
