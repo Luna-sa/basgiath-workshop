@@ -6,9 +6,22 @@ export default function P00_Landing() {
 
   return (
     <PageShell pageIndex={0}>
-      <div className="space-y-8">
+      <div className="space-y-8 relative">
+        {/* Castle hero — full-bleed dark fantasy mood. Sits behind
+            the whole landing content. Lower-opacity + black gradient
+            keeps body text readable. */}
+        <div className="absolute inset-x-0 -top-12 h-[340px] -z-0 pointer-events-none overflow-hidden">
+          <img
+            src="/hero/landing-castle.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-50"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/40 to-bg" />
+        </div>
+
         {/* World intro */}
-        <div className="p-6 border border-[#2E2E2E] bg-[#141414] rounded-lg">
+        <div className="relative p-6 border border-[#2E2E2E] bg-[#141414]/90 backdrop-blur-sm rounded-lg">
           <div className="font-mono text-[13px] tracking-[3px] uppercase text-qa-teal mb-4">
             {t('Welcome', 'О мире', 'Про світ')}
           </div>

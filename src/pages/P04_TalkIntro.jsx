@@ -7,15 +7,26 @@ export default function P04_TalkIntro() {
     <PageShell pageIndex={4}>
       <div className="space-y-8">
 
-        {/* Hook */}
-        <div className="text-center">
-          <p className="font-display italic text-[clamp(20px,2.6vw,26px)] text-text-secondary leading-relaxed max-w-3xl mx-auto">
+        {/* Hook — rider + dragon silhouette anchors the lore moment.
+            Image is portrait (9:16); pinned right on desktop, full
+            width above on mobile. The hook line sits beside it.  */}
+        <div className="grid md:grid-cols-[1fr_280px] gap-6 items-center">
+          <p className="font-display italic text-[clamp(20px,2.6vw,26px)] text-text-secondary leading-relaxed">
             {t(
               "ChatGPT is a window. Claude Code is a worker who lives inside your project.",
               "ChatGPT - это окно. Claude Code - это рабочий, который живёт в твоём проекте.",
               "ChatGPT - це вікно. Claude Code - це працівник, який живе у твоєму проєкті."
             )}
           </p>
+          <div className="relative aspect-[9/16] max-h-[320px] mx-auto md:mx-0 overflow-hidden border border-border bg-black">
+            <img
+              src="/hero/bonding-rider.jpg"
+              alt=""
+              className="w-full h-full object-cover opacity-90"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-bg/50 via-transparent to-transparent" />
+          </div>
         </div>
 
         {/* Yesterday's habit vs today's move - concrete pain example */}

@@ -12,20 +12,33 @@ export default function P_ResourcesIntro() {
   return (
     <PageShell pageIndex={34}>
       <div className="space-y-6">
-        <div>
-          <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
-            ◆ {t('Bonded', 'Связан', 'Звʼязаний')}
-          </p>
-          <h2 className="font-display text-3xl text-white leading-tight mb-3">
-            {t('Take it home, rider.', 'Унеси домой, всадник.', 'Забери додому, вершнице.')}
-          </h2>
-          <p className="text-[15px] text-text-body leading-relaxed">
-            {t(
-              'Every prompt, every reference, every file. Bookmark this page - your dragon waits here any day you come back.',
-              'Каждый промпт, каждая справка, каждый файл. Закрепи закладкой - твой дракон ждёт тебя в любой день, когда захочешь вернуться.',
-              'Кожен промпт, кожен довідник, кожен файл. Збережи закладкою - твій дракон чекає на тебе будь-якого дня, коли захочеш повернутися.'
-            )}
-          </p>
+        {/* Ravens-with-scrolls — the "take it home" lore image.
+            Right-side hero on desktop, full-width banner on mobile. */}
+        <div className="grid md:grid-cols-[1fr_240px] gap-6 items-start">
+          <div>
+            <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
+              {t('Bonded', 'Связан', 'Звʼязаний')}
+            </p>
+            <h2 className="font-display text-3xl text-white leading-tight mb-3">
+              {t('Take it home, rider.', 'Унеси домой, всадник.', 'Забери додому, вершнице.')}
+            </h2>
+            <p className="text-[15px] text-text-body leading-relaxed">
+              {t(
+                'Every prompt, every reference, every file. Bookmark this page - your dragon waits here any day you come back.',
+                'Каждый промпт, каждая справка, каждый файл. Закрепи закладкой - твой дракон ждёт тебя в любой день, когда захочешь вернуться.',
+                'Кожен промпт, кожен довідник, кожен файл. Збережи закладкою - твій дракон чекає на тебе будь-якого дня, коли захочеш повернутися.'
+              )}
+            </p>
+          </div>
+          <div className="relative aspect-[9/16] max-h-[280px] mx-auto md:mx-0 overflow-hidden border border-border bg-black">
+            <img
+              src="/hero/resources-ravens.jpg"
+              alt=""
+              className="w-full h-full object-cover opacity-90"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tl from-bg/40 via-transparent to-transparent" />
+          </div>
         </div>
 
         <a

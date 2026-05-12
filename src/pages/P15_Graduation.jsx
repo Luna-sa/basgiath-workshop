@@ -45,6 +45,18 @@ export default function P15_Graduation() {
     <PageShell pageIndex={33}>
       <div className="space-y-7">
 
+        {/* Graduation banner — braid / rider silhouette as quiet
+            backdrop. Sits above the character portrait circle. */}
+        <div className="relative -mt-4 mb-2 h-[160px] overflow-hidden">
+          <img
+            src="/hero/graduation-braid.jpg"
+            alt=""
+            className="w-full h-full object-cover object-center opacity-60"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
+        </div>
+
         {/* Hero - character portrait + name */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}

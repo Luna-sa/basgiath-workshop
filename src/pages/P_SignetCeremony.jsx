@@ -577,10 +577,24 @@ export default function P_SignetCeremony() {
                 />
               </div>
 
-              {/* Dragon toggle — lore-flavoured */}
-              <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5">
-                <div className="flex items-start gap-4">
-                  <div className="flex-1">
+              {/* Dragon toggle — lore-flavoured. Hero dragon-coin
+                  on the right anchors "Manifest the bond" before the
+                  user has triggered generation. After flip, the coin
+                  is replaced by the loader → image block below. */}
+              <div className="relative border border-qa-teal/30 bg-qa-teal/[0.04] p-5 overflow-hidden">
+                {!wantsDragon && (
+                  <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[200px] opacity-50 pointer-events-none">
+                    <img
+                      src="/hero/signet-coin.jpg"
+                      alt=""
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-l from-transparent via-qa-teal/[0.04] to-bg" />
+                  </div>
+                )}
+                <div className="relative flex items-start gap-4">
+                  <div className="flex-1 md:pr-[210px]">
                     <div className="font-mono text-[10px] tracking-[2.5px] uppercase text-qa-teal mb-2">
                       ✦ {t('Manifest the bond', 'Воплоти связь', 'Втілити звʼязок')}
                     </div>

@@ -12,9 +12,21 @@ export default function P_AerieIntro() {
   return (
     <PageShell pageIndex={29}>
       <div className="space-y-6">
+        {/* Wingspan hero — dragon in flight against the starfield.
+            Banner image sets the lore mood before the voting copy. */}
+        <div className="relative -mt-4 mb-2 h-[180px] overflow-hidden border border-border">
+          <img
+            src="/hero/aerie-wingspan.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-80"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
-            ◆ {t('The Aerie', 'Аэрия', 'Аерія')}
+            {t('The Aerie', 'Аэрия', 'Аерія')}
           </p>
           <h2 className="font-display text-3xl text-white leading-tight mb-3">
             {t(
