@@ -113,18 +113,31 @@ export default function GemSlide({ gemId, pageIndex, position }) {
     <PageShell pageIndex={pageIndex}>
       <div className="space-y-8">
 
-        {/* Scale texture — shared visual rhythm across all 5 gem
-            deep-dives. Doesn't compete with repo screenshots
-            below; sets the "rider's collection" mood. */}
-        <div className="relative -mt-2 h-[60px] overflow-hidden border-y border-border opacity-60">
-          <img
-            src="/hero/gems-scale-texture.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg/60 via-bg/20 to-bg/60" />
-        </div>
+        {/* Hero image — used for gems that have a labelled lore
+            portrait (suzu, tool-search, quinn-jinx). Renders as a
+            full-aspect figure above everything else. Replaces the
+            generic scale-texture for these slides because the
+            picture already sets the mood AND carries the name. */}
+        {gem.heroImage ? (
+          <figure className="relative -mt-2 overflow-hidden border border-border bg-black">
+            <img
+              src={gem.heroImage}
+              alt={`${gem.name} lore portrait`}
+              className="w-full h-auto block"
+              loading="eager"
+            />
+          </figure>
+        ) : (
+          <div className="relative -mt-2 h-[60px] overflow-hidden border-y border-border opacity-60">
+            <img
+              src="/hero/gems-scale-texture.jpg"
+              alt=""
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-bg/60 via-bg/20 to-bg/60" />
+          </div>
+        )}
 
         {/* ═══════════════════════════════════════════════════════
             HERO

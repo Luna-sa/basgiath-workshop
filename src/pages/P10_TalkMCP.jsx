@@ -45,28 +45,25 @@ export default function P10_TalkMCP() {
   return (
     <PageShell pageIndex={16}>
       <div className="space-y-5">
-        {/* Core message as a cinematic hero — dragon-claws sits as
-            background, gradient + heavy bottom shadow keeps the
-            text fully readable. Replaces the previous "banner above
-            + text card below" split. */}
-        <div className="relative overflow-hidden border border-[#2E2E2E] rounded-lg min-h-[260px] flex items-center justify-center">
+        {/* MCP trinity — labelled diagram for the three servers we
+            install today: PLAYWRIGHT · browser, CONTEXT7 · docs,
+            FETCH · http. Picture stands on its own; the message
+            quote sits as a separate block below. */}
+        <figure className="relative -mt-2 overflow-hidden border border-[#2E2E2E] rounded-lg bg-black">
           <img
-            src="/hero/mcp-claws.jpg"
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-55"
+            src="/hero/mcp-trinity.jpg"
+            alt="MCP trinity — Playwright (browser), Context7 (docs), Fetch (http)"
+            className="w-full h-auto block"
             loading="eager"
           />
-          {/* Triple overlay: solid bg veil for contrast, vignette
-              from left, and a centred radial so text-zone is
-              darkest. Text reads as if back-lit. */}
-          <div className="absolute inset-0 bg-bg/55" />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg/70 via-transparent to-bg/40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.55)_0%,transparent_70%)]" />
-          <p className="relative text-[clamp(22px,2.6vw,28px)] text-text-body leading-relaxed text-center px-8 py-12 max-w-3xl">
+        </figure>
+
+        <div className="border-l-2 border-qa-teal pl-5 py-1 max-w-3xl">
+          <p className="font-display italic text-[clamp(20px,2.4vw,26px)] text-white leading-tight">
             {t(
-              <>Without MCP - AI <span className="text-text-dim">only answers</span>.<br />With MCP - AI <strong className="text-white">acts</strong>.</>,
-              <>Без MCP - AI <span className="text-text-dim">только отвечает</span>.<br />С MCP - AI <strong className="text-white">действует</strong>.</>,
-              <>Без MCP - AI <span className="text-text-dim">тільки відповідає</span>.<br />З MCP - AI <strong className="text-white">діє</strong>.</>
+              <>Without MCP - AI <span className="text-text-dim not-italic">only answers</span>. With MCP - AI <strong className="text-white">acts</strong>.</>,
+              <>Без MCP - AI <span className="text-text-dim not-italic">только отвечает</span>. С MCP - AI <strong className="text-white">действует</strong>.</>,
+              <>Без MCP - AI <span className="text-text-dim not-italic">тільки відповідає</span>. З MCP - AI <strong className="text-white">діє</strong>.</>
             )}
           </p>
         </div>
