@@ -1317,11 +1317,6 @@ let round = null
 let runSpeed = 1
 
 class ArenaScene extends Phaser.Scene {
-  preload() {
-    // Generated FW-mood top-down dragon sprite (transparent BG).
-    // Single sprite tinted per character — keeps texture footprint small.
-    this.load.image('dragon', 'arena-assets/dragon_sprite.png')
-  }
   create() {
     scene = this
     this.cameras.main.setBackgroundColor('#040408')
@@ -1430,38 +1425,80 @@ game = new Phaser.Game({
 // ─────────────────────────────────────────────────────────
 function buildDragonGfx(c, x, y) {
   const container = scene.add.container(x, y)
-  // Halo glow behind sprite for character-colour impact.
   const glow = scene.add.graphics()
   glow.fillStyle(c.color, 0.22)
   glow.fillCircle(0, 0, 22)
   glow.fillStyle(c.color, 0.12)
   glow.fillCircle(0, 0, 30)
-  // Generated FW-mood dragon sprite, tinted per character.
-  // Source PNG: 512x512 top-down with head pointing -Y; rotate +90° so the
-  // sprite's head aligns with the game's "right = forward" angle convention.
-  const body = scene.add.image(0, 0, 'dragon')
-  const baseScale = (c.bodyScale || 1) * 0.085
-  body.setScale(baseScale)
-  body.setAngle(90)
-  body.setTint(c.color)
-  // Map wing variants to subtle horizontal stretch on the sprite.
-  body.scaleX = baseScale * (c.wingSweep || 1)
-  // Two layered tweens give the wing-flap feel out of a static sprite:
-  //   - vertical squeeze on the body (wing-beat cycle)
-  //   - container hover (slow bob)
+  const wingUp = scene.add.graphics()
+  wingUp.fillStyle(0x000000, 0.4)
+  wingUp.beginPath()
+  wingUp.moveTo(2, -1); wingUp.lineTo(-3, -12); wingUp.lineTo(-12, -16)
+  wingUp.lineTo(-15, -10); wingUp.lineTo(-12, -6); wingUp.lineTo(-5, -4)
+  wingUp.closePath(); wingUp.fillPath()
+  wingUp.fillStyle(c.color, 0.92)
+  wingUp.lineStyle(1.2, 0xFFFFFF, 0.55)
+  if (c.jagged) {
+    wingUp.beginPath()
+    wingUp.moveTo(0, 0); wingUp.lineTo(-2, -10); wingUp.lineTo(-5, -13); wingUp.lineTo(-7, -10)
+    wingUp.lineTo(-10, -15); wingUp.lineTo(-12, -11); wingUp.lineTo(-13, -9)
+    wingUp.lineTo(-9, -5); wingUp.lineTo(-4, -3); wingUp.closePath()
+  } else {
+    wingUp.beginPath()
+    wingUp.moveTo(0, 0); wingUp.lineTo(-2, -11); wingUp.lineTo(-10, -15)
+    wingUp.lineTo(-13, -9); wingUp.lineTo(-9, -5); wingUp.lineTo(-4, -3); wingUp.closePath()
+  }
+  wingUp.fillPath(); wingUp.strokePath()
+  const wingDown = scene.add.graphics()
+  wingDown.fillStyle(0x000000, 0.4)
+  wingDown.beginPath()
+  wingDown.moveTo(2, 1); wingDown.lineTo(-3, 12); wingDown.lineTo(-12, 16)
+  wingDown.lineTo(-15, 10); wingDown.lineTo(-12, 6); wingDown.lineTo(-5, 4)
+  wingDown.closePath(); wingDown.fillPath()
+  wingDown.fillStyle(c.color, 0.92)
+  wingDown.lineStyle(1.2, 0xFFFFFF, 0.55)
+  if (c.jagged) {
+    wingDown.beginPath()
+    wingDown.moveTo(0, 0); wingDown.lineTo(-2, 10); wingDown.lineTo(-5, 13); wingDown.lineTo(-7, 10)
+    wingDown.lineTo(-10, 15); wingDown.lineTo(-12, 11); wingDown.lineTo(-13, 9)
+    wingDown.lineTo(-9, 5); wingDown.lineTo(-4, 3); wingDown.closePath()
+  } else {
+    wingDown.beginPath()
+    wingDown.moveTo(0, 0); wingDown.lineTo(-2, 11); wingDown.lineTo(-10, 15)
+    wingDown.lineTo(-13, 9); wingDown.lineTo(-9, 5); wingDown.lineTo(-4, 3); wingDown.closePath()
+  }
+  wingDown.fillPath(); wingDown.strokePath()
+  const body = scene.add.graphics()
+  body.fillStyle(0x000000, 0.5)
+  body.fillEllipse(-1, 1, 28, 8)
+  body.fillStyle(c.color, 1)
+  body.lineStyle(1.1, 0xFFFFFF, 0.55)
+  body.beginPath()
+  body.moveTo(15, 0); body.lineTo(11, -2); body.lineTo(7, -5); body.lineTo(2, -5)
+  body.lineTo(-3, -4); body.lineTo(-9, -2); body.lineTo(-13, 0); body.lineTo(-9, 2)
+  body.lineTo(-3, 4); body.lineTo(2, 5); body.lineTo(7, 5); body.lineTo(11, 2)
+  body.closePath(); body.fillPath(); body.strokePath()
+  body.fillStyle(0xFFEED5, 1); body.fillCircle(8, -2, 1.4)
+  body.fillStyle(0x000000, 1); body.fillCircle(8.3, -2, 0.7)
+  body.fillStyle(c.color, 1); body.lineStyle(1, 0xFFFFFF, 0.4)
+  body.beginPath()
+  body.moveTo(-13, 0); body.lineTo(-19, -3); body.lineTo(-16, 0); body.lineTo(-19, 3)
+  body.closePath(); body.fillPath(); body.strokePath()
+  container.add([glow, wingUp, wingDown, body])
+  body.scale = c.bodyScale || 1
+  wingUp.scaleX = (c.wingScale || 1) * (c.wingSweep || 1); wingUp.scaleY = (c.wingScale || 1)
+  wingDown.scaleX = (c.wingScale || 1) * (c.wingSweep || 1); wingDown.scaleY = (c.wingScale || 1)
   const flapTween = scene.tweens.add({
-    targets: body,
-    scaleY: { from: baseScale, to: baseScale * 0.82 },
-    duration: 260, yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
+    targets: [wingUp, wingDown],
+    scaleY: { from: (c.wingScale || 1), to: (c.wingScale || 1) * 0.4 },
+    duration: 220, yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
   })
   scene.tweens.add({
     targets: container,
     scaleX: { from: 1, to: 1.03 }, scaleY: { from: 1, to: 1.03 },
     duration: 1100, yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
   })
-  // Keep wingUp / wingDown references pointing at the sprite so existing
-  // consumers (boost glow, hit flashes) that expect those handles still work.
-  return { container, body, wingUp: body, wingDown: body, glow, flapTween }
+  return { container, body, wingUp, wingDown, glow, flapTween }
 }
 
 // ─────────────────────────────────────────────────────────
