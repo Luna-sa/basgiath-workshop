@@ -155,170 +155,177 @@ export default function P_Champions() {
           </motion.div>
         )}
 
-        {/* ─── Section 1: Best Dragon ─── */}
-        <AnimatePresence>
-          {stage >= 1 && (
-            <motion.section
-              key="best-dragon"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease: 'easeOut' }}
-              className="mb-20"
-            >
-              <h2 className="font-mono text-[14px] tracking-[4px] uppercase text-qa-teal mb-2 text-center">
-                ◆ {t('Best Dragon', 'Лучший Дракон', 'Найкращий Дракон')}
-              </h2>
-              <p className="font-display italic text-[15px] text-text-dim text-center mb-8">
-                {t(
-                  'The bond that lit the Aerie hottest.',
-                  'Связь, что зажгла Аэрию ярче всех.',
-                  'Звʼязок, що запалив Аерію найяскравіше.'
-                )}
-              </p>
-              {bestDragon ? (
-                <div className="flex flex-col items-center">
-                  <motion.div
-                    initial={{ scale: 0.85, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1.0, delay: 0.2 }}
-                    className="w-full max-w-[380px] aspect-square overflow-hidden border-2 border-qa-teal shadow-[0_0_60px_rgba(0,229,204,0.3)] mb-6"
-                  >
-                    <img
-                      src={bestDragon.image_url}
-                      alt={bestDragon.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </motion.div>
-                  <h3 className="font-display italic text-[clamp(36px,5vw,72px)] text-white leading-tight mb-1">
-                    {bestDragon.name}
-                  </h3>
-                  <p className="font-mono text-[clamp(14px,1.6vw,18px)] text-qa-teal tracking-[3px] uppercase mb-3">
-                    {t('rider', 'всадник', 'вершник')} · <span className="text-white">@{bestDragon.nickname}</span>
-                  </p>
-                  <div className="font-mono text-[12px] tracking-[3px] uppercase text-text-dim">
-                    ✦ {bestDragon.vote_count} {t('votes', 'голосов', 'голосів')}
+        {/* Three winners — horizontal grid. Each column reveals in
+            sequence (stage 1 → 2 → 3), but they sit side-by-side
+            instead of stacking vertically. */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12 items-start">
+
+          {/* ─── Column 1: Best Dragon ─── */}
+          <AnimatePresence>
+            {stage >= 1 && (
+              <motion.section
+                key="best-dragon"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease: 'easeOut' }}
+                className="flex flex-col"
+              >
+                <h2 className="font-mono text-[12px] tracking-[3px] uppercase text-qa-teal mb-2 text-center">
+                  ◆ {t('Best Dragon', 'Лучший Дракон', 'Найкращий Дракон')}
+                </h2>
+                <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
+                  {t(
+                    'The bond that lit the Aerie hottest.',
+                    'Связь, что зажгла Аэрию ярче всех.',
+                    'Звʼязок, що запалив Аерію найяскравіше.'
+                  )}
+                </p>
+                {bestDragon ? (
+                  <div className="flex flex-col items-center">
+                    <motion.div
+                      initial={{ scale: 0.85, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 1.0, delay: 0.2 }}
+                      className="w-full aspect-square overflow-hidden border-2 border-qa-teal shadow-[0_0_40px_rgba(0,229,204,0.3)] mb-4"
+                    >
+                      <img
+                        src={bestDragon.image_url}
+                        alt={bestDragon.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
+                    <h3 className="font-display italic text-[clamp(22px,2.5vw,32px)] text-white leading-tight mb-1 text-center">
+                      {bestDragon.name}
+                    </h3>
+                    <p className="font-mono text-[11px] text-qa-teal tracking-[2px] uppercase mb-2 text-center">
+                      {t('rider', 'всадник', 'вершник')} · <span className="text-white">@{bestDragon.nickname}</span>
+                    </p>
+                    <div className="font-mono text-[11px] tracking-[2px] uppercase text-text-dim">
+                      ✦ {bestDragon.vote_count} {t('votes', 'голосов', 'голосів')}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <p className="text-center font-display italic text-text-dim py-10">
-                  {t('No dragon sealed yet.', 'Ни один дракон ещё не запечатан.', 'Жоден дракон ще не запечатаний.')}
-                </p>
-              )}
-            </motion.section>
-          )}
-        </AnimatePresence>
-
-        {/* ─── Section 2: Most XP ─── */}
-        <AnimatePresence>
-          {stage >= 2 && (
-            <motion.section
-              key="most-xp"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease: 'easeOut' }}
-              className="mb-20"
-            >
-              <h2 className="font-mono text-[14px] tracking-[4px] uppercase text-yellow-300 mb-2 text-center">
-                ✦ {t('Most XP', 'Больше всех XP', 'Найбільше XP')}
-              </h2>
-              <p className="font-display italic text-[15px] text-text-dim text-center mb-8">
-                {t(
-                  'Every hidden corner explored. Every quest completed.',
-                  'Каждый скрытый угол исследован. Каждый квест завершён.',
-                  'Кожен прихований кут досліджено. Кожен квест завершено.'
+                ) : (
+                  <p className="text-center font-display italic text-text-dim py-10">
+                    {t('No dragon sealed yet.', 'Ни один дракон ещё не запечатан.', 'Жоден дракон ще не запечатаний.')}
+                  </p>
                 )}
-              </p>
-              {topXp ? (
-                <div className="flex flex-col items-center">
-                  <motion.div
-                    initial={{ scale: 0.7, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: 'spring', duration: 1.2, delay: 0.3 }}
-                    className="font-display text-[clamp(72px,12vw,160px)] font-bold text-yellow-300 leading-none mb-2"
-                    style={{ textShadow: '0 0 40px rgba(254, 237, 0, 0.4)' }}
-                  >
-                    {topXp.xp}
-                  </motion.div>
-                  <p className="font-mono text-[12px] tracking-[3px] uppercase text-yellow-300/70 mb-4">XP</p>
-                  <p className="font-display italic text-[clamp(28px,3.5vw,48px)] text-white mb-2">
-                    @{topXp.nickname}
-                  </p>
-                  {topXpChar && (
-                    <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mb-3">
-                      <span style={{ color: topXpChar.color }}>●</span> {pickCharacter(topXpChar, lang)?.name}
-                    </p>
-                  )}
-                  <p className="font-mono text-[13px] text-qa-teal">
-                    🐉 {topXp.dragons_found} / {TOTAL_DRAGONS} {t('wyrmlings', 'драконов', 'драконів')}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-center font-display italic text-text-dim py-10">
-                  {t('No XP recorded.', 'XP пока никто не накопил.', 'XP ще ніхто не накопичив.')}
-                </p>
-              )}
-            </motion.section>
-          )}
-        </AnimatePresence>
+              </motion.section>
+            )}
+          </AnimatePresence>
 
-        {/* ─── Section 3: Arena Champion ─── */}
-        <AnimatePresence>
-          {stage >= 3 && (
-            <motion.section
-              key="arena-champion"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease: 'easeOut' }}
-              className="mb-12"
-            >
-              <h2 className="font-mono text-[14px] tracking-[4px] uppercase text-pink-400 mb-2 text-center">
-                ▲ {t('Arena Champion', 'Чемпион Арены', 'Чемпіон Арени')}
-              </h2>
-              <p className="font-display italic text-[15px] text-text-dim text-center mb-8">
-                {t(
-                  'Ten flights. Five rivals. One pilot who out-coded them all.',
-                  'Десять полётов. Пять соперников. Один пилот, переписавший их всех.',
-                  'Десять польотів. Пʼять суперників. Один пілот, що переписав їх усіх.'
-                )}
-              </p>
-              {topArena ? (
-                <div className="flex flex-col items-center">
-                  <motion.div
-                    initial={{ scale: 0.85, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1.0, delay: 0.3 }}
-                    className="font-display text-[clamp(72px,12vw,160px)] font-bold text-white leading-none mb-2"
-                    style={{ textShadow: '0 0 40px rgba(255, 101, 190, 0.5)' }}
-                  >
-                    {topArena.total_score}
-                  </motion.div>
-                  <p className="font-mono text-[12px] tracking-[3px] uppercase text-pink-400/80 mb-4">
-                    {t('total', 'всего', 'усього')}
-                  </p>
-                  <p className="font-display italic text-[clamp(28px,3.5vw,48px)] text-white mb-2">
-                    @{topArena.nickname}
-                  </p>
-                  {topArenaChar && (
-                    <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mb-3">
-                      <span style={{ color: topArenaChar.color }}>●</span> {pickCharacter(topArenaChar, lang)?.name}
-                    </p>
+          {/* ─── Column 2: Most XP ─── */}
+          <AnimatePresence>
+            {stage >= 2 && (
+              <motion.section
+                key="most-xp"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease: 'easeOut' }}
+                className="flex flex-col"
+              >
+                <h2 className="font-mono text-[12px] tracking-[3px] uppercase text-yellow-300 mb-2 text-center">
+                  ✦ {t('Most XP', 'Больше всех XP', 'Найбільше XP')}
+                </h2>
+                <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
+                  {t(
+                    'Every hidden corner explored.',
+                    'Каждый скрытый угол исследован.',
+                    'Кожен прихований кут досліджено.'
                   )}
-                  <div className="flex gap-6 font-mono text-[12px] text-text-dim">
-                    <span>{t('best run', 'лучший run', 'найкращий run')}: <span className="text-white">{topArena.best_run_score}</span></span>
-                    <span>{t('fire', 'fire', 'fire')}: <span className="text-yellow-300">{topArena.total_fire_stars}</span></span>
-                    {topArena.hit_pattern && (
-                      <span className="text-yellow-300">✦ {t('constellation', 'созвездие', 'сузірʼя')}</span>
+                </p>
+                {topXp ? (
+                  <div className="flex flex-col items-center">
+                    <motion.div
+                      initial={{ scale: 0.7, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring', duration: 1.2, delay: 0.3 }}
+                      className="font-display text-[clamp(56px,8vw,100px)] font-bold text-yellow-300 leading-none mb-1"
+                      style={{ textShadow: '0 0 32px rgba(254, 237, 0, 0.4)' }}
+                    >
+                      {topXp.xp}
+                    </motion.div>
+                    <p className="font-mono text-[11px] tracking-[2.5px] uppercase text-yellow-300/70 mb-4">XP</p>
+                    <p className="font-display italic text-[clamp(20px,2.5vw,28px)] text-white mb-1 text-center">
+                      @{topXp.nickname}
+                    </p>
+                    {topXpChar && (
+                      <p className="font-mono text-[11px] tracking-[2px] uppercase text-text-dim mb-2">
+                        <span style={{ color: topXpChar.color }}>●</span> {pickCharacter(topXpChar, lang)?.name}
+                      </p>
                     )}
+                    <p className="font-mono text-[12px] text-qa-teal">
+                      🐉 {topXp.dragons_found} / {TOTAL_DRAGONS} {t('wyrmlings', 'драконов', 'драконів')}
+                    </p>
                   </div>
-                </div>
-              ) : (
-                <p className="text-center font-display italic text-text-dim py-10">
-                  {t('No arena runs recorded.', 'Запусков арены пока нет.', 'Запусків арени ще нема.')}
+                ) : (
+                  <p className="text-center font-display italic text-text-dim py-10">
+                    {t('No XP recorded.', 'XP пока никто не накопил.', 'XP ще ніхто не накопичив.')}
+                  </p>
+                )}
+              </motion.section>
+            )}
+          </AnimatePresence>
+
+          {/* ─── Column 3: Arena Champion ─── */}
+          <AnimatePresence>
+            {stage >= 3 && (
+              <motion.section
+                key="arena-champion"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, ease: 'easeOut' }}
+                className="flex flex-col"
+              >
+                <h2 className="font-mono text-[12px] tracking-[3px] uppercase text-pink-400 mb-2 text-center">
+                  ▲ {t('Arena Champion', 'Чемпион Арены', 'Чемпіон Арени')}
+                </h2>
+                <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
+                  {t(
+                    'Ten flights. Five rivals. One pilot.',
+                    'Десять полётов. Пять соперников. Один пилот.',
+                    'Десять польотів. Пʼять суперників. Один пілот.'
+                  )}
                 </p>
-              )}
-            </motion.section>
-          )}
-        </AnimatePresence>
+                {topArena ? (
+                  <div className="flex flex-col items-center">
+                    <motion.div
+                      initial={{ scale: 0.85, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 1.0, delay: 0.3 }}
+                      className="font-display text-[clamp(56px,8vw,100px)] font-bold text-white leading-none mb-1"
+                      style={{ textShadow: '0 0 32px rgba(255, 101, 190, 0.5)' }}
+                    >
+                      {topArena.total_score}
+                    </motion.div>
+                    <p className="font-mono text-[11px] tracking-[2.5px] uppercase text-pink-400/80 mb-4">
+                      {t('total', 'всего', 'усього')}
+                    </p>
+                    <p className="font-display italic text-[clamp(20px,2.5vw,28px)] text-white mb-1 text-center">
+                      @{topArena.nickname}
+                    </p>
+                    {topArenaChar && (
+                      <p className="font-mono text-[11px] tracking-[2px] uppercase text-text-dim mb-2">
+                        <span style={{ color: topArenaChar.color }}>●</span> {pickCharacter(topArenaChar, lang)?.name}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 font-mono text-[11px] text-text-dim">
+                      <span>{t('best', 'лучший', 'найкращий')}: <span className="text-white">{topArena.best_run_score}</span></span>
+                      <span>{t('fire', 'fire', 'fire')}: <span className="text-yellow-300">{topArena.total_fire_stars}</span></span>
+                      {topArena.hit_pattern && (
+                        <span className="text-yellow-300">✦ {t('constellation', 'созвездие', 'сузірʼя')}</span>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-center font-display italic text-text-dim py-10">
+                    {t('No arena runs recorded.', 'Запусков арены пока нет.', 'Запусків арени ще нема.')}
+                  </p>
+                )}
+              </motion.section>
+            )}
+          </AnimatePresence>
+
+        </div>
 
         {/* Footer with subtle Golden Wyrmling hint */}
         {stage >= 4 && (
@@ -335,6 +342,17 @@ export default function P_Champions() {
             )}
           </motion.p>
         )}
+
+        {/* Next button — only when this slide runs inside the main
+            workshop flow (not the projector-only /?page=champions
+            route). Appears once all three reveals have played. Sits
+            in the content flow (centered under the columns) so it
+            doesn't hide behind the HUD icons in the bottom-right. */}
+        {isInMainFlow() && stage >= 4 && (
+          <div className="flex justify-center mt-10 mb-6">
+            <FlowNextButton />
+          </div>
+        )}
       </div>
 
       {/* Golden Wyrmling - registered with slideKey 'champions',
@@ -345,13 +363,6 @@ export default function P_Champions() {
         id="golden-wyrmling"
         style={{ position: 'fixed', bottom: 280, right: 240 }}
       />
-
-      {/* Next button — only when this slide runs inside the main
-          workshop flow (not the projector-only /?page=champions
-          route). Appears once all three reveals have played. */}
-      {isInMainFlow() && stage >= 4 && (
-        <FlowNextButton />
-      )}
     </div>
   )
 }
@@ -367,7 +378,7 @@ function FlowNextButton() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
       onClick={() => { completePage(currentPage); navigateNext() }}
-      className="fixed bottom-8 right-8 z-40 px-7 py-3 bg-qa-teal text-black font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all cursor-pointer"
+      className="px-7 py-3 bg-qa-teal text-black font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all cursor-pointer"
     >
       {t('Continue →', 'Дальше →', 'Далі →')}
     </motion.button>
