@@ -131,7 +131,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
               fontFamily: '"JetBrains Mono", monospace',
               fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: '#888888', marginTop: 4,
             }}>
-              — Claude Code workshop · {dateStr}
+              — Claude Code · practical workshop · {dateStr}
             </span>
           </div>
         </div>

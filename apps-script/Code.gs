@@ -34,6 +34,7 @@ const SHEETS = {
   BOT_SUBMISSIONS: 'bot_submissions',
   ARENA_RUNS:      'arena_runs',
   FACILITATOR:     'facilitator_state',
+  FEEDBACK:        'feedback',
 }
 
 const HEADERS = {
@@ -69,6 +70,10 @@ const HEADERS = {
     'announcement_at', 'active_round_id', 'active_timer_start',
     'active_timer_duration', 'round_ended', 'round_winners',
     'updated_at',
+  ],
+  [SHEETS.FEEDBACK]: [
+    'id', 'submitted_at', 'student_id', 'nickname', 'character_id',
+    'rating', 'comment',
   ],
 }
 
@@ -114,6 +119,9 @@ function doPost(e) {
       // progress (XP, hidden dragons)
       updateStudentProgress,
       getXpLeaderboard,
+      // feedback
+      submitFeedback,
+      listFeedback,
       // admin
       deleteStudent,
       deleteStudentsByPrefix,
@@ -926,6 +934,71 @@ function updateStudentProgress({ studentId, nickname, xp, hiddenDragonsFound, cu
     _updateRow(SHEETS.STUDENTS, rowIdx, patch)
     return { ok: true }
   })
+}
+
+// ───────────────────────── Feedback ───────────────────────────
+
+/**
+ * Append a workshop feedback row. Idempotency-by-content is NOT
+ * enforced — participants can submit multiple times if they want
+ * to add detail. Each call appends a new row.
+ *
+ *   rating       1-5 (required)
+ *   comment      free-form (optional, capped at 2000 chars upstream)
+ *   nickname     public handle
+ *   studentId    matches students.id when registered
+ *   characterId  selected Threshing archetype
+ */
+function submitFeedback({ rating, comment, nickname, studentId, characterId }) {
+  const r = Number(rating)
+  if (!r || r < 1 || r > 5) throw new Error('rating must be 1-5')
+  return _withLock(() => {
+    _ensureFeedbackSheet()
+    const row = _appendRow(SHEETS.FEEDBACK, {
+      id: _uuid(),
+      submitted_at: _now(),
+      student_id: studentId || '',
+      nickname: (nickname || '').toLowerCase().trim(),
+      character_id: characterId || '',
+      rating: r,
+      comment: String(comment || '').slice(0, 2000),
+    })
+    SpreadsheetApp.flush()
+    return { ok: true, id: row.id }
+  })
+}
+
+/**
+ * Idempotently create the Feedback sheet + header row. Called by
+ * submitFeedback so the workshop doesn't have to re-run doSetup()
+ * after deploying this version.
+ */
+function _ensureFeedbackSheet() {
+  const ss = _ss()
+  let sheet = ss.getSheetByName(SHEETS.FEEDBACK)
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEETS.FEEDBACK)
+  }
+  const headers = HEADERS[SHEETS.FEEDBACK]
+  const lastCol = Math.max(sheet.getLastColumn(), 1)
+  const existing = sheet.getRange(1, 1, 1, lastCol).getValues()[0]
+  if (existing.join('|') !== headers.join('|')) {
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers])
+    sheet.setFrozenRows(1)
+  }
+}
+
+/**
+ * Admin-only — list every feedback row. No auth wall on Apps Script
+ * Web App so this is "obscurity over auth", same posture as the
+ * other admin reads (listStudents, listDragons). If you need
+ * real auth, route through a separate sheet view.
+ */
+function listFeedback() {
+  const rows = _allRows(SHEETS.FEEDBACK)
+  // Newest first
+  rows.sort((a, b) => String(b.submitted_at).localeCompare(String(a.submitted_at)))
+  return { feedback: rows }
 }
 
 function getXpLeaderboard() {
