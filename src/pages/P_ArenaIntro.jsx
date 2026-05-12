@@ -2,6 +2,7 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
 import CheckpointButton from '../components/CheckpointButton'
+import { buildArenaBriefMd } from '../data/arena-rules'
 
 /**
  * Workshop-flow intro to the Dragon Arena. The arena itself runs at
@@ -14,9 +15,24 @@ import CheckpointButton from '../components/CheckpointButton'
 export default function P_ArenaIntro() {
   const t = useT()
   const nickname = useWorkshopStore(s => s.user.nickname)
+  const name = useWorkshopStore(s => s.user.name)
+  const characterId = useWorkshopStore(s => s.user.characterId)
   const arenaUrl = nickname
     ? `/?page=arena&nickname=${encodeURIComponent(nickname)}`
     : '/?page=arena'
+
+  const handleDownloadBrief = () => {
+    const md = buildArenaBriefMd({ characterId, nickname, name })
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `ARENA-${nickname || characterId || 'brief'}.md`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
 
   return (
     <PageShell pageIndex={24}>
@@ -46,11 +62,28 @@ export default function P_ArenaIntro() {
           >
             {t('Open Arena →', 'Открыть арену →', 'Відкрити арену →')}
           </a>
+          <button
+            type="button"
+            onClick={handleDownloadBrief}
+            disabled={!characterId}
+            className="inline-block border border-qa-teal/50 text-qa-teal px-5 py-3 font-mono text-[11px] tracking-[2.5px] uppercase font-semibold hover:bg-qa-teal/10 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            title={!characterId ? t('Pick a character first', 'Сначала выбери персонажа', 'Спершу обери персонажа') : undefined}
+          >
+            ↓ {t('Download Arena Brief', 'Скачать Arena Brief', 'Завантажити Arena Brief')}
+          </button>
           {nickname && (
             <span className="text-[12px] text-text-dim italic">
               {t('Signed in as', 'Вошла как', 'Увійшла як')}{' '}
               <span className="font-mono text-qa-teal">{nickname}</span>
             </span>
+          )}
+        </div>
+
+        <div className="border border-qa-teal/20 bg-qa-teal/[0.03] p-4 text-[13px] text-text-body leading-relaxed">
+          {t(
+            "The Arena Brief is a single ARENA.md — full game rules, your signet and easter-egg pattern, a starter tick() template, and a ready-to-paste prompt that gets Claude into iteration mode. Save it next to your project and Claude Code will read it.",
+            'Arena Brief - один ARENA.md: полные правила игры, твой signet и easter-egg паттерн, стартовый tick() шаблон и готовый промпт для Claude чтобы войти в режим итераций. Сохрани рядом с проектом - Claude Code его прочтёт.',
+            'Arena Brief - один ARENA.md: повні правила гри, твій signet і easter-egg патерн, стартовий tick() шаблон і готовий промпт для Claude, щоб увійти в режим ітерацій. Збережи поруч із проєктом - Claude Code його прочитає.'
           )}
         </div>
 
