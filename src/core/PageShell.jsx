@@ -45,8 +45,19 @@ export default function PageShell({ pageIndex, subStepId, children }) {
 
   return (
     <div className="h-screen w-full flex flex-col bg-bg pt-[52px] overflow-hidden">
-      <div className="flex-1 flex flex-col items-center overflow-y-auto px-6 sm:px-10 lg:px-16 py-6">
-        <div className="w-full max-w-[960px] mx-auto flex flex-col flex-1">
+      <div className="flex-1 flex flex-col items-center overflow-y-auto px-6 sm:px-10 lg:px-16 py-6 relative">
+        <div className="w-full max-w-[960px] mx-auto flex flex-col flex-1 relative">
+          {/* Hidden Dragons — absolute-positioned inside the scroll
+              container so they scroll WITH the content (not stuck to
+              the viewport edges). Coords in registry are relative to
+              the 960px content frame. */}
+          {findDragonsBySlide(narrativeKey).map(dragon => (
+            <HiddenDragon
+              key={dragon.id}
+              id={dragon.id}
+              style={{ position: 'absolute', ...dragon.position }}
+            />
+          ))}
           {/* Slide header — large, breathing. Eyebrow + divider dot
               carry the participant's persona colour so the workshop
               feels tinted to their archetype. */}
@@ -89,21 +100,9 @@ export default function PageShell({ pageIndex, subStepId, children }) {
         </div>
       </div>
 
-      {/* Character whisper — bottom-right floating quote from the
-          chosen Empyrean archetype. Renders nothing if no character /
-          no commentary for this slide. */}
+      {/* Character whisper — top-left floating quote from the
+          chosen Empyrean archetype's bonded dragon. */}
       <CharacterCommentary slideKey={narrativeKey} position="fixed" />
-
-      {/* Hidden Dragons — tiny clickable silhouettes scattered across
-          slides. PageShell auto-renders them by matching narrativeKey
-          against the registry; slide JSX never knows they exist. */}
-      {findDragonsBySlide(narrativeKey).map(dragon => (
-        <HiddenDragon
-          key={dragon.id}
-          id={dragon.id}
-          style={{ position: 'fixed', ...dragon.position }}
-        />
-      ))}
     </div>
   )
 }

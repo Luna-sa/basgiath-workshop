@@ -25,10 +25,17 @@ import { updateStudentProgress } from '../api/progress'
  *   <HiddenDragon id="..." style={{ top: 20, right: 30 }} />
  */
 
-// We use the emoji glyph 🐉 — universally recognisable as a dragon
-// without relying on an SVG silhouette that read more like a bug.
-// `color` doesn't tint emoji (they're colour-font glyphs), but
-// opacity + drop-shadow filter give us the hide / glow effect.
+// Hand-drawn dragon silhouettes (5 variants in /public/dragons/).
+// Each dragon entry deterministically picks one via hash(id) % 5.
+const SILHOUETTE_COUNT = 5
+function pickSilhouette(id) {
+  let h = 0
+  for (let i = 0; i < (id || '').length; i++) {
+    h = ((h << 5) - h) + id.charCodeAt(i)
+    h |= 0
+  }
+  return (Math.abs(h) % SILHOUETTE_COUNT) + 1
+}
 
 export default function HiddenDragon({
   id,
@@ -127,6 +134,9 @@ export default function HiddenDragon({
   }
 
   // Animation variants per stage
+  const silhouetteIdx = pickSilhouette(id)
+  const silhouettePath = `/dragons/silhouette-${silhouetteIdx}.png`
+
   const baseStyle = {
     position: style.position || 'absolute',
     top: style.top ?? dragon.position?.top,
@@ -135,9 +145,7 @@ export default function HiddenDragon({
     bottom: style.bottom ?? dragon.position?.bottom,
     width: size,
     height: size,
-    fontSize: size - 4,
     lineHeight: 1,
-    color,
     pointerEvents: stage === 'idle' ? 'auto' : 'none',
     background: 'transparent',
     border: 'none',
@@ -193,7 +201,21 @@ export default function HiddenDragon({
         initial={{ opacity: baseOpacity, scale: 1, rotate: rotation }}
         {...motionProps}
       >
-        <span aria-hidden="true" style={{ display: 'block', lineHeight: 1, filter: isGolden ? 'sepia(1) saturate(8) hue-rotate(-30deg) brightness(1.2)' : 'none' }}>🐉</span>
+        <img
+          src={silhouettePath}
+          alt=""
+          draggable={false}
+          style={{
+            display: 'block',
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            pointerEvents: 'none',
+            filter: isGolden
+              ? `drop-shadow(0 0 4px ${color}) hue-rotate(40deg) saturate(2) brightness(1.3)`
+              : 'none',
+          }}
+        />
       </motion.button>
 
       {/* Spark trail particles during flight — render 6 echoes with stagger */}
