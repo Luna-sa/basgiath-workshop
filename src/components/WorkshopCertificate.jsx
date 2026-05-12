@@ -138,7 +138,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
 
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: '#888888', marginBottom: 6 }}>
-            — Riders Quadrant · {new Date(sealedAt).getFullYear()}
+            — Cohort · {new Date(sealedAt).getFullYear()}
           </div>
           <div style={{
             fontFamily: '"Playfair Display", Georgia, serif',
@@ -148,7 +148,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             lineHeight: 1.1,
             fontWeight: 400,
           }}>
-            Certificate<br />of Attendance
+            Certificate<br />of Completion
           </div>
         </div>
       </header>
@@ -213,7 +213,9 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             ))}
           </div>
 
-          {/* Curved caption — workshop pillars on the rim */}
+          {/* Curved caption — workshop pillars on the rim. Provides
+              context for outside viewers ("what did this person
+              actually learn?") via the topic list. */}
           <div style={{
             position: 'absolute', top: -6, left: -6,
             width: 'calc(100% + 12px)', height: 'calc(100% + 12px)',
@@ -225,10 +227,26 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
               </defs>
               <text style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 10, letterSpacing: 4, fill: '#888888', textTransform: 'uppercase' }}>
                 <textPath href="#circlePath" startOffset="6%">
-                  — CLAUDE.MD · COMMANDS · AGENTS · SKILLS · MCP · HOOKS · PLUGINS · BONDED ·&nbsp;
+                  — CLAUDE.MD · COMMANDS · AGENTS · SKILLS · MCP · HOOKS · PLUGINS ·&nbsp;
                 </textPath>
               </text>
             </svg>
+          </div>
+
+          {/* Caption under the portrait — frames the dragon as the
+              AI persona output, so LinkedIn viewers who don't know
+              the workshop don't wonder why there's a dragon on a
+              tech training certificate. */}
+          <div style={{
+            position: 'absolute', bottom: -4, left: 0, right: 0, textAlign: 'center',
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: '#888888',
+            lineHeight: 1.4,
+          }}>
+            — AI assistant identity<br />
+            <span style={{ fontStyle: 'italic', color: '#00E5CC', textTransform: 'none', letterSpacing: 0.5, fontSize: 10 }}>
+              {dragonName}
+            </span>
           </div>
 
           {/* Sealed-in-Aerie stamp (optional) */}
@@ -286,7 +304,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontStyle: 'italic', fontSize: 17, color: '#A8A8A8', lineHeight: 1.5,
             marginTop: 28, marginBottom: 6, maxWidth: 560,
           }}>
-            crossed the Parapet and walked the full ritual of —
+            has successfully completed —
           </p>
 
           <p style={{
@@ -294,7 +312,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontSize: 22, lineHeight: 1.3, color: '#FFFFFF', fontWeight: 500,
             marginBottom: 28, maxWidth: 560,
           }}>
-            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>the Claude Code Workshop — Basics</em>, a practical session for QA engineers. Sealed a bonded dragon: <em style={{ color: '#FFFFFF', fontStyle: 'italic' }}>{dragonName}</em>.
+            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>the Claude Code Workshop — Basics</em>, a hands-on training for QA engineers covering CLAUDE.md, slash commands, sub-agents, skills, MCP servers, hooks and plugins. Personal AI assistant built and named <em style={{ color: '#FFFFFF', fontStyle: 'italic' }}>{dragonName}</em>.
           </p>
 
           {/* Stats grid */}
@@ -305,9 +323,9 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
           }}>
             {[
               { num: '7', sub: '/7', label: 'Slash\ncommands', color: '#FFFFFF' },
-              { num: '4', sub: '', label: 'Sub-agents\nwielded', color: '#00E5CC', italic: true },
+              { num: '4', sub: '', label: 'Sub-agents\nbuilt', color: '#00E5CC', italic: true },
               { num: '3', sub: '/3', label: 'MCP\nservers', color: '#FFFFFF' },
-              { num: '1', sub: '', label: 'Dragon\nsealed', color: '#FF65BE' },
+              { num: '1', sub: '', label: 'AI persona\ndesigned', color: '#FF65BE' },
             ].map((s, i) => (
               <div key={i} style={{
                 padding: i === 0 ? '18px 16px 18px 0' : '18px 16px 18px 20px',
@@ -405,40 +423,35 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             />
           </div>
 
-          {/* Signature column */}
+          {/* Tutor column — restrained editorial layout, no fake
+              calligraphic signature. Avatar + name + role + handles
+              reads as legitimate credentialing without theatre. */}
           <div style={{ textAlign: 'left' }}>
-            <svg viewBox="0 0 220 50" width="200" height="44" style={{ display: 'block', marginBottom: 2 }}>
-              <path
-                d="M 10 38 Q 14 24, 24 24 Q 30 24, 32 36 Q 34 20, 42 16 Q 50 12, 54 26 Q 56 40, 48 42
-                   M 58 28 Q 64 18, 70 28 Q 74 36, 68 40
-                   M 78 18 Q 78 34, 88 34 Q 94 34, 94 24 Q 94 14, 88 14
-                   M 98 22 Q 102 14, 108 22 Q 110 28, 108 30 Q 106 32, 102 28
-                   M 114 14 Q 114 36, 120 34
-                   M 124 22 Q 124 34, 130 34 Q 138 32, 136 20 Q 132 16, 126 20
-                   M 140 14 L 140 36 M 140 22 Q 148 20, 152 24 Q 154 34, 146 36
-                   M 158 22 Q 158 34, 164 34 Q 170 30, 170 22
-                   M 174 14 Q 174 36, 182 32
-                   M 186 24 Q 196 18, 204 26 Q 206 34, 196 38"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <div style={{ width: 200, height: 1, background: '#FFFFFF', opacity: 0.3, marginBottom: 8 }} />
-            <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: 17, color: '#FFFFFF', fontWeight: 500 }}>
+            <div style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: '#888888', marginBottom: 4,
+            }}>
+              Tutor
+            </div>
+            <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: 20, color: '#FFFFFF', fontWeight: 500, lineHeight: 1.1 }}>
               Anastasiia <em style={{ fontStyle: 'italic', color: '#00E5CC' }}>Babanina</em>
             </div>
+            <div style={{ width: 180, height: 1, background: '#00E5CC', opacity: 0.5, margin: '8px 0' }} />
             <div style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: '#888888', marginTop: 4,
+              fontSize: 10, letterSpacing: 1.5, color: '#DCDCDC', lineHeight: 1.6,
             }}>
-              — Tutor · {TUTOR_LINKEDIN}
+              QA Tech Lead · 10+ years
             </div>
             <div style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: 8.5, letterSpacing: 2, textTransform: 'uppercase', color: '#666666', marginTop: 2,
+              fontSize: 9.5, letterSpacing: 1.5, color: '#00E5CC', marginTop: 4, lineHeight: 1.5,
+            }}>
+              {TUTOR_LINKEDIN}
+            </div>
+            <div style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: 9, letterSpacing: 1.5, color: '#888888', marginTop: 2,
             }}>
               ig: {TUTOR_INSTAGRAM}
             </div>
