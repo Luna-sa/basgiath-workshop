@@ -330,7 +330,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
         </div>
       </div>
 
-      {/* FOOTER: QR | signature | credential ID */}
+      {/* FOOTER: seal | signature | credential ID */}
       <footer
         style={{
           position: 'absolute', bottom: 0, left: 0, right: 0,
@@ -338,7 +338,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
           display: 'grid', gridTemplateColumns: '120px 1fr auto', gap: 40, alignItems: 'end',
         }}
       >
-        {/* QR placeholder — points to workshop URL */}
+        {/* Decorative seal — runic stamp, no URL */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
           <div style={{ width: 84, height: 84, background: '#FFFFFF', padding: 6, position: 'relative' }}>
             {/* Stylised faux-QR — visual badge only. Actual verify lives at workshop URL. */}
@@ -379,8 +379,8 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontFamily: '"JetBrains Mono", monospace',
             fontSize: 8, letterSpacing: 2, textTransform: 'uppercase', color: '#888888', lineHeight: 1.5,
           }}>
-            — Bond the workshop at<br />
-            <strong style={{ color: '#FFFFFF' }}>{WORKSHOP_URL}</strong>
+            — Bonded Rider<br />
+            <strong style={{ color: '#FFFFFF' }}>Basgiath QA Academy</strong>
           </div>
         </div>
 
