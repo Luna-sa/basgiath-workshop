@@ -367,7 +367,7 @@ What I'm leaving with:
 - Claude that opens browsers, hits APIs, reads live documentation. Not describing how. Doing it.
 - A personal AI assistant for routine work that used to eat my mornings.
 
-The loop changed. Small stuff runs in the background. I spend the day on what actually needs a human.
+The loop changed. Small stuff runs in the background. I focus on what actually needs a human.
 
 For any QA still copy-pasting between ChatGPT and an IDE, this workshop closes the gap.
 

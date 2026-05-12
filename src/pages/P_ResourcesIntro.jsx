@@ -246,7 +246,9 @@ export default function P_ResourcesIntro() {
           </div>
         </div>
 
-        {/* Action row */}
+        {/* Action row — sharing only (LinkedIn + Download). The
+            Resource Hub CTA moved to its own prominent block below
+            so it actually gets clicked. */}
         <div className="flex flex-wrap gap-3 items-center justify-center pt-2">
           <button
             type="button"
@@ -265,14 +267,6 @@ export default function P_ResourcesIntro() {
           >
             ↓ {t('Download PNG', 'Скачать PNG', 'Завантажити PNG')}
           </button>
-          <a
-            href="/?page=resources"
-            target="_blank"
-            rel="noopener"
-            className="border border-qa-teal/40 text-qa-teal px-5 py-2.5 font-mono text-[12px] tracking-[2px] uppercase hover:bg-qa-teal/10 transition-all cursor-pointer"
-          >
-            {t('Open Resource Hub →', 'Открыть Resource Hub →', 'Відкрити Resource Hub →')}
-          </a>
         </div>
 
         {toast && (
@@ -290,6 +284,46 @@ export default function P_ResourcesIntro() {
             )}
           </p>
         )}
+
+        {/* ─── Resource Hub CTA ───
+            Own block, full-width, animated. This is where every
+            workshop deliverable lives (master prompt, autopilots,
+            handouts, gems, external links) so we don't want anyone
+            scrolling past it. Pulsing teal glow + chevron nudge on
+            hover. */}
+        <section className="mt-12 pt-8 border-t border-border">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
+              ✦ {t('Your take-home arsenal', 'Твой take-home арсенал', 'Твій take-home арсенал')}
+            </p>
+            <h3 className="font-display italic text-[clamp(24px,3vw,30px)] text-white leading-tight mb-4">
+              {t(
+                "Everything you built today lives in the Resource Hub",
+                'Всё что ты сегодня построил(а) лежит в Resource Hub',
+                'Все що ти сьогодні побудував(ла) лежить у Resource Hub'
+              )}
+            </h3>
+            <p className="text-[14px] text-text-secondary leading-relaxed mb-6 max-w-xl mx-auto">
+              {t(
+                'Master setup prompt, autopilot recoveries, hidden gems, the lecture arsenal installer, every external link. Bookmark it — your AI assistant waits there any day you come back.',
+                'Master setup промпт, autopilot-восстановления, hidden gems, установщик арсенала лекции, все внешние ссылки. Закрепи закладкой - твой AI ждёт в любой день когда захочешь вернуться.',
+                'Master setup промпт, autopilot-відновлення, hidden gems, встановлювач арсеналу лекції, усі зовнішні посилання. Збережи закладкою - твій AI чекає будь-якого дня коли захочеш повернутися.'
+              )}
+            </p>
+            <a
+              href="/?page=resources"
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-3 bg-qa-teal text-black px-9 py-4 font-mono text-[13px] tracking-[3px] uppercase font-bold hover:shadow-[0_0_36px_rgba(0,229,204,0.6)] transition-all animate-pulse-teal group"
+            >
+              <span>{t('Open Resource Hub', 'Открыть Resource Hub', 'Відкрити Resource Hub')}</span>
+              <span className="text-xl transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </a>
+            <p className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mt-4">
+              {t('Bookmark this · opens in a new tab', 'Сохрани в закладки · откроется в новой вкладке', 'Збережи в закладки · відкриється в новій вкладці')}
+            </p>
+          </div>
+        </section>
 
         {/* ─── Feedback form ───
             Two-field, takes ~15 seconds. Saves to gsheets if the
