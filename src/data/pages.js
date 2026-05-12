@@ -126,9 +126,22 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔒 TALK: Power moves
+  // 🔒 TALK: MCP demo — moved here so the facilitator can talk
+  // through MCP while participants are still installing on P07.
   {
     id: 9,
+    slug: 'talk-mcp',
+    phase: 'live',
+    title: "Riders' arts",
+    narrativeKey: 'talk_mcp',
+    gate: { type: 'facilitator', message: 'Фасилитатор показывает MCP...', message_en: 'Facilitator shows MCP…', message_uk: 'Фасилітатор показує MCP…' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🔒 TALK: Power moves
+  {
+    id: 10,
     slug: 'talk-power-moves',
     phase: 'live',
     title: 'Power moves',
@@ -140,25 +153,13 @@ export const PAGES = [
 
   // 🔓 SIGNATURE: Build your personal CLAUDE.md from 7 questions
   {
-    id: 10,
+    id: 11,
     slug: 'persona-builder',
     phase: 'live',
     title: 'Your signet emerges',
     narrativeKey: 'persona_builder',
     gate: { type: 'self-report', message: 'Сгенерируй и применить CLAUDE.md', message_en: 'Generate and apply CLAUDE.md', message_uk: 'Згенеруй і застосуй CLAUDE.md' },
     xpReward: 100,
-    subSteps: null,
-  },
-
-  // 🔒 TALK: MCP demo by facilitator (5 min showcase, no participant task)
-  {
-    id: 11,
-    slug: 'talk-mcp',
-    phase: 'live',
-    title: "Riders' arts",
-    narrativeKey: 'talk_mcp',
-    gate: { type: 'facilitator', message: 'Фасилитатор показывает MCP...', message_en: 'Facilitator shows MCP…', message_uk: 'Фасилітатор показує MCP…' },
-    xpReward: 0,
     subSteps: null,
   },
 
