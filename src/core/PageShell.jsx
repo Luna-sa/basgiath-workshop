@@ -23,7 +23,7 @@ function pickLocalised(entry, key, lang) {
   return entry[key]
 }
 
-export default function PageShell({ pageIndex, subStepId, children }) {
+export default function PageShell({ pageIndex, subStepId, children, bgImage }) {
   const page = PAGES[pageIndex]
   const lang = useLocale(s => s.lang)
   const persona = usePersona()
@@ -44,7 +44,23 @@ export default function PageShell({ pageIndex, subStepId, children }) {
   } : null
 
   return (
-    <div className="h-screen w-full flex flex-col bg-bg pt-[52px] overflow-hidden">
+    <div className="h-screen w-full flex flex-col bg-bg pt-[52px] overflow-hidden relative">
+      {/* Optional full-page background image. Renders BEHIND the
+          scrollable content but INSIDE the page-shell viewport so
+          it doesn't fight z-index with any sibling chrome. */}
+      {bgImage && (
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <img
+            src={bgImage}
+            alt=""
+            className="w-full h-full object-cover opacity-40"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-bg/30 via-bg/50 to-bg/80" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_100%)]" />
+        </div>
+      )}
+
       <div className="flex-1 flex flex-col items-center overflow-y-auto px-6 sm:px-10 lg:px-16 py-6 relative">
         <div className="w-full max-w-[960px] mx-auto flex flex-col flex-1 relative">
           {/* Hidden Dragons - absolute-positioned inside the scroll

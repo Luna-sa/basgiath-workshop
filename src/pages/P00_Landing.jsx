@@ -5,27 +5,7 @@ export default function P00_Landing() {
   const t = useT()
 
   return (
-    <PageShell pageIndex={0}>
-      {/* Castle background — full-screen behind ALL content. Fixed
-          position so it stays put while content scrolls. Content
-          panels below use opaque bg-[#0a0a0a]/95 + backdrop-blur so
-          their text never competes with the image underneath. */}
-      <div
-        className="fixed inset-0 pointer-events-none -z-10"
-        aria-hidden="true"
-      >
-        <img
-          src="/hero/landing-castle.jpg"
-          alt=""
-          className="w-full h-full object-cover opacity-40"
-          loading="eager"
-        />
-        {/* Soft vignette + bottom fade so cards near the bottom of
-            the screen don't fight the brightest part of the sky. */}
-        <div className="absolute inset-0 bg-gradient-to-b from-bg/30 via-bg/50 to-bg/80" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)]" />
-      </div>
-
+    <PageShell pageIndex={0} bgImage="/hero/landing-castle.jpg">
       <div className="space-y-8 relative">
         {/* World intro */}
         <div className="relative p-6 border border-[#2E2E2E] bg-[#0a0a0a]/95 backdrop-blur-md rounded-lg">
