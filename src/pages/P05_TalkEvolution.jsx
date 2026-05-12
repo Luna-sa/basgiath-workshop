@@ -121,8 +121,33 @@ export default function P05_TalkEvolution() {
 
         </div>
 
+        {/* Visual showcase — four labeled lore images for the four
+            "hero" components we deep-dive into next (spine / eyes /
+            reflexes / companions). Each image carries its own carved
+            tablet so the grid needs no captions. 2×2 grid on md+,
+            stacks on mobile. */}
+        <div className="pt-2">
+          <p className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
+            {t('Up next — each piece up close', 'Дальше - каждый компонент крупным планом', 'Далі - кожен компонент крупним планом')}
+          </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <LoreTile src="/hero/spine-claudemd.jpg" />
+            <LoreTile src="/hero/eyes-mcp.jpg" />
+            <LoreTile src="/hero/reflexes-hooks.jpg" />
+            <LoreTile src="/hero/companion-plugins.jpg" />
+          </div>
+        </div>
+
       </div>
     </PageShell>
+  )
+}
+
+function LoreTile({ src }) {
+  return (
+    <div className="relative overflow-hidden border border-border bg-black aspect-[16/8.5]">
+      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+    </div>
   )
 }
 

@@ -23,6 +23,22 @@ export default function ComponentDeepDive({ pageIndex, data }) {
     <PageShell pageIndex={pageIndex}>
       <div className="space-y-8">
 
+        {/* HERO BANNER — labeled image with the carved tablet in the
+            corner (SPINE · CLAUDE.md etc). Renders full-width above
+            the eyebrow/name because the tablet is already doing the
+            naming. Used for images that have built-in lore labels. */}
+        {data.heroBanner && (
+          <div className="relative -mt-2 overflow-hidden border border-border bg-black aspect-[16/8.5]">
+            <img
+              src={data.heroBanner}
+              alt=""
+              className="w-full h-full object-cover"
+              loading="eager"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
+          </div>
+        )}
+
         {/* HERO — optional accent image right of the headline. If
             data.heroImage is set, hero becomes a 2-col grid with
             the image as a portrait card on the right. Italic

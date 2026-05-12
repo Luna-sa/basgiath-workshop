@@ -6,7 +6,7 @@ export default function P_CompMCP() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 05 · eyes',
-  heroImage: '/hero/mcp-component-eye.jpg',
+  heroBanner: '/hero/eyes-mcp.jpg',
   name: 'MCP',
   path: '~/.claude/mcp_servers.json',
   tagline_en: "Model Context Protocol - Claude's bridges to the outside world. Browsers, GitHub, Notion, your filesystem, your database. Each MCP server gives Claude a new set of tools to call.",

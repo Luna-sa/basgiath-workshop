@@ -6,7 +6,7 @@ export default function P_CompClaudeMd() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 01 · spine',
-  heroImage: '/hero/claudemd-book.jpg',
+  heroBanner: '/hero/spine-claudemd.jpg',
   name: 'CLAUDE.md',
   path: '~/.claude/CLAUDE.md  ·  <project>/CLAUDE.md',
   tagline_en: "The markdown file Claude reads at the start of every session. Your persona, your rules, the context of your work - in one place.",
