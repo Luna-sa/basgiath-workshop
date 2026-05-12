@@ -82,6 +82,64 @@ function inferBreedFromScale(scaleText = '') {
   return "a battle-tested Navarrean war-dragon, breed-line uncertain, bladed or clubbed tail"
 }
 
+// User's sigil text → visual marking on the dragon's hide.
+//
+// The participant's literal sigil sentence can be a paragraph of preset
+// concatenations or a long vow — neither belongs in a visual prompt.
+// Instead, we scan for theme keywords and pick a curated visual that
+// fits the *mood* of what they typed. The result is always a short,
+// well-formed visual sentence that the image model can render cleanly.
+const SIGNET_VISUALS = [
+  {
+    match: /(library|book|study|read|3am|3 ?am|night|owl|scholar|тиш|книг|ноч|библ|вечір|вечер)/i,
+    visual: 'a delicate etched glyph along the upper flank — scholarly knotwork, faintly luminescent where light catches the engraving',
+  },
+  {
+    match: /(workshop|forge|hammer|sawdust|smith|craft|build|hand|мастер|куз|труд|майстер)/i,
+    visual: 'a hammered brand-mark on the shoulder — deep, irregular, the kind of stamp left by an old forge anvil',
+  },
+  {
+    match: /(bonfire|hearth|spark|cabin|warm|огон|пламя|искра|тепл|вогни)/i,
+    visual: 'an ember-warmed brand on the lower jaw — coal-coloured but still carrying faint heat-glow where the metal once touched',
+  },
+  {
+    match: /(coffee|morning|silence|quiet|still|cup|кофе|утро|тишин|спокой|кава|ранок)/i,
+    visual: 'a thin curling glyph etched into the throat — like steam rising from a held cup at dawn',
+  },
+  {
+    match: /(mountain|ridge|peak|dawn|sunrise|cliff|highland|coast|sea|ocean|skye|гор|пик|утёс|вершин|море|узбережж)/i,
+    visual: 'a weathered tribal scar along the flank — wind-carved lines like a sigil cut by the high coastal cliffs',
+  },
+  {
+    match: /(highland|gàidhlig|gaelic|peat|moor|celt|knot|шотланд|вереск|кельт)/i,
+    visual: 'a knotwork sigil twisting along one shoulder — looped Pictish stonework lines weathered into the scale',
+  },
+  {
+    match: /(blade|sword|dagger|edge|hunt|strike|hawk|клинок|меч|нож|охот|удар)/i,
+    visual: 'a thin angular slash mark across the chest plate — like a duel-scar the dragon never let heal',
+  },
+  {
+    match: /(star|sky|moon|constellation|comet|звезд|небо|луна|комет|зорі|місяць)/i,
+    visual: 'a constellation of small etched marks along the spine ridge — like a star map burned into the scale',
+  },
+  {
+    match: /(river|water|tide|flow|wave|вода|река|поток|волн|річк)/i,
+    visual: 'flowing wave-line patterns etched along one flank — water-carved depth, dark on dark',
+  },
+  {
+    match: /(forest|tree|root|leaf|pine|moss|лес|дерев|корн|лист|листок|сосн)/i,
+    visual: 'branching root-glyph along the haunch — like bark-grain pressed into the hide',
+  },
+]
+
+function inferSignetFromText(sigilText = '') {
+  const s = String(sigilText || '').toLowerCase()
+  for (const rule of SIGNET_VISUALS) {
+    if (rule.match.test(s)) return rule.visual
+  }
+  return 'a single ancient etched rune across one flank, weathered into the scale until almost part of the hide'
+}
+
 /** Pose / mood inferred from motto sentiment. */
 function inferPoseFromMotto(motto = '') {
   const m = motto.toLowerCase()
@@ -119,38 +177,31 @@ function resolveVisual(value, map, fallback) {
   return map[value] || fallback
 }
 
-// Hard cap on free-form user text that lands directly in the prompt.
-// Multi-select presets can produce 400+ char paragraphs for sigil/motto,
-// and the static prompt scaffolding already eats ~2.5k chars — we must
-// keep total under the model's 4000-char limit.
-const MAX_FREEFORM = 200
-
-function capText(str, max = MAX_FREEFORM) {
-  const s = String(str || '').trim().replace(/\s+/g, ' ')
-  if (s.length <= max) return s
-  return s.slice(0, max - 1).replace(/\s+\S*$/, '') + '…'
-}
-
 export function buildDragonPrompt(answers = {}) {
-  const scaleRaw = capText(answers.scale, 160) || 'storm-grey scales with hints of bronze along the spine'
-  const breed = inferBreedFromScale(scaleRaw)
+  // The prompt is built ENTIRELY from derived visual signals — no
+  // user free-form text lands here verbatim. Scale colour comes from
+  // the character archetype, breath/wings/eyes from voice archetype
+  // + tone, signet glyph from a keyword scan of the user's sigil
+  // theme, pose from a keyword scan of the user's vow theme. This
+  // means a participant can type a 2000-word vow and the image
+  // generation still produces a clean, on-aesthetic dragon — the
+  // long text lives in CLAUDE.md (where it belongs), and only the
+  // semantic intent reaches the image model.
+  const scale = (answers.scale || '').trim() || 'storm-grey scales with hints of bronze along the spine'
+  const breed = inferBreedFromScale(scale)
   const breath = resolveVisual(answers.breath, BREATH_VISUALS, BREATH_VISUALS.fire)
-  const signet = capText(answers.signet) || 'a single etched rune marking across one flank, ancient and weathered'
+  const signet = inferSignetFromText(answers.signet)
   const size = SIZE_VISUALS[answers.size] || SIZE_VISUALS.mid
   const wings = resolveVisual(answers.wings, WING_VISUALS, WING_VISUALS.membranous)
   const eyes = resolveVisual(answers.eyes, EYE_VISUALS, EYE_VISUALS.gold)
-  const motto = capText(answers.motto)
-  const pose = inferPoseFromMotto(motto)
+  const pose = inferPoseFromMotto(answers.motto)
 
-  // Tight prompt: ~2300 chars of scaffolding leaves ~1700 for user
-  // text + breed/wing/eye blocks. Total stays under the 4000-char
-  // limit even with verbose presets selected.
   const parts = [
     `A cinematic film still from a dark-fantasy epic — "Fourth Wing", "House of the Dragon", "Reign of Fire" visual language. Photoreal practical-effects dragon. NOT illustrated, NOT painted, NOT anime, NOT D&D mini.`,
     ``,
     `Dragon: ${breed}. ${size}.`,
     ``,
-    `Scale and hide: ${scaleRaw}. The dragon's chosen colour stays muted but clearly readable on lit planes (spine ridge, wing edge, jaw, haunch) — pigmented but desaturated. World around it is grainy charcoal-slate atmosphere; scales dissolve into haze at the edges, hue lives in the rim-light. Fourth Wing book-cover plate energy.`,
+    `Scale and hide: ${scale}. The dragon's chosen colour stays muted but clearly readable on lit planes (spine ridge, wing edge, jaw, haunch) — pigmented but desaturated. World around it is grainy charcoal-slate atmosphere; scales dissolve into haze at the edges, hue lives in the rim-light. Fourth Wing book-cover plate energy.`,
     ``,
     `Wings: ${wings}.`,
     `Eyes: ${eyes}. Iris hyper-detailed, pupil deep, world reflected in the corneal curve.`,
@@ -158,22 +209,11 @@ export function buildDragonPrompt(answers = {}) {
     `Marking: ${signet}. Integrated into the scale pattern, weathered to match the surrounding hide.`,
     ``,
     `Composition: ${pose}.`,
-    motto ? `The dragon's bearing carries the rider's vow: "${motto}".` : '',
     ``,
     `Cinematography: silhouette-forward, dark, moody. Heavy 35mm film grain, thick atmospheric haze, single distant rim-light. Low contrast, analog softness, NOT sharp. Desaturated cool world (charcoal, slate, deep greys) with the dragon's hue as the only readable colour in the frame.`,
     ``,
     `NO text, NO logos, NO watermark, NO humans, NO cartoon, NO anime, NO smooth digital painting, NO bright saturated colour pop, NO clinical CGI sharpness, NO 8K hero-shot. Muted-but-recognisable colour, not pure grey, not pure silhouette.`,
-  ].filter(Boolean)
+  ]
 
-  let out = parts.join('\n')
-
-  // Hard safety belt — even with all caps applied, exotic preset
-  // combinations could theoretically blow the budget. Trim from the
-  // end on the last paragraph (the negatives block) which carries
-  // the least unique signal.
-  const LIMIT = 3900
-  if (out.length > LIMIT) {
-    out = out.slice(0, LIMIT - 1).replace(/\s+\S*$/, '') + '…'
-  }
-  return out
+  return parts.join('\n')
 }
