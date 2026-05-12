@@ -51,7 +51,12 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
   const color = CHAR_HEX[characterId] || '#00E5CC'
   const colorAlpha20 = color + '33'   // 20% alpha
   const colorAlpha08 = color + '14'   // 8% alpha
-  const firstName = character.name.split(' ')[0]
+  // The voice we hear is the DRAGON's, not the rider's. The participant
+  // IS the rider (Violet/Xaden/...). Their bonded dragon (Tairn/Sgaeyl/...)
+  // is the partner whispering through the workshop.
+  const dragonRaw = (character.dragon || '').split(/[\s—–-]+/)[0].trim()
+  const isKnownDragon = dragonRaw && !/^(Unknown|Неизвестен|Невідом)/i.test(dragonRaw) && !/появит/i.test(dragonRaw)
+  const partnerName = isKnownDragon ? dragonRaw : character.name.split(' ')[0]
 
   if (position === 'inline') {
     return (
@@ -63,7 +68,7 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
           <Avatar character={character} color={color} />
           <div>
             <div className="font-mono text-[10px] tracking-[2px] uppercase mb-0.5" style={{ color }}>
-              {firstName}
+              {partnerName}
             </div>
             <p className="font-display italic text-[15px] text-text-body leading-relaxed">
               {line}
@@ -74,15 +79,15 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
     )
   }
 
-  // position === 'fixed' — floating bottom-right
+  // position === 'fixed' — floating top-left (top-right is ProgressBar/locale toggle)
   if (isDismissed) return null
   return (
     <motion.div
       key={currentKey}
-      initial={{ opacity: 0, x: 40 }}
+      initial={{ opacity: 0, x: -40 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.45, ease: 'easeOut' }}
-      className="fixed bottom-24 right-5 z-40 max-w-[300px] backdrop-blur-md"
+      className="fixed top-20 left-5 z-40 max-w-[300px] backdrop-blur-md"
       style={{
         background: `linear-gradient(135deg, ${colorAlpha08}, rgba(15,15,15,0.85))`,
         border: `1px solid ${colorAlpha20}`,
@@ -101,7 +106,7 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
         <Avatar character={character} color={color} />
         <div className="flex-1 pr-3">
           <div className="font-mono text-[10px] tracking-[2.5px] uppercase mb-1" style={{ color }}>
-            {firstName}
+            {partnerName}
           </div>
           <p className="font-display italic text-[13.5px] leading-relaxed text-text-body">
             {line}

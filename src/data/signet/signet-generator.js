@@ -73,9 +73,21 @@ export function generateSignetClaudeMd({ characterId = 'self', archetype, archet
 
   const arch = buildArchetypeBlock(archetype, archetypeCustom)
 
+  // In the lore: the participant IS the rider (Violet, Xaden, ...).
+  // Their bonded partner is the DRAGON (Tairn, Sgaeyl, ...). The
+  // CLAUDE.md header should name the dragon — that's whom they bond
+  // with for the workshop.
+  const DRAGON_FOR_RIDER = {
+    violet: 'Tairn',
+    xaden: 'Sgaeyl',
+    rhiannon: 'Feirge',
+    ridoc: 'Aotrom',
+    liam: 'Deigh',
+    imogen: 'твой дракон',
+  }
   const characterName = characterId === 'self'
     ? name
-    : (characterId.charAt(0).toUpperCase() + characterId.slice(1))
+    : (DRAGON_FOR_RIDER[characterId] || (characterId.charAt(0).toUpperCase() + characterId.slice(1)))
 
   const personalityBlock = tpl.personality.join('\n')
   const takesOnBlock = tpl.takesOn.map(x => `— ${x}`).join('\n')

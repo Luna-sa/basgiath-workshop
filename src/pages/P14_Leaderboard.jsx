@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { CHARACTERS } from '../data/characters'
+import { CHARACTERS, pickCharacter } from '../data/characters'
+import { useLocale } from '../i18n/store'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
@@ -12,6 +13,7 @@ import PageShell from '../core/PageShell'
  */
 export default function P14_Leaderboard() {
   const t = useT()
+  const lang = useLocale(s => s.lang)
   const myNickname = useWorkshopStore(s => s.user.nickname)
   const [submissions, setSubmissions] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,22 +36,27 @@ export default function P14_Leaderboard() {
       <div className="space-y-6">
         {/* Six-slot grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {CHARACTERS.map(c => {
+          {CHARACTERS.map(rawC => {
+            const c = pickCharacter(rawC, lang)
             const sub = submissions.find(s => s.character_id === c.id)
             const isMine = sub && sub.nickname === (myNickname || '').toLowerCase()
+            const hex = c.hex || '#888'
             return (
               <div
                 key={c.id}
-                className={`p-4 border rounded-[2px] ${
-                  isMine ? 'border-qa-teal bg-qa-teal/[0.06]' : sub ? 'border-border bg-surface/40' : 'border-border/40 bg-bg/40'
-                }`}
+                className="p-4 border rounded-[2px]"
+                style={{
+                  borderColor: isMine ? hex : (sub ? hex + '99' : hex + '44'),
+                  backgroundColor: hex + (isMine ? '12' : sub ? '08' : '04'),
+                  boxShadow: isMine ? `0 0 18px ${hex}33` : 'none',
+                }}
               >
                 <div className="flex items-center gap-3 mb-3">
                   {c.image
-                    ? <img src={c.image} alt={c.name} className="w-10 h-10 rounded-full object-cover" style={{ borderLeft: '2px solid', borderColor: c.hex }} />
+                    ? <img src={c.image} alt={c.name} className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: hex }} />
                     : <span className="text-2xl">{c.emoji || '🐉'}</span>}
                   <div>
-                    <div className="font-display italic text-lg text-white">{c.name}</div>
+                    <div className="font-display italic text-lg" style={{ color: hex }}>{c.name}</div>
                     <div className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim">{c.title}</div>
                   </div>
                 </div>
