@@ -8,7 +8,7 @@ const DATA = {
   eyebrow: 'COMPONENT · 07 · companions',
   name: 'Plugins',
   path: '~/.claude/plugins/',
-  tagline_en: "Bundles of commands + agents + skills + hooks + MCP servers shared as one unit. Install one plugin — gain an entire stack tuned by someone who already solved the problem.",
+  tagline_en: "Bundles of commands + agents + skills + hooks + MCP servers shared as one unit. Install one plugin - gain an entire stack tuned by someone who already solved the problem.",
   tagline_ru: "Пакеты commands + agents + skills + hooks + MCP-серверов, общающиеся как одна единица. Установил один плагин - получил целый stack, настроенный кем-то кто уже решил задачу.",
   tagline_uk: "Пакети commands + agents + skills + hooks + MCP-серверів, що шерять як одну одиницю. Встановив один плагін - отримав цілий stack, налаштований кимось, хто вже розвʼязав задачу.",
   stats: [
@@ -16,7 +16,7 @@ const DATA = {
     { value: 'one click', label: 'install' },
     { value: 'meta', label: 'category' },
   ],
-  what_en: "A plugin is a packaged stack — multiple commands + multiple agents + multiple skills + maybe hooks + maybe MCP server config, all distributed together. Install via the `/plugin` command inside Claude Code (browse marketplace and click), or by cloning the plugin's git repo into ~/.claude/plugins/. The plugin's individual pieces land in the right subfolders (commands/ agents/ skills/) and are available as if you wrote them yourself. Famous plugins: obra/superpowers (one meta-skill that orchestrates 30 others), Anthropic's official skills bundle, digital-marketing-pro (115 commands for marketing workflows).",
+  what_en: "A plugin is a packaged stack - multiple commands + multiple agents + multiple skills + maybe hooks + maybe MCP server config, all distributed together. Install via the `/plugin` command inside Claude Code (browse marketplace and click), or by cloning the plugin's git repo into ~/.claude/plugins/. The plugin's individual pieces land in the right subfolders (commands/ agents/ skills/) and are available as if you wrote them yourself. Famous plugins: obra/superpowers (one meta-skill that orchestrates 30 others), Anthropic's official skills bundle, digital-marketing-pro (115 commands for marketing workflows).",
   what_ru: 'Плагин - это упакованный stack: несколько commands + несколько agents + несколько skills + опционально hooks + опционально MCP-конфиг, всё распространяется вместе. Установка через `/plugin` команду внутри Claude Code (browse marketplace и клик), или git clone репо плагина в ~/.claude/plugins/. Отдельные куски плагина попадают в правильные подпапки (commands/ agents/ skills/) и доступны так, как если бы ты их сам написал. Известные плагины: obra/superpowers (один мета-скилл который оркестрирует 30 других), официальный skills bundle Anthropic, digital-marketing-pro (115 команд для marketing workflow).',
   what_uk: 'Плагін - це запакований stack: кілька commands + кілька agents + кілька skills + опціонально hooks + опціонально MCP-конфіг, все поширюється разом. Встановлення через `/plugin` команду усередині Claude Code (browse marketplace і клік), або git clone репо плагіна в ~/.claude/plugins/. Окремі шматки плагіна потрапляють у правильні підтеки (commands/ agents/ skills/) і доступні так, наче ти їх сам написав. Відомі плагіни: obra/superpowers (один мета-скілл який оркеструє 30 інших), офіційний skills bundle Anthropic, digital-marketing-pro (115 команд для marketing workflow).',
   structure: `~/.claude/plugins/
@@ -98,17 +98,17 @@ superpowers/  digital-marketing-pro/  anthropic-claude-skills/
 }`,
   when: [
     {
-      en: 'When someone has already solved your problem at a higher level than one command — onboard their plugin, get 20+ pieces of work for free.',
+      en: 'When someone has already solved your problem at a higher level than one command - onboard their plugin, get 20+ pieces of work for free.',
       ru: 'Когда кто-то уже решил твою задачу на уровне выше одной команды - подключи его плагин, получи 20+ кусков работы бесплатно.',
       uk: 'Коли хтось уже розвʼязав твою задачу на рівні вище однієї команди - підключи його плагін, отримай 20+ шматків роботи безкоштовно.',
     },
     {
-      en: 'When you want a coherent stack for a domain — design (taste + impeccable + open-design), QA (test-generator + bug-triager + security-scanner), marketing (the 115-command bundle).',
+      en: 'When you want a coherent stack for a domain - design (taste + impeccable + open-design), QA (test-generator + bug-triager + security-scanner), marketing (the 115-command bundle).',
       ru: 'Когда нужен когерентный stack для домена - design (taste + impeccable + open-design), QA (test-generator + bug-triager + security-scanner), marketing (115-command бандл).',
       uk: 'Коли потрібен когерентний stack для домену - design (taste + impeccable + open-design), QA (test-generator + bug-triager + security-scanner), marketing (115-command бандл).',
     },
     {
-      en: 'When you build your own collection of commands + skills — package them as a plugin, share with the team, version it like real software.',
+      en: 'When you build your own collection of commands + skills - package them as a plugin, share with the team, version it like real software.',
       ru: 'Когда собрал свой набор commands + skills - упакуй как плагин, поделись с командой, версионируй как настоящий софт.',
       uk: 'Коли зібрав свій набір commands + skills - упакуй як плагін, поділись з командою, версіонуй як справжній софт.',
     },

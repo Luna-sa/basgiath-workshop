@@ -1,10 +1,10 @@
 /**
- * Arena rules block — appended to CLAUDE.md by the Signet Ceremony.
+ * Arena rules block - appended to CLAUDE.md by the Signet Ceremony.
  *
  * Philosophy: rules, not strategy. Claude gets the **mechanics** of the
  * Arena but no recommended strategy. The participant should DISCOVER
  * their winning approach through dialogue with their bonded Claude.
- * Many strategies win — none is obviously best. The synergy of the
+ * Many strategies win - none is obviously best. The synergy of the
  * participant's intuition and Claude's reasoning shapes a unique bot.
  */
 
@@ -12,7 +12,7 @@ const PERSONA_SIGNETS = {
   violet: {
     name: 'Ghost Walk',
     desc: 'Walls do not collide for 4 seconds. You can fly through obstacles.',
-    use_hint: 'Think — where is it worth charging in, once the walls stop being barriers?',
+    use_hint: 'Think - where is it worth charging in, once the walls stop being barriers?',
   },
   xaden: {
     name: 'Triple Boost',
@@ -32,7 +32,7 @@ const PERSONA_SIGNETS = {
   liam: {
     name: 'Endless Fuel',
     desc: 'Fuel does not drain for 4 seconds. You can hold throttle at 1.0 without looking back.',
-    use_hint: 'When would fuel have become a blocker — but without it, you would have flown the line perfectly?',
+    use_hint: 'When would fuel have become a blocker - but without it, you would have flown the line perfectly?',
   },
   imogen: {
     name: 'Auto-aim',
@@ -79,7 +79,7 @@ const PERSONA_LABEL = {
 
 /**
  * Build the Arena Rules markdown block for a given persona.
- * Returns "" for characterId='self' or unknown — they don't have an
+ * Returns "" for characterId='self' or unknown - they don't have an
  * arena character (the Signet output for 'self' is just personal voice).
  */
 export function buildArenaRulesBlock(characterId) {
@@ -90,11 +90,11 @@ export function buildArenaRulesBlock(characterId) {
 
   return `
 
-# ARENA — game rules (facts only, no strategy)
+# ARENA - game rules (facts only, no strategy)
 
 I'm flying into the Aerie Arena as ${label} against 5 AI rivals. 5 runs, sum of scores = my total. Arena champion = highest total.
 
-## tick() cycle — what I read
+## tick() cycle - what I read
 
 Every frame (20× per second, 900 ticks over 45 seconds) the function \`tick(state)\` is called with full game state:
 
@@ -129,43 +129,43 @@ return {
 - **-1** per hard wall collision (speed > 1.5)
 - **-5** if throttle < 0.15 for more than 4.5s in a row (stall)
 
-## My signet — ${personaSignet.name}
+## My signet - ${personaSignet.name}
 
 ${personaSignet.desc}
 
 ${personaSignet.use_hint}
 
-## My easter-egg pattern — ${personaPattern.name}
+## My easter-egg pattern - ${personaPattern.name}
 
 ${personaPattern.desc}
 
-If the **first** N stars I collect form exactly this shape — +50. Can be triggered once per run; further repetitions don't count.
+If the **first** N stars I collect form exactly this shape - +50. Can be triggered once per run; further repetitions don't count.
 
-## Rivals — vulnerabilities of each
+## Rivals - vulnerabilities of each
 
 - **Tairn** (greedy): always flies for the nearest star, never boosts, eats walls on long routes. Beat with combo chains or by stealing his nearest star.
 - **Sgaeyl** (cautious): plans for ~10 ticks at the start, slow opener. Get to the first wave before her.
 - **Andarna** (aggressive): burns boost recklessly, runs dry by the late game. Hold distance > 130px while she spends, then pick up.
-- **Feirge** (blocker): parks between me and the most valuable star. Bait with a false target, then return to the real route. Or take the trade — let her block gold while you stack bronze combos.
+- **Feirge** (blocker): parks between me and the most valuable star. Bait with a false target, then return to the real route. Or take the trade - let her block gold while you stack bronze combos.
 - **Codagh** (chaotic): switches target every 4 seconds. Whenever her target lines up with the wind (no wind in MVP, but: random drift), she flies off. Clean late-game wins.
 
 ## My task
 
-Talk it through with me. Many strategies win — none is obviously best. I'm your bonded — my voice and my optics will be biased toward your style. Together we build a \`tick()\` function that maximises your total.
+Talk it through with me. Many strategies win - none is obviously best. I'm your bonded - my voice and my optics will be biased toward your style. Together we build a \`tick()\` function that maximises your total.
 
 Questions worth asking out loud:
 
 - Exactly when should I press signet? What do I gain from my persona-buff right here?
 - Should I aim for an 8-chain combo, or play it safe on 3-chains?
 - Which rival do I fear most, and how do I outmanoeuvre them?
-- What's more valuable per run — fire stars, or a series of gold/silver through combo?
+- What's more valuable per run - fire stars, or a series of gold/silver through combo?
 - What if I collect my easter-egg pattern first (+50), then switch to standard mode?
 
-I will not hand you the "best recipe". I don't know how you think. I know the rules. The rest — is dialogue.`
+I will not hand you the "best recipe". I don't know how you think. I know the rules. The rest - is dialogue.`
 }
 
 /**
- * Build the full standalone "Arena Brief" — downloadable .md the
+ * Build the full standalone "Arena Brief" - downloadable .md the
  * participant can save and paste/import into Claude Code as a
  * working document. Includes everything in buildArenaRulesBlock,
  * a header with the participant's name + nickname, a starter
@@ -175,11 +175,11 @@ I will not hand you the "best recipe". I don't know how you think. I know the ru
 export function buildArenaBriefMd({ characterId, nickname, name } = {}) {
   const rulesBlock = buildArenaRulesBlock(characterId)
   if (!rulesBlock) {
-    return `# Arena Brief\n\nNo character selected — pick one in the Threshing slide and re-download this brief so it includes your signet and easter-egg pattern.`
+    return `# Arena Brief\n\nNo character selected - pick one in the Threshing slide and re-download this brief so it includes your signet and easter-egg pattern.`
   }
 
   const label = PERSONA_LABEL[characterId] || characterId
-  const header = `# Arena Brief — ${nickname ? '@' + nickname : 'anonymous rider'}
+  const header = `# Arena Brief - ${nickname ? '@' + nickname : 'anonymous rider'}
 
 Rider: ${name || nickname || 'unnamed'}
 Character: ${label}
@@ -206,7 +206,7 @@ Generated: ${new Date().toISOString().slice(0, 10)}
 ## Starter \`tick(state)\` template
 
 Drop this into the Arena code editor as your baseline. It's
-intentionally naïve — flies toward the nearest star at full
+intentionally naïve - flies toward the nearest star at full
 throttle. Iterate from here.
 
 \`\`\`js
@@ -214,7 +214,7 @@ function tick(state) {
   const me = state.me
   const stars = state.stars
 
-  // 1. Pick the nearest star — naive greedy
+  // 1. Pick the nearest star - naive greedy
   let nearest = null
   let nearestDist = Infinity
   for (const s of stars) {
@@ -264,24 +264,24 @@ Copy this whole block, paste it into Claude Code:
 I'm tuning my Arena bot for the Aerie Arena finale.
 
 You already have my CLAUDE.md persona loaded. Read the ARENA.md
-in this directory — it has the full rules, my character
+in this directory - it has the full rules, my character
 (${label}), my signet (${PERSONA_SIGNETS[characterId]?.name}),
 and my easter-egg pattern (${PERSONA_PATTERNS[characterId]?.name}).
 
 Don't give me "the best strategy". Help me find mine.
 
 Start by asking me three short questions:
-1. What's my instinct — chase combos or chase value?
-2. Which rival do I most want to beat — Tairn, Sgaeyl, Andarna,
+1. What's my instinct - chase combos or chase value?
+2. Which rival do I most want to beat - Tairn, Sgaeyl, Andarna,
    Feirge, or Codagh?
-3. How risky do I want to play — safe 3-chains or aggressive
+3. How risky do I want to play - safe 3-chains or aggressive
    8-chain attempts?
 
 Based on my answers, propose one concrete change to the starter
 tick() in ARENA.md. Just one change. Explain in two sentences
 what I gain and what I trade. Then wait for me to try it.
 
-After I run it once and tell you the score + what I saw — we
+After I run it once and tell you the score + what I saw - we
 iterate. One change at a time. We have five runs in the Arena.
 Let's make each one matter.
 \`\`\`

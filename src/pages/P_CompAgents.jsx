@@ -16,7 +16,7 @@ const DATA = {
     { value: 'parallel', label: 'execution' },
     { value: 'own context', label: 'isolation' },
   ],
-  what_en: 'An agent is a subagent — a separate Claude instance with its own system prompt, its own tools, its own context window. You invoke it via the Task tool: "spawn a code-reviewer on these three files". It runs in parallel with the main session, can read files and search the web, and returns a single message at the end. The main session never sees the agent\'s intermediate steps — only the final answer. Use this to keep your main context lean.',
+  what_en: 'An agent is a subagent - a separate Claude instance with its own system prompt, its own tools, its own context window. You invoke it via the Task tool: "spawn a code-reviewer on these three files". It runs in parallel with the main session, can read files and search the web, and returns a single message at the end. The main session never sees the agent\'s intermediate steps - only the final answer. Use this to keep your main context lean.',
   what_ru: 'Агент - это subagent: отдельный инстанс Claude со своим system-промптом, своими инструментами, своим контекстным окном. Вызываешь через Task tool: «spawn code-reviewer на эти три файла». Работает параллельно с main session, может читать файлы и искать в вебе, возвращает одно сообщение в конце. Main session никогда не видит промежуточных шагов агента - только финальный ответ. Используй это чтобы держать main context чистым.',
   what_uk: 'Агент - це subagent: окремий інстанс Claude зі своїм system-промптом, своїми інструментами, своїм контекстним вікном. Викликаєш через Task tool: «spawn code-reviewer на ці три файли». Працює паралельно з main session, може читати файли і шукати в вебі, повертає одне повідомлення в кінці. Main session ніколи не бачить проміжних кроків агента - тільки фінальну відповідь. Використовуй це щоб тримати main context чистим.',
   structure: `~/.claude/agents/
@@ -26,7 +26,7 @@ const DATA = {
 ├── docs-writer.md          ← spawn to draft documentation
 └── bug-triager.md          ← spawn to read logs and rank severity
 
-# Agents are independent Claudes — parallel work, isolated context,
+# Agents are independent Claudes - parallel work, isolated context,
 # main session sees only their final answer.`,
   anatomy: [
     {
@@ -49,7 +49,7 @@ const DATA = {
     },
     {
       field: 'system prompt',
-      desc_en: 'The body of the file. Becomes the agent\'s personality and rules — separate from your CLAUDE.md.',
+      desc_en: 'The body of the file. Becomes the agent\'s personality and rules - separate from your CLAUDE.md.',
       desc_ru: 'Тело файла. Становится личностью и правилами агента - отдельно от твоего CLAUDE.md.',
       desc_uk: 'Тіло файлу. Стає особистістю і правилами агента - окремо від твого CLAUDE.md.',
     },
@@ -83,21 +83,21 @@ List concrete scenarios not covered by existing tests:
 ## Approve / Request changes
 One word.
 
-Be concrete. Never say "consider reviewing this" — point at a file
+Be concrete. Never say "consider reviewing this" - point at a file
 and a line. No filler. No "great work overall".`,
   when: [
     {
-      en: 'When a sub-task needs lots of context — reading 20 files for code review, scanning a whole codebase for security issues. Offload to keep main session lean.',
+      en: 'When a sub-task needs lots of context - reading 20 files for code review, scanning a whole codebase for security issues. Offload to keep main session lean.',
       ru: 'Когда подзадача требует много контекста - читать 20 файлов на code review, сканировать весь кодбейз на security. Делегируй чтобы main session не раздувался.',
       uk: 'Коли підзадача потребує багато контексту - читати 20 файлів на code review, сканувати всю кодбазу на security. Делегуй щоб main session не роздувався.',
     },
     {
-      en: 'When you want truly parallel work — spawn 3 agents on 3 different files simultaneously, get 3 answers back at once.',
+      en: 'When you want truly parallel work - spawn 3 agents on 3 different files simultaneously, get 3 answers back at once.',
       ru: 'Когда нужна реально параллельная работа - спавн 3 агента на 3 разных файла одновременно, получи 3 ответа разом.',
       uk: 'Коли потрібна реально паралельна робота - спавн 3 агенти на 3 різних файли одночасно, отримай 3 відповіді одразу.',
     },
     {
-      en: "When the sub-task has a DIFFERENT mindset from yours — code review is hostile-skeptical, your main session is constructive. Different system prompt, different agent.",
+      en: "When the sub-task has a DIFFERENT mindset from yours - code review is hostile-skeptical, your main session is constructive. Different system prompt, different agent.",
       ru: 'Когда подзадача требует ДРУГОГО mindset - code review это враждебно-скептический, main session - конструктивный. Разный system-промпт, разный агент.',
       uk: 'Коли підзадача потребує ІНШОГО mindset - code review це вороже-скептичний, main session - конструктивний. Різний system-промпт, різний агент.',
     },

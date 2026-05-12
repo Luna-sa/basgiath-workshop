@@ -8,7 +8,7 @@ const DATA = {
   eyebrow: 'COMPONENT · 04 · wings',
   name: 'Skills',
   path: '~/.claude/skills/',
-  tagline_en: "Reusable abilities Claude gains by reading a folder. Like browser extensions for the brain — install once, available whenever the trigger fires.",
+  tagline_en: "Reusable abilities Claude gains by reading a folder. Like browser extensions for the brain - install once, available whenever the trigger fires.",
   tagline_ru: 'Многоразовые способности которые Claude получает, прочитав папку. Как браузерные расширения для мозга - установил один раз, доступны когда срабатывает trigger.',
   tagline_uk: 'Багаторазові здібності, які Claude отримує, прочитавши теку. Як браузерні розширення для мозку - встановив один раз, доступні коли спрацьовує тригер.',
   stats: [
@@ -16,7 +16,7 @@ const DATA = {
     { value: 'on-demand', label: 'load' },
     { value: 'skills.sh', label: 'marketplace' },
   ],
-  what_en: "A skill is a folder under ~/.claude/skills/<skill-name>/. Inside: a SKILL.md (entry point with trigger phrases + instructions), optional supporting files (templates, scripts, reference data). Claude scans the skills folder at start; when your prompt hints at a skill's trigger, Claude loads that skill's SKILL.md into context. Unlike commands, skills aren't called by name — they're activated when the model decides this trigger fits. Marketplace: skills.sh + the /plugin browser inside Claude Code.",
+  what_en: "A skill is a folder under ~/.claude/skills/<skill-name>/. Inside: a SKILL.md (entry point with trigger phrases + instructions), optional supporting files (templates, scripts, reference data). Claude scans the skills folder at start; when your prompt hints at a skill's trigger, Claude loads that skill's SKILL.md into context. Unlike commands, skills aren't called by name - they're activated when the model decides this trigger fits. Marketplace: skills.sh + the /plugin browser inside Claude Code.",
   what_ru: 'Skill - это папка под ~/.claude/skills/<имя-скилла>/. Внутри: SKILL.md (точка входа с trigger-фразами + инструкциями), опциональные файлы поддержки (шаблоны, скрипты, reference data). Claude сканирует папку skills при старте; когда твой промпт намекает на trigger скилла, Claude загружает SKILL.md этого скилла в контекст. В отличие от commands, skills не вызываются по имени - они активируются когда модель решает что trigger подходит. Marketplace: skills.sh + /plugin browser внутри Claude Code.',
   what_uk: 'Skill - це тека під ~/.claude/skills/<імʼя-скілла>/. Всередині: SKILL.md (точка входу з trigger-фразами + інструкціями), опціональні файли підтримки (шаблони, скрипти, reference data). Claude сканує теку skills при старті; коли твій промпт натякає на trigger скілла, Claude завантажує SKILL.md цього скілла в контекст. На відміну від commands, skills не викликаються за імʼям - вони активуються коли модель вирішує що trigger підходить. Marketplace: skills.sh + /plugin browser усередині Claude Code.',
   structure: `~/.claude/skills/
@@ -64,7 +64,7 @@ const DATA = {
   example: `---
 name: taste
 description: |
-  Front-end design taste — call when the user asks for a UI,
+  Front-end design taste - call when the user asks for a UI,
   landing page, dashboard layout, or anything visual.
 triggers:
   - "design a"
@@ -91,7 +91,7 @@ rest. The brand colour is the place the eye lands.
 
 ## Motion
 < 200ms for feedback (hover, click). 200-400ms for transitions
-that move the page. > 400ms is decorative — use sparingly.
+that move the page. > 400ms is decorative - use sparingly.
 
 ## Negative space
 The space between things is the thing. Components are 2× more
@@ -102,12 +102,12 @@ For each design task: anchor a reference image first
 write the markup.`,
   when: [
     {
-      en: "When the same KIND of work keeps coming up but the trigger varies — different prompts, same underlying skill (design, security, testing, docs).",
+      en: "When the same KIND of work keeps coming up but the trigger varies - different prompts, same underlying skill (design, security, testing, docs).",
       ru: 'Когда один и тот же ТИП работы возникает регулярно, но trigger разный - разные промпты, один underlying skill (design, security, testing, docs).',
       uk: 'Коли один і той же ТИП роботи виникає регулярно, але trigger різний - різні промпти, один underlying skill (design, security, testing, docs).',
     },
     {
-      en: 'When you want Claude to remember a craft discipline ALWAYS — not because you typed the command, but because the topic showed up.',
+      en: 'When you want Claude to remember a craft discipline ALWAYS - not because you typed the command, but because the topic showed up.',
       ru: 'Когда хочешь чтобы Claude помнил craft-дисциплину ВСЕГДА - не потому что ты ввел команду, а потому что всплыла тема.',
       uk: 'Коли хочеш щоб Claude памʼятав craft-дисципліну ЗАВЖДИ - не тому що ти ввів команду, а тому що зʼявилася тема.',
     },

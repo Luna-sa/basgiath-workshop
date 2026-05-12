@@ -138,9 +138,9 @@ export default function P_Champions() {
           >
             <p className="font-display italic text-[clamp(28px,3vw,46px)] text-text-secondary leading-relaxed">
               {t(
-                'Three prizes. Three paths to glory.',
-                'Три приза. Три пути к славе.',
-                'Три призи. Три шляхи до слави.'
+                "Three winners. One from each kind of work the room did tonight.",
+                'Три победителя. По одному за каждый тип работы, что комната делала сегодня.',
+                'Три переможці. По одному за кожен тип роботи, що кімната робила сьогодні.'
               )}
             </p>
             <div className="mt-10 flex justify-center gap-2">
@@ -155,13 +155,13 @@ export default function P_Champions() {
           </motion.div>
         )}
 
-        {/* Three winners — weighted grid. Best Dragon is the anchor
+        {/* Three winners - weighted grid. Best Dragon is the anchor
             (it carries an image), so it gets 2 columns of width while
             Most XP / Arena Champion share 1 column each beside it.
             Each reveals in sequence (stage 1 → 2 → 3). */}
         <div className="grid md:grid-cols-4 gap-6 mb-12 items-start">
 
-          {/* ─── Best Dragon — spans 2 columns ─── */}
+          {/* ─── Best Dragon - spans 2 columns ─── */}
           <AnimatePresence>
             {stage >= 1 && (
               <motion.section
@@ -282,9 +282,9 @@ export default function P_Champions() {
                 </h2>
                 <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
                   {t(
-                    'Ten flights. Five rivals. One pilot.',
-                    'Десять полётов. Пять соперников. Один пилот.',
-                    'Десять польотів. Пʼять суперників. Один пілот.'
+                    'The bot that out-coded the others over five runs.',
+                    'Бот, переписавший остальных за пять забегов.',
+                    'Бот, що переписав інших за пʼять забігів.'
                   )}
                 </p>
                 {topArena ? (
@@ -344,7 +344,7 @@ export default function P_Champions() {
           </motion.p>
         )}
 
-        {/* Next button — only when this slide runs inside the main
+        {/* Next button - only when this slide runs inside the main
             workshop flow (not the projector-only /?page=champions
             route). Appears once all three reveals have played. Sits
             in the content flow (centered under the columns) so it
