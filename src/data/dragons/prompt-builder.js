@@ -119,43 +119,61 @@ function resolveVisual(value, map, fallback) {
   return map[value] || fallback
 }
 
+// Hard cap on free-form user text that lands directly in the prompt.
+// Multi-select presets can produce 400+ char paragraphs for sigil/motto,
+// and the static prompt scaffolding already eats ~2.5k chars — we must
+// keep total under the model's 4000-char limit.
+const MAX_FREEFORM = 200
+
+function capText(str, max = MAX_FREEFORM) {
+  const s = String(str || '').trim().replace(/\s+/g, ' ')
+  if (s.length <= max) return s
+  return s.slice(0, max - 1).replace(/\s+\S*$/, '') + '…'
+}
+
 export function buildDragonPrompt(answers = {}) {
-  const scaleRaw = (answers.scale || '').trim() || 'storm-grey scales with hints of bronze along the spine'
+  const scaleRaw = capText(answers.scale, 160) || 'storm-grey scales with hints of bronze along the spine'
   const breed = inferBreedFromScale(scaleRaw)
   const breath = resolveVisual(answers.breath, BREATH_VISUALS, BREATH_VISUALS.fire)
-  const signet = (answers.signet || '').trim() || 'a single etched rune marking across one flank, ancient and weathered'
+  const signet = capText(answers.signet) || 'a single etched rune marking across one flank, ancient and weathered'
   const size = SIZE_VISUALS[answers.size] || SIZE_VISUALS.mid
   const wings = resolveVisual(answers.wings, WING_VISUALS, WING_VISUALS.membranous)
   const eyes = resolveVisual(answers.eyes, EYE_VISUALS, EYE_VISUALS.gold)
-  const motto = (answers.motto || '').trim()
+  const motto = capText(answers.motto)
   const pose = inferPoseFromMotto(motto)
 
+  // Tight prompt: ~2300 chars of scaffolding leaves ~1700 for user
+  // text + breed/wing/eye blocks. Total stays under the 4000-char
+  // limit even with verbose presets selected.
   const parts = [
-    // Anchor - what kind of frame
-    `A cinematic film still from a dark-fantasy epic - visual language of "Fourth Wing", "House of the Dragon", and "Reign of Fire". Photoreal practical-effects dragon, NOT illustrated, NOT painted, NOT anime, NOT chibi, NOT D&D miniature.`,
+    `A cinematic film still from a dark-fantasy epic — "Fourth Wing", "House of the Dragon", "Reign of Fire" visual language. Photoreal practical-effects dragon. NOT illustrated, NOT painted, NOT anime, NOT D&D mini.`,
     ``,
-    // Breed canon - gives the model a concrete reference shape
-    `The dragon is ${breed}. ${size}.`,
+    `Dragon: ${breed}. ${size}.`,
     ``,
-    // Scale - colour subtly readable, still silhouette-forward mood
-    `Scale and hide: ${scaleRaw}. The image is overall MOODY and DESATURATED - dark greys, slate, charcoal dominate the atmosphere - but the dragon's chosen scale colour stays clearly readable through the haze: muted, dusty, low-saturation, but the chosen hue must be obviously recognisable as that colour, not pure grey. Think of a Fourth Wing book-cover plate where the dragon's true colour bleeds through the rim-light and key planes - you should be able to name the dragon's colour at a glance. Individual scales soften and dissolve into the haze at the edges. The dragon is silhouette-forward but its hue lives in the lit planes.`,
+    `Scale and hide: ${scaleRaw}. The dragon's chosen colour stays muted but clearly readable on lit planes (spine ridge, wing edge, jaw, haunch) — pigmented but desaturated. World around it is grainy charcoal-slate atmosphere; scales dissolve into haze at the edges, hue lives in the rim-light. Fourth Wing book-cover plate energy.`,
     ``,
-    // Anatomy details
     `Wings: ${wings}.`,
-    `Eyes: ${eyes}. The eye is rendered with hyper-detail: clear iris pattern, depth of pupil, faint reflection of the surrounding world in the corneal curvature.`,
+    `Eyes: ${eyes}. Iris hyper-detailed, pupil deep, world reflected in the corneal curve.`,
     `Breath: ${breath}.`,
-    `Marking: ${signet}. The marking is integrated naturally into the scale pattern, not pasted on - same depth, same wear, same weathering as the surrounding hide.`,
+    `Marking: ${signet}. Integrated into the scale pattern, weathered to match the surrounding hide.`,
     ``,
-    // Pose / composition
     `Composition: ${pose}.`,
-    motto ? `The dragon's bearing carries the meaning of its rider's vow: "${motto}".` : '',
+    motto ? `The dragon's bearing carries the rider's vow: "${motto}".` : '',
     ``,
-    // Cinematography spec - silhouette-forward, muted but colour-readable, heavy grain
-    `Cinematography: silhouette-forward dark moody composition matching a Fourth Wing book-cover plate. The dragon's form reads primarily as silhouette against grainy dust-particle sky, with rim-light catching the spine ridge, wing edge, jaw line, and lit haunch - and in those lit planes the dragon's chosen colour is clearly visible, muted but recognisable. Heavy visible film grain across the entire frame. Thick fog and floating dust particles dominate the atmosphere - the dragon's outline dissolves into the haze at the edges, but the lit planes hold the dragon's hue. Desaturated cool world palette: charcoal, slate, deep greys for atmosphere - the dragon's chosen colour is the only readable hue in the frame, low-saturation but clearly that colour. Low contrast, soft analog softness, NOT sharp. Single distant rim-light. Composition feels like a moody illustration plate from a dark fantasy art book.`,
+    `Cinematography: silhouette-forward, dark, moody. Heavy 35mm film grain, thick atmospheric haze, single distant rim-light. Low contrast, analog softness, NOT sharp. Desaturated cool world (charcoal, slate, deep greys) with the dragon's hue as the only readable colour in the frame.`,
     ``,
-    // Negatives - kill detail-forward and over-mono failure modes
-    `Critical: SILHOUETTE-forward, ATMOSPHERIC, moody-but-colour-readable. NO clinical CGI sharpness, NO 8K detail, NO over-rendered scales-by-scales, NO HOTD hero shot. The dragon's colour stays muted and dusty but must be clearly recognisable - NOT pure grey, NOT pure silhouette without any hue. Add HEAVY 35mm film grain and thick atmospheric haze. Edges soften into the fog but the lit planes carry the dragon's true colour. NO text, NO logos, NO watermark, NO human characters, NO cartoon, NO anime, NO smooth digital painting, NO bright over-saturated colour pop - moody muted colour, not vibrant.`,
+    `NO text, NO logos, NO watermark, NO humans, NO cartoon, NO anime, NO smooth digital painting, NO bright saturated colour pop, NO clinical CGI sharpness, NO 8K hero-shot. Muted-but-recognisable colour, not pure grey, not pure silhouette.`,
   ].filter(Boolean)
 
-  return parts.join('\n')
+  let out = parts.join('\n')
+
+  // Hard safety belt — even with all caps applied, exotic preset
+  // combinations could theoretically blow the budget. Trim from the
+  // end on the last paragraph (the negatives block) which carries
+  // the least unique signal.
+  const LIMIT = 3900
+  if (out.length > LIMIT) {
+    out = out.slice(0, LIMIT - 1).replace(/\s+\S*$/, '') + '…'
+  }
+  return out
 }
