@@ -363,8 +363,8 @@ export function buildLinkedInCaption({ tutorLinkedinUrl = 'https://www.linkedin.
 Walked in thinking "AI assistant" meant chat. Walked out with:
 
 — A CLAUDE.md that holds my voice, my conventions, the things I refuse to compromise on
-— 4 sub-agents handling the parts of QA I always wanted to delegate
-— 3 MCP servers letting Claude actually open browsers, hit APIs, read live docs
+— Sub-agents handling parts of QA I always wanted to delegate — test cases, bug triage, review running in parallel while I focus elsewhere
+— Claude actually opening browsers, hitting APIs, reading live docs — not just describing how to
 — My own AI personal assistant for the routine work that used to eat my mornings
 
 The shift isn't "AI helps me write tests faster." It's "AI does the small loops while I spend the day on the things that actually need a human."
