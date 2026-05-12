@@ -370,62 +370,18 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
         </div>
       </div>
 
-      {/* FOOTER: seal | signature | credential ID */}
+      {/* FOOTER: tutor | credential ID */}
       <footer
         style={{
           position: 'absolute', bottom: 0, left: 0, right: 0,
           padding: '32px 80px 24px', zIndex: 5,
-          display: 'grid', gridTemplateColumns: '120px 1fr auto', gap: 40, alignItems: 'end',
+          display: 'grid', gridTemplateColumns: '1fr auto', gap: 60, alignItems: 'end',
         }}
       >
-        {/* Decorative seal — runic stamp, no URL */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
-          <div style={{ width: 84, height: 84, background: '#FFFFFF', padding: 6, position: 'relative' }}>
-            {/* Stylised faux-QR — visual badge only. Actual verify lives at workshop URL. */}
-            <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-              <rect width="72" height="72" fill="#FFFFFF" />
-              <g fill="#0A0A0A">
-                <rect x="0" y="0" width="20" height="20" />
-                <rect x="52" y="0" width="20" height="20" />
-                <rect x="0" y="52" width="20" height="20" />
-              </g>
-              <g fill="#FFFFFF">
-                <rect x="4" y="4" width="12" height="12" />
-                <rect x="56" y="4" width="12" height="12" />
-                <rect x="4" y="56" width="12" height="12" />
-              </g>
-              <g fill="#0A0A0A">
-                <rect x="7" y="7" width="6" height="6" />
-                <rect x="59" y="7" width="6" height="6" />
-                <rect x="7" y="59" width="6" height="6" />
-                {[24, 28, 32, 40, 44, 48].map(x => <rect key={`a${x}`} x={x} y="4" width="2" height="2" />)}
-                {[24, 36, 44].map(x => <rect key={`b${x}`} x={x} y="8" width="2" height="2" />)}
-                {[28, 32, 40, 48].map(x => <rect key={`c${x}`} x={x} y="12" width="2" height="2" />)}
-                {[4, 12, 24, 32, 40, 52, 60, 68].map(x => <rect key={`d${x}`} x={x} y="24" width="2" height="2" />)}
-                {[8, 16, 28, 44, 56, 64].map(x => <rect key={`e${x}`} x={x} y="28" width="2" height="2" />)}
-                {[4, 20, 32, 40, 52, 60].map(x => <rect key={`f${x}`} x={x} y="32" width="2" height="2" />)}
-                {[12, 24, 36, 48, 56, 68].map(x => <rect key={`g${x}`} x={x} y="36" width="2" height="2" />)}
-                {[4, 16, 28, 40, 44, 60].map(x => <rect key={`h${x}`} x={x} y="40" width="2" height="2" />)}
-                {[8, 20, 32, 52, 64].map(x => <rect key={`i${x}`} x={x} y="44" width="2" height="2" />)}
-                {[24, 36, 44, 56].map(x => <rect key={`j${x}`} x={x} y="48" width="2" height="2" />)}
-                {[24, 32, 40, 48, 60, 68].map(x => <rect key={`k${x}`} x={x} y="56" width="2" height="2" />)}
-                {[28, 44, 56].map(x => <rect key={`l${x}`} x={x} y="60" width="2" height="2" />)}
-                {[24, 36, 48, 64].map(x => <rect key={`m${x}`} x={x} y="64" width="2" height="2" />)}
-                {[32, 40, 52, 60].map(x => <rect key={`n${x}`} x={x} y="68" width="2" height="2" />)}
-              </g>
-            </svg>
-          </div>
-          <div style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: 8, letterSpacing: 2, textTransform: 'uppercase', color: '#888888', lineHeight: 1.5,
-          }}>
-            — Bonded Rider<br />
-            <strong style={{ color: '#FFFFFF' }}>Claude Code Workshop · Basics</strong>
-          </div>
-        </div>
-
-        {/* Signature block — avatar + signature/name/handle stack */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 18, paddingBottom: 4 }}>
+        {/* Tutor block — avatar + name + handles, left-aligned. The
+            faux-QR / seal block was removed because the code wasn't
+            scannable; an invalid QR weakens credibility. */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 18, paddingBottom: 4 }}>
           {/* Tutor avatar — round photo, teal hairline. */}
           <div style={{
             width: 84, height: 84, borderRadius: '50%', overflow: 'hidden',
