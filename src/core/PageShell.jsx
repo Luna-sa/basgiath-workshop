@@ -53,11 +53,14 @@ export default function PageShell({ pageIndex, subStepId, children, bgImage }) {
           <img
             src={bgImage}
             alt=""
-            className="w-full h-full object-cover opacity-40"
+            className="w-full h-full object-cover opacity-80"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-bg/30 via-bg/50 to-bg/80" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_100%)]" />
+          {/* Very light wash so the image stays readable but doesn't
+              fight the foreground. Heavy bottom gradient was killing
+              the lower half of the picture — pulled back to /15→/35. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-bg/10 via-bg/15 to-bg/35" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.25)_100%)]" />
         </div>
       )}
 
