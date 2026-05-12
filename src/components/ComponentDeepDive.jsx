@@ -23,21 +23,34 @@ export default function ComponentDeepDive({ pageIndex, data }) {
     <PageShell pageIndex={pageIndex}>
       <div className="space-y-8">
 
-        {/* HERO — italic is reserved for the one display element.
-            Eyebrow stays mono caps; tagline is plain body, not italic.
-            Path is rendered inline-below the name, not on the same
-            baseline, to break the "everything on one row" cluster. */}
-        <div>
-          <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-2">
-            {data.eyebrow}
+        {/* HERO — optional accent image right of the headline. If
+            data.heroImage is set, hero becomes a 2-col grid with
+            the image as a portrait card on the right. Italic
+            reserved for the display name only. */}
+        <div className={data.heroImage ? "grid md:grid-cols-[1fr_220px] gap-6 items-start" : ""}>
+          <div>
+            <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-2">
+              {data.eyebrow}
+            </div>
+            <h2 className="font-display italic text-[clamp(36px,4.5vw,48px)] text-white leading-none mb-2">
+              {data.name}
+            </h2>
+            <code className="font-mono text-[11px] text-text-dim block mb-5">{data.path}</code>
+            <p className="text-[clamp(15px,1.8vw,18px)] text-text-secondary leading-[1.6] max-w-3xl">
+              {t(data.tagline_en, data.tagline_ru, data.tagline_uk)}
+            </p>
           </div>
-          <h2 className="font-display italic text-[clamp(36px,4.5vw,48px)] text-white leading-none mb-2">
-            {data.name}
-          </h2>
-          <code className="font-mono text-[11px] text-text-dim block mb-5">{data.path}</code>
-          <p className="text-[clamp(15px,1.8vw,18px)] text-text-secondary leading-[1.6] max-w-3xl">
-            {t(data.tagline_en, data.tagline_ru, data.tagline_uk)}
-          </p>
+          {data.heroImage && (
+            <div className="relative overflow-hidden border border-border bg-black min-h-[180px]">
+              <img
+                src={data.heroImage}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-90"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent to-bg/30" />
+            </div>
+          )}
         </div>
 
         {/* WHAT IT IS — no section glyph, just a one-word eyebrow that

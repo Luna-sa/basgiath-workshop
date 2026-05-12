@@ -6,6 +6,7 @@ export default function P_CompCommands() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 02 · muscle memory',
+  heroImage: '/hero/commands-hand-snout.jpg',
   name: 'Commands',
   path: '~/.claude/commands/  ·  <project>/.claude/commands/',
   tagline_en: 'Slash commands - your custom shortcuts. One file per command. /command-name in the prompt and Claude follows the instructions inside.',

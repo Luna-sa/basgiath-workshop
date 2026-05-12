@@ -81,8 +81,21 @@ export default function P03_PreWork() {
 
   return (
     <PageShell pageIndex={3}>
+      {/* Rain on stone — rite of passage watermark behind the
+          install ritual. Sits full-bleed at low opacity so the
+          checklist UI dominates but the mood is set. */}
+      <div className="absolute inset-x-0 top-0 h-[280px] -z-0 pointer-events-none overflow-hidden">
+        <img
+          src="/hero/prework-rain.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-30"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/50 to-bg" />
+      </div>
+
       {/* Single path header */}
-      <div className="flex justify-center mb-8">
+      <div className="relative flex justify-center mb-8">
         <div className="px-5 py-3 border border-qa-teal bg-qa-teal/[0.08] text-qa-teal font-mono text-[12px] tracking-[1px] uppercase">
           {t('Claude Code ($20/mo)', 'Claude Code ($20/мес)', 'Claude Code ($20/міс)')}
           <span className="block text-[11px] mt-0.5 tracking-[2px] text-qa-teal/60">

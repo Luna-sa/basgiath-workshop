@@ -6,6 +6,7 @@ export default function P_CompAgents() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 03 · claws',
+  heroImage: '/hero/agents-three-figures.jpg',
   name: 'Agents',
   path: '~/.claude/agents/  ·  <project>/.claude/agents/',
   tagline_en: 'Specialised mini-Claudes for one job each. They run in parallel with their own context, return a result, and disappear. Main session stays clean.',

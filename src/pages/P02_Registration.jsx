@@ -17,7 +17,10 @@ export default function P02_Registration() {
     return (
       <PageShell pageIndex={2}>
         <div className="space-y-6">
-          <div className="border border-qa-teal/40 bg-qa-teal/[0.04] p-8 rounded-[2px]">
+          {/* Cloaked figure on pillar in fog — the parapet leap.
+              Side accent right of the welcome panel. */}
+          <div className="grid md:grid-cols-[1fr_220px] gap-6 items-stretch">
+            <div className="border border-qa-teal/40 bg-qa-teal/[0.04] p-8 rounded-[2px]">
             <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
               ✦ {t('Already on the rolls', 'Уже в свитках', 'Вже у сувоях')}
             </div>
@@ -55,6 +58,16 @@ export default function P02_Registration() {
                   <span className="text-qa-teal">{t('ready', 'готов', 'готовий')}</span>
                 </div>
               )}
+            </div>
+            </div>
+            <div className="relative overflow-hidden border border-border bg-black min-h-[220px]">
+              <img
+                src="/hero/parapet-leap.jpg"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-85"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent to-bg/50" />
             </div>
           </div>
           <p className="text-[14px] text-text-secondary italic">

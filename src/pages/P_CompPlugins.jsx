@@ -6,6 +6,7 @@ export default function P_CompPlugins() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 07 · companions',
+  heroImage: '/hero/plugins-coiled-spire.jpg',
   name: 'Plugins',
   path: '~/.claude/plugins/',
   tagline_en: "Bundles of commands + agents + skills + hooks + MCP servers shared as one unit. Install one plugin - gain an entire stack tuned by someone who already solved the problem.",

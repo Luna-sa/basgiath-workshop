@@ -37,11 +37,22 @@ export default function P05_TalkEvolution() {
           </p>
         </div>
 
+        {/* Runic wall — narrow texture divider between the rule and
+            the layer cards. Inscribed three-line block reads as
+            "three stone courses" matching the three layers. */}
+        <div className="relative h-[80px] overflow-hidden border-y border-border opacity-70">
+          <img
+            src="/hero/architecture-runes.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-bg/30 via-transparent to-bg/30" />
+        </div>
+
         {/* Three layers — visual stack. One brand colour (teal),
             tonal contrast on borders to separate the three. Italic
-            stays only on the hero rule above. Removed: glowing
-            decoration dots, "layer · 0N" tier labels, italic on
-            card prose. */}
+            stays only on the hero rule above. */}
         <div className="space-y-3">
 
           {/* GLOBAL — primary layer, full teal border */}
