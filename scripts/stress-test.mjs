@@ -30,6 +30,12 @@ function arg(name, fallback) {
 }
 const N_USERS = parseInt(arg('users', '50'), 10)
 const TIMEOUT_MS = parseInt(arg('timeout', '20000'), 10)
+// Batch size simulates real-world arrival pattern: people don't all
+// click Sign in at the exact same millisecond. With Apps Script's
+// 30-concurrent-execution quota, anything beyond ~25 in flight
+// starts to queue server-side and lock timeouts cascade.
+const BATCH_SIZE = parseInt(arg('batch', '50'), 10)
+const BATCH_DELAY_MS = parseInt(arg('batch-delay', '0'), 10)
 
 let URL = arg('url', null)
 if (!URL) {
@@ -106,7 +112,7 @@ const TINY_PNG_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42m
 const CHARACTERS = ['violet', 'xaden', 'rhiannon', 'ridoc', 'liam', 'imogen']
 
 async function simulateOneUser(idx) {
-  const nickname = `qa_test_${String(idx).padStart(3, '0')}`
+  const nickname = `qa_r1_${String(idx).padStart(3, '0')}`
   const characterId = CHARACTERS[idx % CHARACTERS.length]
 
   // 1. Register
@@ -146,7 +152,7 @@ async function simulateOneUser(idx) {
   const targetIdx = (idx + 1) % N_USERS
   await call('voteForDragon', {
     voterNickname: nickname,
-    dragonId: `qa_test_${String(targetIdx).padStart(3, '0')}`,
+    dragonId: `qa_r1_${String(targetIdx).padStart(3, '0')}`,
   })
 
   // 5. Read leaderboards (what Champions slide hits)
@@ -155,11 +161,20 @@ async function simulateOneUser(idx) {
   await call('getArenaLeaderboard')
 }
 
-// ── kick off all users in parallel ────────────────────────────────
+// ── run in batches to stay under Apps Script's 30-concurrent quota ──
 const t0 = Date.now()
-const results = await Promise.allSettled(
-  Array.from({ length: N_USERS }, (_, i) => simulateOneUser(i))
-)
+const results = []
+for (let start = 0; start < N_USERS; start += BATCH_SIZE) {
+  const end = Math.min(start + BATCH_SIZE, N_USERS)
+  console.log(`batch ${Math.floor(start / BATCH_SIZE) + 1}: users ${start}..${end - 1}`)
+  const batchRes = await Promise.allSettled(
+    Array.from({ length: end - start }, (_, i) => simulateOneUser(start + i))
+  )
+  results.push(...batchRes)
+  if (end < N_USERS && BATCH_DELAY_MS > 0) {
+    await new Promise(r => setTimeout(r, BATCH_DELAY_MS))
+  }
+}
 const totalMs = Date.now() - t0
 
 // ── report ────────────────────────────────────────────────────────
