@@ -952,7 +952,7 @@ function updateStudentProgress({ studentId, nickname, xp, hiddenDragonsFound, cu
 function submitFeedback({ rating, comment, nickname, studentId, characterId }) {
   const r = Number(rating)
   if (!r || r < 1 || r > 5) throw new Error('rating must be 1-5')
-  return _withLock(() => {
+  return _withScriptLock(function () {
     _ensureFeedbackSheet()
     const row = _appendRow(SHEETS.FEEDBACK, {
       id: _uuid(),
