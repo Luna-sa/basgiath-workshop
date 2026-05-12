@@ -1,6 +1,7 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { useLocale } from '../i18n/store'
 import { PAGES } from '../data/pages'
+import UserMenu from '../components/UserMenu'
 
 const LANGS = [
   { code: 'en', label: 'EN' },
@@ -40,6 +41,9 @@ export default function ProgressBar() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* User chip with logout */}
+          <UserMenu inline />
+
           {/* Language toggle */}
           <div className="flex gap-0.5 border border-border bg-surface/60 rounded-[2px] p-0.5">
             {LANGS.map(l => (

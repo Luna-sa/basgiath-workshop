@@ -1,29 +1,39 @@
 import { useEffect, useState } from 'react'
-import { CHARACTERS, pickCharacter } from '../data/characters'
 import { useLocale } from '../i18n/store'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
+import { getAllStudents } from '../api/facilitator'
+import { CHARACTERS, pickCharacter } from '../data/characters'
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
 
 /**
  * Signets honoured — final-stage roundup of the Dragon Arena.
- * Shows latest bot submission per character (who submitted, when) +
- * facilitator-only call to action to open the final battle.
+ *
+ * Shows ONE card per real Arena submission (no empty character slots),
+ * tinted with the rider archetype the participant picked. Header
+ * reads "X submitted of N registered" using the full students roster
+ * — so the room sees both who actually flew and how big the cohort
+ * is overall.
  */
 export default function P14_Leaderboard() {
   const t = useT()
   const lang = useLocale(s => s.lang)
   const myNickname = useWorkshopStore(s => s.user.nickname)
   const [submissions, setSubmissions] = useState([])
+  const [registeredCount, setRegisteredCount] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let mounted = true
     const load = async () => {
-      const { data } = await getLatestSubmissionsByCharacter()
+      const [subRes, students] = await Promise.all([
+        getLatestSubmissionsByCharacter(),
+        getAllStudents(),
+      ])
       if (!mounted) return
-      setSubmissions(data || [])
+      setSubmissions(subRes?.data || [])
+      setRegisteredCount(Array.isArray(students) ? students.length : 0)
       setLoading(false)
     }
     load()
@@ -31,36 +41,48 @@ export default function P14_Leaderboard() {
     return () => { mounted = false; clearInterval(i) }
   }, [])
 
+  const submittedCount = submissions.length
+
   return (
-    <PageShell pageIndex={22}>
+    <PageShell pageIndex={25}>
       <div className="space-y-6">
-        {/* Six-slot grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {CHARACTERS.filter(c => c.id !== 'self').map(rawC => {
-            const c = pickCharacter(rawC, lang)
-            const sub = submissions.find(s => s.character_id === c.id)
-            const isMine = sub && sub.nickname === (myNickname || '').toLowerCase()
-            const hex = c.hex || '#888'
-            return (
-              <div
-                key={c.id}
-                className="p-4 border rounded-[2px]"
-                style={{
-                  borderColor: isMine ? hex : (sub ? hex + '99' : hex + '44'),
-                  backgroundColor: hex + (isMine ? '12' : sub ? '08' : '04'),
-                  boxShadow: isMine ? `0 0 18px ${hex}33` : 'none',
-                }}
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  {c.image
-                    ? <img src={c.image} alt={c.name} className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: hex }} />
-                    : <span className="text-2xl">{c.emoji || '🐉'}</span>}
-                  <div>
-                    <div className="font-display italic text-lg" style={{ color: hex }}>{c.name}</div>
-                    <div className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim">{c.title}</div>
+        {/* Counter header */}
+        {!loading && (
+          <div className="flex items-baseline justify-center gap-2 font-mono text-[13px] tracking-[2px] uppercase">
+            <span className="text-qa-teal font-semibold text-[20px]">{submittedCount}</span>
+            <span className="text-text-dim">{t('submitted of', 'отправили из', 'надіслали з')}</span>
+            <span className="text-white font-semibold text-[20px]">{registeredCount}</span>
+            <span className="text-text-dim">{t('registered', 'зарегистрированных', 'зареєстрованих')}</span>
+          </div>
+        )}
+
+        {/* Real submissions only */}
+        {submittedCount > 0 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {submissions.map(sub => {
+              const rawC = CHARACTERS.find(c => c.id === sub.character_id)
+              const c = rawC ? pickCharacter(rawC, lang) : null
+              const isMine = sub.nickname === (myNickname || '').toLowerCase()
+              const hex = c?.hex || '#00E5CC'
+              return (
+                <div
+                  key={`${sub.character_id}-${sub.nickname}`}
+                  className="p-4 border rounded-[2px]"
+                  style={{
+                    borderColor: isMine ? hex : hex + '99',
+                    backgroundColor: hex + (isMine ? '12' : '08'),
+                    boxShadow: isMine ? `0 0 18px ${hex}33` : 'none',
+                  }}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    {c?.image
+                      ? <img src={c.image} alt={c.name} className="w-10 h-10 rounded-full object-cover border-2" style={{ borderColor: hex }} />
+                      : <span className="text-2xl">{c?.emoji || '🐉'}</span>}
+                    <div>
+                      <div className="font-display italic text-lg" style={{ color: hex }}>{c?.name || sub.character_id}</div>
+                      <div className="font-mono text-[10px] tracking-[1.5px] uppercase text-text-dim">{c?.title}</div>
+                    </div>
                   </div>
-                </div>
-                {sub ? (
                   <div className="border-t border-border pt-3">
                     <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-1">
                       {t('Submitted by', 'От', 'Від')}
@@ -75,26 +97,23 @@ export default function P14_Leaderboard() {
                       </div>
                     )}
                   </div>
-                ) : (
-                  <div className="border-t border-border/30 pt-3">
-                    <div className="font-mono text-[11px] text-text-dim italic">
-                      {t('No submission yet', 'Бота ещё нет', 'Бота ще немає')}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Counter */}
-        {!loading && (
-          <div className="text-center font-mono text-[12px] tracking-[2px] uppercase text-text-dim">
-            {submissions.length} / 6 {t('riders bonded', 'наездников связаны', 'bonded-вершників')}
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="border border-border bg-surface/40 p-6 rounded-[2px] text-center">
+            <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim">
+              {t(
+                'Waiting for the first signet to land…',
+                'Ждём первый сигнет в небе…',
+                'Чекаємо перший сигнет у небі…'
+              )}
+            </p>
           </div>
         )}
 
-        {/* Final battle CTA — open in new tab */}
+        {/* Final battle CTA - open in new tab */}
         <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5 rounded-[2px] text-center space-y-3">
           <p className="font-display italic text-xl text-white">
             {t('Time for the final flight.', 'Время финального полёта.', 'Час фінального польоту.')}

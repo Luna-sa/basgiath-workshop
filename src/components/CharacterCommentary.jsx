@@ -6,7 +6,7 @@ import { CHARACTERS, pickCharacter } from '../data/characters'
 import { getCharacterComment } from '../data/character-comments'
 
 /**
- * Persona whisper — floating bottom-right card with the chosen
+ * Persona whisper - floating bottom-right card with the chosen
  * Empyrean character's voice on this slide.
  *
  * Visual: round photo avatar (from /characters/*.webp) with a
@@ -20,7 +20,7 @@ import { getCharacterComment } from '../data/character-comments'
  *   - no commentary defined yet for this slide
  */
 
-// Persona accent colours — kept in sync with arena dragon palette.
+// Persona accent colours - kept in sync with arena dragon palette.
 const CHAR_HEX = {
   violet:   '#9D6BFF',
   xaden:    '#FF8C2A',
@@ -51,25 +51,11 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
   const color = CHAR_HEX[characterId] || '#00E5CC'
   const colorAlpha20 = color + '33'   // 20% alpha
   const colorAlpha08 = color + '14'   // 8% alpha
-  // The voice we hear is the DRAGON's, not the rider's. The participant
-  // IS the rider. Their bonded partner is THEIR dragon — the one
-  // they named during the Bond Ritual. Read that custom name from
-  // local storage; if the ritual hasn't happened yet, fall back to
-  // a neutral "Your dragon" label rather than borrowing a canon name.
-  let partnerName = ''
-  try {
-    const raw = window.localStorage.getItem('bond-ritual-answers')
-    if (raw) {
-      const a = JSON.parse(raw)
-      const n = (a?.name || '').trim()
-      if (n && n.toLowerCase() !== 'unnamed') partnerName = n
-    }
-  } catch (e) {}
-  if (!partnerName) {
-    partnerName = lang === 'en' ? 'Your dragon'
-      : lang === 'uk' ? 'Твій дракон'
-      : 'Твой дракон'
-  }
+  // The whisper is written from the archetype's voice (Liam, Violet,
+  // Ridoc...). Label it with their name so the participant immediately
+  // sees who's talking — not with a generic "your dragon" or a stale
+  // bond-ritual name that doesn't belong to the speaker.
+  const speakerName = character.name
 
   if (position === 'inline') {
     return (
@@ -81,7 +67,7 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
           <Avatar character={character} color={color} />
           <div>
             <div className="font-mono text-[10px] tracking-[2px] uppercase mb-0.5" style={{ color }}>
-              {partnerName}
+              {speakerName}
             </div>
             <p className="font-display italic text-[15px] text-text-body leading-relaxed">
               {line}
@@ -92,7 +78,7 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
     )
   }
 
-  // position === 'fixed' — floating top-left (top-right is ProgressBar/locale toggle)
+  // position === 'fixed' - floating top-left (top-right is ProgressBar/locale toggle)
   if (isDismissed) return null
   return (
     <motion.div

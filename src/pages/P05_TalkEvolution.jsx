@@ -32,16 +32,16 @@ const PARTS = [
     summary_ru: 'Специализированные мини-Claude под конкретные роли. Работают параллельно, возвращают результат.',
     summary_uk: 'Спеціалізовані міні-Claude під конкретні ролі. Працюють паралельно, повертають результат.',
     detail_en: 'Examples: code-reviewer, qa-tester, security-scanner, docs-writer. You delegate, they execute, main session stays clean.',
-    detail_ru: 'Примеры: code-reviewer, qa-tester, security-scanner, docs-writer. Делегируешь — работают — main session чистая.',
-    detail_uk: 'Приклади: code-reviewer, qa-tester, security-scanner, docs-writer. Делегуєш — працюють — main session чиста.',
+    detail_ru: 'Примеры: code-reviewer, qa-tester, security-scanner, docs-writer. Делегируешь - работают - main session чистая.',
+    detail_uk: 'Приклади: code-reviewer, qa-tester, security-scanner, docs-writer. Делегуєш - працюють - main session чиста.',
   },
   {
     n: '04',
     name: 'MCP',
     role: 'eyes',
-    summary_en: "Model Context Protocol — Claude's connection to the outside world. Browsers, APIs, databases, services.",
-    summary_ru: 'Model Context Protocol — связь Claude с внешним миром. Браузеры, API, базы данных, сервисы.',
-    summary_uk: "Model Context Protocol — звʼязок Claude із зовнішнім світом. Браузери, API, бази даних, сервіси.",
+    summary_en: "Model Context Protocol - Claude's connection to the outside world. Browsers, APIs, databases, services.",
+    summary_ru: 'Model Context Protocol - связь Claude с внешним миром. Браузеры, API, базы данных, сервисы.',
+    summary_uk: "Model Context Protocol - звʼязок Claude із зовнішнім світом. Браузери, API, бази даних, сервіси.",
     detail_en: 'Playwright (browser test), GitHub (PR/issues), Confluence/Notion (docs), Atlassian (Jira), filesystem (any folder).',
     detail_ru: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (любая папка).',
     detail_uk: 'Playwright (браузер-тест), GitHub (PR/issues), Confluence/Notion (доки), Atlassian (Jira), filesystem (будь-яка папка).',
@@ -50,9 +50,9 @@ const PARTS = [
     n: '05',
     name: 'Hooks',
     role: 'reflexes',
-    summary_en: 'Auto-trigger commands on events. Pre-commit, post-edit, on-error — Claude reacts without being asked.',
-    summary_ru: 'Авто-триггер команд на события. Pre-commit, post-edit, on-error — Claude реагирует без просьбы.',
-    summary_uk: 'Автотригер команд на події. Pre-commit, post-edit, on-error — Claude реагує без прохання.',
+    summary_en: 'Auto-trigger commands on events. Pre-commit, post-edit, on-error - Claude reacts without being asked.',
+    summary_ru: 'Авто-триггер команд на события. Pre-commit, post-edit, on-error - Claude реагирует без просьбы.',
+    summary_uk: 'Автотригер команд на події. Pre-commit, post-edit, on-error - Claude реагує без прохання.',
     detail_en: 'Examples: branch-guard (block commits to main), auto-format (run prettier on save), notify-on-stop (sound when ready).',
     detail_ru: 'Примеры: branch-guard (блокирует commit в main), auto-format (prettier при сохранении), notify-on-stop (звук когда готово).',
     detail_uk: 'Приклади: branch-guard (блокує commit у main), auto-format (prettier при збереженні), notify-on-stop (звук, коли готово).',
@@ -61,9 +61,9 @@ const PARTS = [
     n: '06',
     name: 'Plugins',
     role: 'companions',
-    summary_en: 'Bundles of skills + agents + hooks shared across teams. Install one — gain a whole stack.',
-    summary_ru: 'Пакеты skills + agents + hooks для команд. Один install — целый стек.',
-    summary_uk: 'Пакети skills + agents + hooks для команд. Один install — цілий стек.',
+    summary_en: 'Bundles of skills + agents + hooks shared across teams. Install one - gain a whole stack.',
+    summary_ru: 'Пакеты skills + agents + hooks для команд. Один install - целый стек.',
+    summary_uk: 'Пакети skills + agents + hooks для команд. Один install - цілий стек.',
     detail_en: 'Browse the marketplace with /plugin. Examples: superpowers (meta-skills), digital-marketing-pro (115 commands).',
     detail_ru: 'Marketplace через /plugin. Примеры: superpowers (мета-скиллы), digital-marketing-pro (115 команд).',
     detail_uk: 'Marketplace через /plugin. Приклади: superpowers (мета-skills), digital-marketing-pro (115 команд).',
@@ -78,9 +78,9 @@ export default function P05_TalkEvolution() {
 
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
           {t(
-            "Claude Code isn't one program. It's six layers that fold into a partner. Know all six — you have a tool. Use them — you have a team.",
-            "Claude Code — не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть — у тебя инструмент. Если используешь — у тебя команда.",
-            "Claude Code — це не одна програма. Це шість шарів, які складаються в напарника. Якщо знаєш усі шість — маєш інструмент. Якщо використовуєш — маєш команду."
+            "Claude Code isn't one program. It's six layers that fold into a partner. Know all six - you have a tool. Use them - you have a team.",
+            "Claude Code - не одна программа. Это шесть слоёв, складывающихся в напарника. Если знаешь все шесть - у тебя инструмент. Если используешь - у тебя команда.",
+            "Claude Code - це не одна програма. Це шість шарів, які складаються в напарника. Якщо знаєш усі шість - маєш інструмент. Якщо використовуєш - маєш команду."
           )}
         </p>
 
@@ -112,7 +112,7 @@ export default function P05_TalkEvolution() {
             ◆ {t('Where the dragon lives on disk', 'Где живёт дракон на диске', 'Де живе дракон на диску')}
           </div>
           <pre className="font-mono text-[12px] text-text-body leading-relaxed whitespace-pre-wrap">{`~/.claude/
-├── CLAUDE.md          # spine — your global rules + persona
+├── CLAUDE.md          # spine - your global rules + persona
 ├── settings.json      # permissions, env, hooks config
 ├── commands/          # your custom /slash-commands
 ├── agents/            # your subagents

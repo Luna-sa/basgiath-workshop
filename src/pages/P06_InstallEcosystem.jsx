@@ -77,15 +77,15 @@ export default function P06_InstallEcosystem() {
             <span className="font-mono text-[12px] text-qa-teal shrink-0 mt-0.5">3.</span>
             <span className="text-sm text-text-body">
               {t(
-                'Wait 1-2 minutes — Claude lays down every file.',
-                'Подожди 1-2 минуты — AI создаст все файлы',
-                'Зачекай 1-2 хвилини — Claude створить усі файли.'
+                'Wait 1-2 minutes - Claude lays down every file.',
+                'Подожди 1-2 минуты - AI создаст все файлы',
+                'Зачекай 1-2 хвилини - Claude створить усі файли.'
               )}
             </span>
           </div>
         </div>
 
-        {/* Expected output — so participants know what success looks like */}
+        {/* Expected output - so participants know what success looks like */}
         <div className="border border-qa-teal/20 bg-qa-teal/[0.03] p-4">
           <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-2">
             ◆ {t('Expected output', 'Что должно появиться', 'Що має зʼявитися')}
@@ -105,9 +105,9 @@ export default function P06_InstallEcosystem() {
 Total: 12 files placed.`}</pre>
           <p className="text-[12px] text-text-dim italic mt-3">
             {t(
-              "Errors? Don't panic — flag the facilitator. Most install issues are 30-second fixes.",
-              'Ошибки? Не паникуй — позови фасилитатора. Большинство фейлов лечатся за 30 секунд.',
-              'Помилки? Не панікуй — поклич фасилітатора. Більшість фейлів лікуються за 30 секунд.'
+              "Errors? Don't panic - flag the facilitator. Most install issues are 30-second fixes.",
+              'Ошибки? Не паникуй - позови фасилитатора. Большинство фейлов лечатся за 30 секунд.',
+              'Помилки? Не панікуй - поклич фасилітатора. Більшість фейлів лікуються за 30 секунд.'
             )}
           </p>
         </div>
@@ -117,9 +117,9 @@ Total: 12 files placed.`}</pre>
           <div className="flex items-center justify-between px-4 py-2 bg-surface/80 border-b border-border">
             <span className="font-mono text-[12px] tracking-wider" style={{ color: persona.accent }}>
               {t(
-                'QA Ecosystem — one prompt',
-                'QA Ecosystem — один промпт',
-                'QA Ecosystem — один промпт'
+                'QA Ecosystem - one prompt',
+                'QA Ecosystem - один промпт',
+                'QA Ecosystem - один промпт'
               )}
             </span>
             <button onClick={handleCopy}
@@ -140,7 +140,7 @@ Total: 12 files placed.`}</pre>
           <p className="text-xs text-text-secondary">
             <span className="font-mono text-[11px] uppercase" style={{ color: persona.accent }}>
               {t('Approach', 'Подход', 'Підхід')}
-            </span>{' '}— {persona.approach.promptStyle}
+            </span>{' '}- {persona.approach.promptStyle}
           </p>
         </div>
 

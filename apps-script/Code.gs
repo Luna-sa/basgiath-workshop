@@ -1,5 +1,5 @@
 /**
- * Basgiath Workshop — Google Apps Script backend
+ * Basgiath Workshop - Google Apps Script backend
  *
  * Replaces Supabase as the persistence layer. Single Web App URL,
  * POST routed by `action` in the request body.
@@ -8,20 +8,20 @@
  *   1. Open https://script.new (signed into the Google account that
  *      will own the workshop data).
  *   2. Replace the template Code.gs with the contents of this file.
- *   3. Save. Run `doSetup()` once — it creates the Spreadsheet, the
+ *   3. Save. Run `doSetup()` once - it creates the Spreadsheet, the
  *      Drive folder for dragon portraits, and seeds the
  *      facilitator_state row. Copy the IDs it prints into PROPS
  *      via "Project Settings → Script Properties" (or the URL bar).
  *   4. Deploy → New Deployment → Web App.
  *      Execute as: Me.
  *      Who has access: Anyone.
- *      Copy the deployment URL — that's VITE_GSHEETS_API.
+ *      Copy the deployment URL - that's VITE_GSHEETS_API.
  *
  * Re-deploy on every code change (or use "Manage Deployments" to
  * promote a new version of the same URL).
  *
  * Auth model: no auth. Anyone with the URL can read/write. The
- * workshop is single-day, single-cohort — acceptable.
+ * workshop is single-day, single-cohort - acceptable.
  */
 
 // ───────────────────────── Constants ──────────────────────────
@@ -190,7 +190,7 @@ function doSetup() {
 
 function _ss() {
   const id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID')
-  if (!id) throw new Error('SPREADSHEET_ID not set — run doSetup() first')
+  if (!id) throw new Error('SPREADSHEET_ID not set - run doSetup() first')
   return SpreadsheetApp.openById(id)
 }
 
@@ -259,7 +259,7 @@ function _now() {
 function _json(payload, status) {
   const out = ContentService.createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON)
-  // Apps Script Web Apps can't set arbitrary status codes — we
+  // Apps Script Web Apps can't set arbitrary status codes - we
   // surface non-200 via the payload's `error` field. Client checks.
   return out
 }
@@ -322,7 +322,7 @@ function markCheckpoint({ studentId, checkpointId }) {
 
 function _uploadImageToDrive(base64Data, filenameHint) {
   const folderId = PropertiesService.getScriptProperties().getProperty('DRIVE_FOLDER_ID')
-  if (!folderId) throw new Error('DRIVE_FOLDER_ID not set — run doSetup()')
+  if (!folderId) throw new Error('DRIVE_FOLDER_ID not set - run doSetup()')
   const folder = DriveApp.getFolderById(folderId)
   // Strip "data:image/png;base64," prefix if present
   const cleaned = base64Data.replace(/^data:image\/[a-z]+;base64,/, '')
@@ -334,10 +334,10 @@ function _uploadImageToDrive(base64Data, filenameHint) {
   try {
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW)
   } catch (e) {
-    // If domain policy blocks public sharing this throws — falls
+    // If domain policy blocks public sharing this throws - falls
     // back to folder ACL which is still permissive.
   }
-  // Use the direct content URL — works as <img src>
+  // Use the direct content URL - works as <img src>
   return 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w1080'
 }
 
@@ -388,7 +388,7 @@ function listDragons() {
 
 // Each voter may cast up to MAX_VOTES_PER_VOTER unique votes
 // (different dragons). Voting for the same dragon twice is silently
-// idempotent — does not add a second vote.
+// idempotent - does not add a second vote.
 var MAX_VOTES_PER_VOTER = 3
 
 function voteForDragon({ voterNickname, dragonId }) {
@@ -398,7 +398,7 @@ function voteForDragon({ voterNickname, dragonId }) {
   const myVotes = _allRows(SHEETS.DRAGON_VOTES).filter(v =>
     String(v.voter_nickname).toLowerCase() === nick
   )
-  // Already voted for this dragon — idempotent no-op
+  // Already voted for this dragon - idempotent no-op
   if (myVotes.some(v => v.dragon_id === dragonId)) {
     return { dragon_id: dragonId, votes_used: myVotes.length, alreadyCast: true }
   }
@@ -424,8 +424,8 @@ function voteForDragon({ voterNickname, dragonId }) {
 function withdrawVote({ voterNickname, dragonId }) {
   if (!voterNickname) throw new Error('voterNickname required')
   const nick = String(voterNickname).toLowerCase().trim()
-  // If dragonId given — remove that specific vote.
-  // If omitted — remove ALL votes by this voter (legacy "withdraw all" usage).
+  // If dragonId given - remove that specific vote.
+  // If omitted - remove ALL votes by this voter (legacy "withdraw all" usage).
   const all = _allRows(SHEETS.DRAGON_VOTES)
   const sheet = _sheet(SHEETS.DRAGON_VOTES)
   // Iterate from bottom so deletions don't shift indices
@@ -449,7 +449,7 @@ function getMyVotes({ voterNickname }) {
   return { votes, max: MAX_VOTES_PER_VOTER }
 }
 
-// Back-compat shim — old single-vote API. Returns the first vote or null.
+// Back-compat shim - old single-vote API. Returns the first vote or null.
 function getMyVote({ voterNickname }) {
   const r = getMyVotes({ voterNickname })
   return (r.votes && r.votes[0]) || null
@@ -697,7 +697,7 @@ function getArenaLeaderboard() {
 // ───────────────────────── Student progress ──────────────────
 
 // Sync local workshopStore changes (XP, found dragons, page index) to the
-// students sheet. Idempotent — overwrites whatever's there.
+// students sheet. Idempotent - overwrites whatever's there.
 function updateStudentProgress({ studentId, nickname, xp, hiddenDragonsFound, currentPage }) {
   if (!studentId && !nickname) throw new Error('studentId or nickname required')
   let rowIdx = -1

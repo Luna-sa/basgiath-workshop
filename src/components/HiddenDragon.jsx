@@ -6,7 +6,7 @@ import { findDragonById } from '../data/hidden-dragons'
 import { updateStudentProgress } from '../api/progress'
 
 /**
- * Hidden dragon — click → reveal + spiral flight to HUD + reward.
+ * Hidden dragon - click → reveal + spiral flight to HUD + reward.
  *
  * Multi-layer animation:
  *   idle    silhouette at base opacity, scrolls with content
@@ -165,8 +165,13 @@ export default function HiddenDragon({
   }
 
   const dragonAnim = stage === 'idle' ? {
-    animate: { opacity: baseOpacity, scale: 1, rotate: rotation },
-    whileHover: { opacity: 0.7, scale: 1.2, filter: `drop-shadow(0 0 8px ${color})` },
+    animate: {
+      opacity: baseOpacity,
+      scale: 1,
+      rotate: rotation,
+      filter: `drop-shadow(0 0 6px ${color}) drop-shadow(0 0 2px rgba(0,0,0,0.6))`,
+    },
+    whileHover: { opacity: 0.85, scale: 1.25, filter: `drop-shadow(0 0 14px ${color})` },
     transition: { duration: 0.2 },
   } : stage === 'awake' ? {
     animate: {
@@ -206,7 +211,7 @@ export default function HiddenDragon({
     transition: { duration: flightDur, times: [0, 0.35, 0.7, 1], ease: [0.4, 0, 0.2, 1] },
   } : { animate: { opacity: 0, scale: 0 }, transition: { duration: 0.1 } }
 
-  // Wing-flap on inner img — scaleY oscillates during awake + fly
+  // Wing-flap on inner img - scaleY oscillates during awake + fly
   const wingFlap = (stage === 'awake' || stage === 'fly') ? {
     scaleY: [1, 0.55, 1.15, 0.55, 1.15, 0.6, 1.1, 0.7, 1],
   } : { scaleY: 1 }

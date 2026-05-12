@@ -16,21 +16,21 @@ export default function P00_Landing() {
             {t(
               <>This is a <strong className="text-white">Claude Code workshop for QA</strong>. We set up Claude Code together, build a personal AI partner with a real character, and run real tasks until everything clicks.</>,
               <>Это <strong className="text-white">воркшоп по Claude Code для QA</strong>. Настроим Claude Code вместе, соберём персонального AI-напарника с настоящим характером и пройдём через реальные задачи пока всё не сядет.</>,
-              <>Це <strong className="text-white">воркшоп із Claude Code для QA</strong>. Разом налаштуємо Claude Code, зберемо персонального AI-напарника зі справжнім характером і пройдемо справжні задачі — доки все не складеться.</>
+              <>Це <strong className="text-white">воркшоп із Claude Code для QA</strong>. Разом налаштуємо Claude Code, зберемо персонального AI-напарника зі справжнім характером і пройдемо справжні задачі - доки все не складеться.</>
             )}
           </p>
           <p className="text-[18px] text-text-body leading-relaxed mb-3">
             {t(
               <>The frame is <strong className="text-white">Basgiath Academy</strong>. Like the dragon-rider academy from Fourth Wing, we have characters, squads and a Parapet to cross. The lore is the wrapper. The work underneath is real QA.</>,
               <>Обёртка - <strong className="text-white">Академия Басгиат</strong>. Как у наездников из «Четвёртого Крыла»: персонажи, отряды, Парапет который нужно пройти. Лор - это обёртка. Внутри настоящая QA-работа.</>,
-              <>Обгортка — <strong className="text-white">Академія Басгіат</strong>. Як у вершників із «Четвертого Крила»: персонажі, загони, Парапет, який треба пройти. Лор — це обгортка. Усередині справжня QA-робота.</>
+              <>Обгортка - <strong className="text-white">Академія Басгіат</strong>. Як у вершників із «Четвертого Крила»: персонажі, загони, Парапет, який треба пройти. Лор - це обгортка. Усередині справжня QA-робота.</>
             )}
           </p>
           <p className="text-[16px] text-text-secondary italic">
             {t(
               'Today, AI is your dragon. You\'ll set up the full QA ecosystem and learn to fly with it.',
               'Сегодня AI - твой дракон. Настроишь полную QA-экосистему и научишься на ней летать.',
-              'Сьогодні AI — твій дракон. Налаштуєш повну QA-екосистему і навчишся на ній літати.'
+              'Сьогодні AI - твій дракон. Налаштуєш повну QA-екосистему і навчишся на ній літати.'
             )}
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function P00_Landing() {
               title_uk: 'QA-екосистема',
               desc_en: 'CLAUDE.md + 7 commands + 4 agents - one prompt installs it all',
               desc_ru: 'CLAUDE.md + 7 команд + 4 агента - одной командой',
-              desc_uk: 'CLAUDE.md + 7 команд + 4 агенти — однією командою',
+              desc_uk: 'CLAUDE.md + 7 команд + 4 агенти - однією командою',
             },
             {
               icon: '🌐',

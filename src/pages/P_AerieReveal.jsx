@@ -6,7 +6,7 @@ import { listDragons, subscribeToAerie } from '../api/dragons'
 import { generateFakeDragons } from '../data/dragons/fixtures'
 
 /**
- * The Reveal of the Strongest Bond — projector-mode reveal of the
+ * The Reveal of the Strongest Bond - projector-mode reveal of the
  * Aerie vote winner. Slow theatrical staging:
  *
  *   beat 1 (2s)  : "Three votes. Forty dragons. One sky."
@@ -14,7 +14,7 @@ import { generateFakeDragons } from '../data/dragons/fixtures'
  *   beat 3       : Dragon portrait fades in
  *   beat 4       : Dragon name in 7vw display italic
  *   beat 5       : Rider nickname in 4vw
- *   beat 6       : "Aerie Favourite — Basgiath 2026-05-13" badge
+ *   beat 6       : "Aerie Favourite - Basgiath 2026-05-13" badge
  *   beat 7       : Confetti, motto pull-quote, runners-up strip
  *
  * Standalone route: /?page=reveal
@@ -24,7 +24,7 @@ export default function P_AerieReveal() {
   const t = useT()
   const [dragons, setDragons] = useState([])
   const [stage, setStage] = useState(0) // 0..5 reveal beats
-  // Once the dramatic reveal starts (stage >= 2 — portrait fade-in),
+  // Once the dramatic reveal starts (stage >= 2 - portrait fade-in),
   // freeze the leaderboard so a late vote can't swap the winner
   // mid-animation. The shown sorted list is captured at freeze time.
   const [frozenDragons, setFrozenDragons] = useState(null)
@@ -72,7 +72,7 @@ export default function P_AerieReveal() {
   }, [])
 
   // Sort by vote count desc, sealed_at asc tiebreak. Use the frozen
-  // snapshot once reveal has started — so the winner can't change
+  // snapshot once reveal has started - so the winner can't change
   // mid-confetti from a late vote tipping the count.
   const sorted = useMemo(() => {
     const source = frozenDragons || dragons
@@ -207,7 +207,7 @@ export default function P_AerieReveal() {
                 />
               </motion.div>
 
-              {/* Dragon name — Stage 3 */}
+              {/* Dragon name - Stage 3 */}
               {stage >= 3 && (
                 <motion.h1
                   initial={{ opacity: 0, y: 12 }}
@@ -219,7 +219,7 @@ export default function P_AerieReveal() {
                 </motion.h1>
               )}
 
-              {/* Rider — Stage 4 */}
+              {/* Rider - Stage 4 */}
               {stage >= 4 && (
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
@@ -231,7 +231,7 @@ export default function P_AerieReveal() {
                 </motion.p>
               )}
 
-              {/* Aerie Favourite badge — Stage 5 */}
+              {/* Aerie Favourite badge - Stage 5 */}
               {stage >= 5 && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.85 }}
@@ -274,7 +274,7 @@ export default function P_AerieReveal() {
         </AnimatePresence>
       </div>
 
-      {/* Runners-up strip at bottom — Stage 5+ */}
+      {/* Runners-up strip at bottom - Stage 5+ */}
       <AnimatePresence>
         {stage >= 5 && runnersUp.length > 0 && (
           <motion.div

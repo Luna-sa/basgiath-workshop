@@ -59,7 +59,7 @@ export default function Arena() {
       const iframe = iframeRef.current?.contentWindow
 
       if (e.data.type === 'arena-ready') {
-        // Iframe announces readiness — re-push identity to be safe.
+        // Iframe announces readiness - re-push identity to be safe.
         if (iframe) {
           iframe.postMessage({
             type: 'init-identity',

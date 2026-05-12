@@ -10,7 +10,7 @@ import { findDragonsBySlide } from '../data/hidden-dragons'
 /**
  * Pick a localised field. Falls back to the canonical (RU) field if
  * the per-locale field is not present. So narrative entries can be
- * progressively translated — current contract is:
+ * progressively translated - current contract is:
  *   - n.title       (RU canonical, always present)
  *   - n.title_en    (optional)
  *   - n.title_uk    (optional)
@@ -47,7 +47,7 @@ export default function PageShell({ pageIndex, subStepId, children }) {
     <div className="h-screen w-full flex flex-col bg-bg pt-[52px] overflow-hidden">
       <div className="flex-1 flex flex-col items-center overflow-y-auto px-6 sm:px-10 lg:px-16 py-6 relative">
         <div className="w-full max-w-[960px] mx-auto flex flex-col flex-1 relative">
-          {/* Hidden Dragons — absolute-positioned inside the scroll
+          {/* Hidden Dragons - absolute-positioned inside the scroll
               container so they scroll WITH the content (not stuck to
               the viewport edges). Coords in registry are relative to
               the 960px content frame. */}
@@ -58,7 +58,7 @@ export default function PageShell({ pageIndex, subStepId, children }) {
               style={{ position: 'absolute', ...dragon.position }}
             />
           ))}
-          {/* Slide header — large, breathing. Eyebrow + divider dot
+          {/* Slide header - large, breathing. Eyebrow + divider dot
               carry the participant's persona colour so the workshop
               feels tinted to their archetype. */}
           {narrative && (
@@ -100,7 +100,7 @@ export default function PageShell({ pageIndex, subStepId, children }) {
         </div>
       </div>
 
-      {/* Character whisper — top-left floating quote from the
+      {/* Character whisper - top-left floating quote from the
           chosen Empyrean archetype's bonded dragon. */}
       <CharacterCommentary slideKey={narrativeKey} position="fixed" />
     </div>

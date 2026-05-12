@@ -66,7 +66,7 @@ export default function StandaloneRegister() {
         setErrorMsg('')
       } else {
         setStatus('error')
-        // Detect the network-level "failed to fetch" — usually means
+        // Detect the network-level "failed to fetch" - usually means
         // a corporate DNS/proxy (Cisco Umbrella, Zscaler, etc.) is
         // blocking *.supabase.co. Surface a helpful hint instead of
         // the raw TypeError.
@@ -91,7 +91,7 @@ export default function StandaloneRegister() {
       <div className="min-h-screen flex items-center justify-center px-6 py-16">
         <div className="flex items-center justify-center gap-6 w-full max-w-[1200px]">
 
-          {/* Left silhouette — hidden on small screens */}
+          {/* Left silhouette - hidden on small screens */}
           <img
             src="/sword-left.jpg"
             alt=""
@@ -119,7 +119,7 @@ export default function StandaloneRegister() {
               )}
             </p>
 
-            {/* Big attention block — remember the nickname */}
+            {/* Big attention block - remember the nickname */}
             <div className="border-2 border-qa-teal bg-qa-teal/[0.10] py-6 px-5 mb-6 rounded-[2px] shadow-[0_0_32px_rgba(0,229,204,0.18)]">
               <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3 font-semibold">
                 ▲ {t('Your signet', 'Твой сигнет', 'Твій сигнет')}
@@ -166,7 +166,7 @@ export default function StandaloneRegister() {
             </div>
           </div>
 
-          {/* Right silhouette — hidden on small screens */}
+          {/* Right silhouette - hidden on small screens */}
           <img
             src="/sword-right.jpg"
             alt=""
@@ -268,7 +268,7 @@ export default function StandaloneRegister() {
             />
           </div>
 
-          {/* Role — radio buttons, custom field if "Other" */}
+          {/* Role - radio buttons, custom field if "Other" */}
           <div>
             <label className={labelClass}>
               {t('Your role', 'Твоя роль', 'Твоя роль')} <span className="text-qa-teal">*</span>

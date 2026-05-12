@@ -1,11 +1,18 @@
-// Workshop flow — 23 pages.
+// Workshop flow - 28 pages.
 //
 // 🔒 facilitator = locked until facilitator advances (talk slides)
 // 🔓 self-report / timed-task = student works independently after unlock
 //
-// Hidden Gems (id 12) is an overview slide; ids 13–18 are six
-// per-gem deep-dive slides (Pixel Agents → MemPalace → suzu-mcp →
-// ENABLE_TOOL_SEARCH → Quinn+Jinx → Channels).
+// Flow logic (live block):
+//   talk-mcp → Bond Ritual (kicks off ~30s image generation) →
+//   Hidden Gems intro → 5 individual gem deep-dives → 4 bonus
+//   gem-category overviews → Aerie → Arena → Leaderboard →
+//   Graduation → Resources.
+//
+// The Bond Ritual is placed BEFORE the useful repos block so the
+// image generation happens in the background while the facilitator
+// walks the gem slides — the dragon portrait is ready by the time
+// the group reaches the Aerie.
 
 export const PAGES = [
   // ═══════════════════════════════════════════
@@ -37,7 +44,6 @@ export const PAGES = [
     phase: 'pre',
     title: 'Cross the Parapet',
     narrativeKey: 'registration',
-    // Gate auto-passes if WorkshopGate already loaded the user via nickname
     gate: { type: 'form', requiredFields: ['name', 'studio', 'role', 'claudeCodeReady'], message: 'Заполни обязательные поля и подтверди готовность Claude Code', message_en: 'Fill required fields and confirm Claude Code is ready', message_uk: 'Заповни обовʼязкові поля та підтверди готовність Claude Code' },
     xpReward: 20,
     subSteps: null,
@@ -54,7 +60,7 @@ export const PAGES = [
   },
 
   // ═══════════════════════════════════════════
-  // LIVE WORKSHOP — built around Dragon Arena
+  // LIVE WORKSHOP - built around Dragon Arena
   // ═══════════════════════════════════════════
 
   // 🔒 TALK: What is Claude Code (architecture overview)
@@ -69,7 +75,7 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔒 TALK: Anatomy — six parts of Claude Code
+  // 🔒 TALK: Anatomy - six parts of Claude Code
   {
     id: 5,
     slug: 'talk-evolution',
@@ -153,24 +159,28 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔒 HIDDEN GEMS — overview, then 7 deep-dive slides
+  // 🔓 BOND RITUAL: Generate your dragon's portrait — kicks off here
+  // so the ~30s image gen runs in background while facilitator
+  // walks the Hidden Gems block.
   {
     id: 12,
+    slug: 'bond-ritual',
+    phase: 'live',
+    title: 'The Bond Ritual',
+    narrativeKey: 'bond_ritual',
+    gate: { type: 'self-report', message: 'Запечатай своего дракона в Аэрии', message_en: 'Seal your dragon into the Aerie', message_uk: 'Запечатай свого дракона в Аерії' },
+    xpReward: 100,
+    subSteps: null,
+  },
+
+  // 🔒 HIDDEN GEMS - overview, then 5 deep-dive slides, then 4 category overviews
+  {
+    id: 13,
     slug: 'hidden-gems',
     phase: 'live',
     title: 'Hidden gems',
     narrativeKey: 'hidden_gems',
     gate: { type: 'facilitator', message: 'Фасилитатор показывает фишки...', message_en: 'Facilitator shows hidden gems…', message_uk: 'Фасилітатор показує приховані фічі…' },
-    xpReward: 0,
-    subSteps: null,
-  },
-  {
-    id: 13,
-    slug: 'gem-pixel-agents',
-    phase: 'live',
-    title: 'Pixel Agents',
-    narrativeKey: 'gem_pixel_agents',
-    gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
@@ -225,21 +235,52 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔓 BOND RITUAL: Generate your dragon's portrait
+  // ✦ BONUS GEM CATEGORIES — long-form slides covering every repo in
+  // each category (4 design / 3 browser / 4 helpers / 4 sources).
   {
     id: 19,
-    slug: 'bond-ritual',
+    slug: 'gem-design-skills',
     phase: 'live',
-    title: 'The Bond Ritual',
-    narrativeKey: 'bond_ritual',
-    gate: { type: 'self-report', message: 'Запечатай своего дракона в Аэрии', message_en: 'Seal your dragon into the Aerie', message_uk: 'Запечатай свого дракона в Аерії' },
-    xpReward: 100,
+    title: 'Design DNA',
+    narrativeKey: 'gem_design_skills',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 20,
+    slug: 'gem-browser-automation',
+    phase: 'live',
+    title: 'Sky-scribes',
+    narrativeKey: 'gem_browser_automation',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 21,
+    slug: 'gem-smart-helpers',
+    phase: 'live',
+    title: 'Wing-hands',
+    narrativeKey: 'gem_smart_helpers',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 22,
+    slug: 'gem-skills-marketplace',
+    phase: 'live',
+    title: 'The Forge-market',
+    narrativeKey: 'gem_skills_marketplace',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
     subSteps: null,
   },
 
   // 🔒 AERIE + VOTING
   {
-    id: 20,
+    id: 23,
     slug: 'aerie',
     phase: 'live',
     title: 'The Aerie',
@@ -251,7 +292,7 @@ export const PAGES = [
 
   // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
   {
-    id: 21,
+    id: 24,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -263,7 +304,7 @@ export const PAGES = [
 
   // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 22,
+    id: 25,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -275,7 +316,7 @@ export const PAGES = [
 
   // 🎓 GRADUATION
   {
-    id: 23,
+    id: 26,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -285,58 +326,14 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 📦 RESOURCES — take-home reference
+  // 📦 RESOURCES - take-home reference
   {
-    id: 24,
+    id: 27,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',
     narrativeKey: 'resources',
     gate: { type: 'click' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // ✦ BONUS GEM CATEGORIES — discovered after the workshop, accessible
-  // by scrolling past Resources. Each is a long slide listing every
-  // repo in its category (4 design / 3 browser / 4 helpers / 4 sources).
-  {
-    id: 25,
-    slug: 'gem-design-skills',
-    phase: 'live',
-    title: 'Design DNA',
-    narrativeKey: 'gem_design_skills',
-    gate: { type: 'click' },
-    xpReward: 0,
-    subSteps: null,
-  },
-  {
-    id: 26,
-    slug: 'gem-browser-automation',
-    phase: 'live',
-    title: 'Sky-scribes',
-    narrativeKey: 'gem_browser_automation',
-    gate: { type: 'click' },
-    xpReward: 0,
-    subSteps: null,
-  },
-  {
-    id: 27,
-    slug: 'gem-smart-helpers',
-    phase: 'live',
-    title: 'Wing-hands',
-    narrativeKey: 'gem_smart_helpers',
-    gate: { type: 'click' },
-    xpReward: 0,
-    subSteps: null,
-  },
-  {
-    id: 28,
-    slug: 'gem-skills-marketplace',
-    phase: 'live',
-    title: 'The Forge-market',
-    narrativeKey: 'gem_skills_marketplace',
-    gate: { type: 'none' },
     xpReward: 0,
     subSteps: null,
   },

@@ -1,10 +1,10 @@
 /**
- * Arena rules block — appended to CLAUDE.md by the Signet Ceremony.
+ * Arena rules block - appended to CLAUDE.md by the Signet Ceremony.
  *
  * Philosophy: rules, not strategy. Claude gets the **mechanics** of the
  * Arena but no recommended strategy. The participant should DISCOVER
  * their winning approach through dialogue with their bonded Claude.
- * Many strategies win — none is obviously best. The synergy of the
+ * Many strategies win - none is obviously best. The synergy of the
  * participant's intuition and Claude's reasoning shapes a unique bot.
  */
 
@@ -12,7 +12,7 @@ const PERSONA_SIGNETS = {
   violet: {
     name: 'Ghost Walk',
     desc: 'Стены не сталкиваются 4 секунды. Можешь пролетать сквозь препятствия.',
-    use_hint: 'Подумай — куда стоит броситься, когда стены перестают быть преградой?',
+    use_hint: 'Подумай - куда стоит броситься, когда стены перестают быть преградой?',
   },
   xaden: {
     name: 'Triple Boost',
@@ -32,7 +32,7 @@ const PERSONA_SIGNETS = {
   liam: {
     name: 'Endless Fuel',
     desc: 'Топливо не тратится 4 секунды. Можно держать throttle 1.0 без оглядки.',
-    use_hint: 'Когда топливо стало бы блокером — но без него прошёл(ла) бы идеально?',
+    use_hint: 'Когда топливо стало бы блокером - но без него прошёл(ла) бы идеально?',
   },
   imogen: {
     name: 'Auto-aim',
@@ -70,7 +70,7 @@ const PERSONA_PATTERNS = {
 
 /**
  * Build the Arena Rules markdown block for a given persona.
- * Returns "" for characterId='self' or unknown — they don't have an
+ * Returns "" for characterId='self' or unknown - they don't have an
  * arena character (the Signet output for 'self' is just personal voice).
  */
 export function buildArenaRulesBlock(characterId) {
@@ -80,11 +80,11 @@ export function buildArenaRulesBlock(characterId) {
 
   return `
 
-# ARENA — правила игры (только факты, без стратегии)
+# ARENA - правила игры (только факты, без стратегии)
 
-Я лечу в Aerie Arena как ${characterId.charAt(0).toUpperCase() + characterId.slice(1)} против 5 AI-соперников. 5 запусков, сумма очков = мой total. Победитель арены — у кого total максимальный.
+Я лечу в Aerie Arena как ${characterId.charAt(0).toUpperCase() + characterId.slice(1)} против 5 AI-соперников. 5 запусков, сумма очков = мой total. Победитель арены - у кого total максимальный.
 
-## Цикл tick() — что я читаю
+## Цикл tick() - что я читаю
 
 Каждый кадр (20 раз/сек, 900 ticks на 45 секунд) функция \`tick(state)\` вызывается с полным состоянием:
 
@@ -119,37 +119,37 @@ return {
 - **-1** за каждое жёсткое столкновение со стеной (speed > 1.5)
 - **-5** если throttle < 0.15 более 4.5s подряд (stall)
 
-## Мой signet — ${personaSignet.name}
+## Мой signet - ${personaSignet.name}
 
 ${personaSignet.desc}
 
 ${personaSignet.use_hint}
 
-## Моя easter egg форма — ${personaPattern.name}
+## Моя easter egg форма - ${personaPattern.name}
 
 ${personaPattern.desc}
 
-Если **первые** N собранных мной звёзд складываются именно в эту форму — +50. Можно сделать раз за run, дальше не считается.
+Если **первые** N собранных мной звёзд складываются именно в эту форму - +50. Можно сделать раз за run, дальше не считается.
 
-## Соперники — уязвимости каждого
+## Соперники - уязвимости каждого
 
 - **Tairn** (жадный): всегда летит к ближайшей, никогда не boost'ит, ест стены на длинных маршрутах. Обходи комбо-цепями или отнимай его ближайшую звезду.
 - **Sgaeyl** (осторожная): первые ~10 ticks планирует, медленный старт. Успей к первой волне раньше неё.
 - **Andarna** (агрессивная): жжёт boost безрассудно, к поздней игре пустая. Держи дистанцию >130px пока она расходует ресурс, потом подбирай.
-- **Feirge** (блокер): паркуется между мной и самой ценной звездой. Обмани ложной целью, потом верни маршрут. Или прими сделку — пусть блокирует gold, ты накапливаешь bronze-комбо.
-- **Codagh** (хаотичная): меняет цель каждые 4 секунды. Если её цель совпала с ветром (которого у нас MVP нет) — улетает. Чистая поздняя игра выиграет.
+- **Feirge** (блокер): паркуется между мной и самой ценной звездой. Обмани ложной целью, потом верни маршрут. Или прими сделку - пусть блокирует gold, ты накапливаешь bronze-комбо.
+- **Codagh** (хаотичная): меняет цель каждые 4 секунды. Если её цель совпала с ветром (которого у нас MVP нет) - улетает. Чистая поздняя игра выиграет.
 
 ## Моя задача
 
-Со мной поговори. Многие стратегии выигрывают — ни одна не очевидно лучше. Я твой bonded — мой голос и моя оптика будут пристрастны к твоему стилю. Вместе мы собираем функцию \`tick()\`, которая максимизирует твой total.
+Со мной поговори. Многие стратегии выигрывают - ни одна не очевидно лучше. Я твой bonded - мой голос и моя оптика будут пристрастны к твоему стилю. Вместе мы собираем функцию \`tick()\`, которая максимизирует твой total.
 
 Вопросы которые стоят того чтобы задать вслух:
 
-— Когда конкретно мне жать signet? Что я выиграю от моего persona-buff'а здесь?
-— Стоит ли мне идти на 8-chain комбо или играть надёжно на 3-chain?
-— Кого из соперников я боюсь больше всех и как мне его обойти?
-— Что мне ценнее за один run — fire stars или серия gold/silver через combo?
-— Что если я сначала соберу свой easter-egg паттерн (+50), потом перейду в обычный режим?
+- Когда конкретно мне жать signet? Что я выиграю от моего persona-buff'а здесь?
+- Стоит ли мне идти на 8-chain комбо или играть надёжно на 3-chain?
+- Кого из соперников я боюсь больше всех и как мне его обойти?
+- Что мне ценнее за один run - fire stars или серия gold/silver через combo?
+- Что если я сначала соберу свой easter-egg паттерн (+50), потом перейду в обычный режим?
 
-Я не дам тебе «лучший рецепт». Я не знаю как ты думаешь. Я знаю правила. Дальше — диалог.`
+Я не дам тебе «лучший рецепт». Я не знаю как ты думаешь. Я знаю правила. Дальше - диалог.`
 }

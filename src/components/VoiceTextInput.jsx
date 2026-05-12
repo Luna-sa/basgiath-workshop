@@ -9,10 +9,10 @@ import { useT } from '../i18n/useT'
  * (so the user can dictate in chunks or mix typing + speaking).
  *
  * Props:
- *   value, onChange    — controlled input pair
- *   rows               — textarea rows (default 3)
- *   placeholder        — placeholder string
- *   inputType          — 'textarea' (default) | 'text'
+ *   value, onChange    - controlled input pair
+ *   rows               - textarea rows (default 3)
+ *   placeholder        - placeholder string
+ *   inputType          - 'textarea' (default) | 'text'
  *
  * If the browser doesn't support MediaRecorder, the mic button is
  * hidden and the input becomes a plain textarea.
@@ -57,7 +57,7 @@ export default function VoiceTextInput({
           const joined = prev ? `${prev} ${transcript.trim()}` : transcript.trim()
           onChange(joined)
         } else {
-          showError(t('No words detected — try again.', 'Не услышал слов — попробуй ещё раз.', 'Не почув слів — спробуй ще раз.'))
+          showError(t('No words detected - try again.', 'Не услышал слов - попробуй ещё раз.', 'Не почув слів - спробуй ще раз.'))
         }
       } catch (e) {
         showError(e.message || 'transcription failed')
@@ -140,7 +140,7 @@ export default function VoiceTextInput({
       )}
       {isRecording && !error && (
         <p className="font-mono text-[10.5px] tracking-[1.5px] uppercase text-corp-red animate-pulse">
-          ● {t('recording — click mic again to stop', 'запись — нажми ещё раз чтобы остановить', 'запис — клацни ще раз щоб зупинити')}
+          ● {t('recording - click mic again to stop', 'запись - нажми ещё раз чтобы остановить', 'запис - клацни ще раз щоб зупинити')}
         </p>
       )}
       {busy && !error && (
@@ -152,7 +152,7 @@ export default function VoiceTextInput({
   )
 }
 
-/** base64 → Blob — useVoiceRecorder returns base64 for easy Telegram pass-through */
+/** base64 → Blob - useVoiceRecorder returns base64 for easy Telegram pass-through */
 function base64ToBlob(b64, mimeType) {
   const bin = atob(b64)
   const arr = new Uint8Array(bin.length)

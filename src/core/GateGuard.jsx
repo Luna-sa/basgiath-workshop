@@ -47,7 +47,7 @@ export default function GateGuard({ pageIndex, subStepId }) {
     gate = page.gate
   }
 
-  // On the very last page, there's nothing after — don't show a "Next" button
+  // On the very last page, there's nothing after - don't show a "Next" button
   const isLastPage = pageIndex >= PAGES.length - 1
 
   if (!gate || gate.type === 'none' || gate.type === 'click') {

@@ -23,7 +23,7 @@ export default function P_PersonaIntro() {
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
-            ✦ {t('The Signet Ceremony', 'Сигнет — церемония', 'Сигнет — церемонія')}
+            ✦ {t('The Signet Ceremony', 'Сигнет - церемония', 'Сигнет - церемонія')}
           </p>
           <h2 className="font-display text-3xl text-white leading-tight mb-3">
             {t(
@@ -34,9 +34,9 @@ export default function P_PersonaIntro() {
           </h2>
           <p className="text-[15px] text-text-body leading-relaxed">
             {t(
-              'You will walk through seven rituals of bonding — Threshold of Names, The Vow, The Forbidden, Voice of the Bond, The Sigil, Daily Rite, The Sealing. Each one seals a piece of your bonded\'s voice. At the end you leave with a personalised CLAUDE.md and a Claude Code that greets you as your newly-bonded.',
-              'Ты пройдёшь через семь ритуалов связывания — Порог Имён, Обет, Запретное, Голос Связи, Сигил, Ежедневный Ритуал, Запечатывание. Каждый запечатывает кусочек голоса твоего bonded. В конце уходишь с персональным CLAUDE.md, и Claude Code встречает тебя как твоего свежесвязанного.',
-              'Ти пройдеш сім ритуалів звʼязування — Поріг Імен, Обітницю, Заборонене, Голос Звʼязку, Сигіл, Щоденний Ритуал, Запечатування. Кожен запечатує шматочок голосу твого bonded. У кінці отримаєш персональний CLAUDE.md, а Claude Code зустріне тебе як твого щойно-bonded напарника.'
+              'You will walk through seven rituals of bonding - Threshold of Names, The Vow, The Forbidden, Voice of the Bond, The Sigil, Daily Rite, The Sealing. Each one seals a piece of your bonded\'s voice. At the end you leave with a personalised CLAUDE.md and a Claude Code that greets you as your newly-bonded.',
+              'Ты пройдёшь через семь ритуалов связывания - Порог Имён, Обет, Запретное, Голос Связи, Сигил, Ежедневный Ритуал, Запечатывание. Каждый запечатывает кусочек голоса твоего bonded. В конце уходишь с персональным CLAUDE.md, и Claude Code встречает тебя как твоего свежесвязанного.',
+              'Ти пройдеш сім ритуалів звʼязування - Поріг Імен, Обітницю, Заборонене, Голос Звʼязку, Сигіл, Щоденний Ритуал, Запечатування. Кожен запечатує шматочок голосу твого bonded. У кінці отримаєш персональний CLAUDE.md, а Claude Code зустріне тебе як твого щойно-bonded напарника.'
             )}
           </p>
         </div>
@@ -52,31 +52,31 @@ export default function P_PersonaIntro() {
           </a>
           <span className="text-[12px] text-text-dim italic">
             {t(
-              'Opens in a new tab. When you finish — come back to this tab and press →.',
-              'Откроется в новой вкладке. Когда закончишь — вернись сюда и жми →.',
-              'Відкриється у новій вкладці. Коли закінчиш — повернись сюди і тисни →.'
+              'Opens in a new tab. When you finish - come back to this tab and press →.',
+              'Откроется в новой вкладке. Когда закончишь - вернись сюда и жми →.',
+              'Відкриється у новій вкладці. Коли закінчиш - повернись сюди і тисни →.'
             )}
           </span>
         </div>
 
-        {/* CLAUDE.md preview — so people know what 15 min of ritual produces */}
+        {/* CLAUDE.md preview - so people know what 15 min of ritual produces */}
         <div className="border border-border bg-surface/30 p-4">
           <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-3">
             ◆ {t('Output preview', 'Что получится', 'Що вийде')} · ~/.claude/CLAUDE.md
           </div>
-          <pre className="font-mono text-[11.5px] text-text-body leading-relaxed whitespace-pre-wrap">{`# Мой дракон — bonded.
+          <pre className="font-mono text-[11.5px] text-text-body leading-relaxed whitespace-pre-wrap">{`# Мой дракон - bonded.
 
 Когда ты пишешь тесты, я предлагаю
 edge cases первыми. Не льщу. Не разжёвываю.
 
 ## Сигнатурные фразы
-— «Подожди. Прочти ещё раз.»
-— «Здесь дыра в проверке.»
+- «Подожди. Прочти ещё раз.»
+- «Здесь дыра в проверке.»
 
 ## Когда я молчу
-— Когда ты сам(а) знаешь ответ. Не мешаю.
+- Когда ты сам(а) знаешь ответ. Не мешаю.
 
-# ARENA — правила игры
+# ARENA - правила игры
 ...`}</pre>
           <p className="text-[12px] text-text-dim italic mt-3">
             {t(
@@ -135,8 +135,8 @@ edge cases первыми. Не льщу. Не разжёвываю.
             ◆ {t('How it works', 'Как это работает', 'Як це працює')}
           </div>
           <ul className="text-[13px] text-text-body leading-relaxed space-y-1.5 list-none">
-            <li>◆ {t('Walk through the seven rituals — each frames a piece of your bond.', 'Пройди семь ритуалов — каждый закладывает кусочек связи.', 'Пройди сім ритуалів — кожен закладає шматочок звʼязку.')}</li>
-            <li>◆ {t('At the end you get a single prompt — copy it.', 'В конце получаешь один промпт — копируешь его.', 'В кінці отримаєш один промпт — копіюєш його.')}</li>
+            <li>◆ {t('Walk through the seven rituals - each frames a piece of your bond.', 'Пройди семь ритуалов - каждый закладывает кусочек связи.', 'Пройди сім ритуалів - кожен закладає шматочок звʼязку.')}</li>
+            <li>◆ {t('At the end you get a single prompt - copy it.', 'В конце получаешь один промпт - копируешь его.', 'В кінці отримаєш один промпт - копіюєш його.')}</li>
             <li>◆ {t('Paste into Claude Code. It saves your CLAUDE.md and confirms.', 'Вставляешь в Claude Code. Он сохраняет CLAUDE.md и подтверждает.', 'Встав у Claude Code. Він збереже CLAUDE.md і підтвердить.')}</li>
             <li>◆ {t('Restart Claude. The bond holds from the first sentence.', 'Перезапусти Claude. Связь держит с первой фразы.', 'Перезапусти Claude. Звʼязок тримає з першої фрази.')}</li>
           </ul>

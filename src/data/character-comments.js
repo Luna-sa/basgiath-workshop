@@ -143,18 +143,8 @@ export const CHARACTER_COMMENTS = {
     xaden:    { ru: 'Самые острые штуки делают не в офисах. Эти - оттуда.', en: 'The sharpest things aren\'t made in offices. These are.', uk: 'Найгостріші штуки роблять не в офісах. Ці - звідти.' },
     rhiannon: { ru: 'Сообщество - это шесть незнакомцев которые сделали что-то для тебя.', en: 'Community is six strangers who built something for you.', uk: 'Спільнота - це шестеро незнайомців, які зробили щось для тебе.' },
     ridoc:    { ru: 'Гемы - это секретное меню. Заказывай.', en: 'Gems are the secret menu. Order from it.', uk: 'Геми - це секретне меню. Замовляй.' },
-    liam:     { ru: 'Шесть. Открывай по одному. Не глотай всё.', en: 'Six. Open one by one. Don\'t swallow them all.', uk: 'Шість. Відкривай по одному. Не ковтай усе.' },
-    imogen:   { ru: 'Шесть. Возьму одну.', en: 'Six. I\'ll take one.', uk: 'Шість. Візьму одну.' },
-  },
-
-  // ── slide 13 · Pixel Agents ───────────────────────────────────
-  gem_pixel_agents: {
-    violet:   { ru: 'Один агент - одна задача. Не пытайся вешать на одного всё.', en: 'One agent, one job. Don\'t pin everything on one.', uk: 'Один агент - одна задача. Не вішай на одного все.' },
-    xaden:    { ru: 'Свой агент стоит того часа что ты на него потратишь.', en: 'Your own agent is worth the hour you spend on it.', uk: 'Свій агент вартий тієї години, що ти на нього витратиш.' },
-    rhiannon: { ru: 'Если у кого-то агент работает лучше - попроси показать.', en: 'If someone\'s agent works better - ask them to show.', uk: 'Якщо у когось агент працює краще - попроси показати.' },
-    ridoc:    { ru: 'Назови агента глупо. Он от этого работать не хуже будет.', en: 'Name your agent something silly. It still works.', uk: 'Назви агента дурнувато. Він від цього гірше не запрацює.' },
-    liam:     { ru: 'Один агент, один файл, одна цель. По порядку.', en: 'One agent, one file, one goal. In order.', uk: 'Один агент, один файл, одна ціль. По порядку.' },
-    imogen:   { ru: 'Маленький. Узкий. Острый.', en: 'Small. Narrow. Sharp.', uk: 'Малий. Вузький. Гострий.' },
+    liam:     { ru: 'Пять. Открывай по одному. Не глотай всё.', en: 'Five. Open one by one. Don\'t swallow them all.', uk: 'Пʼять. Відкривай по одному. Не ковтай усе.' },
+    imogen:   { ru: 'Пять. Возьму одну.', en: 'Five. I\'ll take one.', uk: 'Пʼять. Візьму одну.' },
   },
 
   // ── slide 14 · MemPalace ──────────────────────────────────────

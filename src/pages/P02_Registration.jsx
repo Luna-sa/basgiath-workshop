@@ -11,7 +11,7 @@ export default function P02_Registration() {
   const labelClass = "font-mono text-[12px] tracking-[2px] uppercase text-text-secondary block mb-2.5"
 
   // If the user already came through WorkshopGate with a known nickname,
-  // their data is already in the store. Skip the form — show a confirmation
+  // their data is already in the store. Skip the form - show a confirmation
   // and a "next" prompt instead.
   if (user.nickname) {
     return (
@@ -71,7 +71,7 @@ export default function P02_Registration() {
 
   return (
     <PageShell pageIndex={2}>
-      {/* Workshop tool callout — emphasizes Claude Code */}
+      {/* Workshop tool callout - emphasizes Claude Code */}
       <div className="mb-6 p-4 border border-qa-teal/30 bg-qa-teal/[0.04] rounded-[2px]">
         <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-2">
           {t('Workshop tool', 'Инструмент воркшопа', 'Інструмент воркшопу')}
@@ -80,7 +80,7 @@ export default function P02_Registration() {
           {t(
             'This workshop is built specifically around Claude Code. Every command, every MCP setup, every persona we configure runs in Claude Code. You\'ll need it installed before we begin.',
             'Этот воркшоп построен специально вокруг Claude Code. Каждая команда, каждая настройка MCP, каждый персонаж который мы соберём - всё это работает в Claude Code. Без него на воркшопе делать нечего.',
-            'Цей воркшоп побудований саме навколо Claude Code. Кожна команда, кожне налаштування MCP, кожен персонаж, якого ми зберемо — все це працює в Claude Code. Без нього на воркшопі робити нічого.'
+            'Цей воркшоп побудований саме навколо Claude Code. Кожна команда, кожне налаштування MCP, кожен персонаж, якого ми зберемо - все це працює в Claude Code. Без нього на воркшопі робити нічого.'
           )}
         </p>
       </div>
@@ -192,7 +192,7 @@ export default function P02_Registration() {
           </select>
         </div>
 
-        {/* Pain — optional */}
+        {/* Pain - optional */}
         <div>
           <label className={labelClass}>
             {t(
@@ -246,7 +246,7 @@ export default function P02_Registration() {
                 {t(
                   'After registration you\'ll get an email with step-by-step install instructions. The workshop is built around Claude Code - if it\'s not installed, you can\'t participate.',
                   'После регистрации тебе придёт письмо с пошаговой инструкцией. Воркшоп построен вокруг Claude Code - без установленного инструмента участвовать нельзя.',
-                  'Після реєстрації тобі прийде лист з покроковою інструкцією. Воркшоп побудований навколо Claude Code — без встановленого інструмента брати участь не вийде.'
+                  'Після реєстрації тобі прийде лист з покроковою інструкцією. Воркшоп побудований навколо Claude Code - без встановленого інструмента брати участь не вийде.'
                 )}
               </p>
             </div>

@@ -9,7 +9,7 @@ import ScoreReveal from './ScoreReveal'
  * Text submission + AI review component.
  * type: 'bug-report' | 'test-cases'
  * pageIndex: for XP tracking
- * roundId: optional — if set, writes to Supabase for competition
+ * roundId: optional - if set, writes to Supabase for competition
  * onComplete: called when review is done
  */
 export default function SubmissionReview({ type, pageIndex, roundId, onComplete }) {
@@ -82,7 +82,7 @@ export default function SubmissionReview({ type, pageIndex, roundId, onComplete 
           </div>
         )}
 
-        {/* No API fallback — show clear message */}
+        {/* No API fallback - show clear message */}
         {!result.feedback && (
           <div className="text-center p-4 border border-ember/30 bg-ember/[0.05]">
             <p className="text-sm text-ember mb-1">AI-ревью недоступно</p>
@@ -98,7 +98,7 @@ export default function SubmissionReview({ type, pageIndex, roundId, onComplete 
       {/* Instruction */}
       <div className="p-3 border border-border bg-surface/30">
         <p className="text-[13px] text-text-secondary">
-          Вставь сюда результат — {label}, который сгенерировал твой AI-агент.
+          Вставь сюда результат - {label}, который сгенерировал твой AI-агент.
           Groq AI оценит качество и даст рекомендации.
         </p>
       </div>

@@ -13,7 +13,7 @@ import { renderSigilCard, downloadBlob } from '../utils/sigilCard'
 
 const STORAGE_KEY = 'bond-ritual-answers'
 const SESSION_KEY = 'bond-ritual-session'
-// Minimum seconds between consecutive generate calls — prevents
+// Minimum seconds between consecutive generate calls - prevents
 // thirty-clicks-on-Re-roll from burning the OpenAI rate-limit.
 const REROLL_COOLDOWN_MS = 8000
 // Hard ceiling on a single generate request. If OpenAI hangs past
@@ -54,7 +54,7 @@ function withTimeout(promise, ms, label = 'request') {
   return Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(
-      () => reject(new Error(`${label} timed out after ${Math.round(ms / 1000)}s — try Re-roll`)),
+      () => reject(new Error(`${label} timed out after ${Math.round(ms / 1000)}s - try Re-roll`)),
       ms
     )),
   ])
@@ -154,7 +154,7 @@ export default function P_BondRitual() {
   const lastGenerateAtRef = useRef(_session.lastGenerateAt || 0)
 
   // If we hydrated mid-generate (refresh while waiting), kick the
-  // user back to questions — the in-flight request was lost.
+  // user back to questions - the in-flight request was lost.
   useEffect(() => {
     if (stage === 'generating') setStage('questions')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,9 +208,9 @@ export default function P_BondRitual() {
     if (lastGenerateAtRef.current > 0 && elapsed < REROLL_COOLDOWN_MS) {
       const wait = Math.ceil((REROLL_COOLDOWN_MS - elapsed) / 1000)
       setGenError(t(
-        `Wait ${wait}s before re-rolling — the queue is still busy.`,
-        `Подожди ${wait} сек перед регенерацией — очередь занята.`,
-        `Зачекай ${wait} сек перед регенерацією — черга зайнята.`
+        `Wait ${wait}s before re-rolling - the queue is still busy.`,
+        `Подожди ${wait} сек перед регенерацией - очередь занята.`,
+        `Зачекай ${wait} сек перед регенерацією - черга зайнята.`
       ))
       return
     }
@@ -231,14 +231,14 @@ export default function P_BondRitual() {
       setGenerations(n => n + 1)
       setStage('preview')
 
-      // Fire-and-forget Rider Class assignment (in parallel — UI shows
+      // Fire-and-forget Rider Class assignment (in parallel - UI shows
       // a loading skeleton in the meantime). Only run on first generation
       // so re-rolls don't keep churning the class.
       if (!riderClass) {
         setClassLoading(true)
         try {
           // Read Signet answers from localStorage so we don't tightly
-          // couple — Signet Ceremony is on a separate route.
+          // couple - Signet Ceremony is on a separate route.
           let signet = {}
           try {
             const raw = window.localStorage.getItem('signet-ceremony-answers')
@@ -247,22 +247,22 @@ export default function P_BondRitual() {
           const rc = await assignRiderClass({ signet, dragon: answers })
           setRiderClass(rc)
         } catch {
-          // Class assignment is bonus content — silently skip on failure.
+          // Class assignment is bonus content - silently skip on failure.
         } finally {
           setClassLoading(false)
         }
       }
     } catch (e) {
-      // Friendlier message for the rate-limit case — the backend already
+      // Friendlier message for the rate-limit case - the backend already
       // retried 3× under the hood, so this only fires when the OpenAI
       // queue is genuinely overwhelmed.
       const raw = e?.message || 'generation failed'
       const isRate = /rate limit|RATE_LIMITED|429/.test(raw)
       setGenError(isRate
         ? t(
-            'A lot of riders pressed Manifest at once. Wait 30-60 seconds and Re-roll — the queue drains fast.',
-            'Много всадников нажали Manifest одновременно. Подожди 30-60 секунд и попробуй ещё раз — очередь рассасывается быстро.',
-            'Багато вершників натиснули Manifest одночасно. Зачекай 30-60 секунд і спробуй ще раз — черга швидко розсмокчеться.'
+            'A lot of riders pressed Manifest at once. Wait 30-60 seconds and Re-roll - the queue drains fast.',
+            'Много всадников нажали Manifest одновременно. Подожди 30-60 секунд и попробуй ещё раз - очередь рассасывается быстро.',
+            'Багато вершників натиснули Manifest одночасно. Зачекай 30-60 секунд і спробуй ще раз - черга швидко розсмокчеться.'
           )
         : raw)
       setStage('questions')
@@ -316,7 +316,7 @@ export default function P_BondRitual() {
         modelUsed,
         studentId,
       })
-      // Don't auto-redirect — facilitator opens the Aerie collectively
+      // Don't auto-redirect - facilitator opens the Aerie collectively
       // on the next slide. Just confirm the seal and stay on the page.
       setStage('sealed')
       // Clear the persisted session so the next page-open is fresh.
@@ -324,7 +324,7 @@ export default function P_BondRitual() {
       // React state for the current page lifetime.
       clearSession()
     } catch (e) {
-      setSealError(e.message || 'Sealing failed — check Supabase migration')
+      setSealError(e.message || 'Sealing failed - check Supabase migration')
       setStage('preview')
     }
   }
@@ -451,7 +451,7 @@ export default function P_BondRitual() {
             </motion.div>
           )}
 
-          {/* ── Sealed stage — confirmation, no auto-redirect ── */}
+          {/* ── Sealed stage - confirmation, no auto-redirect ── */}
           {stage === 'sealed' && (
             <motion.div
               key="sealed"
@@ -485,7 +485,7 @@ export default function P_BondRitual() {
                     />
                   </div>
                   <div className="p-3 text-center">
-                    <div className="font-display italic text-[22px] text-white">{answers.name || '—'}</div>
+                    <div className="font-display italic text-[22px] text-white">{answers.name || '-'}</div>
                     {answers.motto && (
                       <p className="text-[12px] text-text-secondary italic mt-1">"{answers.motto}"</p>
                     )}
@@ -545,7 +545,7 @@ export default function P_BondRitual() {
                   <span className="font-mono text-[10px] text-text-dim">{modelUsed}</span>
                 </div>
                 <h2 className="font-display italic text-[clamp(28px,4vw,38px)] text-white leading-tight mb-2">
-                  {answers.name || '—'}
+                  {answers.name || '-'}
                 </h2>
                 <p className="text-[14px] text-text-secondary italic leading-relaxed mb-3">
                   {answers.motto && `"${answers.motto}"`}
@@ -560,7 +560,7 @@ export default function P_BondRitual() {
                 </div>
               </div>
 
-              {/* Manual prompt editor — for advanced users */}
+              {/* Manual prompt editor - for advanced users */}
               <div className="border border-border bg-surface/30 overflow-hidden">
                 <button
                   type="button"
@@ -609,7 +609,7 @@ export default function P_BondRitual() {
                 )}
               </div>
 
-              {/* Rider Class — The Choosing */}
+              {/* Rider Class - The Choosing */}
               {(classLoading || riderClass) && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
@@ -618,7 +618,7 @@ export default function P_BondRitual() {
                   className="border border-qa-teal/40 bg-gradient-to-br from-qa-teal/[0.06] to-transparent p-5"
                 >
                   <p className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
-                    ✦ {t('The Choosing — your rider class', 'Выбор — твой класс всадника', 'Вибір — твій клас вершника')}
+                    ✦ {t('The Choosing - your rider class', 'Выбор - твой класс всадника', 'Вибір - твій клас вершника')}
                   </p>
                   {classLoading ? (
                     <p className="font-display italic text-[20px] text-text-dim animate-pulse">

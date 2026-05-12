@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 
 /**
- * CopyPrompt — reusable copy-to-clipboard prompt card.
+ * CopyPrompt - reusable copy-to-clipboard prompt card.
  *
  * Pattern matches the bb-deck CopyPrompt:
  *  - Hidden body lives in DOM (clip-rect 0) so copy reads textContent
@@ -10,10 +10,10 @@ import { useRef, useState } from 'react'
  *  - `featured` adds a stronger qa-teal border + pink-ish glow for hero prompts
  *
  * Props:
- *   name      — short prompt name (the user-facing title of the card)
- *   desc      — one-line description
- *   featured  — boolean, applies hero styling
- *   children  — the actual prompt body (string or nodes). Copied verbatim.
+ *   name      - short prompt name (the user-facing title of the card)
+ *   desc      - one-line description
+ *   featured  - boolean, applies hero styling
+ *   children  - the actual prompt body (string or nodes). Copied verbatim.
  */
 export default function CopyPrompt({ name, desc, featured = false, children }) {
   const codeRef = useRef(null)
@@ -98,7 +98,7 @@ export default function CopyPrompt({ name, desc, featured = false, children }) {
         </div>
       </div>
 
-      {/* Peek preview — only rendered when toggled */}
+      {/* Peek preview - only rendered when toggled */}
       {peeking && (
         <div className="border-t border-border bg-black/40">
           <pre className="px-5 sm:px-6 py-4 overflow-x-auto max-h-[420px] overflow-y-auto">
@@ -109,7 +109,7 @@ export default function CopyPrompt({ name, desc, featured = false, children }) {
         </div>
       )}
 
-      {/* Hidden but in DOM — source of truth for clipboard */}
+      {/* Hidden but in DOM - source of truth for clipboard */}
       <div
         ref={codeRef}
         aria-hidden="true"

@@ -4,49 +4,6 @@
 // can be dropped in later by replacing a single component.
 
 // ─────────────────────────────────────────────────────────────────
-// Pixel Agents — tiny pixel-art office. CSS-grid of "desks" with
-// little workers (emoji as pixel sprites for now).
-// ─────────────────────────────────────────────────────────────────
-export function PixelAgentsVisual() {
-  const desks = [
-    { agent: '🧑‍💻', label: 'reading file', state: 'busy' },
-    { agent: '👨‍💻', label: 'typing', state: 'busy' },
-    { agent: '🧑‍💼', label: 'waiting perm', state: 'idle' },
-    { agent: '👩‍💻', label: 'reviewing', state: 'busy' },
-    { agent: null, label: 'empty', state: 'empty' },
-    { agent: '🧑‍🔧', label: 'running tests', state: 'busy' },
-  ]
-  return (
-    <div className="border border-border bg-[#0a1410] p-5 rounded-[2px]">
-      <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal/80 mb-3">
-        ◆ pixel office · live status
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        {desks.map((d, i) => (
-          <div
-            key={i}
-            className={`border p-3 text-center font-mono text-[10px] tracking-[1px] uppercase ${
-              d.state === 'busy'
-                ? 'border-qa-teal/40 bg-qa-teal/[0.08] text-qa-teal'
-                : d.state === 'idle'
-                ? 'border-yellow-300/40 bg-yellow-300/[0.05] text-yellow-300/80'
-                : 'border-border/40 bg-bg/30 text-text-dim'
-            }`}
-            style={{ imageRendering: 'pixelated' }}
-          >
-            <div className="text-[28px] leading-none mb-2">{d.agent || '·'}</div>
-            <div className="leading-tight">{d.label}</div>
-          </div>
-        ))}
-      </div>
-      <div className="font-mono text-[10px] text-text-dim mt-3 text-center italic">
-        each pixel character = one running subagent
-      </div>
-    </div>
-  )
-}
-
-// ─────────────────────────────────────────────────────────────────
 // MemPalace — tree of halls/rooms/drawers
 // ─────────────────────────────────────────────────────────────────
 export function MemPalaceVisual() {
@@ -298,7 +255,6 @@ export function ChannelsVisual() {
 // ─────────────────────────────────────────────────────────────────
 export function GemVisual({ gemId }) {
   switch (gemId) {
-    case 'pixel-agents': return <PixelAgentsVisual />
     case 'mempalace': return <MemPalaceVisual />
     case 'suzu-mcp': return <SuzuVisual />
     case 'tool-search': return <ToolSearchVisual />

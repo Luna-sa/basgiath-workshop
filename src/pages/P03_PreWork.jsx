@@ -69,7 +69,7 @@ export default function P03_PreWork() {
     }).catch(() => {})
   }, [])
 
-  // Single Claude Code path now — workshop is built around Claude Code (see P02).
+  // Single Claude Code path now - workshop is built around Claude Code (see P02).
   const pathKey = 'claude'
   const done = STEPS.filter((_, i) => preworkChecklist[`${pathKey}-${i}`]).length
 
@@ -169,9 +169,9 @@ export default function P03_PreWork() {
             className="text-text-dim text-[13px] hover:text-text-secondary transition-colors cursor-pointer underline underline-offset-4"
           >
             {t(
-              'Everything already installed — skip',
-              'Всё уже установлено — пропустить',
-              'Усе вже встановлено — пропустити'
+              'Everything already installed - skip',
+              'Всё уже установлено - пропустить',
+              'Усе вже встановлено - пропустити'
             )}
           </button>
         </div>
@@ -193,7 +193,7 @@ export default function P03_PreWork() {
           <span className="text-qa-teal font-mono text-[12px] tracking-wider uppercase">
             {t('Tip', 'Лайфхак', 'Порада')}
           </span>
-          {' — '}
+          {' - '}
           {t(
             "At the workshop you don't have to type by hand.",
             'На воркшопе не обязательно набирать руками.',

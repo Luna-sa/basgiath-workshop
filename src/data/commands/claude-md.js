@@ -1,4 +1,4 @@
-// CLAUDE.md section templates — what students type/paste during the workshop
+// CLAUDE.md section templates - what students type/paste during the workshop
 
 export const CLAUDE_MD_SECTIONS = {
   role: {
@@ -13,7 +13,7 @@ testability, create test cases from requirements, and analyze logs.`,
 
   codeReview: {
     title: 'Code Review',
-    instructions: 'Объясни AI, как ревьюить код глазами QA — на что обращать внимание.',
+    instructions: 'Объясни AI, как ревьюить код глазами QA - на что обращать внимание.',
     template: `## How You Should Help Me
 
 ### When I ask you to review code:
@@ -42,7 +42,7 @@ testability, create test cases from requirements, and analyze logs.`,
 - Suggest additional checks I should do before reporting
 
 ### Communication style:
-- Explain technical concepts simply — I may not know the code internals
+- Explain technical concepts simply - I may not know the code internals
 - When showing code, add comments explaining what each part does
 - Use tables and structured lists, not walls of text
 - If something is risky, warn me clearly`,

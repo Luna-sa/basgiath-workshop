@@ -1,6 +1,6 @@
 // Wire into PageRouter as the page after Practice or as a sub-route ?page=resources
 //
-// P_Resources — the take-home Resource Hub. Final stop of the workshop.
+// P_Resources - the take-home Resource Hub. Final stop of the workshop.
 // Every autopilot prompt + every reference download lives here so the
 // participant can come back any day, paste a prompt, and finish what
 // they didn't get to during the live session.
@@ -11,19 +11,19 @@ import CopyPrompt from '../components/CopyPrompt'
 import { useT } from '../i18n/useT'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Autopilot prompts. Plain pragmatic English inside — lore is in the
+// Autopilot prompts. Plain pragmatic English inside - lore is in the
 // wrapping (card titles), not in the working code.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SETUP_DOCTOR_PROMPT = `Setup-Doctor for the Claude Code QA workshop.
 
-Run a full diagnostic on my environment. Don't ask me anything yet — just check.
+Run a full diagnostic on my environment. Don't ask me anything yet - just check.
 
 1. Print \`claude --version\`. If the binary is missing, tell me the install command for my OS (macOS / Windows / Linux) and stop.
-2. Print \`git --version\`. If missing — tell me how to install it.
+2. Print \`git --version\`. If missing - tell me how to install it.
 3. Print \`pwd\` and \`echo $HOME\` so we know where we are.
 4. Check that \`~/.claude\` exists. If yes, list what's inside (\`ls -la ~/.claude\`). I'm looking for: \`commands/\`, \`agents/\`, \`mcp_servers.json\`, and \`CLAUDE.md\`.
-5. Check network reachability: \`curl -sI https://api.anthropic.com | head -1\` and \`curl -sI https://registry.npmjs.org | head -1\`. If either fails, that's likely a corp proxy / firewall — flag it.
+5. Check network reachability: \`curl -sI https://api.anthropic.com | head -1\` and \`curl -sI https://registry.npmjs.org | head -1\`. If either fails, that's likely a corp proxy / firewall - flag it.
 6. Check Node + npm: \`node --version\` and \`npm --version\`. MCP servers need npm.
 7. Check disk space in $HOME: \`df -h $HOME | tail -1\`.
 
@@ -46,17 +46,17 @@ Set up my working folder. Do everything yourself, don't ask me to type commands.
    a. \`curl -fL -o sample-project.zip https://workshop.local/handouts/sample-project.zip\`
    b. If that fails, fall back to: \`git clone https://github.com/Luna-sa/basgiath-workshop-sample.git sample-project\`
    c. If both fail, print the exact error and tell me to grab it manually from the workshop Resources page.
-4. If you got the zip — unzip into \`~/qa-workshop/sample-project\` and remove the zip.
+4. If you got the zip - unzip into \`~/qa-workshop/sample-project\` and remove the zip.
 5. Print \`ls -la ~/qa-workshop/sample-project\` so I can see the contents.
 6. Inside the sample project, check for a README.md and print its first 30 lines.
 
-If anything fails — show the full error text, explain in one sentence what it means, and give me one concrete workaround (e.g. "your corp network blocks raw github clones, try the zip instead").
+If anything fails - show the full error text, explain in one sentence what it means, and give me one concrete workaround (e.g. "your corp network blocks raw github clones, try the zip instead").
 
 Finish with one line: "Ready, next step is X" or "Stuck on X, do Y".`
 
 const MCP_INSTALLER_PROMPT = `MCP installer + diagnostic for the QA workshop.
 
-Install three MCP servers and verify each one. Common failure mode is corporate network — handle it gracefully.
+Install three MCP servers and verify each one. Common failure mode is corporate network - handle it gracefully.
 
 1. Playwright MCP (browser testing):
    \`claude mcp add playwright -- npx @playwright/mcp@latest\`
@@ -70,15 +70,15 @@ Install three MCP servers and verify each one. Common failure mode is corporate 
 After installing, run \`claude mcp list\` and confirm each one appears.
 
 For each MCP server that failed to install:
-- Print the FULL error text — not a summary.
-- Translate the error into plain language ("npm can't reach the registry — that's almost certainly a corp proxy").
+- Print the FULL error text - not a summary.
+- Translate the error into plain language ("npm can't reach the registry - that's almost certainly a corp proxy").
 - Give me ONE workaround to try. Examples:
   - Set npm registry: \`npm config set registry https://registry.npmjs.org/\`
   - Use the corp mirror if there is one (\`npm config get registry\` to check current).
   - Pre-install the package globally with \`-g\` then re-add the MCP.
   - As last resort: install via \`mcp_servers.json\` manually and I'll paste the file.
 
-Final block — print this verbatim, even if everything worked:
+Final block - print this verbatim, even if everything worked:
 
 ▲ IMPORTANT: MCP servers don't load until you restart Claude Code.
    Close this terminal session, open a new one, run \`claude\` again.
@@ -86,7 +86,7 @@ Final block — print this verbatim, even if everything worked:
 
 Keep the tone tight. No reassurance, no apologies. Just diagnosis and the next move.`
 
-const APPLY_PERSONA_PROMPT = `Apply-Persona — install my generated CLAUDE.md as the global Claude Code persona.
+const APPLY_PERSONA_PROMPT = `Apply-Persona - install my generated CLAUDE.md as the global Claude Code persona.
 
 I have a CLAUDE.md file ready. It's either:
 - in my clipboard (I'll paste when you ask), or
@@ -104,13 +104,13 @@ Do this:
    - If clipboard: ask me to paste it directly into chat. Then write it to \`~/.claude/CLAUDE.md\`.
    - If Downloads: list \`ls -1 ~/Downloads/CLAUDE_*.md\` and confirm which file. Copy it to \`~/.claude/CLAUDE.md\`.
 
-4. Print the first 25 lines of \`~/.claude/CLAUDE.md\` — I want to verify it's actually MY persona and not someone else's.
+4. Print the first 25 lines of \`~/.claude/CLAUDE.md\` - I want to verify it's actually MY persona and not someone else's.
 
-5. Final block — print verbatim:
+5. Final block - print verbatim:
 
 ▲ Restart Claude Code now. Close the terminal, open a new one, run \`claude\`.
    When the new session starts, your persona should greet you in-character.
-   If it doesn't — run the Resume-from-error prompt.
+   If it doesn't - run the Resume-from-error prompt.
 
 Don't lecture me about backups. Just do the work and confirm the file landed.`
 
@@ -129,7 +129,7 @@ Don't dump a 20-item troubleshooting list on me. Walk me through it ONE step at 
    - Slash command behaving weird
    - Something else (I'll describe)
 
-2. Ask me ONE follow-up: "What did you actually see — error text or symptom? Paste it."
+2. Ask me ONE follow-up: "What did you actually see - error text or symptom? Paste it."
 
 3. Based on my two answers:
    - Run the relevant diagnostic commands yourself. Examples:
@@ -140,7 +140,7 @@ Don't dump a 20-item troubleshooting list on me. Walk me through it ONE step at 
    - Show me what you found in 3-5 lines max.
    - Give me ONE concrete next action. Not three options. One.
 
-4. If after that one action I'm still stuck — generate a diagnostic bundle:
+4. If after that one action I'm still stuck - generate a diagnostic bundle:
    \`\`\`
    echo "=== claude ===" && claude --version
    echo "=== mcp ===" && claude mcp list
@@ -170,9 +170,9 @@ const AUTOPILOTS = [
     name_ru: 'Заложить насест',
     name_uk: 'Закласти сідало',
     sub: 'Workspace-Init',
-    desc_en: 'Creates ~/qa-workshop, downloads the sample project, initializes git. One paste — done.',
-    desc_ru: 'Создаёт ~/qa-workshop, качает sample-проект, инициализирует git. Одна вставка — готово.',
-    desc_uk: 'Створює ~/qa-workshop, качає sample-проєкт, ініціалізує git. Одна вставка — готово.',
+    desc_en: 'Creates ~/qa-workshop, downloads the sample project, initializes git. One paste - done.',
+    desc_ru: 'Создаёт ~/qa-workshop, качает sample-проект, инициализирует git. Одна вставка - готово.',
+    desc_uk: 'Створює ~/qa-workshop, качає sample-проєкт, ініціалізує git. Одна вставка - готово.',
     body: WORKSPACE_INIT_PROMPT,
   },
   {
@@ -212,9 +212,9 @@ const DOWNLOADS = [
     title_en: 'Hidden Gems',
     title_ru: 'Hidden Gems',
     title_uk: 'Hidden Gems',
-    desc_en: '22 power-user Claude Code features — skills, hooks, agents, plan mode, hotkeys, MCP tricks. The stuff that takes you from beginner to fluent.',
-    desc_ru: '22 power-user-фичи Claude Code — skills, hooks, agents, plan mode, хоткеи, MCP-трюки. То что переводит из новичка во fluent.',
-    desc_uk: '22 power-user-фічі Claude Code — skills, hooks, agents, plan mode, хоткеї, MCP-трюки. Те що переводить із новачка у fluent.',
+    desc_en: '22 power-user Claude Code features - skills, hooks, agents, plan mode, hotkeys, MCP tricks. The stuff that takes you from beginner to fluent.',
+    desc_ru: '22 power-user-фичи Claude Code - skills, hooks, agents, plan mode, хоткеи, MCP-трюки. То что переводит из новичка во fluent.',
+    desc_uk: '22 power-user-фічі Claude Code - skills, hooks, agents, plan mode, хоткеї, MCP-трюки. Те що переводить із новачка у fluent.',
     href: '/handouts/HIDDEN_GEMS.md',
     filename: 'HIDDEN_GEMS.md',
   },
@@ -222,9 +222,9 @@ const DOWNLOADS = [
     title_en: 'Quick Reference',
     title_ru: 'Quick Reference',
     title_uk: 'Quick Reference',
-    desc_en: 'One-page cheat sheet — slash commands, hotkeys, MCP commands, plan mode triggers. Pin it next to your monitor.',
-    desc_ru: 'Cheat sheet на одной странице — slash-команды, хоткеи, MCP-команды, триггеры plan mode. Прикрепи рядом с монитором.',
-    desc_uk: 'Cheat sheet на одній сторінці — slash-команди, хоткеї, MCP-команди, тригери plan mode. Причепи поруч з монітором.',
+    desc_en: 'One-page cheat sheet - slash commands, hotkeys, MCP commands, plan mode triggers. Pin it next to your monitor.',
+    desc_ru: 'Cheat sheet на одной странице - slash-команды, хоткеи, MCP-команды, триггеры plan mode. Прикрепи рядом с монитором.',
+    desc_uk: 'Cheat sheet на одній сторінці - slash-команди, хоткеї, MCP-команди, тригери plan mode. Причепи поруч з монітором.',
     href: '/handouts/QUICK_REFERENCE.md',
     filename: 'QUICK_REFERENCE.md',
   },
@@ -268,9 +268,9 @@ export default function P_Resources() {
           </h1>
           <p className="text-[16px] sm:text-[17px] text-text-secondary leading-relaxed max-w-[640px]">
             {t(
-              'Every prompt, every reference, every file you need to keep flying. Bookmark this page — your dragon waits here.',
-              'Каждый промпт, каждая ссылка, каждый файл — всё чтобы продолжать летать. Сохрани страницу — твой дракон ждёт здесь.',
-              'Кожен промпт, кожне посилання, кожен файл — усе щоб продовжувати літати. Збережи сторінку — твій дракон чекає тут.'
+              'Every prompt, every reference, every file you need to keep flying. Bookmark this page - your dragon waits here.',
+              'Каждый промпт, каждая ссылка, каждый файл - всё чтобы продолжать летать. Сохрани страницу - твой дракон ждёт здесь.',
+              'Кожен промпт, кожне посилання, кожен файл - усе щоб продовжувати літати. Збережи сторінку - твій дракон чекає тут.'
             )}
           </p>
         </header>
@@ -301,9 +301,9 @@ export default function P_Resources() {
 
           <p className="font-mono text-[11px] text-text-dim mt-4 leading-relaxed">
             ▲ {t(
-              'After it finishes — restart Claude Code so the MCP servers attach. Then verify with:',
-              'После завершения — перезапусти Claude Code чтобы MCP-серверы подцепились. Затем проверь:',
-              'Після завершення — перезапусти Claude Code аби MCP-сервери причепилися. Потім перевір:'
+              'After it finishes - restart Claude Code so the MCP servers attach. Then verify with:',
+              'После завершения - перезапусти Claude Code чтобы MCP-серверы подцепились. Затем проверь:',
+              'Після завершення - перезапусти Claude Code аби MCP-сервери причепилися. Потім перевір:'
             )} ⌘ <span className="text-qa-teal">claude mcp list</span>
           </p>
         </section>
@@ -314,9 +314,9 @@ export default function P_Resources() {
             eyebrow={t('· Autopilots ·', '· Автопилоты ·', '· Автопілоти ·')}
             title={t('Five prompts for every step', 'Пять промптов на каждый шаг', 'Пʼять промптів на кожен крок')}
             sub={t(
-              "Each one is a self-driving instruction set. Paste, watch Claude work, move on. Use them in any order — they're independent.",
-              'Каждый — самоисполняющийся набор инструкций. Вставил, посмотрел как Claude работает, пошёл дальше. Используй в любом порядке — они независимы.',
-              'Кожен — самовиконуваний набір інструкцій. Вставив, подивився як Claude працює, пішов далі. Використовуй у будь-якому порядку — вони незалежні.'
+              "Each one is a self-driving instruction set. Paste, watch Claude work, move on. Use them in any order - they're independent.",
+              'Каждый - самоисполняющийся набор инструкций. Вставил, посмотрел как Claude работает, пошёл дальше. Используй в любом порядке - они независимы.',
+              'Кожен - самовиконуваний набір інструкцій. Вставив, подивився як Claude працює, пішов далі. Використовуй у будь-якому порядку - вони незалежні.'
             )}
           />
 
@@ -330,7 +330,7 @@ export default function P_Resources() {
                     <span className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal">
                       {a.sub}
                     </span>
-                    {' — '}
+                    {' - '}
                     {t(a.desc_en, a.desc_ru, a.desc_uk)}
                   </>
                 }

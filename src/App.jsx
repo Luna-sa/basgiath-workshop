@@ -5,6 +5,7 @@ import XpSync from './effects/XpSync'
 import AnnouncementToast from './components/AnnouncementToast'
 import WinnersPodium from './components/WinnersPodium'
 import LanguageToggle from './components/LanguageToggle'
+import UserMenu from './components/UserMenu'
 import ErrorBoundary from './core/ErrorBoundary'
 import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
@@ -148,7 +149,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-bg text-text-body">
           <TealParticles />
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <P_SignetCeremony />
         </div>
       </ErrorBoundary>
@@ -160,7 +161,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-bg text-text-body">
           <TealParticles />
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <P_BondRitual />
         </div>
       </ErrorBoundary>
@@ -172,7 +173,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-bg text-text-body">
           <TealParticles />
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <P_Aerie />
         </div>
       </ErrorBoundary>
@@ -207,7 +208,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-black text-text-body">
           {/* Champions finale — three winners revealed in sequence */}
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <P_Champions />
           {/* Toast slot so Golden Wyrmling click can show "+500 XP" */}
           <AchievementToast />
@@ -221,7 +222,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-bg text-text-body">
           <TealParticles />
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <P_Resources />
         </div>
       </ErrorBoundary>
@@ -233,7 +234,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-bg text-text-body">
           <TealParticles />
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <StandaloneRegister />
         </div>
       </ErrorBoundary>
@@ -255,7 +256,7 @@ export default function App() {
       <ErrorBoundary>
         <div className="min-h-screen bg-bg text-text-body">
           <TealParticles />
-          <LanguageToggle />
+          <LanguageToggle /><UserMenu />
           <WorkshopGate onUnlock={() => setUnlocked(true)} />
         </div>
       </ErrorBoundary>

@@ -19,7 +19,7 @@ export default function P_ArenaIntro() {
     : '/?page=arena'
 
   return (
-    <PageShell pageIndex={21}>
+    <PageShell pageIndex={24}>
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
@@ -30,9 +30,9 @@ export default function P_ArenaIntro() {
           </h2>
           <p className="text-[15px] text-text-body leading-relaxed">
             {t(
-              "You'll write a function that controls your dragon's flight. Your Claude Code helps you write it. Six dragons compete on the projector at the end — most stars wins.",
-              'Напишешь функцию которая управляет полётом твоего дракона. Claude Code помогает её собрать. Шесть драконов сразятся на проекторе в финале — больше звёзд = победа.',
-              'Напишеш функцію, яка керує польотом твого дракона. Claude Code допомагає її зібрати. Шість драконів зітнуться на проекторі у фіналі — більше зірок = перемога.'
+              "You'll write a function that controls your dragon's flight. Your Claude Code helps you write it. Six dragons compete on the projector at the end - most stars wins.",
+              'Напишешь функцию которая управляет полётом твоего дракона. Claude Code помогает её собрать. Шесть драконов сразятся на проекторе в финале - больше звёзд = победа.',
+              'Напишеш функцію, яка керує польотом твого дракона. Claude Code допомагає її зібрати. Шість драконів зітнуться на проекторі у фіналі - більше зірок = перемога.'
             )}
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function P_ArenaIntro() {
 
           <div className="border border-border bg-surface/50 p-5">
             <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-2">
-              ◆ {t('Starter bot — beat this', 'Стартовый бот — победи его', 'Стартовий бот — переможи його')}
+              ◆ {t('Starter bot - beat this', 'Стартовый бот - победи его', 'Стартовий бот - переможи його')}
             </div>
             <pre className="text-[11.5px] font-mono text-qa-teal leading-relaxed whitespace-pre-wrap">{`function tick({ me, stars, walls, rivals }) {
   // greedy: nearest star, full throttle
@@ -108,9 +108,9 @@ export default function P_ArenaIntro() {
 
         <p className="text-[12px] text-text-dim italic">
           {t(
-            'When you finish — come back to this tab and press →. Final reveal is on the Champions slide.',
-            'Когда закончишь — вернись сюда и жми →. Финальный reveal — на слайде Champions.',
-            'Коли закінчиш — повернись сюди і тисни →. Фінальний reveal — на слайді Champions.'
+            'When you finish - come back to this tab and press →. Final reveal is on the Champions slide.',
+            'Когда закончишь - вернись сюда и жми →. Финальный reveal - на слайде Champions.',
+            'Коли закінчиш - повернись сюди і тисни →. Фінальний reveal - на слайді Champions.'
           )}
         </p>
 

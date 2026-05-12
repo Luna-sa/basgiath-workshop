@@ -43,7 +43,7 @@ export default function WinnersPodium() {
               <h2 className="font-display text-3xl text-white">{t('Results', 'Результаты', 'Результати')}</h2>
             </motion.div>
 
-            {/* Winners — reveal 3rd, then 2nd, then 1st */}
+            {/* Winners - reveal 3rd, then 2nd, then 1st */}
             <div className="space-y-4">
               {[...roundWinners].sort((a, b) => b.rank - a.rank).map((winner, i) => {
                 const char = CHARACTERS.find(c => c.id === winner.character_id)

@@ -7,9 +7,9 @@ import { playNavigateSound } from '../effects/SoundManager'
 import ProgressBar from './ProgressBar'
 import HUD from './HUD'
 
-// Lazy-load page components — workshop flow rebuilt around Dragon Arena.
+// Lazy-load page components - workshop flow rebuilt around Dragon Arena.
 // Old QA practice pages (PracticeTC, PracticeBR, PracticeMCP, Quiz, WarGames)
-// removed — replaced by PersonaBuilder + Arena (each accessible
+// removed - replaced by PersonaBuilder + Arena (each accessible
 // in-flow via a small intro page that links to the standalone
 // full-screen experience).
 const pageComponents = {
@@ -25,23 +25,22 @@ const pageComponents = {
   9: lazy(() => import('../pages/P_TalkPowerMoves')),
   10: lazy(() => import('../pages/P_PersonaIntro')),
   11: lazy(() => import('../pages/P10_TalkMCP')),
-  12: lazy(() => import('../pages/P_HiddenGems')),
-  13: lazy(() => import('../pages/P_GemPixelAgents')),
+  12: lazy(() => import('../pages/P_BondIntro')),
+  13: lazy(() => import('../pages/P_HiddenGems')),
   14: lazy(() => import('../pages/P_GemMemPalace')),
   15: lazy(() => import('../pages/P_GemSuzuMcp')),
   16: lazy(() => import('../pages/P_GemToolSearch')),
   17: lazy(() => import('../pages/P_GemQuinnJinx')),
   18: lazy(() => import('../pages/P_GemChannels')),
-  19: lazy(() => import('../pages/P_BondIntro')),
-  20: lazy(() => import('../pages/P_AerieIntro')),
-  21: lazy(() => import('../pages/P_ArenaIntro')),
-  22: lazy(() => import('../pages/P14_Leaderboard')),
-  23: lazy(() => import('../pages/P15_Graduation')),
-  24: lazy(() => import('../pages/P_ResourcesIntro')),
-  25: lazy(() => import('../pages/P_GemDesignSkills')),
-  26: lazy(() => import('../pages/P_GemBrowserAutomation')),
-  27: lazy(() => import('../pages/P_GemSmartHelpers')),
-  28: lazy(() => import('../pages/P_GemSkillsMarketplace')),
+  19: lazy(() => import('../pages/P_GemDesignSkills')),
+  20: lazy(() => import('../pages/P_GemBrowserAutomation')),
+  21: lazy(() => import('../pages/P_GemSmartHelpers')),
+  22: lazy(() => import('../pages/P_GemSkillsMarketplace')),
+  23: lazy(() => import('../pages/P_AerieIntro')),
+  24: lazy(() => import('../pages/P_ArenaIntro')),
+  25: lazy(() => import('../pages/P14_Leaderboard')),
+  26: lazy(() => import('../pages/P15_Graduation')),
+  27: lazy(() => import('../pages/P_ResourcesIntro')),
 }
 
 // Loading fallback

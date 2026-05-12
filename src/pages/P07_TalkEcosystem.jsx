@@ -2,7 +2,7 @@ import PageShell from '../core/PageShell'
 import { useT } from '../i18n/useT'
 
 /**
- * QA Grimoire — the seven incantations, the four familiars, the three
+ * QA Grimoire - the seven incantations, the four familiars, the three
  * conduits. Same commands you actually run in Claude Code, just wrapped
  * in the language of an old spell book. The invocation (real command)
  * stays canonical so participants can use it in their day job without
@@ -33,18 +33,18 @@ const GRIMOIRE = [
         lore_ru: 'Кузница Случаев',
         lore_uk: 'Кузня Випадків',
         invocation: '/test-cases',
-        body_en: 'Feed it a feature; it returns 15-25 test cases — happy paths, edges, and the corners where things break.',
-        body_ru: 'Кидаешь в неё фичу — отдаёт 15-25 тест-кейсов: счастливые пути, границы и углы где всё ломается.',
-        body_uk: 'Кидаєш у неї фічу — віддає 15-25 тест-кейсів: щасливі шляхи, межі і кути де все ламається.',
+        body_en: 'Feed it a feature; it returns 15-25 test cases - happy paths, edges, and the corners where things break.',
+        body_ru: 'Кидаешь в неё фичу - отдаёт 15-25 тест-кейсов: счастливые пути, границы и углы где всё ломается.',
+        body_uk: 'Кидаєш у неї фічу - віддає 15-25 тест-кейсів: щасливі шляхи, межі і кути де все ламається.',
       },
       {
         lore_en: 'Gaze of Witnessing',
         lore_ru: 'Взор Свидетеля',
         lore_uk: 'Погляд Свідка',
         invocation: '/review',
-        body_en: 'Reads code through QA eyes — what tests are missing, what assumptions go untested, where the spec drifted.',
-        body_ru: 'Читает код глазами QA — каких тестов нет, какие допущения непротестированы, где спека ушла в сторону.',
-        body_uk: 'Читає код очима QA — яких тестів нема, які припущення непротестовані, де спека пішла убік.',
+        body_en: 'Reads code through QA eyes - what tests are missing, what assumptions go untested, where the spec drifted.',
+        body_ru: 'Читает код глазами QA - каких тестов нет, какие допущения непротестированы, где спека ушла в сторону.',
+        body_uk: 'Читає код очима QA - яких тестів нема, які припущення непротестовані, де спека пішла убік.',
       },
       {
         lore_en: 'Litany Before Flight',
@@ -61,8 +61,8 @@ const GRIMOIRE = [
         lore_uk: 'Зонд Дроту',
         invocation: '/api-test',
         body_en: 'Sends test requests to your API and reads what comes back. cURL beneath the hood; sense above it.',
-        body_ru: 'Шлёт пробные запросы в API и читает что пришло. Под капотом cURL; над капотом — смысл.',
-        body_uk: 'Шле пробні запити в API і читає що прийшло. Під капотом cURL; над капотом — сенс.',
+        body_ru: 'Шлёт пробные запросы в API и читает что пришло. Под капотом cURL; над капотом - смысл.',
+        body_uk: 'Шле пробні запити в API і читає що прийшло. Під капотом cURL; над капотом - сенс.',
       },
       {
         lore_en: 'Augury of Echo',
@@ -116,9 +116,9 @@ const GRIMOIRE = [
         lore_ru: 'Вард-Камень · Дозорный',
         lore_uk: 'Вард-Камінь · Дозорець',
         invocation: 'security-scanner',
-        body_en: 'Sniffs the code for vulnerabilities — injection, exposed secrets, weak crypto. Raises a flag, never silences it.',
-        body_ru: 'Нюхает код на уязвимости — инъекции, открытые секреты, слабая крипта. Поднимает флаг, не глушит его.',
-        body_uk: 'Нюхає код на вразливості — інʼєкції, відкриті секрети, слабка крипта. Піднімає прапор, не глушить його.',
+        body_en: 'Sniffs the code for vulnerabilities - injection, exposed secrets, weak crypto. Raises a flag, never silences it.',
+        body_ru: 'Нюхает код на уязвимости - инъекции, открытые секреты, слабая крипта. Поднимает флаг, не глушит его.',
+        body_uk: 'Нюхає код на вразливості - інʼєкції, відкриті секрети, слабка крипта. Піднімає прапор, не глушить його.',
       },
       {
         lore_en: 'Adjudicator · the Weigher',
@@ -145,9 +145,9 @@ const GRIMOIRE = [
         lore_ru: 'Зрение За Стеклом',
         lore_uk: 'Зір За Склом',
         invocation: 'Playwright',
-        body_en: 'A conduit through which Claude opens a real browser — clicks, fills, screenshots. Beyond chat into the page itself.',
-        body_ru: 'Канал по которому Claude открывает настоящий браузер — кликает, заполняет, скриншотит. Из чата прямо на страницу.',
-        body_uk: 'Канал по якому Claude відкриває справжній браузер — клацає, заповнює, скриншотить. Із чату прямо на сторінку.',
+        body_en: 'A conduit through which Claude opens a real browser - clicks, fills, screenshots. Beyond chat into the page itself.',
+        body_ru: 'Канал по которому Claude открывает настоящий браузер - кликает, заполняет, скриншотит. Из чата прямо на страницу.',
+        body_uk: 'Канал по якому Claude відкриває справжній браузер - клацає, заповнює, скриншотить. Із чату прямо на сторінку.',
       },
       {
         lore_en: 'Voice on the Wire',
@@ -163,9 +163,9 @@ const GRIMOIRE = [
         lore_ru: 'Библиотека Настоящего',
         lore_uk: 'Бібліотека Сьогодення',
         invocation: 'Context7',
-        body_en: 'Fetches the current documentation of any library — never the year-old version Claude memorised in training.',
-        body_ru: 'Достаёт актуальную документацию любой библиотеки — никогда не годичной давности что Claude запомнил в обучении.',
-        body_uk: 'Дістає актуальну документацію будь-якої бібліотеки — ніколи не річної давності що Claude запамʼятав у навчанні.',
+        body_en: 'Fetches the current documentation of any library - never the year-old version Claude memorised in training.',
+        body_ru: 'Достаёт актуальную документацию любой библиотеки - никогда не годичной давности что Claude запомнил в обучении.',
+        body_uk: 'Дістає актуальну документацію будь-якої бібліотеки - ніколи не річної давності що Claude запамʼятав у навчанні.',
       },
     ],
   },
@@ -207,9 +207,9 @@ export default function P07_TalkEcosystem() {
           </div>
           <p className="text-[14px] text-text-body italic leading-relaxed max-w-2xl">
             {t(
-              'Seven incantations, four familiars, three conduits. The invocations are real commands you run in Claude Code — the names beside them are the language of the older books. Use either; the spells care which you speak.',
-              'Семь заклинаний, четыре фамильяра, три проводника. Инвокации — реальные команды которые ты запускаешь в Claude Code. Имена рядом — язык старых книг. Используй любое; заклинаниям всё равно каким именем ты их зовёшь.',
-              'Сім заклинань, чотири фамільяри, три провідники. Інвокації — справжні команди які ти запускаєш у Claude Code. Імена поряд — мова старих книг. Використовуй будь-яке; заклинанням однаково яким імʼям їх кличеш.'
+              'Seven incantations, four familiars, three conduits. The invocations are real commands you run in Claude Code - the names beside them are the language of the older books. Use either; the spells care which you speak.',
+              'Семь заклинаний, четыре фамильяра, три проводника. Инвокации - реальные команды которые ты запускаешь в Claude Code. Имена рядом - язык старых книг. Используй любое; заклинаниям всё равно каким именем ты их зовёшь.',
+              'Сім заклинань, чотири фамільяри, три провідники. Інвокації - справжні команди які ти запускаєш у Claude Code. Імена поряд - мова старих книг. Використовуй будь-яке; заклинанням однаково яким імʼям їх кличеш.'
             )}
           </p>
         </div>

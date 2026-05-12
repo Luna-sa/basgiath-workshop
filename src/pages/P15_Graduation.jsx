@@ -11,14 +11,13 @@ import { CHECKPOINT_IDS, CHECKPOINT_LABELS, getCheckpoints } from '../api/checkp
 import PageShell from '../core/PageShell'
 
 /**
- * First flight — closing recap. Shows what the rider walked away
+ * First flight - closing recap. Shows what the rider walked away
  * with, their checkpoint progress, and the call to the Resource Hub.
  * Rebuilt around the new flow (no XP/quiz/badges grind).
  */
 export default function P15_Graduation() {
   const t = useT()
   const persona = usePersona()
-  const name = useWorkshopStore(s => s.user.name)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const studentId = useWorkshopStore(s => s.user.id)
   const lang = useLocale(s => s.lang)
@@ -43,10 +42,10 @@ export default function P15_Graduation() {
   const completed = CHECKPOINT_IDS.filter(id => checkpoints[id]).length
 
   return (
-    <PageShell pageIndex={23}>
+    <PageShell pageIndex={26}>
       <div className="space-y-7">
 
-        {/* Hero — character portrait + name */}
+        {/* Hero - character portrait + name */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,11 +62,11 @@ export default function P15_Graduation() {
           )}
           <h2 className="font-display text-3xl text-white">
             {t('Welcome home,', 'С возвращением,', 'З поверненням,')}{' '}
-            <em className="italic" style={{ color: persona.accent }}>{name || nickname || character?.name}</em>
+            <em className="italic" style={{ color: persona.accent }}>{nickname || character?.name}</em>
           </h2>
           {character && (() => {
             // The participant IS the rider (their archetype). Their
-            // bonded partner is their DRAGON — and the dragon's name
+            // bonded partner is their DRAGON - and the dragon's name
             // is the one they wrote during the Bond Ritual (lives
             // in localStorage). Fall back to a neutral "your dragon"
             // if they skipped the ritual.
@@ -92,7 +91,7 @@ export default function P15_Graduation() {
               </p>
             )
           })()}
-          {/* Character voice closer — block D from red-thread spec */}
+          {/* Character voice closer - block D from red-thread spec */}
           {(() => {
             const closer = getGraduationCloser(characterId || 'self', lang)
             if (!closer) return null
@@ -122,23 +121,23 @@ export default function P15_Graduation() {
           <ul className="space-y-2 text-[14px] text-text-body leading-relaxed list-none">
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('A configured Claude Code — slash commands, agents, MCP servers, all set up for QA.', 'Настроенный Claude Code — слэш-команды, агенты, MCP-серверы, всё под QA.', 'Налаштований Claude Code — слеш-команди, агенти, MCP-сервери, усе під QA.')}</span>
+              <span>{t('A configured Claude Code - slash commands, agents, MCP servers, all set up for QA.', 'Настроенный Claude Code - слэш-команды, агенты, MCP-серверы, всё под QA.', 'Налаштований Claude Code - слеш-команди, агенти, MCP-сервери, усе під QA.')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('Your personal CLAUDE.md — your dragon learns you, talks back in your persona\'s voice.', 'Твой персональный CLAUDE.md — дракон знает тебя и говорит в голосе твоего персонажа.', 'Твій персональний CLAUDE.md — дракон знає тебе і говорить голосом твого персонажа.')}</span>
+              <span>{t('Your personal CLAUDE.md - your dragon learns you, talks back in your persona\'s voice.', 'Твой персональный CLAUDE.md - дракон знает тебя и говорит в голосе твоего персонажа.', 'Твій персональний CLAUDE.md - дракон знає тебе і говорить голосом твого персонажа.')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('A bot you wrote yourself — competing with five others on the projector.', 'Бот написанный тобой — соперничал на проекторе с пятью другими.', "Бот, написаний тобою — змагався на проекторі з пʼятьма іншими.")}</span>
+              <span>{t('A bot you wrote yourself - competing with five others on the projector.', 'Бот написанный тобой - соперничал на проекторе с пятью другими.', "Бот, написаний тобою - змагався на проекторі з пʼятьма іншими.")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('A bookmarkable Resource Hub — five autopilot prompts, hidden gems, quick reference.', 'Закладка на Resource Hub — пять autopilot-промптов, hidden gems, quick reference.', "Закладка на Resource Hub — пʼять autopilot-промптів, hidden gems, quick reference.")}</span>
+              <span>{t('A bookmarkable Resource Hub - five autopilot prompts, hidden gems, quick reference.', 'Закладка на Resource Hub - пять autopilot-промптов, hidden gems, quick reference.', "Закладка на Resource Hub - пʼять autopilot-промптів, hidden gems, quick reference.")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('Your nickname — the gates open any day you come back.', 'Твой ник — ворота открыты в любой день когда захочешь вернуться.', 'Твій нік — ворота відкриті будь-якого дня, коли захочеш повернутися.')}</span>
+              <span>{t('Your nickname - the gates open any day you come back.', 'Твой ник - ворота открыты в любой день когда захочешь вернуться.', 'Твій нік - ворота відкриті будь-якого дня, коли захочеш повернутися.')}</span>
             </li>
           </ul>
         </motion.div>
@@ -182,7 +181,7 @@ export default function P15_Graduation() {
           </p>
         </motion.div>
 
-        {/* CTA — open Resource Hub */}
+        {/* CTA - open Resource Hub */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -199,9 +198,9 @@ export default function P15_Graduation() {
           </a>
           <p className="text-[12px] text-text-dim italic mt-3">
             {t(
-              'Bookmark this URL with your nickname — your dragon waits for you any day.',
-              'Закрепи закладкой URL со своим ником — дракон ждёт в любой день.',
-              'Збережи закладкою URL зі своїм ніком — дракон чекає будь-якого дня.'
+              'Bookmark this URL with your nickname - your dragon waits for you any day.',
+              'Закрепи закладкой URL со своим ником - дракон ждёт в любой день.',
+              'Збережи закладкою URL зі своїм ніком - дракон чекає будь-якого дня.'
             )}
           </p>
         </motion.div>

@@ -13,7 +13,7 @@ import {
 import { generateFakeDragons } from '../data/dragons/fixtures'
 
 /**
- * The Aerie — live gallery of all sealed dragons. Each rider may
+ * The Aerie - live gallery of all sealed dragons. Each rider may
  * cast up to 3 votes for different dragons (not their own).
  *
  * Standalone route: /?page=aerie
@@ -26,7 +26,7 @@ export default function P_Aerie() {
   const [myVotes, setMyVotes] = useState([]) // [{ dragon_id, created_at }, ...]
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
-  // Distinguish "still loading" from "loaded but empty" — the empty
+  // Distinguish "still loading" from "loaded but empty" - the empty
   // state should only show after the network call resolves, not in
   // the first 200-500ms while the first fetch is in flight.
   const [loaded, setLoaded] = useState(false)
@@ -138,14 +138,14 @@ export default function P_Aerie() {
           </h1>
           <p className="text-[15px] text-text-secondary italic leading-relaxed max-w-2xl mx-auto">
             {t(
-              `Three votes each. Cast them for the dragons that earn it — not your own.`,
-              `Три голоса у каждого. Отдавай их драконам, кто заслужил — не своему.`,
-              `Три голоси у кожного. Віддавай їх драконам, що заслужили — не своєму.`
+              `Three votes each. Cast them for the dragons that earn it - not your own.`,
+              `Три голоса у каждого. Отдавай их драконам, кто заслужил - не своему.`,
+              `Три голоси у кожного. Віддавай їх драконам, що заслужили - не своєму.`
             )}
           </p>
         </div>
 
-        {/* Rules box — explicit before voting starts */}
+        {/* Rules box - explicit before voting starts */}
         <div className="max-w-3xl mx-auto mb-8 border border-qa-teal/30 bg-qa-teal/[0.04] p-5">
           <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
             ◆ {t('Voting rules', 'Правила голосования', 'Правила голосування')}
@@ -154,9 +154,9 @@ export default function P_Aerie() {
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">①</span>
               <span>{t(
-                `You get ${MAX_VOTES_PER_VOTER} votes — use them on ${MAX_VOTES_PER_VOTER} different dragons.`,
-                `У тебя ${MAX_VOTES_PER_VOTER} голоса — раздай за ${MAX_VOTES_PER_VOTER} разных драконов.`,
-                `У тебе ${MAX_VOTES_PER_VOTER} голоси — віддай за ${MAX_VOTES_PER_VOTER} різних драконів.`
+                `You get ${MAX_VOTES_PER_VOTER} votes - use them on ${MAX_VOTES_PER_VOTER} different dragons.`,
+                `У тебя ${MAX_VOTES_PER_VOTER} голоса - раздай за ${MAX_VOTES_PER_VOTER} разных драконов.`,
+                `У тебе ${MAX_VOTES_PER_VOTER} голоси - віддай за ${MAX_VOTES_PER_VOTER} різних драконів.`
               )}</span>
             </li>
             <li className="flex items-start gap-2">
@@ -171,8 +171,8 @@ export default function P_Aerie() {
               <span className="text-qa-teal mt-0.5">③</span>
               <span>{t(
                 'Click a voted dragon again to withdraw that vote and pick someone else.',
-                'Клик по уже выбранному дракону снимает этот голос — можно перевыбрать.',
-                'Клік по вже обраному дракону знімає цей голос — можна перевибрати.'
+                'Клик по уже выбранному дракону снимает этот голос - можно перевыбрать.',
+                'Клік по вже обраному дракону знімає цей голос - можна перевибрати.'
               )}</span>
             </li>
             <li className="flex items-start gap-2">
@@ -186,14 +186,14 @@ export default function P_Aerie() {
           </ul>
         </div>
 
-        {/* Vote status — big and central */}
+        {/* Vote status - big and central */}
         {myNickname && (
           <div className="flex justify-center mb-6">
             <div className="border border-qa-teal/30 bg-qa-teal/[0.04] px-5 py-3 flex items-center gap-4">
               <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim">
                 {t('Your votes', 'Твои голоса', 'Твої голоси')}
               </div>
-              {/* Three dots — filled if used */}
+              {/* Three dots - filled if used */}
               <div className="flex gap-1.5">
                 {Array.from({ length: MAX_VOTES_PER_VOTER }, (_, i) => (
                   <span
@@ -230,7 +230,7 @@ export default function P_Aerie() {
           </div>
         )}
 
-        {/* Loading state — first fetch in flight */}
+        {/* Loading state - first fetch in flight */}
         {!loaded && (
           <div className="text-center py-20 border border-border bg-surface/30 rounded-[2px]">
             <div className="flex items-center justify-center gap-2 mb-2">
@@ -248,7 +248,7 @@ export default function P_Aerie() {
           </div>
         )}
 
-        {/* Empty state — loaded but no dragons yet */}
+        {/* Empty state - loaded but no dragons yet */}
         {loaded && sortedDragons.length === 0 && (
           <div className="text-center py-20 border border-border bg-surface/30 rounded-[2px]">
             <p className="font-display italic text-[24px] text-text-secondary mb-2">

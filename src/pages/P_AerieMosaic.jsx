@@ -5,18 +5,18 @@ import { generateFakeDragons } from '../data/dragons/fixtures'
 import { useT } from '../i18n/useT'
 
 /**
- * The Aerie Mosaic — full-screen reveal of every sealed dragon
+ * The Aerie Mosaic - full-screen reveal of every sealed dragon
  * arranged into a wall mosaic. Designed for the projector during
  * the workshop's emotional peak: facilitator opens this and the
  * room sees every rider's dragon next to every other.
  *
  * Standalone route: /?page=mosaic
  *
- * Layout adapts to dragon count — small N gets large cells, large
+ * Layout adapts to dragon count - small N gets large cells, large
  * N gets dense grid. No interactive elements; this is a viewing
  * experience.
  *
- * Optional ?cycle=1 — rotates a single dragon to spotlight every
+ * Optional ?cycle=1 - rotates a single dragon to spotlight every
  * few seconds (good for small N or projector close-ups).
  */
 export default function P_AerieMosaic() {
@@ -53,7 +53,7 @@ export default function P_AerieMosaic() {
     return () => clearInterval(interval)
   }, [cycle, dragons.length])
 
-  // Grid sizing — adapt cells to dragon count for visual balance
+  // Grid sizing - adapt cells to dragon count for visual balance
   const gridCols = useMemo(() => {
     const n = dragons.length
     if (n <= 1) return 1
@@ -108,7 +108,7 @@ export default function P_AerieMosaic() {
           </motion.div>
         </div>
 
-        {/* Bottom strip — thumbnails */}
+        {/* Bottom strip - thumbnails */}
         <div className="flex justify-center gap-2 px-4 pb-4 flex-wrap">
           {dragons.map((d, i) => (
             <button
@@ -132,7 +132,7 @@ export default function P_AerieMosaic() {
     )
   }
 
-  // Grid mode — wall of dragons
+  // Grid mode - wall of dragons
   return (
     <div className="min-h-screen bg-black text-text-body flex flex-col">
       {/* Top eyebrow */}

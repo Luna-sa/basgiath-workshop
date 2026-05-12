@@ -7,10 +7,10 @@ import { markCheckpoint, getCheckpoints } from '../api/checkpoints'
  * Self-report checkpoint button.
  *
  * Props:
- *   id          — 'parapet' | 'forge' | 'signet' | 'arena'
- *   label       — text shown when not done
- *   doneLabel   — text shown when done (defaults to "Marked done")
- *   helpText    — small italic hint below the button
+ *   id          - 'parapet' | 'forge' | 'signet' | 'arena'
+ *   label       - text shown when not done
+ *   doneLabel   - text shown when done (defaults to "Marked done")
+ *   helpText    - small italic hint below the button
  *
  * Persists to Supabase. Once marked, button locks into "done" state
  * with timestamp. The facilitator dashboard shows live aggregates.

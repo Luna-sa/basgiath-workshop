@@ -12,19 +12,19 @@ import HiddenDragon from '../components/HiddenDragon'
 import { TOTAL_DRAGONS } from '../data/hidden-dragons'
 
 /**
- * Three Champions — the workshop finale.
+ * Three Champions - the workshop finale.
  *
  * Reveals three winners in sequence on the projector:
- *   1. Best Dragon — top of Aerie vote (image + rider + votes)
- *   2. Most XP — top of XP leaderboard (XP + wyrmlings found)
- *   3. Arena Champion — top of arena_runs aggregated total
+ *   1. Best Dragon - top of Aerie vote (image + rider + votes)
+ *   2. Most XP - top of XP leaderboard (XP + wyrmlings found)
+ *   3. Arena Champion - top of arena_runs aggregated total
  *
  * Each section appears with a slow theatrical reveal + confetti burst.
  *
- * Standalone route — facilitator opens /?page=champions when ready.
+ * Standalone route - facilitator opens /?page=champions when ready.
  * Hidden somewhere on this slide: the Golden Wyrmling (+500 XP).
  *
- * Renders without PageShell — full-screen, projector-mode aesthetic
+ * Renders without PageShell - full-screen, projector-mode aesthetic
  * matches P_AerieReveal.
  */
 export default function P_Champions() {
@@ -331,7 +331,7 @@ export default function P_Champions() {
         )}
       </div>
 
-      {/* Golden Wyrmling — registered with slideKey 'champions',
+      {/* Golden Wyrmling - registered with slideKey 'champions',
           PageShell doesn't wrap this page so we render it inline.
           The HiddenDragon component reads its position from the
           registry; we re-supply position here in case it changes. */}

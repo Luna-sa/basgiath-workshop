@@ -17,8 +17,8 @@ const MODES = [
     name: 'Auto',
     key: 'default',
     role_en: 'Sandbox-safe actions run; risky actions confirm',
-    role_ru: 'Безопасные действия идут; рискованные — подтверждаешь',
-    role_uk: 'Безпечні дії йдуть; ризиковані — підтверджуєш',
+    role_ru: 'Безопасные действия идут; рискованные - подтверждаешь',
+    role_uk: 'Безпечні дії йдуть; ризиковані - підтверджуєш',
     when_en: 'Current default since spring 2026. Safe reads + edits in trusted paths auto-approved; destructive ops (rm, push, delete) ask first. Best balance of speed + safety.',
     when_ru: 'Дефолт с весны 2026. Безопасные чтения + изменения в trusted-путях идут автоматом; деструктивное (rm, push, удаление) спросит. Лучший баланс скорости и безопасности.',
     when_uk: 'Дефолт з весни 2026. Безпечні читання + зміни у trusted-шляхах ідуть автоматом; деструктивне (rm, push, видалення) спитає. Найкращий баланс швидкості та безпеки.',
@@ -41,9 +41,9 @@ const MODES = [
     role_en: 'Run without confirmation',
     role_ru: 'Пробежать без подтверждений',
     role_uk: 'Пробігти без підтверджень',
-    when_en: 'When you fully trust the task. Long autopilots, batch refactors, overnight scripts. Branch off main first — no safety net.',
-    when_ru: 'Когда полностью доверяешь задаче. Долгие autopilot, batch refactor, ночные скрипты. Сначала branch off main — страховки нет.',
-    when_uk: 'Коли повністю довіряєш задачі. Довгі autopilot, batch refactor, нічні скрипти. Спочатку branch off main — страховки нема.',
+    when_en: 'When you fully trust the task. Long autopilots, batch refactors, overnight scripts. Branch off main first - no safety net.',
+    when_ru: 'Когда полностью доверяешь задаче. Долгие autopilot, batch refactor, ночные скрипты. Сначала branch off main - страховки нет.',
+    when_uk: 'Коли повністю довіряєш задачі. Довгі autopilot, batch refactor, нічні скрипти. Спочатку branch off main - страховки нема.',
     color: 'var(--color-corp-red)',
   },
 ]
@@ -67,9 +67,9 @@ export default function P_TalkModes() {
 
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
           {t(
-            'Four working modes and a handful of hotkeys — that\'s the entire control surface of Claude Code. Get fluent with Shift+Tab and /clear, the rest grows on you.',
-            'Четыре рабочих режима и горстка хоткеев — это вся «механика управления» Claude Code. Освой Shift+Tab и /clear, остальное прорастёт.',
-            'Чотири робочих режими і жменя хоткеїв — це вся «механіка управління» Claude Code. Освій Shift+Tab і /clear, решта проросте.'
+            'Four working modes and a handful of hotkeys - that\'s the entire control surface of Claude Code. Get fluent with Shift+Tab and /clear, the rest grows on you.',
+            'Четыре рабочих режима и горстка хоткеев - это вся «механика управления» Claude Code. Освой Shift+Tab и /clear, остальное прорастёт.',
+            'Чотири робочих режими і жменя хоткеїв - це вся «механіка управління» Claude Code. Освій Shift+Tab і /clear, решта проросте.'
           )}
         </p>
 
@@ -161,9 +161,9 @@ export default function P_TalkModes() {
           <p className="text-[13px] text-text-body leading-relaxed">
             <span className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mr-2">tip</span>
             {t(
-              'For anything complex — Shift+Tab to Plan first. Read the plan, fix what\'s off, Shift+Tab back to Auto, execute. This is the basic hygiene.',
-              'Перед сложным запросом — Shift+Tab → Plan → проверь план, исправь что не так, Shift+Tab обратно → Auto, исполняй. Это основная гигиена.',
-              'Перед складним запитом — Shift+Tab → Plan → перевір план, виправ що не так, Shift+Tab назад → Auto, виконуй. Це основна гігієна.'
+              'For anything complex - Shift+Tab to Plan first. Read the plan, fix what\'s off, Shift+Tab back to Auto, execute. This is the basic hygiene.',
+              'Перед сложным запросом - Shift+Tab → Plan → проверь план, исправь что не так, Shift+Tab обратно → Auto, исполняй. Это основная гигиена.',
+              'Перед складним запитом - Shift+Tab → Plan → перевір план, виправ що не так, Shift+Tab назад → Auto, виконуй. Це основна гігієна.'
             )}
           </p>
         </div>

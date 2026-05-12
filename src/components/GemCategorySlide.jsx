@@ -4,11 +4,11 @@ import { useT } from '../i18n/useT'
 import { GEM_CATEGORY_BY_ID } from '../data/gems'
 
 /**
- * Category gem slide — one long slide listing every repo in the
+ * Category gem slide - one long slide listing every repo in the
  * category, each as a self-contained block with tagline + body +
  * why + install + url.
  *
- * Used by P_Gem* category pages — pass categoryId + pageIndex.
+ * Used by P_Gem* category pages - pass categoryId + pageIndex.
  */
 
 function CopyButton({ text }) {
@@ -74,6 +74,24 @@ function ItemBlock({ item, index }) {
           github →
         </a>
       </header>
+
+      {/* Screenshot — links to source repo, falls back to no-render if
+          image hasn't been captured yet. */}
+      {item.image && (
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noopener"
+          className="block border-b border-border bg-black"
+        >
+          <img
+            src={item.image}
+            alt={`${item.name} repo screenshot`}
+            loading="lazy"
+            className="w-full h-[220px] object-cover object-top opacity-85 hover:opacity-100 transition-opacity"
+          />
+        </a>
+      )}
 
       {/* Body */}
       <div className="px-5 py-4 space-y-4">

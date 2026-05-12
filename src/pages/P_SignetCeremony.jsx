@@ -119,10 +119,10 @@ function ArchetypePicker({ value, onChange, lang, characterId, characterName }) 
         </div>
         <p className="text-[12.5px] text-text-secondary italic leading-relaxed">
           {lang === 'ru'
-            ? 'Не вижу себя ни в одном — опишу сам.'
+            ? 'Не вижу себя ни в одном - опишу сам.'
             : lang === 'uk'
-              ? 'Не бачу себе в жодному — опишу сам.'
-              : 'None of these fit — I\'ll describe my own.'}
+              ? 'Не бачу себе в жодному - опишу сам.'
+              : 'None of these fit - I\'ll describe my own.'}
         </p>
       </button>
     </div>
@@ -320,8 +320,8 @@ export default function P_SignetCeremony() {
   const handleCopy = async () => {
     const ok = await copyToClipboardWithFallback(fullPrompt)
     showToast(
-      ok ? t('Sealed prompt copied — paste into Claude Code', 'Запечатанный промпт скопирован — вставь в Claude Code', 'Запечатаний промпт скопійовано — встав у Claude Code')
-         : t('Copy failed — try Download', 'Копирование не удалось — попробуй Download', 'Копіювання не вдалося — спробуй Download'),
+      ok ? t('Sealed prompt copied - paste into Claude Code', 'Запечатанный промпт скопирован - вставь в Claude Code', 'Запечатаний промпт скопійовано - встав у Claude Code')
+         : t('Copy failed - try Download', 'Копирование не удалось - попробуй Download', 'Копіювання не вдалося - спробуй Download'),
       ok ? 'success' : 'error'
     )
   }
@@ -354,7 +354,7 @@ export default function P_SignetCeremony() {
         <div className="mb-8">
           <div className="flex items-baseline justify-between mb-2">
             <p className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal">
-              ◆ {t('The Signet Ceremony', 'Сигнет — церемония', 'Сигнет — церемонія')}
+              ◆ {t('The Signet Ceremony', 'Сигнет - церемония', 'Сигнет - церемонія')}
             </p>
             <p className="font-mono text-[10px] tracking-[2px] text-text-dim">
               {isFinalStep
@@ -459,9 +459,9 @@ export default function P_SignetCeremony() {
                 </h2>
                 <p className="text-[15px] text-text-secondary italic leading-relaxed max-w-xl mx-auto">
                   {t(
-                    'Below is your sealed Signet. Paste it into Claude Code — it will save the CLAUDE.md and tell you the bond holds.',
-                    'Ниже — твой запечатанный сигнет. Вставь в Claude Code — он сохранит CLAUDE.md и скажет что связь держит.',
-                    'Нижче — твій запечатаний сигнет. Встав у Claude Code — він збереже CLAUDE.md і скаже що звʼязок тримає.'
+                    'Below is your sealed Signet. Paste it into Claude Code - it will save the CLAUDE.md and tell you the bond holds.',
+                    'Ниже - твой запечатанный сигнет. Вставь в Claude Code - он сохранит CLAUDE.md и скажет что связь держит.',
+                    'Нижче - твій запечатаний сигнет. Встав у Claude Code - він збереже CLAUDE.md і скаже що звʼязок тримає.'
                   )}
                 </p>
               </div>

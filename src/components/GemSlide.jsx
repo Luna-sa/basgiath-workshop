@@ -48,7 +48,7 @@ function RichParagraph({ children }) {
 
 /** Body: split on blank lines into paragraphs, render fenced ``` blocks as <pre>. */
 function GemBody({ text }) {
-  // Tokenise — odd indexes are code blocks
+  // Tokenise - odd indexes are code blocks
   const tokens = text.split(/```([\s\S]*?)```/)
   return (
     <div>
@@ -72,7 +72,7 @@ function GemBody({ text }) {
   )
 }
 
-/** Stats strip — 3 columns with big values. */
+/** Stats strip - 3 columns with big values. */
 function StatsStrip({ stats }) {
   if (!stats?.length) return null
   return (
@@ -181,7 +181,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
         <GemVisual gemId={gemId} />
 
         {/* ═══════════════════════════════════════════════════════
-            WHAT IT IS — flowing prose
+            WHAT IT IS - flowing prose
         ═══════════════════════════════════════════════════════ */}
         <section>
           <header className="flex items-center gap-3 mb-4">
@@ -194,7 +194,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
         </section>
 
         {/* ═══════════════════════════════════════════════════════
-            WHY IT MATTERS — accent block
+            WHY IT MATTERS - accent block
         ═══════════════════════════════════════════════════════ */}
         <section className="relative bg-gradient-to-br from-qa-teal/[0.07] to-transparent border-l-2 border-qa-teal pl-6 pr-5 py-5">
           <div className="absolute -left-[14px] top-5 w-6 h-6 rounded-full bg-bg border border-qa-teal flex items-center justify-center">
@@ -209,7 +209,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
         </section>
 
         {/* ═══════════════════════════════════════════════════════
-            WHEN TO REACH FOR IT — numbered cards
+            WHEN TO REACH FOR IT - numbered cards
         ═══════════════════════════════════════════════════════ */}
         <section>
           <header className="flex items-center gap-3 mb-4">
@@ -220,7 +220,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
           </header>
           <div className="grid md:grid-cols-3 gap-3">
             {useCases.map((u, i) => {
-              const colon = u.indexOf('—')
+              const colon = u.indexOf('-')
               const head = colon > -1 ? u.slice(0, colon).trim() : u
               const tail = colon > -1 ? u.slice(colon + 1).trim() : null
               return (
@@ -249,7 +249,7 @@ export default function GemSlide({ gemId, pageIndex, position }) {
         </section>
 
         {/* ═══════════════════════════════════════════════════════
-            INSTALL — terminal block
+            INSTALL - terminal block
         ═══════════════════════════════════════════════════════ */}
         <section className="border border-qa-teal/30">
           <div className="bg-qa-teal/[0.08] px-4 py-2.5 flex items-center justify-between gap-3 border-b border-qa-teal/30">

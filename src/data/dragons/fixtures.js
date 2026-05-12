@@ -1,7 +1,7 @@
 // Fake dragon fixtures for preview mode (`?preview=N` on Aerie /
 // Mosaic / Seer routes). Lets Anastasia eyeball the layout with a
 // full cohort without actually running the workshop. Image is a
-// single placeholder URL — Picsum seeded so each dragon has a
+// single placeholder URL - Picsum seeded so each dragon has a
 // visually-distinct picture (dark fantasy-leaning crops).
 
 const RIDERS = [
@@ -25,7 +25,7 @@ const NAMES = [
 ]
 
 const MOTTOS = [
-  'I do not strike first — but I strike last.',
+  'I do not strike first - but I strike last.',
   'The sky chose me, not the other way around.',
   'Quietly, until quiet becomes a roar.',
   'I read the room before the room speaks.',
@@ -78,7 +78,7 @@ export function generateFakeDragons(n = 40) {
     const nickname = riders[i % riders.length] + (i >= riders.length ? `_${Math.floor(i / riders.length)}` : '')
     const name = names[i % names.length]
     const motto = mottos[i % mottos.length]
-    // Picsum returns a real photo seeded by the URL — gives 40
+    // Picsum returns a real photo seeded by the URL - gives 40
     // visually distinct placeholders without needing to host 40
     // images.
     const image_url = `https://picsum.photos/seed/dragon-${i + 1}/600/600`
@@ -93,7 +93,7 @@ export function generateFakeDragons(n = 40) {
       sealed_at: new Date(Date.now() - i * 60000).toISOString(),
     })
   }
-  // Sort by vote_count desc, sealed_at asc — matches real Aerie ordering
+  // Sort by vote_count desc, sealed_at asc - matches real Aerie ordering
   out.sort((a, b) => {
     if (b.vote_count !== a.vote_count) return b.vote_count - a.vote_count
     return new Date(a.sealed_at) - new Date(b.sealed_at)

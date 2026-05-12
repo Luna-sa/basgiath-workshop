@@ -11,7 +11,6 @@ export default function HUD() {
   const badges = useWorkshopStore(s => s.badges)
   const dragonsFound = useWorkshopStore(s => s.hiddenDragonsFound?.length || 0)
   const characterId = useWorkshopStore(s => s.user.characterId)
-  const name = useWorkshopStore(s => s.user.name)
   const toggleBadgeOverlay = useWorkshopStore(s => s.toggleBadgeOverlay)
   const showBadgeOverlay = useWorkshopStore(s => s.showBadgeOverlay)
   const soundEnabled = useWorkshopStore(s => s.soundEnabled)
@@ -24,7 +23,7 @@ export default function HUD() {
 
   return (
     <>
-      {/* Fixed HUD — bottom left */}
+      {/* Fixed HUD - bottom left */}
       <div className="fixed bottom-4 left-4 z-50 flex items-end gap-3">
         {/* Character avatar */}
         {character && (
@@ -32,7 +31,7 @@ export default function HUD() {
             <span className="text-lg">{character.emoji}</span>
             <div>
               <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">
-                {name || character.name.split(' ')[0]}
+                {character.name.split(' ')[0]}
               </div>
               <div className="font-display text-xs text-text-primary italic">
                 {character.title}
@@ -42,7 +41,7 @@ export default function HUD() {
         )}
       </div>
 
-      {/* Fixed HUD — bottom right */}
+      {/* Fixed HUD - bottom right */}
       <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2">
         {/* Sound toggle */}
         <button
@@ -59,14 +58,14 @@ export default function HUD() {
           <div className="font-display text-lg font-bold leading-none" style={{ color: persona.accent }}>{xp}</div>
         </div>
 
-        {/* Wyrmling counter — hidden dragons collected */}
+        {/* Wyrmling counter - hidden dragons collected */}
         <div
           id="hud-wyrmlings"
           className="px-3 py-2 bg-surface/90 backdrop-blur-lg border border-border rounded-[2px]"
           title={t(
-            'Hidden dragons found — click them where they hide on slides',
-            'Найденные драконы — кликай на них в скрытых местах слайдов',
-            'Знайдені дракони — клацай на них у схованках слайдів'
+            'Hidden dragons found - click them where they hide on slides',
+            'Найденные драконы - кликай на них в скрытых местах слайдов',
+            'Знайдені дракони - клацай на них у схованках слайдів'
           )}
         >
           <div className="font-mono text-[11px] text-text-dim tracking-wider uppercase">

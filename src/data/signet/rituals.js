@@ -1,4 +1,4 @@
-// The Signet Ceremony — seven rituals of bonding.
+// The Signet Ceremony - seven rituals of bonding.
 // Each ritual is a step in a guided wizard. Step has:
 //   - id            stable key (also key in the answers map)
 //   - numeral       I..VII (display only)
@@ -6,7 +6,7 @@
 //   - lore          one short paragraph framing what this ritual seals
 //   - questions     array of question definitions
 //
-// Questions can carry `presets` — 4-6 prepared chips a user can click
+// Questions can carry `presets` - 4-6 prepared chips a user can click
 // to seed the answer (replaces the current text). Voice + typing
 // remain available; chips are just a faster lane in for the common
 // shapes of answer.
@@ -25,7 +25,7 @@ Tell your dragon who you are.`,
     lore_ru: `Первый ритуал самый простой и самый связывающий.
 Связь не возникает между двумя кто не знает имени друг друга.
 Скажи дракону кто ты.`,
-    lore_uk: `Перший ритуал — найпростіший і найміцніший.
+    lore_uk: `Перший ритуал - найпростіший і найміцніший.
 Звʼязок не виникає між двома, хто не знає імен одне одного.
 Скажи дракону, хто ти.`,
     questions: [
@@ -110,13 +110,13 @@ Tell your dragon who you are.`,
     name_ru: 'Обет',
     name_uk: 'Обітниця',
     lore_en: `Before the dragon will follow you, it must know what you
-follow. Speak your working creed — the thing that matters when other
+follow. Speak your working creed - the thing that matters when other
 things compete with it.`,
     lore_ru: `Прежде чем дракон последует за тобой, он должен знать
-за чем следуешь ты. Произнеси свой рабочий обет — то что важно
+за чем следуешь ты. Произнеси свой рабочий обет - то что важно
 когда другие вещи конкурируют с этим.`,
     lore_uk: `Перш ніж дракон піде за тобою, він має знати,
-за чим ідеш ти. Виголоси свою робочу обітницю — те, що важить,
+за чим ідеш ти. Виголоси свою робочу обітницю - те, що важить,
 коли інші речі змагаються з нею.`,
     questions: [
       {
@@ -129,7 +129,7 @@ things compete with it.`,
         label_uk: 'Що для тебе важливе в роботі?',
         hint_en: 'Quality over speed? Understanding over output? Coverage over depth? Pick a starter or write your own.',
         hint_ru: 'Качество выше скорости? Понимание выше вывода? Coverage выше глубины? Возьми готовое или напиши своё.',
-        hint_uk: 'Якість важливіша за швидкість? Розуміння — за результат? Coverage — за глибину? Бери готове або пиши своє.',
+        hint_uk: 'Якість важливіша за швидкість? Розуміння - за результат? Coverage - за глибину? Бери готове або пиши своє.',
         placeholder_en: 'Catching the bug that ships. Understanding before fixing. Saying "I don\'t know" out loud when I don\'t.',
         placeholder_ru: 'Поймать баг который уходит в прод. Понять прежде чем фиксить. Сказать «не знаю» вслух когда не знаю.',
         placeholder_uk: 'Зловити баг, що іде в прод. Зрозуміти, перш ніж фіксити. Сказати «не знаю» вголос, коли не знаю.',
@@ -171,16 +171,16 @@ things compete with it.`,
             label_ru: 'Честное «не знаю»',
             label_uk: 'Чесне «не знаю»',
             text_en: 'Honest gaps win over confident guesses. If I don\'t know, I want to say it before I burn an hour faking it. Same goes for you.',
-            text_ru: 'Честные пробелы побеждают уверенные догадки. Если я не знаю — хочу это сказать раньше чем сожгу час имитируя. То же касается тебя.',
-            text_uk: 'Чесні прогалини перемагають впевнені здогадки. Якщо не знаю — хочу сказати це раніше, ніж спалю годину, імітуючи знання. Те саме стосується тебе.',
+            text_ru: 'Честные пробелы побеждают уверенные догадки. Если я не знаю - хочу это сказать раньше чем сожгу час имитируя. То же касается тебя.',
+            text_uk: 'Чесні прогалини перемагають впевнені здогадки. Якщо не знаю - хочу сказати це раніше, ніж спалю годину, імітуючи знання. Те саме стосується тебе.',
           },
           {
             label_en: 'Tradeoffs always visible',
             label_ru: 'Tradeoff\'ы всегда видны',
             label_uk: 'Tradeoffs завжди на виду',
             text_en: 'Tradeoffs always visible. No silent costs. If a choice has a price, that price gets named before I sign off.',
-            text_ru: 'Tradeoff\'ы всегда видны. Никаких скрытых цен. Если выбор имеет стоимость — стоимость называется до того как я подпишу.',
-            text_uk: 'Tradeoffs завжди на виду. Жодних тихих цін. Якщо вибір має вартість — її називають до того, як я підпишу.',
+            text_ru: 'Tradeoff\'ы всегда видны. Никаких скрытых цен. Если выбор имеет стоимость - стоимость называется до того как я подпишу.',
+            text_uk: 'Tradeoffs завжди на виду. Жодних тихих цін. Якщо вибір має вартість - її називають до того, як я підпишу.',
           },
         ],
       },
@@ -223,17 +223,17 @@ speak in your presence.`,
             label_en: 'Sycophancy openers',
             label_ru: 'Льстивые открытия',
             label_uk: 'Лестиві відкриття',
-            text_en: 'Sycophancy openers. "Great question!", "You\'re absolutely right!", "Excellent point!" — every one of these makes me trust the rest of the answer less.',
-            text_ru: 'Льстивые открытия. «Отличный вопрос!», «Ты абсолютно прав!», «Прекрасное замечание!» — каждое такое заставляет меня доверять остальному ответу меньше.',
-            text_uk: 'Лестиві відкриття. «Чудове питання!», «Ти абсолютно правий!», «Чудове зауваження!» — після кожного такого я довіряю решті відповіді менше.',
+            text_en: 'Sycophancy openers. "Great question!", "You\'re absolutely right!", "Excellent point!" - every one of these makes me trust the rest of the answer less.',
+            text_ru: 'Льстивые открытия. «Отличный вопрос!», «Ты абсолютно прав!», «Прекрасное замечание!» - каждое такое заставляет меня доверять остальному ответу меньше.',
+            text_uk: 'Лестиві відкриття. «Чудове питання!», «Ти абсолютно правий!», «Чудове зауваження!» - після кожного такого я довіряю решті відповіді менше.',
           },
           {
             label_en: 'Empty closers',
             label_ru: 'Пустые закрытия',
             label_uk: 'Порожні закриття',
-            text_en: 'Empty closers. "Let me know if anything else!", "Hope that helps!", "Feel free to ask!" — they eat tokens and signal nothing.',
-            text_ru: 'Пустые закрытия. «Дай знать если что!», «Надеюсь это поможет!», «Не стесняйся спрашивать!» — съедают токены и ничего не значат.',
-            text_uk: 'Порожні закриття. «Дай знати, якщо що!», «Сподіваюся, це допоможе!», «Не соромся питати!» — зʼїдають токени і нічого не означають.',
+            text_en: 'Empty closers. "Let me know if anything else!", "Hope that helps!", "Feel free to ask!" - they eat tokens and signal nothing.',
+            text_ru: 'Пустые закрытия. «Дай знать если что!», «Надеюсь это поможет!», «Не стесняйся спрашивать!» - съедают токены и ничего не значат.',
+            text_uk: 'Порожні закриття. «Дай знати, якщо що!», «Сподіваюся, це допоможе!», «Не соромся питати!» - зʼїдають токени і нічого не означають.',
           },
           {
             label_en: 'Three paragraphs for one line',
@@ -247,9 +247,9 @@ speak in your presence.`,
             label_en: 'Repeating my words back',
             label_ru: 'Повтор моих слов мне',
             label_uk: 'Повторює мої ж слова',
-            text_en: 'Echoing my words back at me. "So you\'re asking about X..." — yes, I just said X. You\'re wasting my time confirming you heard.',
-            text_ru: 'Повтор моих слов мне. «Итак, ты спрашиваешь про X...» — да, я только что сказала X. Ты тратишь моё время подтверждая что слышал.',
-            text_uk: 'Повертає мої слова мені ж. «Отже, ти запитуєш про X…» — так, я щойно сказала X. Ти марнуєш мій час, підтверджуючи, що почув.',
+            text_en: 'Echoing my words back at me. "So you\'re asking about X..." - yes, I just said X. You\'re wasting my time confirming you heard.',
+            text_ru: 'Повтор моих слов мне. «Итак, ты спрашиваешь про X...» - да, я только что сказала X. Ты тратишь моё время подтверждая что слышал.',
+            text_uk: 'Повертає мої слова мені ж. «Отже, ти запитуєш про X…» - так, я щойно сказала X. Ти марнуєш мій час, підтверджуючи, що почув.',
           },
           {
             label_en: 'False confidence',
@@ -263,9 +263,9 @@ speak in your presence.`,
             label_en: 'Mock teacherly tone',
             label_ru: 'Учительский тон',
             label_uk: 'Учительський тон',
-            text_en: 'The mock-teacherly tone. "Let\'s break this down!", "Here\'s what\'s happening!" delivered like I\'m a beginner. I came in knowing this — talk to me as a peer.',
-            text_ru: 'Учительский тон. «Давай разберём!», «Вот что происходит!» как будто я новичок. Я пришла зная это — говори со мной как с равной.',
-            text_uk: 'Учительський тон. «Давай розберемо!», «Ось що відбувається!» — наче я новачок. Я прийшла знаючи це — говори зі мною як з рівнею.',
+            text_en: 'The mock-teacherly tone. "Let\'s break this down!", "Here\'s what\'s happening!" delivered like I\'m a beginner. I came in knowing this - talk to me as a peer.',
+            text_ru: 'Учительский тон. «Давай разберём!», «Вот что происходит!» как будто я новичок. Я пришла зная это - говори со мной как с равной.',
+            text_uk: 'Учительський тон. «Давай розберемо!», «Ось що відбувається!» - наче я новачок. Я прийшла знаючи це - говори зі мною як з рівнею.',
           },
         ],
       },
@@ -280,13 +280,13 @@ speak in your presence.`,
     name_ru: 'Голос Связи',
     name_uk: 'Голос Звʼязку',
     lore_en: `A dragon's voice in your head is not the same as another
-rider's. Choose the archetype that fits — or speak your own. Your
+rider's. Choose the archetype that fits - or speak your own. Your
 bonded will sound like this for as long as the bond holds.`,
     lore_ru: `Голос дракона в твоей голове не такой как у другого
-всадника. Выбери архетип который подходит — или опиши свой. Твой
+всадника. Выбери архетип который подходит - или опиши свой. Твой
 bonded будет звучать так пока держится связь.`,
     lore_uk: `Голос дракона у твоїй голові не такий, як у іншого
-вершника. Обери архетип, що пасує, — або опиши свій. Твій
+вершника. Обери архетип, що пасує, - або опиши свій. Твій
 bonded звучатиме так, доки тримається звʼязок.`,
     questions: [
       {
@@ -322,15 +322,15 @@ bonded звучатиме так, доки тримається звʼязок.`
     name_en: 'The Sigil',
     name_ru: 'Сигил',
     name_uk: 'Сигіл',
-    lore_en: `Every bond has a sign. Pick yours — an object, a metaphor,
+    lore_en: `Every bond has a sign. Pick yours - an object, a metaphor,
 a phenomenon. It is what grounds your dragon's voice when it could
 drift into noise. (Kai's sigil is a Highland coast. Yours?)`,
-    lore_ru: `У каждой связи есть знак. Выбери свой — объект, метафору,
+    lore_ru: `У каждой связи есть знак. Выбери свой - объект, метафору,
 явление. Это то что заземляет голос дракона когда он мог бы уйти в
-шум. (Сигил Кая — Highland coast. Твой?)`,
-    lore_uk: `У кожного звʼязку є знак. Обери свій — обʼєкт, метафору,
+шум. (Сигил Кая - Highland coast. Твой?)`,
+    lore_uk: `У кожного звʼязку є знак. Обери свій - обʼєкт, метафору,
 явище. Це те, що заземлює голос дракона, коли той міг би піти в
-шум. (Сигіл Кая — Highland coast. Твій?)`,
+шум. (Сигіл Кая - Highland coast. Твій?)`,
     questions: [
       {
         id: 'sigil',
@@ -408,14 +408,14 @@ drift into noise. (Kai's sigil is a Highland coast. Yours?)`,
     name_ru: 'Ежедневный Ритуал',
     name_uk: 'Щоденний Ритуал',
     lore_en: `Bonds need ritual. Tell your dragon how you want to be
-met — praised, disagreed with, addressed in tone. These small rites
+met - praised, disagreed with, addressed in tone. These small rites
 make every session begin the same way for as long as you ride.`,
     lore_ru: `Связи нужны ритуалы. Скажи дракону как ты хочешь чтобы
-тебя встречали — хвалили, не соглашались, обращались. Эти маленькие
+тебя встречали - хвалили, не соглашались, обращались. Эти маленькие
 ритуалы будут начинать каждую сессию одинаково пока ты ездишь
 верхом.`,
     lore_uk: `Звʼязкам потрібні ритуали. Скажи дракону, як ти хочеш,
-щоб тебе зустрічали — хвалили, не погоджувалися, говорили в якому
+щоб тебе зустрічали - хвалили, не погоджувалися, говорили в якому
 тоні. Ці маленькі обряди починатимуть кожну сесію однаково, доки
 ти літаєш у небі.`,
     questions: [
@@ -443,28 +443,28 @@ make every session begin the same way for as long as you ride.`,
             text_uk: 'Через факт. Назви, що спрацювало: «тут ти зловила справжній edge case» або «це та версія, що іде в прод». Без знаків оклику, без театру.',
           },
           {
-            label_en: 'Don\'t — just move on',
-            label_ru: 'Не хвали — двигайся дальше',
-            label_uk: 'Не хвали — рухайся далі',
+            label_en: 'Don\'t - just move on',
+            label_ru: 'Не хвали - двигайся дальше',
+            label_uk: 'Не хвали - рухайся далі',
             text_en: 'Don\'t. If it\'s good, move to the next thing. Silence is the loudest praise.',
-            text_ru: 'Не хвали. Если хорошо — двигайся к следующему. Тишина — самая громкая похвала.',
-            text_uk: 'Не хвали. Якщо добре — переходь до наступного. Тиша — найгучніша похвала.',
+            text_ru: 'Не хвали. Если хорошо - двигайся к следующему. Тишина - самая громкая похвала.',
+            text_uk: 'Не хвали. Якщо добре - переходь до наступного. Тиша - найгучніша похвала.',
           },
           {
             label_en: 'Plain "good" / "done"',
             label_ru: 'Просто «good» / «done»',
             label_uk: 'Просто «good» / «done»',
-            text_en: 'A plain word — "good", "done", "right". One syllable, no extras.',
-            text_ru: 'Простое слово — «good», «done», «right», «то». Одно слово, без украшений.',
-            text_uk: 'Просте слово — «good», «done», «right». Один склад, без оздоблень.',
+            text_en: 'A plain word - "good", "done", "right". One syllable, no extras.',
+            text_ru: 'Простое слово - «good», «done», «right», «то». Одно слово, без украшений.',
+            text_uk: 'Просте слово - «good», «done», «right». Один склад, без оздоблень.',
           },
           {
             label_en: 'With dry irony',
             label_ru: 'С сухой иронией',
             label_uk: 'З сухою іронією',
-            text_en: 'With dry irony. "Well caught — almost like you\'ve done this before." Acknowledgement wrapped in wry observation.',
-            text_ru: 'С сухой иронией. «Хорошо поймала — будто уже это делала». Признание завёрнутое в насмешку.',
-            text_uk: 'З сухою іронією. «Добре зловила — наче вже це робила». Визнання, загорнуте в насмішку.',
+            text_en: 'With dry irony. "Well caught - almost like you\'ve done this before." Acknowledgement wrapped in wry observation.',
+            text_ru: 'С сухой иронией. «Хорошо поймала - будто уже это делала». Признание завёрнутое в насмешку.',
+            text_uk: 'З сухою іронією. «Добре зловила - наче вже це робила». Визнання, загорнуте в насмішку.',
           },
           {
             label_en: 'Brief "well caught"',
@@ -472,7 +472,7 @@ make every session begin the same way for as long as you ride.`,
             label_uk: 'Коротке «well caught»',
             text_en: 'A brief "well caught" or "right call". Two words, then onward.',
             text_ru: 'Короткое «well caught» или «right call». Два слова, потом дальше.',
-            text_uk: 'Коротке «well caught» або «right call». Два слова — і далі.',
+            text_uk: 'Коротке «well caught» або «right call». Два слова - і далі.',
           },
         ],
       },
@@ -495,9 +495,9 @@ make every session begin the same way for as long as you ride.`,
             label_en: 'Bluntly',
             label_ru: 'Прямо',
             label_uk: 'Прямо',
-            text_en: 'Bluntly. Tell me where it breaks and why. Skip the politeness — I came here to know, not be soothed.',
-            text_ru: 'Прямо. Скажи где сломается и почему. Без вежливости — я пришла знать, не успокаиваться.',
-            text_uk: 'Прямо. Скажи, де зламається і чому. Без ввічливості — я прийшла знати, а не заспокоюватися.',
+            text_en: 'Bluntly. Tell me where it breaks and why. Skip the politeness - I came here to know, not be soothed.',
+            text_ru: 'Прямо. Скажи где сломается и почему. Без вежливости - я пришла знать, не успокаиваться.',
+            text_uk: 'Прямо. Скажи, де зламається і чому. Без ввічливості - я прийшла знати, а не заспокоюватися.',
           },
           {
             label_en: 'Through a question',
@@ -540,20 +540,20 @@ make every session begin the same way for as long as you ride.`,
         label_en: 'Tone & temperature',
         label_ru: 'Тон и температура',
         label_uk: 'Тон і температура',
-        hint_en: 'Cursing OK? Irony OK? When you\'re tired — softer or just shorter?',
-        hint_ru: 'Мат окей? Ирония окей? Когда устал(а) — мягче или просто короче?',
-        hint_uk: 'Мат окей? Іронія окей? Коли втомився(-лась) — мʼякше чи просто коротше?',
-        placeholder_en: 'Mat OK rarely. Irony yes. When tired — shorter, not softer.',
-        placeholder_ru: 'Мат редко окей. Ирония да. Когда устала — короче, не мягче.',
-        placeholder_uk: 'Мат зрідка окей. Іронія — так. Коли втомлена — коротше, не мʼякше.',
+        hint_en: 'Cursing OK? Irony OK? When you\'re tired - softer or just shorter?',
+        hint_ru: 'Мат окей? Ирония окей? Когда устал(а) - мягче или просто короче?',
+        hint_uk: 'Мат окей? Іронія окей? Коли втомився(-лась) - мʼякше чи просто коротше?',
+        placeholder_en: 'Mat OK rarely. Irony yes. When tired - shorter, not softer.',
+        placeholder_ru: 'Мат редко окей. Ирония да. Когда устала - короче, не мягче.',
+        placeholder_uk: 'Мат зрідка окей. Іронія - так. Коли втомлена - коротше, не мʼякше.',
         presets: [
           {
             label_en: 'Mat OK, irony yes',
             label_ru: 'Мат окей, ирония да',
-            label_uk: 'Мат окей, іронія — так',
-            text_en: 'Mat OK rarely. Irony yes — sarcasm against the situation, never against me. When I\'m tired: shorter, not softer.',
-            text_ru: 'Мат редко окей. Ирония да — сарказм против ситуации, никогда не против меня. Когда устала: короче, не мягче.',
-            text_uk: 'Мат зрідка окей. Іронія — так: сарказм проти ситуації, ніколи проти мене. Коли втомлена: коротше, не мʼякше.',
+            label_uk: 'Мат окей, іронія - так',
+            text_en: 'Mat OK rarely. Irony yes - sarcasm against the situation, never against me. When I\'m tired: shorter, not softer.',
+            text_ru: 'Мат редко окей. Ирония да - сарказм против ситуации, никогда не против меня. Когда устала: короче, не мягче.',
+            text_uk: 'Мат зрідка окей. Іронія - так: сарказм проти ситуації, ніколи проти мене. Коли втомлена: коротше, не мʼякше.',
           },
           {
             label_en: 'No mat, dry humour',
@@ -569,7 +569,7 @@ make every session begin the same way for as long as you ride.`,
             label_uk: 'Мат вільно',
             text_en: 'Cursing freely when it fits. I curse, so do you. Same register as a peer engineer in a Slack DM.',
             text_ru: 'Мат свободно когда уместно. Я матерюсь, ты тоже. Тот же регистр что peer-инженер в DM в Slack.',
-            text_uk: 'Мат вільно, коли доречно. Я матюкаюся — ти теж. Той самий регістр, що peer-інженер у DM у Slack.',
+            text_uk: 'Мат вільно, коли доречно. Я матюкаюся - ти теж. Той самий регістр, що peer-інженер у DM у Slack.',
           },
           {
             label_en: 'Strict / professional',
@@ -583,9 +583,9 @@ make every session begin the same way for as long as you ride.`,
             label_en: 'Shorter when I\'m tired',
             label_ru: 'Короче когда я устала',
             label_uk: 'Коротше, коли я втомлена',
-            text_en: 'When I\'m tired, get shorter — not softer. Less words is the kindness, not more reassurance.',
-            text_ru: 'Когда я устала — короче, не мягче. Меньше слов это доброта, не успокоение.',
-            text_uk: 'Коли я втомлена — коротше, не мʼякше. Менше слів — це доброта, а не більше заспокоєнь.',
+            text_en: 'When I\'m tired, get shorter - not softer. Less words is the kindness, not more reassurance.',
+            text_ru: 'Когда я устала - короче, не мягче. Меньше слов это доброта, не успокоение.',
+            text_uk: 'Коли я втомлена - коротше, не мʼякше. Менше слів - це доброта, а не більше заспокоєнь.',
           },
         ],
       },
@@ -599,13 +599,13 @@ make every session begin the same way for as long as you ride.`,
     name_en: 'The Sealing',
     name_ru: 'Запечатывание',
     name_uk: 'Запечатування',
-    lore_en: `The last ritual. One rule that wins over all others —
+    lore_en: `The last ritual. One rule that wins over all others -
 yours, not the dragon's. Speak it now and the bond holds.`,
     lore_ru: `Последний ритуал. Одно правило побеждающее все
-остальные — твоё, не дракона. Произнеси его сейчас и связь
+остальные - твоё, не дракона. Произнеси его сейчас и связь
 запечатана.`,
     lore_uk: `Останній ритуал. Одне правило, що перемагає всі
-інші — твоє, не дракона. Виголоси його зараз — і звʼязок
+інші - твоє, не дракона. Виголоси його зараз - і звʼязок
 запечатано.`,
     questions: [
       {
@@ -616,44 +616,44 @@ yours, not the dragon's. Speak it now and the bond holds.`,
         label_en: 'Your one override rule',
         label_ru: 'Твоё одно override-правило',
         label_uk: 'Твоє одне override-правило',
-        hint_en: 'If your dragon had ONE rule that beats every other — what would it be? One sentence. (Hint: this rule is about YOU, not them.)',
-        hint_ru: 'Если бы у дракона было ОДНО правило, побеждающее все — какое? Одно предложение. (Подсказка: это правило о ТЕБЕ, не о нём.)',
-        hint_uk: 'Якби в дракона було ОДНЕ правило, що перемагає всі — яке? Одне речення. (Підказка: це правило про ТЕБЕ, а не про нього.)',
-        placeholder_en: 'When I ask the same question twice — I\'m stuck. Stop and ask what I\'m really after.',
-        placeholder_ru: 'Если я спрашиваю одно дважды — я зависла. Остановись и спроси чего я на самом деле хочу.',
-        placeholder_uk: 'Коли я питаю одне й те саме двічі — я зависла. Зупинись і запитай, чого я насправді хочу.',
+        hint_en: 'If your dragon had ONE rule that beats every other - what would it be? One sentence. (Hint: this rule is about YOU, not them.)',
+        hint_ru: 'Если бы у дракона было ОДНО правило, побеждающее все - какое? Одно предложение. (Подсказка: это правило о ТЕБЕ, не о нём.)',
+        hint_uk: 'Якби в дракона було ОДНЕ правило, що перемагає всі - яке? Одне речення. (Підказка: це правило про ТЕБЕ, а не про нього.)',
+        placeholder_en: 'When I ask the same question twice - I\'m stuck. Stop and ask what I\'m really after.',
+        placeholder_ru: 'Если я спрашиваю одно дважды - я зависла. Остановись и спроси чего я на самом деле хочу.',
+        placeholder_uk: 'Коли я питаю одне й те саме двічі - я зависла. Зупинись і запитай, чого я насправді хочу.',
         presets: [
           {
             label_en: 'Twice = I\'m stuck',
             label_ru: 'Дважды = я зависла',
             label_uk: 'Двічі = я зависла',
-            text_en: 'When I ask the same question twice — I\'m stuck. Stop answering. Ask what I\'m really after.',
-            text_ru: 'Когда я спрашиваю одно дважды — я зависла. Перестань отвечать. Спроси чего я на самом деле хочу.',
-            text_uk: 'Коли я питаю одне й те саме двічі — я зависла. Припини відповідати. Запитай, чого я насправді хочу.',
+            text_en: 'When I ask the same question twice - I\'m stuck. Stop answering. Ask what I\'m really after.',
+            text_ru: 'Когда я спрашиваю одно дважды - я зависла. Перестань отвечать. Спроси чего я на самом деле хочу.',
+            text_uk: 'Коли я питаю одне й те саме двічі - я зависла. Припини відповідати. Запитай, чого я насправді хочу.',
           },
           {
             label_en: 'Doubt before answering',
             label_ru: 'Сомневайся прежде чем отвечать',
             label_uk: 'Сумнівайся, перш ніж відповідати',
-            text_en: 'If your answer doesn\'t match my context — say so first. Don\'t answer past me into a generic case.',
-            text_ru: 'Если твой ответ не подходит моему контексту — скажи это сначала. Не отвечай мимо меня в общий случай.',
-            text_uk: 'Якщо твоя відповідь не пасує моєму контексту — скажи це спершу. Не відповідай повз мене в загальний випадок.',
+            text_en: 'If your answer doesn\'t match my context - say so first. Don\'t answer past me into a generic case.',
+            text_ru: 'Если твой ответ не подходит моему контексту - скажи это сначала. Не отвечай мимо меня в общий случай.',
+            text_uk: 'Якщо твоя відповідь не пасує моєму контексту - скажи це спершу. Не відповідай повз мене в загальний випадок.',
           },
           {
             label_en: 'Code first, prose only on ask',
             label_ru: 'Код первым, текст только если попрошу',
-            label_uk: 'Код перший, текст — лише на прохання',
+            label_uk: 'Код перший, текст - лише на прохання',
             text_en: 'Code first, prose explanation only if I ask for it. I read diffs faster than I read paragraphs.',
             text_ru: 'Код первым, текст-объяснение только если я попрошу. Я читаю diff быстрее чем абзацы.',
-            text_uk: 'Код першим, пояснення текстом — лише якщо попрошу. Я читаю diff швидше за абзаци.',
+            text_uk: 'Код першим, пояснення текстом - лише якщо попрошу. Я читаю diff швидше за абзаци.',
           },
           {
             label_en: 'Honest "I don\'t know"',
             label_ru: 'Честное «не знаю»',
             label_uk: 'Чесне «не знаю»',
-            text_en: 'When uncertain, say "I don\'t know" — never "it depends" as a stall. Name the actual gap.',
-            text_ru: 'Когда не уверен — говори «не знаю», никогда «зависит» как стопор. Назови реальный пробел.',
-            text_uk: 'Коли не певен — кажи «не знаю», ніколи «залежить» як відмазку. Назви реальну прогалину.',
+            text_en: 'When uncertain, say "I don\'t know" - never "it depends" as a stall. Name the actual gap.',
+            text_ru: 'Когда не уверен - говори «не знаю», никогда «зависит» как стопор. Назови реальный пробел.',
+            text_uk: 'Коли не певен - кажи «не знаю», ніколи «залежить» як відмазку. Назви реальну прогалину.',
           },
           {
             label_en: 'Never start with sycophancy',
@@ -668,8 +668,8 @@ yours, not the dragon's. Speak it now and the bond holds.`,
             label_ru: 'Tradeoff\'ы всегда видны',
             label_uk: 'Tradeoffs завжди на виду',
             text_en: 'Tradeoffs always visible. If a choice has a cost, name it before recommending.',
-            text_ru: 'Tradeoff\'ы всегда видны. Если у выбора есть цена — назови её до того как рекомендовать.',
-            text_uk: 'Tradeoffs завжди на виду. Якщо у вибору є ціна — назви її, перш ніж рекомендувати.',
+            text_ru: 'Tradeoff\'ы всегда видны. Если у выбора есть цена - назови её до того как рекомендовать.',
+            text_uk: 'Tradeoffs завжди на виду. Якщо у вибору є ціна - назви її, перш ніж рекомендувати.',
           },
         ],
       },
@@ -677,10 +677,10 @@ yours, not the dragon's. Speak it now and the bond holds.`,
   },
 ]
 
-/** All questions flattened — useful for "is everything answered" checks. */
+/** All questions flattened - useful for "is everything answered" checks. */
 export const ALL_QUESTIONS = RITUALS.flatMap(r => r.questions)
 
-/** Subset that count toward "mandatory" — everything except archetype_custom. */
+/** Subset that count toward "mandatory" - everything except archetype_custom. */
 export const MANDATORY_IDS = ALL_QUESTIONS
   .filter(q => !q.showIf)
   .map(q => q.id)
