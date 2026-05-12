@@ -384,43 +384,60 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
           </div>
         </div>
 
-        {/* Signature block */}
-        <div style={{ textAlign: 'center', position: 'relative', paddingBottom: 4 }}>
-          {/* Calligraphic signature path — drafted A B */}
-          <svg viewBox="0 0 220 60" width="220" height="60" style={{ margin: '0 auto', display: 'block' }}>
-            <path
-              d="M 10 42 Q 14 28, 24 28 Q 30 28, 32 40 Q 34 24, 42 20 Q 50 16, 54 30 Q 56 44, 48 46
-                 M 58 32 Q 64 22, 70 32 Q 74 40, 68 44
-                 M 78 22 Q 78 38, 88 38 Q 94 38, 94 28 Q 94 18, 88 18
-                 M 98 26 Q 102 18, 108 26 Q 110 32, 108 34 Q 106 36, 102 32
-                 M 114 18 Q 114 40, 120 38
-                 M 124 26 Q 124 38, 130 38 Q 138 36, 136 24 Q 132 20, 126 24
-                 M 140 18 L 140 40 M 140 26 Q 148 24, 152 28 Q 154 38, 146 40
-                 M 158 26 Q 158 38, 164 38 Q 170 34, 170 26
-                 M 174 18 Q 174 40, 182 36
-                 M 186 28 Q 196 22, 204 30 Q 206 38, 196 42"
-              stroke="#FFFFFF"
-              strokeWidth="1.5"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {/* Signature block — avatar + signature/name/handle stack */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 18, paddingBottom: 4 }}>
+          {/* Tutor avatar — round photo, teal hairline. */}
+          <div style={{
+            width: 84, height: 84, borderRadius: '50%', overflow: 'hidden',
+            border: '1.5px solid #00E5CC',
+            boxShadow: '0 0 0 1px rgba(0,229,204,0.15), 0 6px 18px rgba(0,0,0,0.45)',
+            flexShrink: 0,
+          }}>
+            <img
+              src="/brand/anastasia-avatar.jpg"
+              alt="Anastasiia Babanina"
+              crossOrigin="anonymous"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-          </svg>
-          <div style={{ width: 280, height: 1, background: '#FFFFFF', opacity: 0.3, margin: '4px auto 12px' }} />
-          <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: 16, color: '#FFFFFF', fontWeight: 500 }}>
-            Anastasiia <em style={{ fontStyle: 'italic', color: '#00E5CC' }}>Babanina</em>
           </div>
-          <div style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: '#888888', marginTop: 4,
-          }}>
-            — Tutor · {TUTOR_LINKEDIN}
-          </div>
-          <div style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: 8.5, letterSpacing: 2, textTransform: 'uppercase', color: '#666666', marginTop: 2,
-          }}>
-            ig: {TUTOR_INSTAGRAM}
+
+          {/* Signature column */}
+          <div style={{ textAlign: 'left' }}>
+            <svg viewBox="0 0 220 50" width="200" height="44" style={{ display: 'block', marginBottom: 2 }}>
+              <path
+                d="M 10 38 Q 14 24, 24 24 Q 30 24, 32 36 Q 34 20, 42 16 Q 50 12, 54 26 Q 56 40, 48 42
+                   M 58 28 Q 64 18, 70 28 Q 74 36, 68 40
+                   M 78 18 Q 78 34, 88 34 Q 94 34, 94 24 Q 94 14, 88 14
+                   M 98 22 Q 102 14, 108 22 Q 110 28, 108 30 Q 106 32, 102 28
+                   M 114 14 Q 114 36, 120 34
+                   M 124 22 Q 124 34, 130 34 Q 138 32, 136 20 Q 132 16, 126 20
+                   M 140 14 L 140 36 M 140 22 Q 148 20, 152 24 Q 154 34, 146 36
+                   M 158 22 Q 158 34, 164 34 Q 170 30, 170 22
+                   M 174 14 Q 174 36, 182 32
+                   M 186 24 Q 196 18, 204 26 Q 206 34, 196 38"
+                stroke="#FFFFFF"
+                strokeWidth="1.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div style={{ width: 200, height: 1, background: '#FFFFFF', opacity: 0.3, marginBottom: 8 }} />
+            <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: 17, color: '#FFFFFF', fontWeight: 500 }}>
+              Anastasiia <em style={{ fontStyle: 'italic', color: '#00E5CC' }}>Babanina</em>
+            </div>
+            <div style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: '#888888', marginTop: 4,
+            }}>
+              — Tutor · {TUTOR_LINKEDIN}
+            </div>
+            <div style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: 8.5, letterSpacing: 2, textTransform: 'uppercase', color: '#666666', marginTop: 2,
+            }}>
+              ig: {TUTOR_INSTAGRAM}
+            </div>
           </div>
         </div>
 
