@@ -114,6 +114,9 @@ function doPost(e) {
       // progress (XP, hidden dragons)
       updateStudentProgress,
       getXpLeaderboard,
+      // admin
+      deleteStudent,
+      deleteStudentsByPrefix,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -216,6 +219,13 @@ function _appendRow(sheetName, record) {
   const headers = HEADERS[sheetName]
   const row = headers.map((h) => record[h] ?? '')
   sheet.appendRow(row)
+  // Force the write to the underlying spreadsheet immediately so the
+  // very next execution context (e.g. an updateStudentProgress that
+  // fires the moment registerStudent returns) sees the new row. Without
+  // flush, Apps Script lazily commits and the next request reads a
+  // stale snapshot — verified empirically: 43/50 updateStudentProgress
+  // calls returned "student not found" right after a successful register.
+  SpreadsheetApp.flush()
   return record
 }
 
@@ -241,11 +251,13 @@ function _updateRow(sheetName, rowIndex, patch) {
   headers.forEach((h, i) => { obj[h] = current[i] })
   Object.assign(obj, patch)
   sheet.getRange(rowIndex, 1, 1, headers.length).setValues([headers.map((h) => obj[h] ?? '')])
+  SpreadsheetApp.flush()
   return obj
 }
 
 function _deleteRow(sheetName, rowIndex) {
   _sheet(sheetName).deleteRow(rowIndex)
+  SpreadsheetApp.flush()
 }
 
 function _uuid() {
@@ -328,6 +340,108 @@ function getStudent({ nickname, studentId }) {
 
 function listStudents() {
   return { students: _allRows(SHEETS.STUDENTS) }
+}
+
+/**
+ * Delete a student row (and cascade their dragon + votes + arena runs).
+ * Used by the facilitator admin UI. Caller passes nickname OR studentId.
+ */
+function deleteStudent({ nickname, studentId, cascade }) {
+  return _withScriptLock(function () {
+    if (!nickname && !studentId) throw new Error('nickname or studentId required')
+    const nick = nickname ? String(nickname).toLowerCase().trim() : null
+
+    let removed = 0
+    // students
+    let rowIdx = -1
+    if (studentId) rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
+    if (rowIdx < 0 && nick) rowIdx = _findRowIndex(SHEETS.STUDENTS, s => String(s.nickname).toLowerCase() === nick)
+    if (rowIdx > 0) { _deleteRow(SHEETS.STUDENTS, rowIdx); removed++ }
+
+    if (cascade === false) return { ok: true, removed }
+
+    // dragons (by nickname)
+    if (nick) {
+      const allDragons = _allRows(SHEETS.DRAGONS)
+      const dSheet = _sheet(SHEETS.DRAGONS)
+      for (let i = allDragons.length - 1; i >= 0; i--) {
+        if (String(allDragons[i].nickname).toLowerCase() === nick) {
+          dSheet.deleteRow(i + 2)
+          removed++
+        }
+      }
+      // dragon_votes (this nickname as voter)
+      const allVotes = _allRows(SHEETS.DRAGON_VOTES)
+      const vSheet = _sheet(SHEETS.DRAGON_VOTES)
+      for (let i = allVotes.length - 1; i >= 0; i--) {
+        if (String(allVotes[i].voter_nickname).toLowerCase() === nick) {
+          vSheet.deleteRow(i + 2)
+          removed++
+        }
+      }
+      // arena_runs
+      const allArena = _allRows(SHEETS.ARENA_RUNS)
+      const aSheet = _sheet(SHEETS.ARENA_RUNS)
+      for (let i = allArena.length - 1; i >= 0; i--) {
+        if (String(allArena[i].nickname).toLowerCase() === nick) {
+          aSheet.deleteRow(i + 2)
+          removed++
+        }
+      }
+      // bot_submissions
+      const allBots = _allRows(SHEETS.BOT_SUBMISSIONS)
+      const bSheet = _sheet(SHEETS.BOT_SUBMISSIONS)
+      for (let i = allBots.length - 1; i >= 0; i--) {
+        if (String(allBots[i].nickname).toLowerCase() === nick) {
+          bSheet.deleteRow(i + 2)
+          removed++
+        }
+      }
+    }
+    SpreadsheetApp.flush()
+    return { ok: true, removed }
+  }, 60000)
+}
+
+/**
+ * Bulk-delete every student whose nickname starts with the given prefix
+ * (+ cascade their dragons / votes / runs). Used to wipe stress-test
+ * rows in one call: `{ action: 'deleteStudentsByPrefix', prefix: 'qa_' }`.
+ */
+function deleteStudentsByPrefix({ prefix }) {
+  return _withScriptLock(function () {
+    if (!prefix) throw new Error('prefix required')
+    const pfx = String(prefix).toLowerCase().trim()
+    if (pfx.length < 2) throw new Error('prefix too short — refuse to mass-delete with < 2 chars')
+
+    const targets = _allRows(SHEETS.STUDENTS)
+      .filter(s => String(s.nickname).toLowerCase().startsWith(pfx))
+      .map(s => String(s.nickname).toLowerCase())
+
+    let removedRows = 0
+    const sheetsToScan = [SHEETS.STUDENTS, SHEETS.DRAGONS, SHEETS.ARENA_RUNS, SHEETS.BOT_SUBMISSIONS]
+    for (const sn of sheetsToScan) {
+      const all = _allRows(sn)
+      const sheet = _sheet(sn)
+      for (let i = all.length - 1; i >= 0; i--) {
+        if (targets.indexOf(String(all[i].nickname).toLowerCase()) >= 0) {
+          sheet.deleteRow(i + 2)
+          removedRows++
+        }
+      }
+    }
+    // votes use voter_nickname
+    const allVotes = _allRows(SHEETS.DRAGON_VOTES)
+    const vSheet = _sheet(SHEETS.DRAGON_VOTES)
+    for (let i = allVotes.length - 1; i >= 0; i--) {
+      if (targets.indexOf(String(allVotes[i].voter_nickname).toLowerCase()) >= 0) {
+        vSheet.deleteRow(i + 2)
+        removedRows++
+      }
+    }
+    SpreadsheetApp.flush()
+    return { ok: true, studentsMatched: targets.length, rowsRemoved: removedRows, nicknames: targets }
+  }, 120000)
 }
 
 function markCheckpoint({ studentId, checkpointId }) {
