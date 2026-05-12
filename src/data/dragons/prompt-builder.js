@@ -123,8 +123,8 @@ export function buildDragonPrompt(answers = {}) {
     // Breed canon — gives the model a concrete reference shape
     `The dragon is ${breed}. ${size}.`,
     ``,
-    // Scale — barely-visible tint, near-monochrome workshop mood
-    `Scale and hide: ${scaleRaw}. The image is overall NEAR-MONOCHROME — heavy dark greys, slate, charcoal — with the dragon's chosen scale colour appearing only as a FAINT desaturated tint, like a hint of pigment glimpsed through fog and grain, NOT a saturated hero anchor. Think of a moody Fourth Wing book-cover plate where the dragon is mostly silhouette and atmosphere with just a whisper of its true colour bleeding through. Individual scales soften and dissolve into the haze. Leathery seams visible only where light grazes. The dragon is more silhouette than spectacle.`,
+    // Scale — colour subtly readable, still silhouette-forward mood
+    `Scale and hide: ${scaleRaw}. The image is overall MOODY and DESATURATED — dark greys, slate, charcoal dominate the atmosphere — but the dragon's chosen scale colour stays clearly readable through the haze: muted, dusty, low-saturation, but the chosen hue must be obviously recognisable as that colour, not pure grey. Think of a Fourth Wing book-cover plate where the dragon's true colour bleeds through the rim-light and key planes — you should be able to name the dragon's colour at a glance. Individual scales soften and dissolve into the haze at the edges. The dragon is silhouette-forward but its hue lives in the lit planes.`,
     ``,
     // Anatomy details
     `Wings: ${wings}.`,
@@ -136,11 +136,11 @@ export function buildDragonPrompt(answers = {}) {
     `Composition: ${pose}.`,
     motto ? `The dragon's bearing carries the meaning of its rider's vow: "${motto}".` : '',
     ``,
-    // Cinematography spec — silhouette-forward, near-mono, heavy grain
-    `Cinematography: silhouette-forward dark moody composition matching a Fourth Wing book-cover plate. The DRAGON IS MOSTLY SILHOUETTE — dark form against grainy dust-particle sky, only faint definition where rim-light catches the spine ridge or wing edge. Heavy visible film grain across the entire frame. Thick fog and floating dust particles dominate the atmosphere — the dragon's outline DISSOLVES into the haze at the edges. Near-monochrome palette: charcoal, slate, deep greys throughout, with only a faint desaturated whisper of the dragon's scale colour just barely visible. Low contrast, soft analog softness, NOT sharp. Single distant rim-light, the rest is shadow and mist. Composition feels like a moody illustration plate from a dark fantasy art book, not a film hero shot.`,
+    // Cinematography spec — silhouette-forward, muted but colour-readable, heavy grain
+    `Cinematography: silhouette-forward dark moody composition matching a Fourth Wing book-cover plate. The dragon's form reads primarily as silhouette against grainy dust-particle sky, with rim-light catching the spine ridge, wing edge, jaw line, and lit haunch — and in those lit planes the dragon's chosen colour is clearly visible, muted but recognisable. Heavy visible film grain across the entire frame. Thick fog and floating dust particles dominate the atmosphere — the dragon's outline dissolves into the haze at the edges, but the lit planes hold the dragon's hue. Desaturated cool world palette: charcoal, slate, deep greys for atmosphere — the dragon's chosen colour is the only readable hue in the frame, low-saturation but clearly that colour. Low contrast, soft analog softness, NOT sharp. Single distant rim-light. Composition feels like a moody illustration plate from a dark fantasy art book.`,
     ``,
-    // Negatives — kill detail-forward and saturated-anchor failure modes
-    `Critical: SILHOUETTE-forward, ATMOSPHERIC, near-MONOCHROME. NO clinical CGI sharpness, NO 8K detail, NO over-rendered scales-by-scales, NO bright saturated dragon, NO HOTD hero shot. The dragon's colour must be barely a whisper, not a saturated anchor. Add HEAVY 35mm film grain and thick atmospheric haze. Edges soften into the fog. NO text, NO logos, NO watermark, NO human characters, NO cartoon, NO anime, NO smooth digital painting, NO bright colour pop — the whole frame stays in dark grainy near-mono mood with the dragon as a half-hidden silhouette against the dust.`,
+    // Negatives — kill detail-forward and over-mono failure modes
+    `Critical: SILHOUETTE-forward, ATMOSPHERIC, moody-but-colour-readable. NO clinical CGI sharpness, NO 8K detail, NO over-rendered scales-by-scales, NO HOTD hero shot. The dragon's colour stays muted and dusty but must be clearly recognisable — NOT pure grey, NOT pure silhouette without any hue. Add HEAVY 35mm film grain and thick atmospheric haze. Edges soften into the fog but the lit planes carry the dragon's true colour. NO text, NO logos, NO watermark, NO human characters, NO cartoon, NO anime, NO smooth digital painting, NO bright over-saturated colour pop — moody muted colour, not vibrant.`,
   ].filter(Boolean)
 
   return parts.join('\n')
