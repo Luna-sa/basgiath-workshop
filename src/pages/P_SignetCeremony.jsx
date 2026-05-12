@@ -414,10 +414,27 @@ export default function P_SignetCeremony() {
       assistantName,
     })
 
+    // Build the persistence payload — visual profile + the rider's
+    // vow (free-form text). The vow doesn't influence the image but
+    // surfaces on the Aerie cards as the pull quote underneath each
+    // dragon, giving voters an extra signal beyond pure visuals.
+    //
+    // Cap at ~220 chars for the Aerie pull-quote — the card layout
+    // is narrow and long vows break the grid. Full text still lives
+    // in CLAUDE.md where the rider keeps every word.
+    const rawVow = (answers.vow || '').trim().replace(/\s+/g, ' ')
+    const aerieMotto = rawVow.length > 220
+      ? rawVow.slice(0, 219).replace(/\s+\S*$/, '') + '…'
+      : rawVow
+    const aerieAnswers = {
+      ...derived,
+      motto: aerieMotto,
+    }
+
     // Persist to bond-ritual-answers so templates that read the dragon
     // name (Graduation closer, CharacterCommentary) still work.
     try {
-      window.localStorage.setItem('bond-ritual-answers', JSON.stringify(derived))
+      window.localStorage.setItem('bond-ritual-answers', JSON.stringify(aerieAnswers))
     } catch {}
 
     const prompt = buildDragonPrompt(derived)
@@ -444,7 +461,7 @@ export default function P_SignetCeremony() {
             nickname,
             studentId,
             characterId,
-            answers: derived,
+            answers: aerieAnswers,
             imageB64,
             prompt,
             modelUsed: 'gpt-image-1',
