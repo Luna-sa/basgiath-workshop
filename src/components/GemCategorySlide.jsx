@@ -143,6 +143,17 @@ export default function GemCategorySlide({ categoryId, pageIndex }) {
     <PageShell pageIndex={pageIndex}>
       <div className="space-y-6">
 
+        {/* Scale texture — same rhythm as the 5 gem deep-dives. */}
+        <div className="relative -mt-2 h-[60px] overflow-hidden border-y border-border opacity-60">
+          <img
+            src="/hero/gems-scale-texture.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-bg/60 via-bg/20 to-bg/60" />
+        </div>
+
         {/* Category hero */}
         <div>
           <p className="font-mono text-[10.5px] tracking-[3px] uppercase text-qa-teal mb-2">

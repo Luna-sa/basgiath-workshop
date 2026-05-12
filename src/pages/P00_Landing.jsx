@@ -6,22 +6,29 @@ export default function P00_Landing() {
 
   return (
     <PageShell pageIndex={0}>
-      <div className="space-y-8 relative">
-        {/* Castle hero — full-bleed dark fantasy mood. Sits behind
-            the whole landing content. Lower-opacity + black gradient
-            keeps body text readable. */}
-        <div className="absolute inset-x-0 -top-12 h-[340px] -z-0 pointer-events-none overflow-hidden">
-          <img
-            src="/hero/landing-castle.jpg"
-            alt=""
-            className="w-full h-full object-cover opacity-50"
-            loading="eager"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/40 to-bg" />
-        </div>
+      {/* Castle background — full-screen behind ALL content. Fixed
+          position so it stays put while content scrolls. Content
+          panels below use opaque bg-[#0a0a0a]/95 + backdrop-blur so
+          their text never competes with the image underneath. */}
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        aria-hidden="true"
+      >
+        <img
+          src="/hero/landing-castle.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-40"
+          loading="eager"
+        />
+        {/* Soft vignette + bottom fade so cards near the bottom of
+            the screen don't fight the brightest part of the sky. */}
+        <div className="absolute inset-0 bg-gradient-to-b from-bg/30 via-bg/50 to-bg/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)]" />
+      </div>
 
+      <div className="space-y-8 relative">
         {/* World intro */}
-        <div className="relative p-6 border border-[#2E2E2E] bg-[#141414]/90 backdrop-blur-sm rounded-lg">
+        <div className="relative p-6 border border-[#2E2E2E] bg-[#0a0a0a]/95 backdrop-blur-md rounded-lg">
           <div className="font-mono text-[13px] tracking-[3px] uppercase text-qa-teal mb-4">
             {t('Welcome', 'О мире', 'Про світ')}
           </div>
@@ -107,7 +114,7 @@ export default function P00_Landing() {
               desc_uk: 'Таймери, очки, лідерборд, подіум переможців',
             },
           ].map(a => (
-            <div key={a.title_en} className="p-5 border border-[#2E2E2E] bg-[#141414] rounded-lg">
+            <div key={a.title_en} className="p-5 border border-[#2E2E2E] bg-[#0a0a0a]/95 backdrop-blur-md rounded-lg">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-2xl">{a.icon}</span>
                 <h3 className="font-display text-[18px] text-white">{t(a.title_en, a.title_ru, a.title_uk)}</h3>
