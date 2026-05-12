@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import confetti from 'canvas-confetti'
 import { useWorkshopStore } from '../store/workshopStore'
 import { evaluateGate } from '../store/gateUtils'
 import { PAGES } from '../data/pages'
@@ -174,28 +176,133 @@ function SelfReportButton({ onConfirm, t }) {
  * Workshop-closer button for the very last slide. Distinct from Next
  * (heavier outline + ✦ icon, not chevron) so it reads as a finale,
  * not a continuation.
+ *
+ * Easter egg — there's no actual "after" page so clicking the
+ * button doesn't navigate anywhere. Instead it fires brand-coloured
+ * confetti and pops a random one-liner above the button. Different
+ * joke on every click. The underlying onClick (completePage) still
+ * runs so the store is updated.
  */
 function CloseButton({ onClick, t }) {
+  const [joke, setJoke] = useState(null)
+
+  // Each joke is { en, ru, uk } — picked at random on click, with
+  // a follow-up check so the same line doesn't fire twice in a row.
+  const JOKES = [
+    {
+      en: "Workshop closed. Your dragon is already updating CLAUDE.md from the new version.",
+      ru: "Воркшоп закрыт. Твой дракон уже обновляет CLAUDE.md под новую версию.",
+      uk: "Воркшоп закрито. Твій дракон вже оновлює CLAUDE.md під нову версію.",
+    },
+    {
+      en: "There's no door here. You're free to go.",
+      ru: "Здесь нет двери. Ты можешь идти.",
+      uk: "Тут немає дверей. Ти можеш іти.",
+    },
+    {
+      en: "Closed. Your dragon is napping. Don't wake him.",
+      ru: "Закрыто. Дракон спит. Не буди.",
+      uk: "Закрито. Дракон спить. Не буди.",
+    },
+    {
+      en: "Workshop done. Now go break prod carefully.",
+      ru: "Воркшоп закончен. Иди ломай прод осторожно.",
+      uk: "Воркшоп завершено. Іди ламай прод обережно.",
+    },
+    {
+      en: "The bond holds even off-platform. Don't worry.",
+      ru: "Связь держится и вне платформы. Не переживай.",
+      uk: "Звʼязок тримається і поза платформою. Не хвилюйся.",
+    },
+    {
+      en: "Closed. The button still works if you want to try again.",
+      ru: "Закрыто. Кнопка работает - можешь нажать ещё.",
+      uk: "Закрито. Кнопка працює - можеш натиснути ще.",
+    },
+    {
+      en: "Workshop archived. Your AI assistant just rolled its eyes — politely.",
+      ru: "Воркшоп архивирован. Твой AI закатил глаза - но вежливо.",
+      uk: "Воркшоп архівовано. Твій AI закотив очі - але ввічливо.",
+    },
+    {
+      en: "Sealed. The Empyrean takes note.",
+      ru: "Запечатано. Эмпиреи приняли к сведению.",
+      uk: "Запечатано. Емпіреї прийняли до відома.",
+    },
+  ]
+
+  const handleClick = () => {
+    // Pick a joke that's different from the current one.
+    let next
+    do {
+      next = JOKES[Math.floor(Math.random() * JOKES.length)]
+    } while (joke && next.en === joke.en && JOKES.length > 1)
+    setJoke(next)
+
+    // Brand-colour confetti from the button area.
+    try {
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        startVelocity: 35,
+        ticks: 200,
+        origin: { y: 0.85, x: 0.5 },
+        colors: ['#00E5CC', '#FF65BE', '#FEED00', '#FFFFFF'],
+      })
+    } catch {}
+
+    // Dismiss the bubble after a beat.
+    setTimeout(() => setJoke(null), 5500)
+
+    onClick?.()
+  }
+
   return (
-    <button
-      onClick={onClick}
-      className="group inline-flex items-center gap-3 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
-      style={{
-        padding: '16px 32px',
-        fontFamily: "'JetBrains Mono', monospace",
-        fontSize: '13px',
-        fontWeight: 700,
-        letterSpacing: '3px',
-        textTransform: 'uppercase',
-        border: '2px solid var(--char-accent)',
-        color: 'var(--char-accent)',
-        backgroundColor: 'var(--char-accent-light, transparent)',
-        borderRadius: '2px',
-        boxShadow: '0 0 24px 0 var(--char-accent-light, rgba(0,229,204,0.2))',
-      }}
-    >
-      <span className="text-lg">✦</span>
-      <span>{t('Close workshop', 'Закрыть воркшоп', 'Закрити воркшоп')}</span>
-    </button>
+    <div className="relative inline-block">
+      {joke && (
+        <div
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 px-4 py-2.5 border border-qa-teal/40 bg-bg/95 backdrop-blur-sm whitespace-nowrap max-w-[420px] z-10"
+          style={{
+            animation: 'fade-in-up 0.4s ease-out forwards',
+            boxShadow: '0 0 24px rgba(0, 229, 204, 0.25)',
+          }}
+        >
+          <p className="font-display italic text-[14px] text-white leading-snug whitespace-normal text-center">
+            {t(joke.en, joke.ru, joke.uk)}
+          </p>
+          {/* Down-pointing tail */}
+          <div
+            className="absolute top-full left-1/2 -translate-x-1/2"
+            style={{
+              width: 0, height: 0,
+              borderLeft: '8px solid transparent',
+              borderRight: '8px solid transparent',
+              borderTop: '8px solid #00E5CC',
+              opacity: 0.4,
+            }}
+          />
+        </div>
+      )}
+      <button
+        onClick={handleClick}
+        className="group inline-flex items-center gap-3 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+        style={{
+          padding: '16px 32px',
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: '13px',
+          fontWeight: 700,
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          border: '2px solid var(--char-accent)',
+          color: 'var(--char-accent)',
+          backgroundColor: 'var(--char-accent-light, transparent)',
+          borderRadius: '2px',
+          boxShadow: '0 0 24px 0 var(--char-accent-light, rgba(0,229,204,0.2))',
+        }}
+      >
+        <span className="text-lg">✦</span>
+        <span>{t('Close workshop', 'Закрыть воркшоп', 'Закрити воркшоп')}</span>
+      </button>
+    </div>
   )
 }
