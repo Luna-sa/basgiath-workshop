@@ -282,14 +282,32 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
           </p>
 
           <div style={{ position: 'relative', marginBottom: 8 }}>
-            <h1 style={{
-              fontFamily: '"Playfair Display", Georgia, serif',
-              fontStyle: 'italic', fontWeight: 400, fontSize: 78, lineHeight: 0.95,
-              color: '#FFFFFF', letterSpacing: '-0.02em',
-              display: 'inline-block', paddingBottom: 12, margin: 0,
-            }}>
-              {displayedRider}
-            </h1>
+            {/* Auto-scale the headline so first + last names of any
+                realistic length fit on one line without breaking the
+                grid. Buckets calibrated against a ~720px column at
+                italic Playfair Display ~0.55em per character. */}
+            {(() => {
+              const len = displayedRider.length
+              const nameFontSize =
+                len <= 14 ? 78 :
+                len <= 20 ? 64 :
+                len <= 28 ? 52 :
+                len <= 36 ? 42 :
+                36
+              return (
+                <h1 style={{
+                  fontFamily: '"Playfair Display", Georgia, serif',
+                  fontStyle: 'italic', fontWeight: 400,
+                  fontSize: nameFontSize,
+                  lineHeight: 0.95,
+                  color: '#FFFFFF', letterSpacing: '-0.02em',
+                  display: 'inline-block', paddingBottom: 12, margin: 0,
+                  whiteSpace: 'nowrap',
+                }}>
+                  {displayedRider}
+                </h1>
+              )
+            })()}
             {/* Hand-drawn teal underline */}
             <svg
               viewBox="0 0 600 22" preserveAspectRatio="none"

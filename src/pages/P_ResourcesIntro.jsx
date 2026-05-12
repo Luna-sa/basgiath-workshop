@@ -24,9 +24,29 @@ export default function P_ResourcesIntro() {
   const t = useT()
   const user = useWorkshopStore(s => s.user)
   const sigil = useWorkshopStore(s => s.sigil)
+  const setUser = useWorkshopStore(s => s.setUser)
   const certRef = useRef(null)
   const [busy, setBusy] = useState(false)
   const [toast, setToast] = useState('')
+
+  // Live-editable name for the certificate. Initialised from
+  // user.name (the field they filled at registration) so most
+  // participants land here with their name already populated. Each
+  // keystroke updates the cert preview immediately AND persists
+  // back to the store so the change survives a refresh.
+  //
+  // Hard cap at 40 chars — calibrated against the cert's name slot:
+  // italic Playfair Display auto-scales the font (78px → 36px) to
+  // fit any length up to 40, so even "Anastasiia Babanina-Kuznetsova"
+  // renders cleanly. Beyond 40, it would start to look squished and
+  // the line is realistically longer than any first+last name.
+  const NAME_MAX = 40
+  const [editedName, setEditedName] = useState(user.name?.trim() || '')
+  const handleNameChange = (e) => {
+    const v = e.target.value.slice(0, NAME_MAX)
+    setEditedName(v)
+    setUser({ name: v })
+  }
 
   // Feedback form state
   const [fbRating, setFbRating] = useState(0)
@@ -36,7 +56,7 @@ export default function P_ResourcesIntro() {
   const [fbBusy, setFbBusy] = useState(false)
   const [fbError, setFbError] = useState('')
 
-  const riderName = user.name?.trim() || ''
+  const riderName = editedName.trim()
   const dragonName = sigil?.dragonName || 'Unnamed'
   const sealedAt = sigil?.sealedAt || Date.now()
 
@@ -148,6 +168,53 @@ export default function P_ResourcesIntro() {
               'Editorial-сертифікат з твоїм запечатаним драконом, імʼям і пілонами воркшопу. Запостити в LinkedIn - два кліки: картинка завантажиться, англійський текст ляже у буфер, LinkedIn відкриється готовим до вставки.'
             )}
           </p>
+        </div>
+
+        {/* Editable full-name field for the certificate. Most
+            participants signed up with just a first name or
+            nickname; this lets them add a surname (or pull a
+            different display name) before exporting the PNG. Live
+            updates the preview below on every keystroke. */}
+        <div className="max-w-2xl">
+          <label
+            htmlFor="cert-name"
+            className="block font-mono text-[11px] tracking-[2px] uppercase text-text-dim mb-2"
+          >
+            {t(
+              'Full name on the certificate',
+              'Полное имя на сертификате',
+              'Повне імʼя на сертифікаті'
+            )}
+          </label>
+          <input
+            id="cert-name"
+            type="text"
+            value={editedName}
+            onChange={handleNameChange}
+            maxLength={NAME_MAX}
+            placeholder={t(
+              'e.g. Anastasiia Babanina',
+              'Напр. Анастасия Бабанина',
+              'Напр. Анастасія Бабаніна'
+            )}
+            className="w-full bg-bg/80 border border-border focus:border-qa-teal/60 rounded-[2px] px-3 py-2.5 text-[14px] text-text-body placeholder-text-dim/60 transition-colors focus:outline-none"
+          />
+          <div className="flex justify-between items-center mt-1">
+            <p className="font-mono text-[10px] tracking-[1px] text-text-dim">
+              {t(
+                'Updates the certificate live. Type your full name — font auto-shrinks to fit. Leave blank to use @nickname.',
+                'Обновит сертификат сразу. Введи полное имя — шрифт сам подстроится. Пусто — будет @ник.',
+                'Оновить сертифікат одразу. Введи повне імʼя — шрифт сам підлаштується. Порожньо — буде @нік.'
+              )}
+            </p>
+            <span className={`font-mono text-[10px] tracking-[1px] ml-3 shrink-0 ${
+              editedName.length >= NAME_MAX ? 'text-amber-400'
+                : editedName.length >= NAME_MAX * 0.85 ? 'text-amber-300/70'
+                : 'text-text-dim'
+            }`}>
+              {editedName.length} / {NAME_MAX}
+            </span>
+          </div>
         </div>
 
         {/* Scaled cert preview. Source DOM is 1120×792 so the PNG
