@@ -5,16 +5,10 @@
 // participant can come back any day, paste a prompt, and finish what
 // they didn't get to during the live session.
 
-import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { generateEcosystemPrompt } from '../data/ecosystem-prompt'
 import CopyPrompt from '../components/CopyPrompt'
 import { useT } from '../i18n/useT'
-import { renderSigilCard, renderCertificateCard, buildLinkedInCaption, downloadBlob } from '../utils/sigilCard'
-
-const TUTOR_LINKEDIN_URL = 'https://www.linkedin.com/in/ainastasia/'
-const TUTOR_AVATAR_URL = '/brand/anastasia-avatar.jpg' // drop this file into public/brand/ when ready
-const WORKSHOP_URL = 'course.ainastasia.ai/workshop'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Autopilot prompts. Plain pragmatic English inside - lore is in the
@@ -280,115 +274,7 @@ const EXTERNAL_LINKS = [
 export default function P_Resources() {
   const t = useT()
   const user = useWorkshopStore(s => s.user)
-  const sigil = useWorkshopStore(s => s.sigil)
   const ecosystemPrompt = generateEcosystemPrompt(user)
-  const [sigilBusy, setSigilBusy] = useState(false)
-  const [sigilToast, setSigilToast] = useState('')
-
-  const handleSigilDownload = async () => {
-    if (!sigil?.imageDataUri || sigilBusy) return
-    setSigilBusy(true)
-    try {
-      const blob = await renderSigilCard({
-        imageUrl: sigil.imageDataUri,
-        name: sigil.dragonName || 'Unnamed',
-        nickname: user.nickname || 'rider',
-        motto: sigil.motto || '',
-        date: sigil.sealedAt ? new Date(sigil.sealedAt) : new Date(),
-      })
-      const safeName = (sigil.dragonName || 'sigil').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
-      downloadBlob(blob, `basgiath-sigil-${safeName}.png`)
-      setSigilToast(t('Sigil downloaded', 'Сигнет скачан', 'Сигнет завантажено'))
-    } catch (e) {
-      setSigilToast(t('Download failed', 'Скачивание не удалось', 'Завантаження не вдалося'))
-    } finally {
-      setSigilBusy(false)
-      setTimeout(() => setSigilToast(''), 2500)
-    }
-  }
-
-  const handleLinkedInShare = async () => {
-    if (!sigil?.imageDataUri || sigilBusy) return
-    setSigilBusy(true)
-    try {
-      // 1. Build the certificate PNG (LinkedIn-feed-friendly).
-      const blob = await renderCertificateCard({
-        imageUrl: sigil.imageDataUri,
-        name: sigil.dragonName || 'Unnamed',
-        nickname: user.nickname || 'rider',
-        date: sigil.sealedAt ? new Date(sigil.sealedAt) : new Date(),
-        tutorAvatarUrl: TUTOR_AVATAR_URL,
-        url: WORKSHOP_URL,
-      })
-      const safeName = (sigil.dragonName || 'cert').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
-      const filename = `basgiath-certificate-${safeName}.png`
-
-      // 2. Trigger the download so the user has the image locally.
-      downloadBlob(blob, filename)
-
-      // 3. Copy the English caption to clipboard so the user just
-      //    has to paste it into the LinkedIn composer.
-      const caption = buildLinkedInCaption({
-        dragonName: sigil.dragonName || 'my dragon',
-        tutorLinkedinUrl: TUTOR_LINKEDIN_URL,
-      })
-      try { await navigator.clipboard.writeText(caption) } catch {}
-
-      // 4. Open LinkedIn's compose modal in a new tab. There's no
-      //    reliable way to pre-attach files via URL, so the user
-      //    drags the just-downloaded cert in. The caption is in
-      //    their clipboard ready to paste.
-      window.open('https://www.linkedin.com/feed/?shareActive=true&mini=true', '_blank', 'noopener')
-
-      setSigilToast(t(
-        'Cert downloaded · caption copied · LinkedIn opened — paste + drag the image in',
-        'Серт скачан · текст в буфере · LinkedIn открыт - вставь текст и перетащи картинку',
-        'Серт завантажено · текст у буфері · LinkedIn відкрито - встав текст і перетягни картинку'
-      ))
-    } catch (e) {
-      console.error('LinkedIn share failed:', e)
-      setSigilToast(t('LinkedIn share failed', 'Не получилось', 'Не вдалося'))
-    } finally {
-      setSigilBusy(false)
-      setTimeout(() => setSigilToast(''), 6000)
-    }
-  }
-
-  const handleSigilShare = async () => {
-    if (!sigil?.imageDataUri || sigilBusy) return
-    setSigilBusy(true)
-    try {
-      const blob = await renderSigilCard({
-        imageUrl: sigil.imageDataUri,
-        name: sigil.dragonName || 'Unnamed',
-        nickname: user.nickname || 'rider',
-        motto: sigil.motto || '',
-        date: sigil.sealedAt ? new Date(sigil.sealedAt) : new Date(),
-      })
-      const safeName = (sigil.dragonName || 'sigil').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
-      const file = new File([blob], `basgiath-sigil-${safeName}.png`, { type: 'image/png' })
-      const shareText = t(
-        `Bonded with my dragon ${sigil.dragonName} at Basgiath Academy.`,
-        `Связался(ась) с драконом ${sigil.dragonName} в Академии Басгиат.`,
-        `Звʼязався(лась) з драконом ${sigil.dragonName} в Академії Басгіат.`
-      )
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], text: shareText })
-        setSigilToast(t('Shared', 'Отправлено', 'Надіслано'))
-      } else {
-        downloadBlob(blob, file.name)
-        setSigilToast(t('Saved (share menu not supported)', 'Сохранено (системный share не поддерживается)', 'Збережено (системний share не підтримується)'))
-      }
-    } catch (e) {
-      // AbortError is normal (user closed the sheet) — don't surface
-      if (e?.name !== 'AbortError') {
-        setSigilToast(t('Share failed', 'Не удалось поделиться', 'Не вдалося поділитися'))
-      }
-    } finally {
-      setSigilBusy(false)
-      setTimeout(() => setSigilToast(''), 2500)
-    }
-  }
 
   return (
     <div className="min-h-screen px-6 py-16 sm:py-24">
@@ -425,12 +311,9 @@ export default function P_Resources() {
           </p>
         </header>
 
-        {/* ─── Section 0: Your sigil (sealed dragon) ───
-            Only rendered when the participant actually sealed a
-            dragon during P_SignetCeremony. Lets them re-download
-            the composed card or share it via the system share sheet
-            on devices that support files-in-share. */}
-        {sigil?.imageDataUri && (
+        {/* Sigil/certificate moved to slide 34 (P_ResourcesIntro).
+            This page focuses on prompts + handouts + external. */}
+        {false && (
           <section className="mb-20">
             <SectionHeader
               eyebrow={t('· Your sigil ·', '· Твой сигнет ·', '· Твій сигнет ·')}
