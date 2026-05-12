@@ -7,6 +7,7 @@ export const GEMS = [
     id: 'mempalace',
     eyebrow: 'persistent memory',
     name: 'MemPalace',
+    heroImage: '/hero/gem-mempalace.jpg',
     tagline_en: 'Open-source memory layer co-authored by Milla Jovovich.',
     tagline_ru: 'Open-source AI-память. Соавтор - актриса Милла Йовович.',
     tagline_uk: 'Open-source AI-памʼять. Співавтор - акторка Мілла Йовович.',
