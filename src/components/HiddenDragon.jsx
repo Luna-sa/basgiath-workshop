@@ -25,17 +25,10 @@ import { updateStudentProgress } from '../api/progress'
  *   <HiddenDragon id="..." style={{ top: 20, right: 30 }} />
  */
 
-const DRAGON_PATH = (
-  // Stylised flying-dragon silhouette in a 28×16 viewBox
-  // Wings up + body + head + tail
-  <g>
-    <ellipse cx="13" cy="8" rx="7" ry="2.2" />
-    <path d="M11 7 L7 3 L2 5 L5 7 Z" />
-    <path d="M11 9 L7 13 L2 11 L5 9 Z" />
-    <circle cx="19" cy="7.5" r="2" />
-    <path d="M2 8 L0 6 L0 10 Z" />
-  </g>
-)
+// We use the emoji glyph 🐉 — universally recognisable as a dragon
+// without relying on an SVG silhouette that read more like a bug.
+// `color` doesn't tint emoji (they're colour-font glyphs), but
+// opacity + drop-shadow filter give us the hide / glow effect.
 
 export default function HiddenDragon({
   id,
@@ -141,7 +134,9 @@ export default function HiddenDragon({
     right: style.right ?? dragon.position?.right,
     bottom: style.bottom ?? dragon.position?.bottom,
     width: size,
-    height: size * (16 / 28),
+    height: size,
+    fontSize: size - 4,
+    lineHeight: 1,
     color,
     pointerEvents: stage === 'idle' ? 'auto' : 'none',
     background: 'transparent',
@@ -149,6 +144,10 @@ export default function HiddenDragon({
     padding: 0,
     cursor: stage === 'idle' ? 'pointer' : 'default',
     zIndex: stage === 'idle' ? 5 : 200,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    userSelect: 'none',
     ...style,
   }
 
@@ -194,9 +193,7 @@ export default function HiddenDragon({
         initial={{ opacity: baseOpacity, scale: 1, rotate: rotation }}
         {...motionProps}
       >
-        <svg viewBox="0 0 28 16" preserveAspectRatio="xMidYMid meet" style={{ display: 'block', width: '100%', height: '100%', fill: 'currentColor' }}>
-          {DRAGON_PATH}
-        </svg>
+        <span aria-hidden="true" style={{ display: 'block', lineHeight: 1, filter: isGolden ? 'sepia(1) saturate(8) hue-rotate(-30deg) brightness(1.2)' : 'none' }}>🐉</span>
       </motion.button>
 
       {/* Spark trail particles during flight — render 6 echoes with stagger */}
