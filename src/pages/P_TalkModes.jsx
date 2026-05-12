@@ -62,7 +62,7 @@ const HOTKEYS = [
 export default function P_TalkModes() {
   const t = useT()
   return (
-    <PageShell pageIndex={6}>
+    <PageShell pageIndex={13}>
       <div className="space-y-6">
 
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">

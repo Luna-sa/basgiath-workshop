@@ -19,7 +19,7 @@ export default function P_PersonaIntro() {
   const persona = usePersona()
 
   return (
-    <PageShell pageIndex={11}>
+    <PageShell pageIndex={18}>
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">

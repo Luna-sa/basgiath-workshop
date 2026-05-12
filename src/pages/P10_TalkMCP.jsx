@@ -43,7 +43,7 @@ const SERVERS = [
 export default function P10_TalkMCP() {
   const t = useT()
   return (
-    <PageShell pageIndex={9}>
+    <PageShell pageIndex={16}>
       <div className="space-y-5">
         {/* Core message */}
         <div className="p-6 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">

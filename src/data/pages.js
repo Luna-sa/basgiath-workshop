@@ -1,18 +1,16 @@
-// Workshop flow - 28 pages.
+// Workshop flow - 36 pages.
 //
 // 🔒 facilitator = locked until facilitator advances (talk slides)
 // 🔓 self-report / timed-task = student works independently after unlock
 //
-// Flow logic (live block):
-//   talk-mcp → Bond Ritual (kicks off ~30s image generation) →
-//   Hidden Gems intro → 5 individual gem deep-dives → 4 bonus
-//   gem-category overviews → Aerie → Arena → Leaderboard →
-//   Graduation → Resources.
-//
-// The Bond Ritual is placed BEFORE the useful repos block so the
-// image generation happens in the background while the facilitator
-// walks the gem slides — the dragon portrait is ready by the time
-// the group reaches the Aerie.
+// Live block:
+//   5: Architecture overview
+//   6-12: seven component deep-dives (CLAUDE.md, Commands, Agents,
+//         Skills, MCP, Hooks, Plugins)
+//   13-17: modes, install, ecosystem, MCP-demo, power-moves
+//   18-19: persona-builder, bond-ritual
+//   20-29: hidden-gems intro + 5 deep-dives + 4 bonus categories
+//   30-35: aerie, arena, leaderboard, champions, graduation, resources
 
 export const PAGES = [
   // ═══════════════════════════════════════════
@@ -34,7 +32,7 @@ export const PAGES = [
     phase: 'pre',
     title: 'Threshing',
     narrativeKey: 'character_select',
-    gate: { type: 'selection', field: 'characterId', message: 'Выбери персонажа', message_en: 'Pick a character', message_uk: 'Обери персонажа' },
+    gate: { type: 'selection', field: 'characterId', message: 'Pick a character', message_en: 'Pick a character', message_uk: 'Обери персонажа' },
     xpReward: 10,
     subSteps: null,
   },
@@ -44,8 +42,6 @@ export const PAGES = [
     phase: 'pre',
     title: 'Cross the Parapet',
     narrativeKey: 'registration',
-    // Live workshop: everyone arrives pre-registered via WorkshopGate
-    // sign-in, so this slide is a welcome-back panel — no form gate.
     gate: { type: 'click' },
     xpReward: 20,
     subSteps: null,
@@ -56,140 +52,194 @@ export const PAGES = [
     phase: 'pre',
     title: 'Parapet',
     narrativeKey: 'prework',
-    // Pre-work checklist is reference material at live time — no gate.
     gate: { type: 'click' },
     xpReward: 50,
     subSteps: null,
   },
 
   // ═══════════════════════════════════════════
-  // LIVE WORKSHOP - built around Dragon Arena
+  // LIVE WORKSHOP
   // ═══════════════════════════════════════════
-
-  // 🔒 TALK: What is Claude Code (architecture overview)
   {
     id: 4,
     slug: 'talk-intro',
     phase: 'live',
     title: 'The Bonding',
     narrativeKey: 'talk_intro',
-    gate: { type: 'facilitator', message: 'Фасилитатор ведёт рассказ...', message_en: 'Facilitator is talking…', message_uk: 'Фасилітатор веде розповідь…' },
+    gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
-
-  // 🔒 TALK: Anatomy - six parts of Claude Code
   {
     id: 5,
     slug: 'talk-evolution',
     phase: 'live',
     title: 'What is your dragon',
     narrativeKey: 'talk_evolution',
-    gate: { type: 'facilitator', message: 'Фасилитатор разбирает архитектуру...', message_en: 'Facilitator walks the architecture…', message_uk: 'Фасилітатор розбирає архітектуру…' },
+    gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
 
-  // 🔒 TALK: Modes & hotkeys
+  // ─── Seven component deep-dives ──────────────
   {
     id: 6,
+    slug: 'comp-claude-md',
+    phase: 'live',
+    title: 'CLAUDE.md',
+    narrativeKey: 'comp_claude_md',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 7,
+    slug: 'comp-commands',
+    phase: 'live',
+    title: 'Commands',
+    narrativeKey: 'comp_commands',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 8,
+    slug: 'comp-agents',
+    phase: 'live',
+    title: 'Agents',
+    narrativeKey: 'comp_agents',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 9,
+    slug: 'comp-skills',
+    phase: 'live',
+    title: 'Skills',
+    narrativeKey: 'comp_skills',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 10,
+    slug: 'comp-mcp',
+    phase: 'live',
+    title: 'MCP',
+    narrativeKey: 'comp_mcp',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 11,
+    slug: 'comp-hooks',
+    phase: 'live',
+    title: 'Hooks',
+    narrativeKey: 'comp_hooks',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 12,
+    slug: 'comp-plugins',
+    phase: 'live',
+    title: 'Plugins',
+    narrativeKey: 'comp_plugins',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // ─── Modes, install, talks ───────────────────
+  {
+    id: 13,
     slug: 'talk-modes',
     phase: 'live',
     title: 'Three modes, eight keys',
     narrativeKey: 'talk_modes',
-    gate: { type: 'facilitator', message: 'Фасилитатор показывает modes & hotkeys...', message_en: 'Facilitator shows modes & hotkeys…', message_uk: 'Фасилітатор показує modes & hotkeys…' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // 🔓 TASK: Install ecosystem in one prompt
-  {
-    id: 7,
-    slug: 'install-ecosystem',
-    phase: 'live',
-    title: 'Forging the bond',
-    narrativeKey: 'install',
-    gate: { type: 'self-report', message: 'Подтверди установку', message_en: 'Confirm installation', message_uk: 'Підтверди встановлення' },
-    xpReward: 100,
-    subSteps: null,
-  },
-
-  // 🔒 TALK: What flew in (review installed pieces)
-  {
-    id: 8,
-    slug: 'talk-ecosystem',
-    phase: 'live',
-    title: 'What flew in',
-    narrativeKey: 'talk_ecosystem',
-    gate: { type: 'facilitator', message: 'Разбираем что встало...', message_en: 'Walking through what just installed…', message_uk: 'Розбираємо що встановилося…' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // 🔒 TALK: MCP demo — moved here so the facilitator can talk
-  // through MCP while participants are still installing on P07.
-  {
-    id: 9,
-    slug: 'talk-mcp',
-    phase: 'live',
-    title: "Riders' arts",
-    narrativeKey: 'talk_mcp',
-    gate: { type: 'facilitator', message: 'Фасилитатор показывает MCP...', message_en: 'Facilitator shows MCP…', message_uk: 'Фасилітатор показує MCP…' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // 🔒 TALK: Power moves
-  {
-    id: 10,
-    slug: 'talk-power-moves',
-    phase: 'live',
-    title: 'Power moves',
-    narrativeKey: 'talk_power_moves',
-    gate: { type: 'facilitator', message: 'Фасилитатор разбирает power moves...', message_en: 'Facilitator walks power moves…', message_uk: 'Фасилітатор розбирає power moves…' },
-    xpReward: 0,
-    subSteps: null,
-  },
-
-  // 🔓 SIGNATURE: Build your personal CLAUDE.md from 7 questions
-  {
-    id: 11,
-    slug: 'persona-builder',
-    phase: 'live',
-    title: 'Your signet emerges',
-    narrativeKey: 'persona_builder',
-    gate: { type: 'self-report', message: 'Сгенерируй и применить CLAUDE.md', message_en: 'Generate and apply CLAUDE.md', message_uk: 'Згенеруй і застосуй CLAUDE.md' },
-    xpReward: 100,
-    subSteps: null,
-  },
-
-  // 🔓 BOND RITUAL: Generate your dragon's portrait — kicks off here
-  // so the ~30s image gen runs in background while facilitator
-  // walks the Hidden Gems block.
-  {
-    id: 12,
-    slug: 'bond-ritual',
-    phase: 'live',
-    title: 'The Bond Ritual',
-    narrativeKey: 'bond_ritual',
-    gate: { type: 'self-report', message: 'Запечатай своего дракона в Аэрии', message_en: 'Seal your dragon into the Aerie', message_uk: 'Запечатай свого дракона в Аерії' },
-    xpReward: 100,
-    subSteps: null,
-  },
-
-  // 🔒 HIDDEN GEMS - overview, then 5 deep-dive slides, then 4 category overviews
-  {
-    id: 13,
-    slug: 'hidden-gems',
-    phase: 'live',
-    title: 'Hidden gems',
-    narrativeKey: 'hidden_gems',
-    gate: { type: 'facilitator', message: 'Фасилитатор показывает фишки...', message_en: 'Facilitator shows hidden gems…', message_uk: 'Фасилітатор показує приховані фічі…' },
+    gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
   {
     id: 14,
+    slug: 'install-ecosystem',
+    phase: 'live',
+    title: 'Forging the bond',
+    narrativeKey: 'install',
+    gate: { type: 'self-report' },
+    xpReward: 100,
+    subSteps: null,
+  },
+  {
+    id: 15,
+    slug: 'talk-ecosystem',
+    phase: 'live',
+    title: 'What flew in',
+    narrativeKey: 'talk_ecosystem',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 16,
+    slug: 'talk-mcp',
+    phase: 'live',
+    title: "Riders' arts",
+    narrativeKey: 'talk_mcp',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 17,
+    slug: 'talk-power-moves',
+    phase: 'live',
+    title: 'Power moves',
+    narrativeKey: 'talk_power_moves',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // ─── Persona + Bond Ritual ───────────────────
+  {
+    id: 18,
+    slug: 'persona-builder',
+    phase: 'live',
+    title: 'Your signet emerges',
+    narrativeKey: 'persona_builder',
+    gate: { type: 'self-report' },
+    xpReward: 100,
+    subSteps: null,
+  },
+  {
+    id: 19,
+    slug: 'bond-ritual',
+    phase: 'live',
+    title: 'The Bond Ritual',
+    narrativeKey: 'bond_ritual',
+    gate: { type: 'self-report' },
+    xpReward: 100,
+    subSteps: null,
+  },
+
+  // ─── Hidden Gems block ───────────────────────
+  {
+    id: 20,
+    slug: 'hidden-gems',
+    phase: 'live',
+    title: 'Hidden gems',
+    narrativeKey: 'hidden_gems',
+    gate: { type: 'facilitator' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 21,
     slug: 'gem-mempalace',
     phase: 'live',
     title: 'MemPalace',
@@ -199,7 +249,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 15,
+    id: 22,
     slug: 'gem-suzu-mcp',
     phase: 'live',
     title: 'suzu-mcp',
@@ -209,7 +259,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 16,
+    id: 23,
     slug: 'gem-tool-search',
     phase: 'live',
     title: 'ENABLE_TOOL_SEARCH',
@@ -219,7 +269,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 17,
+    id: 24,
     slug: 'gem-quinn-jinx',
     phase: 'live',
     title: 'Quinn + Jinx',
@@ -229,7 +279,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 18,
+    id: 25,
     slug: 'gem-channels',
     phase: 'live',
     title: 'Claude Code Channels',
@@ -239,10 +289,9 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // ✦ BONUS GEM CATEGORIES — long-form slides covering every repo in
-  // each category (4 design / 3 browser / 4 helpers / 4 sources).
+  // ─── Bonus gem categories ────────────────────
   {
-    id: 19,
+    id: 26,
     slug: 'gem-design-skills',
     phase: 'live',
     title: 'Design DNA',
@@ -252,7 +301,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 20,
+    id: 27,
     slug: 'gem-browser-automation',
     phase: 'live',
     title: 'Sky-scribes',
@@ -262,7 +311,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 21,
+    id: 28,
     slug: 'gem-smart-helpers',
     phase: 'live',
     title: 'Wing-hands',
@@ -272,7 +321,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 22,
+    id: 29,
     slug: 'gem-skills-marketplace',
     phase: 'live',
     title: 'The Forge-market',
@@ -282,33 +331,29 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🔒 AERIE + VOTING
+  // ─── Aerie / Arena / Finale ──────────────────
   {
-    id: 23,
+    id: 30,
     slug: 'aerie',
     phase: 'live',
     title: 'The Aerie',
     narrativeKey: 'aerie',
-    gate: { type: 'facilitator', message: 'Голосование за самого красивого дракона', message_en: 'Voting for the most striking dragon', message_uk: 'Голосування за найкрасивішого дракона' },
+    gate: { type: 'facilitator' },
     xpReward: 0,
     subSteps: null,
   },
-
-  // 🔓 ARENA: Code your dragon's flight, submit, watch the final battle
   {
-    id: 24,
+    id: 31,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
     narrativeKey: 'arena',
-    gate: { type: 'self-report', message: 'Запусти Arena и отправь своего бота', message_en: 'Open the Arena and submit your bot', message_uk: 'Запусти Arena та надішли свого бота' },
+    gate: { type: 'self-report' },
     xpReward: 80,
     subSteps: null,
   },
-
-  // 🔒 LEADERBOARD reveal (driven by facilitator)
   {
-    id: 25,
+    id: 32,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -317,10 +362,8 @@ export const PAGES = [
     xpReward: 0,
     subSteps: null,
   },
-
-  // 🏆 THREE CHAMPIONS reveal (Best Dragon · Most XP · Arena Champion)
   {
-    id: 26,
+    id: 33,
     slug: 'champions',
     phase: 'live',
     title: 'Three Champions',
@@ -329,10 +372,8 @@ export const PAGES = [
     xpReward: 0,
     subSteps: null,
   },
-
-  // 🎓 GRADUATION
   {
-    id: 27,
+    id: 34,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -341,10 +382,8 @@ export const PAGES = [
     xpReward: 100,
     subSteps: null,
   },
-
-  // 📦 RESOURCES - take-home reference
   {
-    id: 28,
+    id: 35,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',

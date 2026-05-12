@@ -198,7 +198,7 @@ export default function P07_TalkEcosystem() {
   const t = useT()
   const currentLang = lang(t)
   return (
-    <PageShell pageIndex={8}>
+    <PageShell pageIndex={15}>
       <div className="space-y-6">
         {/* Grimoire frame */}
         <div className="border border-qa-teal/30 bg-gradient-to-br from-qa-teal/[0.05] via-transparent to-transparent p-5">

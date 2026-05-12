@@ -13,7 +13,7 @@ export default function P_HiddenGems() {
   const t = useT()
   const lang = useLocale(s => s.lang)
   return (
-    <PageShell pageIndex={13}>
+    <PageShell pageIndex={20}>
       <div className="space-y-6">
         <div>
           <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">

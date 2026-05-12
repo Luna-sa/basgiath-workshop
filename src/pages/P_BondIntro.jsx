@@ -14,7 +14,7 @@ export default function P_BondIntro() {
   const bondUrl = nickname ? '/?page=bond' : '/?page=bond'
 
   return (
-    <PageShell pageIndex={12}>
+    <PageShell pageIndex={19}>
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">

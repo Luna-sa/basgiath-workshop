@@ -62,7 +62,7 @@ const MOVES = [
 export default function P_TalkPowerMoves() {
   const t = useT()
   return (
-    <PageShell pageIndex={10}>
+    <PageShell pageIndex={17}>
       <div className="space-y-6">
 
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
