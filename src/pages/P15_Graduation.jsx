@@ -66,23 +66,29 @@ export default function P15_Graduation() {
             <em className="italic" style={{ color: persona.accent }}>{name || nickname || character?.name}</em>
           </h2>
           {character && (() => {
-            // In the lore: the participant IS the rider (Violet/Xaden/...)
-            // who went through the Threshing — the bonded partner is
-            // their DRAGON. Extract the dragon name from character.dragon
-            // ("Tairn — чёрный Хвостоскорпион" → "Tairn").
-            const dragonRaw = (character.dragon || '').split(/[\s—–-]+/)[0].trim()
-            const isKnownDragon = dragonRaw && !/^(Unknown|Неизвестен|Невідом)/i.test(dragonRaw) && !/появит/i.test(dragonRaw)
+            // The participant IS the rider (their archetype). Their
+            // bonded partner is their DRAGON — and the dragon's name
+            // is the one they wrote during the Bond Ritual (lives
+            // in localStorage). Fall back to a neutral "your dragon"
+            // if they skipped the ritual.
+            let customDragonName = ''
+            try {
+              const raw = window.localStorage.getItem('bond-ritual-answers')
+              if (raw) {
+                const a = JSON.parse(raw)
+                const n = (a?.name || '').trim()
+                if (n && n.toLowerCase() !== 'unnamed') customDragonName = n
+              }
+            } catch (e) {}
             return (
               <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mt-2">
                 {t('Threshed as', 'Прошёл(ла) Threshing как', 'Пройшов(ла) Threshing як')} {character.name} · {character.title}
-                {isKnownDragon && (
-                  <>
-                    {' · '}
-                    <span style={{ color: persona.accent }}>
-                      {t('bonded with', 'связан(а) с', 'звʼязаний(на) з')} {dragonRaw}
-                    </span>
-                  </>
-                )}
+                {' · '}
+                <span style={{ color: persona.accent }}>
+                  {customDragonName
+                    ? <>{t('bonded with', 'связан(а) с', 'звʼязаний(на) з')} {customDragonName}</>
+                    : t('bonded with your dragon', 'связан(а) со своим драконом', 'звʼязаний(на) зі своїм драконом')}
+                </span>
               </p>
             )
           })()}

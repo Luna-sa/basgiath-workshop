@@ -52,11 +52,24 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
   const colorAlpha20 = color + '33'   // 20% alpha
   const colorAlpha08 = color + '14'   // 8% alpha
   // The voice we hear is the DRAGON's, not the rider's. The participant
-  // IS the rider (Violet/Xaden/...). Their bonded dragon (Tairn/Sgaeyl/...)
-  // is the partner whispering through the workshop.
-  const dragonRaw = (character.dragon || '').split(/[\s—–-]+/)[0].trim()
-  const isKnownDragon = dragonRaw && !/^(Unknown|Неизвестен|Невідом)/i.test(dragonRaw) && !/появит/i.test(dragonRaw)
-  const partnerName = isKnownDragon ? dragonRaw : character.name.split(' ')[0]
+  // IS the rider. Their bonded partner is THEIR dragon — the one
+  // they named during the Bond Ritual. Read that custom name from
+  // local storage; if the ritual hasn't happened yet, fall back to
+  // a neutral "Your dragon" label rather than borrowing a canon name.
+  let partnerName = ''
+  try {
+    const raw = window.localStorage.getItem('bond-ritual-answers')
+    if (raw) {
+      const a = JSON.parse(raw)
+      const n = (a?.name || '').trim()
+      if (n && n.toLowerCase() !== 'unnamed') partnerName = n
+    }
+  } catch (e) {}
+  if (!partnerName) {
+    partnerName = lang === 'en' ? 'Your dragon'
+      : lang === 'uk' ? 'Твій дракон'
+      : 'Твой дракон'
+  }
 
   if (position === 'inline') {
     return (

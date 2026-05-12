@@ -64,7 +64,7 @@ export default function P_PersonaIntro() {
           <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-3">
             ◆ {t('Output preview', 'Что получится', 'Що вийде')} · ~/.claude/CLAUDE.md
           </div>
-          <pre className="font-mono text-[11.5px] text-text-body leading-relaxed whitespace-pre-wrap">{`# Я Tairn — твой bonded.
+          <pre className="font-mono text-[11.5px] text-text-body leading-relaxed whitespace-pre-wrap">{`# Мой дракон — bonded.
 
 Когда ты пишешь тесты, я предлагаю
 edge cases первыми. Не льщу. Не разжёвываю.

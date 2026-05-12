@@ -73,21 +73,24 @@ export function generateSignetClaudeMd({ characterId = 'self', archetype, archet
 
   const arch = buildArchetypeBlock(archetype, archetypeCustom)
 
-  // In the lore: the participant IS the rider (Violet, Xaden, ...).
-  // Their bonded partner is the DRAGON (Tairn, Sgaeyl, ...). The
-  // CLAUDE.md header should name the dragon — that's whom they bond
-  // with for the workshop.
-  const DRAGON_FOR_RIDER = {
-    violet: 'Tairn',
-    xaden: 'Sgaeyl',
-    rhiannon: 'Feirge',
-    ridoc: 'Aotrom',
-    liam: 'Deigh',
-    imogen: 'твой дракон',
+  // In the lore: the participant IS the rider. Their bonded partner
+  // is THEIR dragon — the one they name in the Bond Ritual. Read
+  // that custom name; if Bond Ritual hasn't run yet, use a neutral
+  // "мой дракон" placeholder rather than borrowing a canon name.
+  let customDragonName = ''
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = window.localStorage.getItem('bond-ritual-answers')
+      if (raw) {
+        const a = JSON.parse(raw)
+        const n = (a?.name || '').trim()
+        if (n && n.toLowerCase() !== 'unnamed') customDragonName = n
+      }
+    } catch (e) {}
   }
   const characterName = characterId === 'self'
-    ? name
-    : (DRAGON_FOR_RIDER[characterId] || (characterId.charAt(0).toUpperCase() + characterId.slice(1)))
+    ? (name || 'Я')
+    : (customDragonName || 'Мой дракон')
 
   const personalityBlock = tpl.personality.join('\n')
   const takesOnBlock = tpl.takesOn.map(x => `— ${x}`).join('\n')
