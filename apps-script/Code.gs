@@ -127,7 +127,10 @@ function doPost(e) {
       deleteStudent,
       deleteStudentsByPrefix,
       resetStudentProgress,
+      resetArenaRuns,
       deleteArenaByNickname,
+      addArenaRun,
+      adjustXp,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -906,11 +909,22 @@ function getArenaLeaderboard() {
       agg.character_id = r.character_id || agg.character_id
     }
   })
+  // Six-deep tie-break cascade so the arena leaderboard never falls
+  // back to "alphabetical" or "whichever inserted first". Each next
+  // signal rewards a different aspect of "good flying":
+  //   1. total_score          — primary, sum across all attempts
+  //   2. best_run_score       — single-run peak performance
+  //   3. total_fire_stars     — bonus-star hunter
+  //   4. best_run_number ASC  — earlier PB = more confidence
+  //   5. walls_hit ASC        — cleaner flight wins
+  //   6. pattern_hit DESC     — easter-egg hunter wins on dead ties
   const out = Object.values(byNick).sort((a, b) => {
     if (b.total_score !== a.total_score) return b.total_score - a.total_score
     if (b.best_run_score !== a.best_run_score) return b.best_run_score - a.best_run_score
     if (b.total_fire_stars !== a.total_fire_stars) return b.total_fire_stars - a.total_fire_stars
-    return a.best_run_number - b.best_run_number  // earlier PB = better
+    if (a.best_run_number !== b.best_run_number) return a.best_run_number - b.best_run_number
+    if ((a.walls_hit || 0) !== (b.walls_hit || 0)) return (a.walls_hit || 0) - (b.walls_hit || 0)
+    return (b.hit_pattern ? 1 : 0) - (a.hit_pattern ? 1 : 0)
   })
   return { leaderboard: out, max: MAX_ARENA_RUNS }
 }
@@ -1069,15 +1083,102 @@ function getXpLeaderboard() {
       character_id: s.character_id,
       xp: Number(s.xp) || 0,
       dragons_found: Array.isArray(dragons) ? dragons.length : 0,
+      created_at: String(s.created_at || ''),
     }
   })
-  // Top XP first; tiebreak by dragons_found desc, then nickname asc.
+  // Top XP first. Tie-break cascade (no alphabetical anywhere — that's
+  // unfair to participants whose nicknames start late in the alphabet):
+  //   1. xp DESC                      — primary
+  //   2. dragons_found DESC           — easter-egg engagement
+  //   3. created_at ASC               — earlier registration wins ties
+  //                                     (rewards early-bird signal,
+  //                                     deterministic, defensible)
   rows.sort((a, b) => {
     if (b.xp !== a.xp) return b.xp - a.xp
     if (b.dragons_found !== a.dragons_found) return b.dragons_found - a.dragons_found
-    return String(a.nickname).localeCompare(String(b.nickname))
+    return a.created_at.localeCompare(b.created_at)
   })
   return { leaderboard: rows }
+}
+
+/**
+ * Admin only — manually inject an arena run for a participant.
+ * Used when their run failed to record (network glitch, browser
+ * crash mid-flight) or to grant a make-up attempt.
+ *
+ * Required: nickname, score. Everything else defaults sensibly so
+ * a facilitator can write `nickname=X&score=42` and the row is
+ * valid against the rest of the aggregate pipeline.
+ */
+function addArenaRun(opts) {
+  const nickname = opts.nickname
+  const score = Number(opts.score)
+  if (!nickname) throw new Error('nickname required')
+  if (Number.isNaN(score)) throw new Error('score required and must be numeric')
+  return _withScriptLock(function () {
+    // Resolve student id by nickname for joinability
+    const student = _allRows(SHEETS.STUDENTS).find(s =>
+      String(s.nickname).toLowerCase() === String(nickname).toLowerCase()
+    )
+    if (!student) throw new Error('student not found for nickname: ' + nickname)
+
+    // Pick the next run number — current max for this nickname + 1.
+    const existing = _allRows(SHEETS.ARENA_RUNS).filter(r =>
+      String(r.nickname).toLowerCase() === String(nickname).toLowerCase()
+    )
+    const nextRunNumber = Number(opts.runNumber) ||
+      (existing.reduce((m, r) => Math.max(m, Number(r.run_number) || 0), 0) + 1)
+
+    const row = {
+      id: _uuid(),
+      created_at: _now(),
+      student_id: student.id,
+      nickname: String(nickname).toLowerCase(),
+      character_id: opts.characterId || student.character_id || '',
+      run_number: nextRunNumber,
+      score: score,
+      stars_collected: Number(opts.starsCollected) || 0,
+      fire_stars: Number(opts.fireStars) || 0,
+      max_combo: Number(opts.maxCombo) || 0,
+      walls_hit: Number(opts.wallsHit) || 0,
+      pattern_hit: opts.patternHit === true || opts.patternHit === 'true',
+      signet_used: opts.signetUsed !== false && opts.signetUsed !== 'false',
+      ticks_alive: Number(opts.ticksAlive) || 0,
+      bot_crashed: opts.botCrashed === true || opts.botCrashed === 'true',
+      run_log_json: opts.runLogJson || '[]',
+      bot_code_snapshot: opts.botCodeSnapshot || '',
+    }
+    _appendRow(SHEETS.ARENA_RUNS, row)
+    SpreadsheetApp.flush()
+    return { ok: true, id: row.id, run_number: nextRunNumber, score }
+  })
+}
+
+/**
+ * Admin only — bump a student's XP up or down by `delta`. Positive
+ * value adds, negative value subtracts (floors at 0). Used to
+ * correct mis-awards without resetting the whole student.
+ */
+function adjustXp({ studentId, nickname, delta }) {
+  const d = Number(delta)
+  if (Number.isNaN(d) || d === 0) throw new Error('delta required and must be non-zero numeric')
+  return _withScriptLock(function () {
+    let rowIdx = -1
+    if (studentId) {
+      rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
+    } else if (nickname) {
+      rowIdx = _findRowIndex(SHEETS.STUDENTS, s => String(s.nickname).toLowerCase() === String(nickname).toLowerCase())
+    } else {
+      throw new Error('studentId or nickname required')
+    }
+    if (rowIdx < 0) throw new Error('student not found')
+    const row = _allRows(SHEETS.STUDENTS)[rowIdx - 2]
+    const current = Number(row.xp) || 0
+    const next = Math.max(0, current + d)
+    _updateRow(SHEETS.STUDENTS, rowIdx, { xp: next })
+    SpreadsheetApp.flush()
+    return { ok: true, previousXp: current, newXp: next, delta: d }
+  })
 }
 
 // Facilitator escape hatch: wipe all arena runs for a nickname.

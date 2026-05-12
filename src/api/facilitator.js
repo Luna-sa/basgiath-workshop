@@ -66,9 +66,17 @@ export async function getAllStudents() {
 }
 
 export async function awardXp(studentId, amount) {
-  // XP isn't tracked in the Apps Script backend yet — workshop uses
-  // checkpoints + dragon votes instead. No-op on gsheets.
-  if (gsheetsEnabled()) return { error: null, xp: 0 }
+  // Apps Script v11 (May 2026) wires adjustXp. Delta can be negative
+  // to subtract. The Google Sheet's students.xp column is the source
+  // of truth and feeds the XP leaderboard directly.
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('adjustXp', { studentId, delta: amount })
+      return { error: null, xp: res?.newXp ?? 0 }
+    } catch (e) {
+      return { error: { message: e?.message || 'adjustXp failed' }, xp: 0 }
+    }
+  }
   if (!supabase) return { error: 'no supabase' }
   const { data: cur, error: readErr } = await supabase
     .from('students').select('xp').eq('id', studentId).maybeSingle()
@@ -79,6 +87,46 @@ export async function awardXp(studentId, amount) {
     .update({ xp: newXp })
     .eq('id', studentId)
   return { error, xp: newXp }
+}
+
+// ── New admin actions (Apps Script v10/v11) ──────────────────────
+
+export async function resetStudentProgress(nickname) {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('resetStudentProgress', { nickname })
+      return { error: null, rowsRemoved: res?.rowsRemoved || 0 }
+    } catch (e) {
+      return { error: { message: e?.message || 'reset failed' } }
+    }
+  }
+  return { error: { message: 'resetStudentProgress not implemented on the supabase fallback path' } }
+}
+
+export async function resetArenaRuns(nickname) {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('resetArenaRuns', { nickname })
+      return { error: null, deleted: res?.deleted || 0 }
+    } catch (e) {
+      return { error: { message: e?.message || 'reset arena failed' } }
+    }
+  }
+  return { error: { message: 'resetArenaRuns not implemented on the supabase fallback path' } }
+}
+
+export async function addArenaRun({ nickname, score, characterId, fireStars = 0, starsCollected = 0, maxCombo = 0, wallsHit = 0 }) {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('addArenaRun', {
+        nickname, score, characterId, fireStars, starsCollected, maxCombo, wallsHit,
+      })
+      return { error: null, runNumber: res?.run_number, id: res?.id }
+    } catch (e) {
+      return { error: { message: e?.message || 'add arena run failed' } }
+    }
+  }
+  return { error: { message: 'addArenaRun not implemented on the supabase fallback path' } }
 }
 
 export async function setAnnouncement(message) {
@@ -110,10 +158,17 @@ export async function updatePrize(position, fields) {
 }
 
 export async function deleteStudent(studentId) {
-  // Not yet wired to Apps Script — facilitator can delete the row
-  // directly in the Google Sheet when on gsheets.
+  // Apps Script `deleteStudent` action takes either id or nickname.
+  // We pass studentId. Cascade=true removes the participant's
+  // dragons/votes/arena_runs/bot_submissions/feedback along with them.
   if (gsheetsEnabled()) {
-    return { error: { message: 'Delete a student by removing the row in the Google Sheet directly.' } }
+    try {
+      const res = await callAction('deleteStudent', { studentId, cascade: true })
+      if (res?.error) return { error: { message: res.error } }
+      return { error: null, removed: res?.removed || 0 }
+    } catch (e) {
+      return { error: { message: e?.message || 'delete failed' } }
+    }
   }
   if (!supabase) return { error: 'no supabase' }
   const { data, error } = await supabase

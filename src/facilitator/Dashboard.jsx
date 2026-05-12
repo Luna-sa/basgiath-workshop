@@ -4,6 +4,7 @@ import { CHARACTERS } from '../data/characters'
 import {
   getAllStudents, setWorkshopPhase, deleteStudent,
   awardXp, setAnnouncement, getPrizes, updatePrize,
+  resetStudentProgress, resetArenaRuns, addArenaRun,
 } from '../api/facilitator'
 import { getFacilitatorState } from '../api/progress'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
@@ -70,6 +71,7 @@ export default function Dashboard() {
   }
 
   const handleDelete = async (student) => {
+    if (!window.confirm(`Delete @${student.nickname} and all their data? Cannot be undone.`)) return
     setBusyId(student.id)
     const { error } = await deleteStudent(student.id)
     setBusyId(null)
@@ -78,6 +80,41 @@ export default function Dashboard() {
       return
     }
     setStudents(prev => prev.filter(s => s.id !== student.id))
+  }
+
+  const handleResetAll = async (student) => {
+    if (!window.confirm(`Reset ALL progress for @${student.nickname}? Wipes dragon, votes, arena runs, feedback, XP → 0, page → 0. Account stays.`)) return
+    setBusyId(student.id)
+    const { error, rowsRemoved } = await resetStudentProgress(student.nickname)
+    setBusyId(null)
+    if (error) { alert('Reset failed: ' + (error.message || JSON.stringify(error))); return }
+    alert(`@${student.nickname} reset · ${rowsRemoved} rows removed`)
+    setStudents(prev => prev.map(s => s.id === student.id ? { ...s, xp: 0, current_page: 0 } : s))
+  }
+
+  const handleResetArena = async (student) => {
+    if (!window.confirm(`Wipe arena runs for @${student.nickname}? They get back all attempts. Account + dragon + XP stay.`)) return
+    setBusyId(student.id)
+    const { error, deleted } = await resetArenaRuns(student.nickname)
+    setBusyId(null)
+    if (error) { alert('Arena reset failed: ' + (error.message || JSON.stringify(error))); return }
+    alert(`@${student.nickname} arena wiped · ${deleted} runs removed`)
+  }
+
+  const handleAddArenaRun = async (student) => {
+    const scoreStr = window.prompt(`Add a manual arena run for @${student.nickname}. Score?`, '')
+    if (scoreStr == null) return
+    const score = parseInt(scoreStr, 10)
+    if (Number.isNaN(score)) { alert('Score must be a number.'); return }
+    setBusyId(student.id)
+    const { error, runNumber } = await addArenaRun({
+      nickname: student.nickname,
+      characterId: student.character_id,
+      score,
+    })
+    setBusyId(null)
+    if (error) { alert('Add run failed: ' + (error.message || JSON.stringify(error))); return }
+    alert(`@${student.nickname} run #${runNumber} recorded with score ${score}`)
   }
 
   const filteredStudents = students.filter(s => {
@@ -381,37 +418,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick actions */}
-        <div className="grid sm:grid-cols-4 gap-3 mb-8">
-          <button
-            onClick={() => handleAdvance(6)}
-            className="p-4 border border-border bg-surface/30 hover:border-qa-teal/25 cursor-pointer transition-all text-left"
-          >
-            <div className="font-mono text-[11px] text-qa-teal tracking-wider uppercase mb-1">Начать воркшоп</div>
-            <div className="text-xs text-text-dim">Unlock P05 Opening</div>
-          </button>
-          <button
-            onClick={() => handleAdvance(8)}
-            className="p-4 border border-border bg-surface/30 hover:border-qa-teal/25 cursor-pointer transition-all text-left"
-          >
-            <div className="font-mono text-[11px] text-qa-teal tracking-wider uppercase mb-1">После CLAUDE.md</div>
-            <div className="text-xs text-text-dim">Unlock Combat Training</div>
-          </button>
-          <button
-            onClick={() => handleAdvance(14)}
-            className="p-4 border border-border bg-surface/30 hover:border-qa-teal/25 cursor-pointer transition-all text-left"
-          >
-            <div className="font-mono text-[11px] text-qa-teal tracking-wider uppercase mb-1">War Games</div>
-            <div className="text-xs text-text-dim">Unlock Show & Tell</div>
-          </button>
-          <button
-            onClick={() => handleAdvance(17)}
-            className="p-4 border border-border bg-surface/30 hover:border-qa-teal/25 cursor-pointer transition-all text-left"
-          >
-            <div className="font-mono text-[11px] text-qa-teal tracking-wider uppercase mb-1">Завершить</div>
-            <div className="text-xs text-text-dim">Unlock all pages</div>
-          </button>
-        </div>
+        {/* Quick Actions removed — they called handleAdvance which
+            was undefined (legacy facilitator-gating that was disabled
+            when the workshop went self-paced). Re-add slide-jump
+            controls if the gating model returns. */}
 
         {/* Student tracker */}
         <div className="border border-border">
@@ -447,7 +457,7 @@ export default function Dashboard() {
                 const pageTitle = PAGES[student.current_page]?.title || '—'
                 const created = student.created_at ? new Date(student.created_at).toLocaleString() : '—'
                 return (
-                  <div key={student.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 p-4 hover:bg-surface/30 transition-colors">
+                  <div key={student.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] items-start gap-3 p-4 hover:bg-surface/30 transition-colors">
                     <span className="text-lg">{char?.emoji || '👤'}</span>
 
                     <div className="min-w-0">
@@ -474,7 +484,8 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap">
+                      {/* XP adjusters */}
                       {[10, 20, 50].map(amt => (
                         <button
                           key={amt}
@@ -486,16 +497,51 @@ export default function Dashboard() {
                           +{amt}
                         </button>
                       ))}
+                      <button
+                        onClick={() => handleAwardXp(student, -10)}
+                        disabled={busyId === student.id}
+                        className="font-mono text-[10px] tracking-[1px] border border-amber-400/30 text-amber-300 hover:bg-amber-400/10 px-2 py-1 disabled:opacity-30 cursor-pointer transition-all"
+                        title="-10 XP"
+                      >
+                        −10
+                      </button>
+                      {/* Arena admin */}
+                      <button
+                        onClick={() => handleAddArenaRun(student)}
+                        disabled={busyId === student.id}
+                        className="font-mono text-[10px] tracking-[1px] border border-corp-pink/30 text-corp-pink hover:bg-corp-pink/10 px-2 py-1 disabled:opacity-30 cursor-pointer transition-all"
+                        title="Add a manual arena run (you input the score)"
+                      >
+                        +arena
+                      </button>
+                      <button
+                        onClick={() => handleResetArena(student)}
+                        disabled={busyId === student.id}
+                        className="font-mono text-[10px] tracking-[1px] border border-amber-400/30 text-amber-300 hover:bg-amber-400/10 px-2 py-1 disabled:opacity-30 cursor-pointer transition-all"
+                        title="Wipe ALL arena runs (XP + dragon stay)"
+                      >
+                        reset arena
+                      </button>
                     </div>
 
-                    <button
-                      onClick={() => handleDelete(student)}
-                      disabled={busyId === student.id}
-                      className="font-mono text-[10px] tracking-[2px] uppercase border border-corp-red/40 text-corp-red px-3 py-2 hover:bg-corp-red/10 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
-                      title="Delete this registration"
-                    >
-                      {busyId === student.id ? '…' : 'Delete'}
-                    </button>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleResetAll(student)}
+                        disabled={busyId === student.id}
+                        className="font-mono text-[10px] tracking-[2px] uppercase border border-amber-400/40 text-amber-300 px-3 py-2 hover:bg-amber-400/10 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+                        title="Wipe ALL progress (dragon, votes, arena, feedback, XP → 0). Account stays."
+                      >
+                        Reset
+                      </button>
+                      <button
+                        onClick={() => handleDelete(student)}
+                        disabled={busyId === student.id}
+                        className="font-mono text-[10px] tracking-[2px] uppercase border border-corp-red/40 text-corp-red px-3 py-2 hover:bg-corp-red/10 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+                        title="Delete student + all their data permanently"
+                      >
+                        {busyId === student.id ? '…' : 'Delete'}
+                      </button>
+                    </div>
                   </div>
                 )
               })}
