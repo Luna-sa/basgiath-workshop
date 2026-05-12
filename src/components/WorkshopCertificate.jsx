@@ -27,8 +27,8 @@ function shortDate(date) {
 function makeCertId(nickname, sealedAt) {
   // Stable 6-char identifier — uppercased nickname slice + timestamp tail.
   const tail = String(sealedAt || Date.now()).slice(-4)
-  const head = (nickname || 'rider').replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 3) || 'BSG'
-  return `BSG·2026·${head}${tail}`
+  const head = (nickname || 'rider').replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 3) || 'CCW'
+  return `CCW·2026·${head}${tail}`
 }
 
 const WorkshopCertificate = forwardRef(function WorkshopCertificate(
@@ -124,7 +124,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
           </span>
           <div>
             <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: 17, color: '#FFFFFF', letterSpacing: 0.5 }}>
-              BASGIATH <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>QA Academy</em>
+              Claude Code <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>Workshop</em>
             </div>
             <span style={{
               display: 'block',
@@ -294,7 +294,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontSize: 22, lineHeight: 1.3, color: '#FFFFFF', fontWeight: 500,
             marginBottom: 28, maxWidth: 560,
           }}>
-            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>Basgiath QA Academy</em> — a Claude Code workshop for QA engineers. Sealed a bonded dragon: <em style={{ color: '#FFFFFF', fontStyle: 'italic' }}>{dragonName}</em>.
+            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>the Claude Code Workshop — Basics</em>, a practical session for QA engineers. Sealed a bonded dragon: <em style={{ color: '#FFFFFF', fontStyle: 'italic' }}>{dragonName}</em>.
           </p>
 
           {/* Stats grid */}
@@ -384,7 +384,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontSize: 8, letterSpacing: 2, textTransform: 'uppercase', color: '#888888', lineHeight: 1.5,
           }}>
             — Bonded Rider<br />
-            <strong style={{ color: '#FFFFFF' }}>Basgiath QA Academy</strong>
+            <strong style={{ color: '#FFFFFF' }}>Claude Code Workshop · Basics</strong>
           </div>
         </div>
 
