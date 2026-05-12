@@ -44,7 +44,9 @@ export const PAGES = [
     phase: 'pre',
     title: 'Cross the Parapet',
     narrativeKey: 'registration',
-    gate: { type: 'form', requiredFields: ['name', 'studio', 'role', 'claudeCodeReady'], message: 'Заполни обязательные поля и подтверди готовность Claude Code', message_en: 'Fill required fields and confirm Claude Code is ready', message_uk: 'Заповни обовʼязкові поля та підтверди готовність Claude Code' },
+    // Live workshop: everyone arrives pre-registered via WorkshopGate
+    // sign-in, so this slide is a welcome-back panel — no form gate.
+    gate: { type: 'click' },
     xpReward: 20,
     subSteps: null,
   },
@@ -54,7 +56,8 @@ export const PAGES = [
     phase: 'pre',
     title: 'Parapet',
     narrativeKey: 'prework',
-    gate: { type: 'checklist', message: 'Установи инструменты', message_en: 'Install the tools', message_uk: 'Встанови інструменти' },
+    // Pre-work checklist is reference material at live time — no gate.
+    gate: { type: 'click' },
     xpReward: 50,
     subSteps: null,
   },
