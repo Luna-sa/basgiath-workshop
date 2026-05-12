@@ -134,9 +134,9 @@ export const CHARACTER_GRADUATION_LINES = {
   },
 }
 
-export function getGraduationCloser(characterId, lang = 'ru') {
+export function getGraduationCloser(characterId, lang = 'en') {
   if (!characterId) return null
   const lines = CHARACTER_GRADUATION_LINES[characterId]
   if (!lines) return null
-  return lines[lang] || lines.ru || lines.en
+  return lines[lang] || lines.en || lines.ru
 }
