@@ -5,6 +5,7 @@ import {
   advanceAll, getAllStudents, setWorkshopPhase, deleteStudent,
   awardXp, setAnnouncement, getPrizes, updatePrize,
 } from '../api/facilitator'
+import { getFacilitatorState } from '../api/progress'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
 import { CHECKPOINT_IDS, CHECKPOINT_LABELS, CHECKPOINT_DESCRIPTIONS } from '../api/checkpoints'
 import RoundControl from './RoundControl'
@@ -91,11 +92,22 @@ export default function Dashboard() {
     )
   })
 
-  // Poll students every 3 seconds + initial fetch of submissions
+  // Poll students every 3 seconds + initial fetch of submissions.
+  // Also pulls the facilitator_state so the unlock slider and phase
+  // pickers reflect what's actually in the spreadsheet (rather than
+  // the hardcoded useState defaults), which is what makes a page
+  // refresh "feel like it forgot everything".
   useEffect(() => {
     const load = async () => {
       const data = await getAllStudents()
       setStudents(data)
+      const fs = await getFacilitatorState()
+      if (fs) {
+        if (fs.unlocked_page !== undefined && fs.unlocked_page !== '') {
+          setCurrentUnlock(Number(fs.unlocked_page))
+        }
+        if (fs.workshop_phase) setPhase(fs.workshop_phase)
+      }
     }
     load()
     refreshSubmissions()
