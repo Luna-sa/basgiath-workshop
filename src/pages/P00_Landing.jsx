@@ -76,15 +76,6 @@ export default function P00_Landing() {
               desc_uk: 'AI сам тестує сайт, API та читає документацію',
             },
             {
-              icon: '🎯',
-              title_en: 'Real bugs',
-              title_ru: 'Практика на багах',
-              title_uk: 'Практика на багах',
-              desc_en: 'Test app with 36 planted defects + AI review',
-              desc_ru: 'Тестовое приложение с 36 дефектами + AI-ревью',
-              desc_uk: 'Тестовий застосунок з 36 дефектами + AI-ревʼю',
-            },
-            {
               icon: '🏆',
               title_en: 'Live competition',
               title_ru: 'Соревнование',

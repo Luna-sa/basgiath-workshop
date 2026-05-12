@@ -312,7 +312,9 @@ export const useWorkshopStore = create(
 
       isPreworkComplete: () => {
         const s = get()
-        const steps = 6
+        // P03 currently has 4 steps (install / Pro / git / verify).
+        // Keep this number in sync with STEPS array in P03_PreWork.jsx.
+        const steps = 4
         return Array.from({ length: steps }, (_, i) =>
           s.preworkChecklist[`${s.preworkPath}-${i}`]
         ).every(Boolean)

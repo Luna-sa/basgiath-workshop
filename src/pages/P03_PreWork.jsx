@@ -31,22 +31,6 @@ const STEPS = [
     note_uk: 'git-scm.com',
   },
   {
-    text_en: 'Create a working folder',
-    text_ru: 'Создать рабочую папку',
-    text_uk: 'Створити робочу теку',
-    note_en: 'mkdir ~/qa-workspace && cd ~/qa-workspace && git init',
-    note_ru: 'mkdir ~/qa-workspace && cd ~/qa-workspace && git init',
-    note_uk: 'mkdir ~/qa-workspace && cd ~/qa-workspace && git init',
-  },
-  {
-    text_en: 'Clone the sample project',
-    text_ru: 'Склонировать тестовый проект',
-    text_uk: 'Клонувати тестовий проєкт',
-    note_en: 'Download: /sample-project.zip',
-    note_ru: 'Скачай: /sample-project.zip',
-    note_uk: 'Завантаж: /sample-project.zip',
-  },
-  {
     text_en: 'Verify: claude --version',
     text_ru: 'Проверить: claude --version',
     text_uk: 'Перевірити: claude --version',

@@ -81,7 +81,11 @@ export default function P05_TalkEvolution() {
             </div>
           </div>
 
-          {/* PROJECT — secondary, muted teal */}
+          {/* PROJECT — secondary, muted teal. Every global component
+              type can ALSO live at the project level: CLAUDE.md,
+              commands, agents, skills, plugins, settings (hooks +
+              permissions). Project copies override the global ones
+              when their names collide. */}
           <div className="border-l-2 border-qa-teal/40 bg-qa-teal/[0.02] p-5">
             <div className="flex items-baseline gap-3 mb-3 flex-wrap">
               <span className="font-display text-[26px] text-white">Project</span>
@@ -89,14 +93,17 @@ export default function P05_TalkEvolution() {
             </div>
             <p className="text-[13px] text-text-secondary mb-3 max-w-2xl">
               {t(
-                'Lives next to one codebase. Overrides the global layer. Travels with the repo when you commit it.',
-                'Живёт рядом с одним кодбейзом. Перебивает глобальный слой. Едет с репо если коммитишь.',
-                'Живе поруч з однією кодбазою. Перебиває глобальний шар. Їде з репо, якщо комітиш.'
+                "Lives next to one codebase. Mirrors the global layer one-for-one — every component you can put in ~/.claude/ can also live here, scoped to this repo only. Project copies override the global ones when their names collide. Travels with the repo when you commit it.",
+                'Живёт рядом с одним кодбейзом. Зеркалит глобальный слой один-к-одному - всё что можешь положить в ~/.claude/, можно положить и сюда, привязав только к этому репо. Проектная копия перебивает глобальную при коллизии имени. Едет с репо когда коммитишь.',
+                'Живе поруч з однією кодбазою. Дзеркалить глобальний шар один-в-один - усе що можеш покласти в ~/.claude/, можна покласти і сюди, привʼязавши лише до цього репо. Проєктна копія перебиває глобальну при колізії імені. Їде з репо коли комітиш.'
               )}
             </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-[12px] font-mono">
               <CompChip name="CLAUDE.md" desc="project context" />
               <CompChip name="commands/" desc="repo-only commands" />
+              <CompChip name="agents/" desc="repo-only subagents" />
+              <CompChip name="skills/" desc="repo-only skills" />
+              <CompChip name="plugins/" desc="repo-bundled stacks" />
               <CompChip name="settings.json" desc="repo hooks · perms" />
             </div>
           </div>

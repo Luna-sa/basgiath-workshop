@@ -87,33 +87,114 @@ export default function P04_TalkIntro() {
           </div>
         </div>
 
-        {/* Five levels of bonding */}
+        {/* Five levels of riding — vertical timeline. Each level has:
+            big italic numeral · italic name · short tagline · one
+            concrete move that becomes possible at THIS level · a thin
+            connector line tying the column together. Opacity ramps
+            up from level 01 to 05 so the visual reinforces "growth
+            into the bond". */}
         <div>
-          <p className="font-mono text-[11px] tracking-[3px] uppercase text-text-dim mb-4">
+          <p className="font-mono text-[11px] tracking-[3px] uppercase text-text-dim mb-1">
             ◆ {t('Five levels of riding', 'Пять уровней наездника', 'Пʼять рівнів вершника')}
           </p>
-          <div className="space-y-2">
-            {[
-              { lvl: '01', name: t('Chat', 'Чат', 'Чат'), desc: t('You just ask questions. Everyone starts here.', 'Просто задаёшь вопросы. Это все начинают тут.', 'Просто ставиш запитання. Тут починають усі.') },
-              { lvl: '02', name: t('Configured', 'Настроенный', 'Налаштований'), desc: t('CLAUDE.md describes who you are and how to work with you.', 'CLAUDE.md описывает кто ты и как с тобой работать.', 'CLAUDE.md описує, хто ти і як з тобою працювати.') },
-              { lvl: '03', name: t('Commanded', 'Командир', 'Командувач'), desc: t('Your own slash commands - frequent tasks in one tap.', 'Свои slash-команды - частые задачи в один тык.', 'Власні slash-команди - часті задачі в один клік.') },
-              { lvl: '04', name: t('Connected', 'Связанный', 'Звʼязаний'), desc: t('MCP servers give it eyes and hands - browser, API, docs.', 'MCP-серверы дают глаза и руки - браузер, API, докум.', 'MCP-сервери дають очі та руки - браузер, API, документація.') },
-              { lvl: '05', name: t('Orchestrated', 'Оркестратор', 'Диригент'), desc: t('Several agents work in parallel on a task.', 'Несколько agents работают параллельно над задачей.', 'Кілька agents працюють паралельно над задачею.') },
-            ].map(l => (
-              <div key={l.lvl} className="flex items-baseline gap-4 p-3 border border-border bg-surface/30">
-                <span className="font-mono text-[11px] tracking-[2px] text-qa-teal w-8">{l.lvl}</span>
-                <span className="font-display italic text-lg text-white w-32">{l.name}</span>
-                <span className="text-[13px] text-text-secondary flex-1">{l.desc}</span>
-              </div>
-            ))}
-          </div>
-          <p className="text-[12px] text-text-dim italic mt-3">
+          <p className="text-[13px] text-text-secondary italic mb-5 max-w-2xl">
             {t(
-              'Today you leave at level 2-3 minimum. After a month of practice - 4-5.',
-              'Сегодня - выходишь со 2-3-го уровня минимум. Через месяц практики - 4-5.',
-              'Сьогодні - виходиш мінімум з 2-3 рівня. Через місяць практики - 4-5.'
+              'Five rungs from "open a chat" to "the dragon flies a formation while you watch". Each one unlocks a specific move you couldn\'t do before.',
+              'Пять ступеней - от «открыл чат» до «дракон ведёт строй пока ты смотришь». Каждая открывает конкретный ход, который раньше был недоступен.',
+              'Пʼять щаблів - від «відкрив чат» до «дракон веде стрій, поки ти дивишся». Кожен відкриває конкретний хід, який раніше був недоступний.'
             )}
           </p>
+
+          <div className="relative">
+            {/* Vertical connector line that runs down the left */}
+            <div className="absolute left-[18px] top-3 bottom-3 w-px bg-gradient-to-b from-qa-teal/20 via-qa-teal/40 to-qa-teal" aria-hidden="true" />
+
+            <div className="space-y-3">
+              {[
+                {
+                  lvl: '01',
+                  name: t('Chat', 'Чат', 'Чат'),
+                  tagline: t('You just ask questions.', 'Просто задаёшь вопросы.', 'Просто ставиш запитання.'),
+                  move: t('You: "How do I write a test for this function?" - Claude explains. You copy-paste the code back to your IDE yourself.', 'Ты: «как мне написать тест для этой функции?» - Claude объясняет. Код в IDE копируешь руками.', 'Ти: «як написати тест для цієї функції?» - Claude пояснює. Код в IDE копіюєш руками.'),
+                  intensity: 0.4,
+                },
+                {
+                  lvl: '02',
+                  name: t('Configured', 'Настроенный', 'Налаштований'),
+                  tagline: t('CLAUDE.md holds your voice, conventions, the things you refuse to compromise on.', 'CLAUDE.md держит твой голос, конвенции, и то на чём ты не уступишь.', 'CLAUDE.md тримає твій голос, конвенції, і те на чому не поступишся.'),
+                  move: t('Claude opens with "Right, what are we testing today?" instead of "Hi, how can I help?". Knows you prefer table-format test cases. Never opens with "great question!".', 'Claude открывает диалог с «так, что тестируем сегодня?» вместо «привет, чем помочь?». Знает что ты любишь test-cases таблицей. Никогда не начинает с «отличный вопрос!».', 'Claude відкриває діалог з «так, що тестуємо сьогодні?» замість «привіт, чим допомогти?». Знає що ти любиш test-cases таблицею. Ніколи не починає з «чудове питання!».'),
+                  intensity: 0.55,
+                },
+                {
+                  lvl: '03',
+                  name: t('Commanded', 'Командир', 'Командувач'),
+                  tagline: t('Your own /slash commands - frequent tasks compressed to one tap.', 'Свои /slash-команды - частые задачи сжаты в один тык.', 'Власні /slash-команди - часті задачі стиснуті в один клік.'),
+                  move: t('/test-cases generates a full table from a feature spec. /bug-report turns a Slack screenshot into a Linear-ready ticket. /review pulls the diff and gives you the bug list before the PR opens.', '/test-cases генерит полную таблицу из описания фичи. /bug-report превращает скрин из Slack в готовый Linear-тикет. /review подтягивает diff и выдаёт список багов до открытия PR.', '/test-cases генерує повну таблицю з опису фічі. /bug-report перетворює скріншот зі Slack в готовий Linear-тикет. /review підтягує diff і видає список багів до відкриття PR.'),
+                  intensity: 0.7,
+                },
+                {
+                  lvl: '04',
+                  name: t('Connected', 'Связанный', 'Звʼязаний'),
+                  tagline: t('MCP servers give it eyes and hands — browser, APIs, live docs, your Notion, your Jira.', 'MCP-серверы дают глаза и руки - браузер, API, актуальные доки, твой Notion, твоя Jira.', 'MCP-сервери дають очі та руки - браузер, API, актуальні доки, твій Notion, твоя Jira.'),
+                  move: t('You: "Test the registration form - empty fields, weird emails, password \'1\'". Claude opens the browser via Playwright MCP, drives the form, takes screenshots, files bugs in Jira with steps. You watch.', 'Ты: «протестируй форму регистрации - пустые поля, странные email, пароль "1"». Claude открывает браузер через Playwright MCP, ведёт форму, делает скриншоты, заводит баги в Jira со степами. Ты смотришь.', 'Ти: «протестуй форму реєстрації - порожні поля, дивні email, пароль "1"». Claude відкриває браузер через Playwright MCP, веде форму, робить скриншоти, заводить баги в Jira зі степами. Ти дивишся.'),
+                  intensity: 0.85,
+                },
+                {
+                  lvl: '05',
+                  name: t('Orchestrated', 'Оркестратор', 'Диригент'),
+                  tagline: t('Several sub-agents run in parallel. You set the strategy. They split the work.', 'Несколько sub-agents работают параллельно. Ты задаёшь стратегию. Они делят работу.', 'Кілька sub-agents працюють паралельно. Ти задаєш стратегію. Вони ділять роботу.'),
+                  move: t('You: "Cover this release - one agent on regression, one on integration, one on accessibility." Three agents split the task in their own sandboxes, run in parallel, each comes back with a report. You read three summaries instead of running three test passes.', 'Ты: «закрой релиз - один agent на регрессию, один на интеграцию, один на accessibility». Три агента делят задачу в своих sandbox-ах, идут параллельно, каждый возвращает отчёт. Ты читаешь три summary вместо того чтобы прогонять три прохода руками.', 'Ти: «закрий реліз - один agent на регресію, один на інтеграцію, один на accessibility». Три агенти ділять задачу у своїх sandbox-ах, ідуть паралельно, кожен повертає звіт. Ти читаєш три summary замість того щоб ганяти три проходи руками.'),
+                  intensity: 1.0,
+                },
+              ].map(l => (
+                <div
+                  key={l.lvl}
+                  className="relative pl-12 pr-4 py-4 border border-border bg-surface/30 hover:border-qa-teal/30 transition-colors"
+                  style={{ borderLeftWidth: '3px', borderLeftColor: `rgba(0,229,204,${0.15 + l.intensity * 0.7})` }}
+                >
+                  {/* Big numeral overlapping the connector line */}
+                  <div
+                    className="absolute left-0 top-3 w-[36px] h-[36px] flex items-center justify-center bg-bg border border-qa-teal/30"
+                    style={{ borderColor: `rgba(0,229,204,${0.25 + l.intensity * 0.5})` }}
+                  >
+                    <span
+                      className="font-display italic text-[18px] leading-none"
+                      style={{ color: `rgba(0,229,204,${0.55 + l.intensity * 0.45})` }}
+                    >
+                      {l.lvl}
+                    </span>
+                  </div>
+
+                  <div className="flex items-baseline gap-3 flex-wrap mb-1.5">
+                    <span className="font-display italic text-[22px] text-white">{l.name}</span>
+                    <span className="font-display italic text-[14px] text-text-secondary leading-tight">
+                      {l.tagline}
+                    </span>
+                  </div>
+
+                  <div className="border-l border-qa-teal/20 pl-3 ml-0">
+                    <p className="font-mono text-[9.5px] tracking-[2px] uppercase text-qa-teal/70 mb-1">
+                      {t('what unlocks', 'что открывается', 'що відкривається')}
+                    </p>
+                    <p className="text-[13px] text-text-body leading-relaxed">
+                      {l.move}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 border-l-2 border-qa-teal/40 bg-qa-teal/[0.04] pl-4 py-3">
+            <p className="text-[13px] text-text-body leading-relaxed">
+              <span className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mr-2">today</span>
+              {t(
+                'You leave at level 2-3 minimum. CLAUDE.md sealed, slash commands installed, MCP servers wired. Level 4-5 grows in over a month of daily work — once the bond is real, the dragon stops needing instructions.',
+                'Выходишь со 2-3 уровня минимум. CLAUDE.md запечатан, slash-команды стоят, MCP-серверы подключены. 4-5 уровень прорастает за месяц ежедневной работы - когда связь становится настоящей, дракон перестаёт нуждаться в инструкциях.',
+                'Виходиш мінімум з 2-3 рівня. CLAUDE.md запечатано, slash-команди стоять, MCP-сервери підключено. 4-5 рівень проростає за місяць щоденної роботи - коли звʼязок стає справжнім, дракон перестає потребувати інструкцій.'
+              )}
+            </p>
+          </div>
         </div>
 
       </div>
