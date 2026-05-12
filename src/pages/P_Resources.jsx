@@ -10,7 +10,11 @@ import { useWorkshopStore } from '../store/workshopStore'
 import { generateEcosystemPrompt } from '../data/ecosystem-prompt'
 import CopyPrompt from '../components/CopyPrompt'
 import { useT } from '../i18n/useT'
-import { renderSigilCard, downloadBlob } from '../utils/sigilCard'
+import { renderSigilCard, renderCertificateCard, buildLinkedInCaption, downloadBlob } from '../utils/sigilCard'
+
+const TUTOR_LINKEDIN_URL = 'https://www.linkedin.com/in/ainastasia/'
+const TUTOR_AVATAR_URL = '/brand/anastasia-avatar.jpg' // drop this file into public/brand/ when ready
+const WORKSHOP_URL = 'course.ainastasia.ai/workshop'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Autopilot prompts. Plain pragmatic English inside - lore is in the
@@ -303,6 +307,53 @@ export default function P_Resources() {
     }
   }
 
+  const handleLinkedInShare = async () => {
+    if (!sigil?.imageDataUri || sigilBusy) return
+    setSigilBusy(true)
+    try {
+      // 1. Build the certificate PNG (LinkedIn-feed-friendly).
+      const blob = await renderCertificateCard({
+        imageUrl: sigil.imageDataUri,
+        name: sigil.dragonName || 'Unnamed',
+        nickname: user.nickname || 'rider',
+        date: sigil.sealedAt ? new Date(sigil.sealedAt) : new Date(),
+        tutorAvatarUrl: TUTOR_AVATAR_URL,
+        url: WORKSHOP_URL,
+      })
+      const safeName = (sigil.dragonName || 'cert').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
+      const filename = `basgiath-certificate-${safeName}.png`
+
+      // 2. Trigger the download so the user has the image locally.
+      downloadBlob(blob, filename)
+
+      // 3. Copy the English caption to clipboard so the user just
+      //    has to paste it into the LinkedIn composer.
+      const caption = buildLinkedInCaption({
+        dragonName: sigil.dragonName || 'my dragon',
+        tutorLinkedinUrl: TUTOR_LINKEDIN_URL,
+      })
+      try { await navigator.clipboard.writeText(caption) } catch {}
+
+      // 4. Open LinkedIn's compose modal in a new tab. There's no
+      //    reliable way to pre-attach files via URL, so the user
+      //    drags the just-downloaded cert in. The caption is in
+      //    their clipboard ready to paste.
+      window.open('https://www.linkedin.com/feed/?shareActive=true&mini=true', '_blank', 'noopener')
+
+      setSigilToast(t(
+        'Cert downloaded · caption copied · LinkedIn opened — paste + drag the image in',
+        'Серт скачан · текст в буфере · LinkedIn открыт - вставь текст и перетащи картинку',
+        'Серт завантажено · текст у буфері · LinkedIn відкрито - встав текст і перетягни картинку'
+      ))
+    } catch (e) {
+      console.error('LinkedIn share failed:', e)
+      setSigilToast(t('LinkedIn share failed', 'Не получилось', 'Не вдалося'))
+    } finally {
+      setSigilBusy(false)
+      setTimeout(() => setSigilToast(''), 6000)
+    }
+  }
+
   const handleSigilShare = async () => {
     if (!sigil?.imageDataUri || sigilBusy) return
     setSigilBusy(true)
@@ -416,15 +467,27 @@ export default function P_Resources() {
                 )}
 
                 <div className="flex gap-2 mt-5 flex-wrap">
+                  {/* Primary CTA — LinkedIn certificate. English by
+                      default, opens compose with the caption in the
+                      clipboard so they just paste-and-post. */}
+                  <button
+                    type="button"
+                    onClick={handleLinkedInShare}
+                    disabled={sigilBusy}
+                    className="bg-[#0A66C2] text-white px-4 py-2 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(10,102,194,0.45)] transition-all cursor-pointer disabled:opacity-50 inline-flex items-center gap-1.5"
+                  >
+                    <span className="font-display italic normal-case text-[14px] tracking-normal">in</span>
+                    {sigilBusy
+                      ? t('working…', 'готовлю…', 'готую…')
+                      : t('Post to LinkedIn', 'Запостить в LinkedIn', 'Запостити в LinkedIn')}
+                  </button>
                   <button
                     type="button"
                     onClick={handleSigilDownload}
                     disabled={sigilBusy}
                     className="bg-qa-teal text-black px-4 py-2 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] transition-all cursor-pointer disabled:opacity-50"
                   >
-                    {sigilBusy
-                      ? t('working…', 'готовлю…', 'готую…')
-                      : '↓ ' + t('Download card', 'Скачать карту', 'Завантажити карту')}
+                    ↓ {t('Sigil card', 'Сигнет', 'Сигнет')}
                   </button>
                   <button
                     type="button"
@@ -432,9 +495,23 @@ export default function P_Resources() {
                     disabled={sigilBusy}
                     className="border border-qa-teal/40 text-qa-teal px-4 py-2 font-mono text-[11px] tracking-[2px] uppercase hover:bg-qa-teal/10 transition-all cursor-pointer disabled:opacity-50"
                   >
-                    ⇪ {t('Share', 'Поделиться', 'Поділитися')}
+                    ⇪ {t('Share elsewhere', 'Другие соцсети', 'Інші соцмережі')}
                   </button>
                 </div>
+
+                <p className="text-[12px] text-text-secondary leading-relaxed mt-4 max-w-[460px]">
+                  {t(
+                    <>
+                      LinkedIn opens in a new tab. The cert image is on your machine, the English caption is in your clipboard — paste + drop the image into the LinkedIn composer. Tutor: <a href={TUTOR_LINKEDIN_URL} target="_blank" rel="noopener" className="text-qa-teal hover:underline">Anastasiia Babanina</a>.
+                    </>,
+                    <>
+                      LinkedIn откроется в новой вкладке. Серт уже у тебя на машине, английский текст в буфере - вставь и перетащи картинку в окно поста. Тьютор: <a href={TUTOR_LINKEDIN_URL} target="_blank" rel="noopener" className="text-qa-teal hover:underline">Anastasiia Babanina</a>.
+                    </>,
+                    <>
+                      LinkedIn відкриється в новій вкладці. Серт уже на машині, англійський текст у буфері - встав і перетягни картинку в вікно посту. Тьютор: <a href={TUTOR_LINKEDIN_URL} target="_blank" rel="noopener" className="text-qa-teal hover:underline">Anastasiia Babanina</a>.
+                    </>
+                  )}
+                </p>
 
                 {sigilToast && (
                   <p className="font-mono text-[10px] tracking-[1.5px] uppercase text-qa-teal mt-3">

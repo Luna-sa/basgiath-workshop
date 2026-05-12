@@ -167,6 +167,213 @@ export async function renderSigilCard({
   })
 }
 
+// ─────────────────────────────────────────────────────────────────────
+// Certificate-of-attendance variant for social-share.
+// ─────────────────────────────────────────────────────────────────────
+//
+// Same canvas size (1080×1350) so file conventions match the sigil card,
+// but the layout is rebuilt for LinkedIn-feed scanability:
+//
+//   ┌──────────────────────────────────────┐
+//   │  ◆ BASGIATH QA ACADEMY ·  2026-05-13 │   header band  (0–110)
+//   │  Certificate of Attendance           │   title        (110–200)
+//   │                                      │
+//   │       ⟨ dragon portrait, 720 ⟩       │   portrait     (200–920)
+//   │                                      │
+//   │  {Dragon Name}             italic    │
+//   │  rider · @{nickname}                 │
+//   │  ──────                              │
+//   │  Tutored by                          │   tutor block  (1000–1280)
+//   │  Anastasiia Babanina                 │
+//   │  in/ainastasia · ig: ai.nastasia     │
+//   │  ─ course.ainastasia.ai/workshop ─   │
+//   └──────────────────────────────────────┘
+//
+// Avatar is optional — pass `tutorAvatarUrl` to render a 96px round
+// portrait next to the tutor name. If the URL is missing or 404s, the
+// tutor block silently renders text-only.
+export async function renderCertificateCard({
+  imageUrl,
+  name = 'Unnamed',
+  nickname = 'rider',
+  date = new Date(),
+  tutorName = 'Anastasiia Babanina',
+  tutorLinkedin = 'linkedin.com/in/ainastasia',
+  tutorInstagram = 'ai.nastasia',
+  tutorAvatarUrl = null, // e.g. '/brand/anastasia-avatar.jpg'
+  url = 'course.ainastasia.ai/workshop',
+}) {
+  if (!imageUrl) throw new Error('imageUrl required')
+
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')
+
+  // ── Background — solid bg with subtle vertical gradient ────────
+  const grad = ctx.createLinearGradient(0, 0, 0, H)
+  grad.addColorStop(0, '#0B0B0B')
+  grad.addColorStop(1, '#050505')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, W, H)
+
+  // ── Decorative border, two rules at top and bottom ─────────────
+  ctx.fillStyle = COLORS.teal
+  ctx.fillRect(60, 60, W - 120, 2)
+  ctx.fillRect(60, H - 62, W - 120, 2)
+  ctx.fillStyle = COLORS.border
+  ctx.fillRect(60, 66, W - 120, 1)
+  ctx.fillRect(60, H - 68, W - 120, 1)
+
+  // ── Eyebrow band: BASGIATH QA ACADEMY · DATE ───────────────────
+  const dateStr = typeof date === 'string'
+    ? date
+    : `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+  ctx.font = '600 18px "JetBrains Mono", monospace'
+  ctx.fillStyle = COLORS.teal
+  ctx.textBaseline = 'top'
+  ctx.textAlign = 'center'
+  ctx.fillText('◆ BASGIATH QA ACADEMY · CLAUDE CODE WORKSHOP · ' + dateStr, W / 2, 100)
+
+  // ── Title: Certificate of Attendance ───────────────────────────
+  ctx.font = 'italic 700 56px "Playfair Display", Georgia, serif'
+  ctx.fillStyle = COLORS.white
+  ctx.fillText('Certificate of Attendance', W / 2, 142)
+
+  // ── Dragon portrait — circular crop, 720px ─────────────────────
+  const img = await loadImage(imageUrl)
+  const PORTRAIT_SIZE = 720
+  const PORTRAIT_Y = 230
+  const PORTRAIT_X = (W - PORTRAIT_SIZE) / 2
+  ctx.save()
+  ctx.beginPath()
+  ctx.rect(PORTRAIT_X, PORTRAIT_Y, PORTRAIT_SIZE, PORTRAIT_SIZE)
+  ctx.clip()
+  const r = Math.max(PORTRAIT_SIZE / img.width, PORTRAIT_SIZE / img.height)
+  const dw = img.width * r
+  const dh = img.height * r
+  const dx = PORTRAIT_X + (PORTRAIT_SIZE - dw) / 2
+  const dy = PORTRAIT_Y + (PORTRAIT_SIZE - dh) / 2
+  ctx.drawImage(img, dx, dy, dw, dh)
+  ctx.restore()
+  // Teal frame on the portrait
+  ctx.strokeStyle = COLORS.teal
+  ctx.lineWidth = 2
+  ctx.strokeRect(PORTRAIT_X, PORTRAIT_Y, PORTRAIT_SIZE, PORTRAIT_SIZE)
+
+  // ── Dragon name + rider line ───────────────────────────────────
+  ctx.font = 'italic 700 64px "Playfair Display", Georgia, serif'
+  ctx.fillStyle = COLORS.white
+  ctx.fillText(name, W / 2, 985)
+
+  ctx.font = '500 20px "JetBrains Mono", monospace'
+  ctx.fillStyle = COLORS.textDim
+  const riderLine = 'rider · '
+  const riderLineWidth = ctx.measureText(riderLine).width
+  const handle = '@' + nickname
+  const handleWidth = ctx.measureText(handle).width
+  const totalLineWidth = riderLineWidth + handleWidth
+  ctx.textAlign = 'left'
+  const lineStartX = (W - totalLineWidth) / 2
+  ctx.fillText(riderLine, lineStartX, 1060)
+  ctx.fillStyle = COLORS.teal
+  ctx.fillText(handle, lineStartX + riderLineWidth, 1060)
+  ctx.textAlign = 'center'
+
+  // Divider rule between rider and tutor
+  ctx.fillStyle = COLORS.teal
+  ctx.fillRect((W - 80) / 2, 1108, 80, 1)
+
+  // ── Tutor block ────────────────────────────────────────────────
+  // Optional avatar — render only if the file actually loads. We
+  // try once, fall back to text-only on failure.
+  let avatar = null
+  if (tutorAvatarUrl) {
+    try { avatar = await loadImage(tutorAvatarUrl) } catch { avatar = null }
+  }
+
+  const TUTOR_Y = 1140
+
+  if (avatar) {
+    const AVATAR_SIZE = 72
+    const AVATAR_X = W / 2 - 220
+    ctx.save()
+    ctx.beginPath()
+    ctx.arc(AVATAR_X + AVATAR_SIZE / 2, TUTOR_Y + AVATAR_SIZE / 2, AVATAR_SIZE / 2, 0, Math.PI * 2)
+    ctx.clip()
+    const ar = Math.max(AVATAR_SIZE / avatar.width, AVATAR_SIZE / avatar.height)
+    const aw = avatar.width * ar
+    const ah = avatar.height * ar
+    ctx.drawImage(avatar, AVATAR_X + (AVATAR_SIZE - aw) / 2, TUTOR_Y + (AVATAR_SIZE - ah) / 2, aw, ah)
+    ctx.restore()
+    ctx.strokeStyle = COLORS.teal
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    ctx.arc(AVATAR_X + AVATAR_SIZE / 2, TUTOR_Y + AVATAR_SIZE / 2, AVATAR_SIZE / 2, 0, Math.PI * 2)
+    ctx.stroke()
+
+    // Text block to the right of avatar
+    ctx.textAlign = 'left'
+    ctx.font = '500 14px "JetBrains Mono", monospace'
+    ctx.fillStyle = COLORS.textDim
+    ctx.fillText('TUTORED BY', AVATAR_X + AVATAR_SIZE + 16, TUTOR_Y + 4)
+    ctx.font = 'italic 600 30px "Playfair Display", Georgia, serif'
+    ctx.fillStyle = COLORS.white
+    ctx.fillText(tutorName, AVATAR_X + AVATAR_SIZE + 16, TUTOR_Y + 24)
+    ctx.font = '500 15px "JetBrains Mono", monospace'
+    ctx.fillStyle = COLORS.teal
+    ctx.fillText('in/' + tutorLinkedin.replace(/.*\//, '') + ' · ig: ' + tutorInstagram, AVATAR_X + AVATAR_SIZE + 16, TUTOR_Y + 62)
+    ctx.textAlign = 'center'
+  } else {
+    ctx.font = '500 14px "JetBrains Mono", monospace'
+    ctx.fillStyle = COLORS.textDim
+    ctx.fillText('TUTORED BY', W / 2, TUTOR_Y)
+    ctx.font = 'italic 600 32px "Playfair Display", Georgia, serif'
+    ctx.fillStyle = COLORS.white
+    ctx.fillText(tutorName, W / 2, TUTOR_Y + 22)
+    ctx.font = '500 16px "JetBrains Mono", monospace'
+    ctx.fillStyle = COLORS.teal
+    ctx.fillText(tutorLinkedin + '  ·  ig: ' + tutorInstagram, W / 2, TUTOR_Y + 70)
+  }
+
+  // ── Bottom workshop CTA ────────────────────────────────────────
+  ctx.font = '500 16px "JetBrains Mono", monospace'
+  ctx.fillStyle = COLORS.textDim
+  ctx.fillText('✦ ' + url + ' ✦', W / 2, H - 100)
+
+  ctx.textAlign = 'left' // reset
+
+  // ── Output PNG blob ─────────────────────────────────────────────
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      blob => blob ? resolve(blob) : reject(new Error('toBlob failed')),
+      'image/png',
+      0.95,
+    )
+  })
+}
+
+/**
+ * Build the English LinkedIn caption for the certificate share.
+ * Returned as a plain string so the caller can copy it to clipboard.
+ */
+export function buildLinkedInCaption({ dragonName = 'my dragon', tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
+  return `Just trained at Basgiath QA Academy — a Claude Code workshop for QA engineers. 🐉
+
+Walked away with a full ecosystem set up on my machine:
+• A personalised CLAUDE.md, 7 slash commands, 4 sub-agents
+• 3 MCP servers wiring Claude into browser, HTTP and live docs
+• Hooks, plan-mode, the lot
+• And my own sealed dragon: ${dragonName}
+
+If you're in QA and haven't tried Claude Code yet — this is the bridge from "AI that answers" to "AI that does the work".
+
+Huge thanks to my tutor Anastasiia Babanina (${tutorLinkedinUrl}) for the world-building and the practical install path.
+Next workshop: course.ainastasia.ai/workshop
+
+#QA #ClaudeCode #AItesting #BasgiathAcademy`
+}
+
 /** Trigger a file download for a blob. */
 export function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob)
