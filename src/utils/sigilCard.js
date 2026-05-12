@@ -358,20 +358,22 @@ export async function renderCertificateCard({
  * Returned as a plain string so the caller can copy it to clipboard.
  */
 export function buildLinkedInCaption({ tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
-  return `Spent the day at the Claude Code Workshop — Basics with Anastasiia Babanina.
+  return `Spent the day at the Claude Code Workshop Basics with Anastasiia Babanina.
 
-Walked in thinking "AI assistant" meant chat. Walked out with:
+Walked in expecting another chat-style AI demo. That was wrong.
 
-— A CLAUDE.md that holds my voice, my conventions, the things I refuse to compromise on
-— Sub-agents handling parts of QA I always wanted to delegate — test cases, bug triage, review running in parallel while I focus elsewhere
-— Claude actually opening browsers, hitting APIs, reading live docs — not just describing how to
-— My own AI personal assistant for the routine work that used to eat my mornings
+What I'm actually leaving with:
 
-The shift isn't "AI helps me write tests faster." It's "AI does the small loops while I spend the day on the things that actually need a human."
+- A CLAUDE.md that holds my voice, my conventions, the things I refuse to compromise on.
+- Sub-agents handling parts of QA I always wanted to delegate. Test cases, bug triage, review, running in parallel while I focus elsewhere.
+- Claude that opens browsers, hits APIs, reads live documentation. Not describing how. Doing it.
+- A personal AI assistant for the routine work that used to eat my mornings.
 
-If you're in QA and still copy-pasting between ChatGPT and your IDE — this is the bridge.
+The loop changed. Small stuff runs in the background. I spend the day on what actually needs a human.
 
-Tutor: Anastasiia Babanina · ${tutorLinkedinUrl}
+If you're a QA still copy-pasting between ChatGPT and your IDE, this workshop closes the gap.
+
+Tutor: Anastasiia Babanina, ${tutorLinkedinUrl}
 
 #QA #ClaudeCode #AITesting`
 }
