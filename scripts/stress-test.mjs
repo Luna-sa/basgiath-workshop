@@ -106,8 +106,7 @@ const TINY_PNG_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42m
 const CHARACTERS = ['violet', 'xaden', 'rhiannon', 'ridoc', 'liam', 'imogen']
 
 async function simulateOneUser(idx) {
-  const rand = Math.random().toString(36).slice(2, 7)
-  const nickname = `stress_${String(idx).padStart(3, '0')}_${rand}`
+  const nickname = `qa_test_${String(idx).padStart(3, '0')}`
   const characterId = CHARACTERS[idx % CHARACTERS.length]
 
   // 1. Register
@@ -147,7 +146,7 @@ async function simulateOneUser(idx) {
   const targetIdx = (idx + 1) % N_USERS
   await call('voteForDragon', {
     voterNickname: nickname,
-    dragonId: `stress_${String(targetIdx).padStart(3, '0')}`,
+    dragonId: `qa_test_${String(targetIdx).padStart(3, '0')}`,
   })
 
   // 5. Read leaderboards (what Champions slide hits)

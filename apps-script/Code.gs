@@ -264,32 +264,56 @@ function _json(payload, status) {
   return out
 }
 
+/**
+ * Serialise every write-path operation behind a script-wide lock.
+ * Without this, 50 simultaneous registerStudent / sealDragon /
+ * voteForDragon calls race on appendRow() and silently drop ~80% of
+ * inserts (verified empirically — 50 parallel registerStudent calls
+ * landed only 11 rows in the sheet despite all returning HTTP 200).
+ *
+ * waitLock default 25s gives enough headroom for a 50-person burst
+ * at ~0.3-0.5s per write. On timeout we throw, the client retries.
+ */
+function _withScriptLock(fn, waitMs) {
+  var lock = LockService.getScriptLock()
+  if (!lock.tryLock(waitMs || 25000)) {
+    throw new Error('Could not acquire script lock within ' + (waitMs || 25000) + 'ms — retry')
+  }
+  try {
+    return fn()
+  } finally {
+    try { lock.releaseLock() } catch (e) {}
+  }
+}
+
 // ───────────────────────── Students ───────────────────────────
 
 function registerStudent({ nickname, name, studio, role, os, claudeCodeReady, characterId }) {
-  if (!nickname) throw new Error('nickname required')
-  const nick = String(nickname).toLowerCase().trim()
-  const existing = _allRows(SHEETS.STUDENTS).find(s => String(s.nickname).toLowerCase() === nick)
-  if (existing) {
-    const err = new Error('Nickname taken')
-    err.code = 'NICKNAME_TAKEN'
-    return { error: 'NICKNAME_TAKEN', code: 'NICKNAME_TAKEN' }
-  }
-  const record = {
-    id: _uuid(),
-    created_at: _now(),
-    nickname: nick,
-    name: name || '',
-    studio: studio || '',
-    role: role || '',
-    os: os || '',
-    claude_code_ready: !!claudeCodeReady,
-    character_id: characterId || '',
-    checkpoints: '{}',
-    current_page: 0,
-  }
-  _appendRow(SHEETS.STUDENTS, record)
-  return record
+  return _withScriptLock(function () {
+    if (!nickname) throw new Error('nickname required')
+    const nick = String(nickname).toLowerCase().trim()
+    const existing = _allRows(SHEETS.STUDENTS).find(s => String(s.nickname).toLowerCase() === nick)
+    if (existing) {
+      const err = new Error('Nickname taken')
+      err.code = 'NICKNAME_TAKEN'
+      return { error: 'NICKNAME_TAKEN', code: 'NICKNAME_TAKEN' }
+    }
+    const record = {
+      id: _uuid(),
+      created_at: _now(),
+      nickname: nick,
+      name: name || '',
+      studio: studio || '',
+      role: role || '',
+      os: os || '',
+      claude_code_ready: !!claudeCodeReady,
+      character_id: characterId || '',
+      checkpoints: '{}',
+      current_page: 0,
+    }
+    _appendRow(SHEETS.STUDENTS, record)
+    return record
+  })
 }
 
 function getStudent({ nickname, studentId }) {
@@ -307,15 +331,17 @@ function listStudents() {
 }
 
 function markCheckpoint({ studentId, checkpointId }) {
-  if (!studentId || !checkpointId) throw new Error('studentId + checkpointId required')
-  const rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
-  if (rowIdx < 0) throw new Error('student not found')
-  const student = _allRows(SHEETS.STUDENTS).find(s => s.id === studentId)
-  let checkpoints
-  try { checkpoints = JSON.parse(student.checkpoints || '{}') } catch { checkpoints = {} }
-  checkpoints[checkpointId] = _now()
-  _updateRow(SHEETS.STUDENTS, rowIdx, { checkpoints: JSON.stringify(checkpoints) })
-  return { checkpoints }
+  return _withScriptLock(function () {
+    if (!studentId || !checkpointId) throw new Error('studentId + checkpointId required')
+    const rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
+    if (rowIdx < 0) throw new Error('student not found')
+    const student = _allRows(SHEETS.STUDENTS).find(s => s.id === studentId)
+    let checkpoints
+    try { checkpoints = JSON.parse(student.checkpoints || '{}') } catch { checkpoints = {} }
+    checkpoints[checkpointId] = _now()
+    _updateRow(SHEETS.STUDENTS, rowIdx, { checkpoints: JSON.stringify(checkpoints) })
+    return { checkpoints }
+  })
 }
 
 // ───────────────────────── Dragons ────────────────────────────
@@ -342,31 +368,32 @@ function _uploadImageToDrive(base64Data, filenameHint) {
 }
 
 function sealDragon({ nickname, studentId, characterId, answers, imageB64, prompt, modelUsed }) {
-  if (!nickname) throw new Error('nickname required')
-  if (!imageB64) throw new Error('imageB64 required')
-  const nick = String(nickname).toLowerCase().trim()
-  const dragons = _allRows(SHEETS.DRAGONS)
-  // Re-seal: delete prior row for same nickname
-  const existingIdx = _findRowIndex(SHEETS.DRAGONS, d => String(d.nickname).toLowerCase() === nick)
-  if (existingIdx > 0) _deleteRow(SHEETS.DRAGONS, existingIdx)
+  return _withScriptLock(function () {
+    if (!nickname) throw new Error('nickname required')
+    if (!imageB64) throw new Error('imageB64 required')
+    const nick = String(nickname).toLowerCase().trim()
+    // Re-seal: delete prior row for same nickname
+    const existingIdx = _findRowIndex(SHEETS.DRAGONS, d => String(d.nickname).toLowerCase() === nick)
+    if (existingIdx > 0) _deleteRow(SHEETS.DRAGONS, existingIdx)
 
-  const url = _uploadImageToDrive(imageB64, 'dragon-' + nick + '-' + Date.now())
-  const record = {
-    id: _uuid(),
-    created_at: _now(),
-    sealed_at: _now(),
-    student_id: studentId || '',
-    nickname: nick,
-    character_id: characterId || '',
-    name: (answers && answers.name) || 'Unnamed',
-    answers: JSON.stringify(answers || {}),
-    prompt: prompt || '',
-    image_url: url,
-    model_used: modelUsed || '',
-    vote_count: 0,
-  }
-  _appendRow(SHEETS.DRAGONS, record)
-  return record
+    const url = _uploadImageToDrive(imageB64, 'dragon-' + nick + '-' + Date.now())
+    const record = {
+      id: _uuid(),
+      created_at: _now(),
+      sealed_at: _now(),
+      student_id: studentId || '',
+      nickname: nick,
+      character_id: characterId || '',
+      name: (answers && answers.name) || 'Unnamed',
+      answers: JSON.stringify(answers || {}),
+      prompt: prompt || '',
+      image_url: url,
+      model_used: modelUsed || '',
+      vote_count: 0,
+    }
+    _appendRow(SHEETS.DRAGONS, record)
+    return record
+  }, 40000)
 }
 
 function listDragons() {
@@ -392,51 +419,55 @@ function listDragons() {
 var MAX_VOTES_PER_VOTER = 3
 
 function voteForDragon({ voterNickname, dragonId }) {
-  if (!voterNickname || !dragonId) throw new Error('voterNickname + dragonId required')
-  const nick = String(voterNickname).toLowerCase().trim()
-  // Find all existing votes by this voter
-  const myVotes = _allRows(SHEETS.DRAGON_VOTES).filter(v =>
-    String(v.voter_nickname).toLowerCase() === nick
-  )
-  // Already voted for this dragon - idempotent no-op
-  if (myVotes.some(v => v.dragon_id === dragonId)) {
-    return { dragon_id: dragonId, votes_used: myVotes.length, alreadyCast: true }
-  }
-  // Quota check
-  if (myVotes.length >= MAX_VOTES_PER_VOTER) {
-    return {
-      error: 'QUOTA_EXCEEDED',
-      code: 'QUOTA_EXCEEDED',
-      votes_used: myVotes.length,
-      max: MAX_VOTES_PER_VOTER,
+  return _withScriptLock(function () {
+    if (!voterNickname || !dragonId) throw new Error('voterNickname + dragonId required')
+    const nick = String(voterNickname).toLowerCase().trim()
+    // Find all existing votes by this voter
+    const myVotes = _allRows(SHEETS.DRAGON_VOTES).filter(v =>
+      String(v.voter_nickname).toLowerCase() === nick
+    )
+    // Already voted for this dragon - idempotent no-op
+    if (myVotes.some(v => v.dragon_id === dragonId)) {
+      return { dragon_id: dragonId, votes_used: myVotes.length, alreadyCast: true }
     }
-  }
-  _appendRow(SHEETS.DRAGON_VOTES, {
-    id: _uuid(),
-    created_at: _now(),
-    voter_nickname: nick,
-    dragon_id: dragonId,
+    // Quota check
+    if (myVotes.length >= MAX_VOTES_PER_VOTER) {
+      return {
+        error: 'QUOTA_EXCEEDED',
+        code: 'QUOTA_EXCEEDED',
+        votes_used: myVotes.length,
+        max: MAX_VOTES_PER_VOTER,
+      }
+    }
+    _appendRow(SHEETS.DRAGON_VOTES, {
+      id: _uuid(),
+      created_at: _now(),
+      voter_nickname: nick,
+      dragon_id: dragonId,
+    })
+    _incrementDragonVote(dragonId, +1)
+    return { dragon_id: dragonId, votes_used: myVotes.length + 1, max: MAX_VOTES_PER_VOTER }
   })
-  _incrementDragonVote(dragonId, +1)
-  return { dragon_id: dragonId, votes_used: myVotes.length + 1, max: MAX_VOTES_PER_VOTER }
 }
 
 function withdrawVote({ voterNickname, dragonId }) {
-  if (!voterNickname) throw new Error('voterNickname required')
-  const nick = String(voterNickname).toLowerCase().trim()
-  // If dragonId given - remove that specific vote.
-  // If omitted - remove ALL votes by this voter (legacy "withdraw all" usage).
-  const all = _allRows(SHEETS.DRAGON_VOTES)
-  const sheet = _sheet(SHEETS.DRAGON_VOTES)
-  // Iterate from bottom so deletions don't shift indices
-  for (let i = all.length - 1; i >= 0; i--) {
-    const v = all[i]
-    if (String(v.voter_nickname).toLowerCase() !== nick) continue
-    if (dragonId && v.dragon_id !== dragonId) continue
-    sheet.deleteRow(i + 2) // +2: header row + 1-based
-    if (v.dragon_id) _incrementDragonVote(v.dragon_id, -1)
-  }
-  return { ok: true }
+  return _withScriptLock(function () {
+    if (!voterNickname) throw new Error('voterNickname required')
+    const nick = String(voterNickname).toLowerCase().trim()
+    // If dragonId given - remove that specific vote.
+    // If omitted - remove ALL votes by this voter (legacy "withdraw all" usage).
+    const all = _allRows(SHEETS.DRAGON_VOTES)
+    const sheet = _sheet(SHEETS.DRAGON_VOTES)
+    // Iterate from bottom so deletions don't shift indices
+    for (let i = all.length - 1; i >= 0; i--) {
+      const v = all[i]
+      if (String(v.voter_nickname).toLowerCase() !== nick) continue
+      if (dragonId && v.dragon_id !== dragonId) continue
+      sheet.deleteRow(i + 2) // +2: header row + 1-based
+      if (v.dragon_id) _incrementDragonVote(v.dragon_id, -1)
+    }
+    return { ok: true }
+  })
 }
 
 // Returns array of {dragon_id, created_at} for all votes by this voter.
@@ -520,31 +551,35 @@ function getFacilitatorState() {
 }
 
 function setFacilitatorState({ patch }) {
-  if (!patch) throw new Error('patch required')
-  const rowIdx = _findRowIndex(SHEETS.FACILITATOR, r => r.key === FACILITATOR_KEY)
-  if (rowIdx < 0) {
-    _appendRow(SHEETS.FACILITATOR, { key: FACILITATOR_KEY, ...patch, updated_at: _now() })
-  } else {
-    _updateRow(SHEETS.FACILITATOR, rowIdx, { ...patch, updated_at: _now() })
-  }
-  return getFacilitatorState()
+  return _withScriptLock(function () {
+    if (!patch) throw new Error('patch required')
+    const rowIdx = _findRowIndex(SHEETS.FACILITATOR, r => r.key === FACILITATOR_KEY)
+    if (rowIdx < 0) {
+      _appendRow(SHEETS.FACILITATOR, { key: FACILITATOR_KEY, ...patch, updated_at: _now() })
+    } else {
+      _updateRow(SHEETS.FACILITATOR, rowIdx, { ...patch, updated_at: _now() })
+    }
+    return getFacilitatorState()
+  })
 }
 
 // ───────────────────────── Bot submissions ────────────────────
 
 function submitBot({ studentId, nickname, characterId, botCode }) {
-  if (!nickname || !botCode) throw new Error('nickname + botCode required')
-  const record = {
-    id: _uuid(),
-    submitted_at: _now(),
-    student_id: studentId || '',
-    nickname: String(nickname).toLowerCase().trim(),
-    character_id: characterId || '',
-    bot_code: botCode,
-    score: 0,
-  }
-  _appendRow(SHEETS.BOT_SUBMISSIONS, record)
-  return record
+  return _withScriptLock(function () {
+    if (!nickname || !botCode) throw new Error('nickname + botCode required')
+    const record = {
+      id: _uuid(),
+      submitted_at: _now(),
+      student_id: studentId || '',
+      nickname: String(nickname).toLowerCase().trim(),
+      character_id: characterId || '',
+      bot_code: botCode,
+      score: 0,
+    }
+    _appendRow(SHEETS.BOT_SUBMISSIONS, record)
+    return record
+  })
 }
 
 function getLatestSubmissionsByCharacter() {
@@ -566,6 +601,7 @@ function getLatestSubmissionsByCharacter() {
 var MAX_ARENA_RUNS = 5
 
 function recordArenaRun(body) {
+ return _withScriptLock(function () {
   const {
     studentId, nickname, characterId, runNumber,
     score, starsCollected, fireStars, maxCombo, wallsHit,
@@ -615,6 +651,7 @@ function recordArenaRun(body) {
     _appendRow(SHEETS.ARENA_RUNS, record)
   }
   return { id: record.id, run_number: rn, score: record.score }
+ })
 }
 
 function getMyArenaRuns({ nickname, characterId }) {
@@ -699,24 +736,26 @@ function getArenaLeaderboard() {
 // Sync local workshopStore changes (XP, found dragons, page index) to the
 // students sheet. Idempotent - overwrites whatever's there.
 function updateStudentProgress({ studentId, nickname, xp, hiddenDragonsFound, currentPage }) {
-  if (!studentId && !nickname) throw new Error('studentId or nickname required')
-  let rowIdx = -1
-  if (studentId) {
-    rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
-  }
-  if (rowIdx < 0 && nickname) {
-    const nick = String(nickname).toLowerCase().trim()
-    rowIdx = _findRowIndex(SHEETS.STUDENTS, s => String(s.nickname).toLowerCase() === nick)
-  }
-  if (rowIdx < 0) return { ok: false, error: 'student not found' }
-  const patch = {}
-  if (xp != null) patch.xp = Number(xp) || 0
-  if (Array.isArray(hiddenDragonsFound)) {
-    patch.hidden_dragons_found = JSON.stringify(hiddenDragonsFound)
-  }
-  if (currentPage != null) patch.current_page = Number(currentPage) || 0
-  _updateRow(SHEETS.STUDENTS, rowIdx, patch)
-  return { ok: true }
+  return _withScriptLock(function () {
+    if (!studentId && !nickname) throw new Error('studentId or nickname required')
+    let rowIdx = -1
+    if (studentId) {
+      rowIdx = _findRowIndex(SHEETS.STUDENTS, s => s.id === studentId)
+    }
+    if (rowIdx < 0 && nickname) {
+      const nick = String(nickname).toLowerCase().trim()
+      rowIdx = _findRowIndex(SHEETS.STUDENTS, s => String(s.nickname).toLowerCase() === nick)
+    }
+    if (rowIdx < 0) return { ok: false, error: 'student not found' }
+    const patch = {}
+    if (xp != null) patch.xp = Number(xp) || 0
+    if (Array.isArray(hiddenDragonsFound)) {
+      patch.hidden_dragons_found = JSON.stringify(hiddenDragonsFound)
+    }
+    if (currentPage != null) patch.current_page = Number(currentPage) || 0
+    _updateRow(SHEETS.STUDENTS, rowIdx, patch)
+    return { ok: true }
+  })
 }
 
 function getXpLeaderboard() {
