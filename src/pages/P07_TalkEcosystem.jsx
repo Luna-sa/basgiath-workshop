@@ -261,8 +261,8 @@ export default function P07_TalkEcosystem() {
         <p className="text-[12px] text-text-dim italic text-center pt-3">
           {t(
             'The grimoire grows. The eighth incantation you\'ll write yourself.',
-            'Гримуар растёт. Восьмое заклинание ты напишешь сама.',
-            'Гримуар росте. Восьме заклинання ти напишеш сама.'
+            'Гримуар растёт. Восьмое заклинание ты напишешь сам(а).',
+            'Гримуар росте. Восьме заклинання ти напишеш сам(а).'
           )}
         </p>
       </div>

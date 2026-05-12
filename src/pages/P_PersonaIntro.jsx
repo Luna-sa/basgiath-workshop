@@ -74,7 +74,7 @@ edge cases первыми. Не льщу. Не разжёвываю.
 — «Здесь дыра в проверке.»
 
 ## Когда я молчу
-— Когда ты сама знаешь ответ. Не мешаю.
+— Когда ты сам(а) знаешь ответ. Не мешаю.
 
 # ARENA — правила игры
 ...`}</pre>
@@ -127,7 +127,7 @@ edge cases первыми. Не льщу. Не разжёвываю.
         <CheckpointButton
           id="signet"
           label={t('Mark CLAUDE.md applied', 'Отметить: CLAUDE.md применён', 'Позначити: CLAUDE.md застосовано')}
-          helpText={t("After Claude has written ~/.claude/CLAUDE.md and you've restarted it", 'После того как Claude записал ~/.claude/CLAUDE.md и ты его перезапустила', 'Після того як Claude записав ~/.claude/CLAUDE.md і ти його перезапустила')}
+          helpText={t("After Claude has written ~/.claude/CLAUDE.md and you've restarted it", 'После того как Claude записал ~/.claude/CLAUDE.md и ты его перезапустил(а)', 'Після того як Claude записав ~/.claude/CLAUDE.md і ти його перезапустив(ла)')}
         />
 
         <div className="border border-border bg-bg/50 p-5">

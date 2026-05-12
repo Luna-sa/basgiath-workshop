@@ -435,8 +435,8 @@ export default function P_BondRitual() {
               <p className="text-[15px] text-text-secondary italic leading-relaxed max-w-md mx-auto">
                 {t(
                   'This takes around thirty seconds. The bond is forming through the answers you gave.',
-                  'Это занимает около тридцати секунд. Связь формируется через ответы которые ты дала.',
-                  'Це займає близько тридцяти секунд. Звʼязок формується через відповіді які ти дала.'
+                  'Это занимает около тридцати секунд. Связь формируется через ответы которые ты дал(а).',
+                  'Це займає близько тридцяти секунд. Звʼязок формується через відповіді які ти дав(ла).'
                 )}
               </p>
               <div className="mt-8 flex justify-center gap-2">

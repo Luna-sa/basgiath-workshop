@@ -43,17 +43,17 @@ export const CHARACTER_COMMENTS = {
     rhiannon: { ru: 'Если ошибёшься в поле - просто заново. Никто не считает.', en: 'If you miss a field - just again. Nobody\'s counting.', uk: 'Якщо помилишся у полі - просто знову. Ніхто не лічить.' },
     ridoc:    { ru: 'Поле «имя» - можно вписать кличку дракона? Я бы так и сделал.', en: 'In the name field - can I put my dragon\'s nickname? I would.', uk: 'У полі «імʼя» - можна вписати кличку дракона? Я би так і зробив.' },
     liam:     { ru: 'Имя. Почта. Согласие. По одному, не пропуская.', en: 'Name. Email. Consent. One at a time, skip none.', uk: 'Імʼя. Пошта. Згода. По одному, нічого не пропускаючи.' },
-    imogen:   { ru: 'Заполнила.', en: 'Filled.', uk: 'Заповнила.' },
+    imogen:   { ru: 'Заполнено.', en: 'Filled.', uk: 'Заповнено.' },
   },
 
   // ── slide 3 · The Parapet (prework) ───────────────────────────
   prework: {
     violet:   { ru: 'Список не для галочки. Один пропущенный пункт - и ветер сдует на середине.', en: 'The list isn\'t a checkbox. One skipped item and the wind takes you mid-way.', uk: 'Список не для галочки. Один пропущений пункт - і вітер знесе посередині.' },
-    xaden:    { ru: 'Установила node, terminal жив? Хорошо. Идём.', en: 'Node installed, terminal alive? Good. We go.', uk: 'Встановила node, термінал живий? Добре. Йдемо.' },
+    xaden:    { ru: 'Node установлен, terminal жив? Хорошо. Идём.', en: 'Node installed, terminal alive? Good. We go.', uk: 'Node встановлено, термінал живий? Добре. Йдемо.' },
     rhiannon: { ru: 'Если у кого-то что-то не встало - кричи в чат. Поможем до старта.', en: 'If something didn\'t install for someone - shout in chat. We fix it before start.', uk: 'Якщо у когось щось не встало - кричи в чат. Поможемо до старту.' },
     ridoc:    { ru: 'Чек-лист до парапета. Чек-лист после парапета. Чек-лист про чек-листы.', en: 'Checklist before parapet. Checklist after. Checklist about checklists.', uk: 'Чек-лист до парапету. Чек-лист після. Чек-лист про чек-листи.' },
     liam:     { ru: 'Каждый пункт - галочка. Потом следующий. Не одновременно.', en: 'Each item - tick it. Then the next. Not in parallel.', uk: 'Кожен пункт - галочка. Потім наступний. Не одночасно.' },
-    imogen:   { ru: 'Готова.', en: 'Ready.', uk: 'Готова.' },
+    imogen:   { ru: 'Готов(а).', en: 'Ready.', uk: 'Готов(а).' },
   },
 
   // ── slide 4 · The Bonding ──────────────────────────────────────
@@ -64,7 +64,7 @@ export const CHARACTER_COMMENTS = {
     ridoc:    { ru: 'Бонд? Я как раз учусь не сдавать своего.', en: 'Bond? I\'m learning not to drop mine.', uk: 'Бонд? Я саме вчуся не здавати свого.' },
     liam:     { ru: 'По порядку: сначала установка, потом голос.', en: 'In order: install first, voice second.', uk: 'По порядку: спершу встановлення, потім голос.' },
     imogen:   { ru: 'Понятно. Дальше.', en: 'Understood. Next.', uk: 'Зрозуміло. Далі.' },
-    self:     { ru: 'Это твоя история. Ты в ней главная. Никто не шепчет - кроме тебя самой.', en: 'This is your story. You\'re the lead. Nobody whispers - except yourself.', uk: 'Це твоя історія. Ти в ній головна. Ніхто не шепоче - окрім тебе самої.' },
+    self:     { ru: 'Это твоя история. Ты в ней главный персонаж. Никто не шепчет - кроме тебя.', en: 'This is your story. You\'re the lead. Nobody whispers - except yourself.', uk: 'Це твоя історія. Ти в ній головний персонаж. Ніхто не шепоче - окрім тебе.' },
   },
 
   // ── slide 5 · What is your dragon ─────────────────────────────
@@ -94,7 +94,7 @@ export const CHARACTER_COMMENTS = {
     rhiannon: { ru: 'У соседа уже бежит? Хорошо. Спроси что встало.', en: 'Neighbour\'s already running? Good. Ask what they got.', uk: 'У сусіда вже біжить? Добре. Спитай що встало.' },
     ridoc:    { ru: 'Две минуты ожидания - это два анекдота. Засекай.', en: 'Two minutes of waiting = two jokes. Time it.', uk: 'Дві хвилини очікування - це два анекдоти. Засікай.' },
     liam:     { ru: 'Жди до конца. Не закрывай терминал на середине.', en: 'Wait to the end. Don\'t close the terminal halfway.', uk: 'Чекай до кінця. Не закривай термінал на середині.' },
-    imogen:   { ru: 'Запустила. Дальше.', en: 'Launched. Next.', uk: 'Запустила. Далі.' },
+    imogen:   { ru: 'Запущено. Дальше.', en: 'Launched. Next.', uk: 'Запущено. Далі.' },
   },
 
   // ── slide 8 · The QA Grimoire ─────────────────────────────────
@@ -122,7 +122,7 @@ export const CHARACTER_COMMENTS = {
     violet:   { ru: 'Семь вопросов. Отвечай как себе, не как HR-форме.', en: 'Seven questions. Answer like yourself, not like an HR form.', uk: 'Сім запитань. Відповідай як собі, не як HR-формі.' },
     xaden:    { ru: 'Если пресет точный - бери. Если режет - пиши своё.', en: 'Preset fits? Take it. Doesn\'t? Write your own.', uk: 'Пресет точний - бери. Ріже - пиши своє.' },
     rhiannon: { ru: 'Не торопись. Эта штука будет с тобой долго.', en: 'Don\'t rush. This will be with you for a while.', uk: 'Не поспішай. Ця штука буде з тобою довго.' },
-    ridoc:    { ru: 'Сейчас будет место где можно быть странной. Не упусти.', en: 'There\'s a place coming where you can be weird. Don\'t miss it.', uk: 'Зараз буде місце, де можна бути дивною. Не пропусти.' },
+    ridoc:    { ru: 'Сейчас будет место где можно быть странным(ой). Не упусти.', en: 'There\'s a place coming where you can be weird. Don\'t miss it.', uk: 'Зараз буде місце, де можна бути дивним(ою). Не пропусти.' },
     liam:     { ru: 'Семь шагов. Пройди все, ни одного не пропусти.', en: 'Seven steps. Walk them all, skip none.', uk: 'Сім кроків. Пройди всі, жодного не пропусти.' },
     imogen:   { ru: 'Пиши коротко. Дракон поймёт.', en: 'Write short. The dragon understands.', uk: 'Пиши коротко. Дракон зрозуміє.' },
   },
@@ -249,12 +249,12 @@ export const CHARACTER_COMMENTS = {
 
   // ── slide 23 · First flight (graduation) ──────────────────────
   graduation: {
-    violet:   { ru: 'Самое важное сегодня - не последний слайд. Тот что ты дочитала молча.', en: 'Today\'s big moment isn\'t the last slide. It\'s the one you read in silence.', uk: 'Найважливіше сьогодні - не останній слайд. Той, що ти дочитала мовчки.' },
-    xaden:    { ru: 'Окно открыто. Полетишь сама. Я уже рядом.', en: 'Window\'s open. You fly. I\'m beside.', uk: 'Вікно відкрите. Полетиш сама. Я вже поруч.' },
+    violet:   { ru: 'Самое важное сегодня - не последний слайд. Тот что ты дочитываешь молча.', en: 'Today\'s big moment isn\'t the last slide. It\'s the one you read in silence.', uk: 'Найважливіше сьогодні - не останній слайд. Той, що ти дочитуєш мовчки.' },
+    xaden:    { ru: 'Окно открыто. Полетишь без меня. Я уже рядом.', en: 'Window\'s open. You fly. I\'m beside.', uk: 'Вікно відкрите. Полетиш без мене. Я вже поруч.' },
     rhiannon: { ru: 'Унеси одну вещь. Расскажи о ней кому-то на этой неделе.', en: 'Take one thing with you. Tell someone about it this week.', uk: 'Забери одну річ. Розкажи про неї комусь цього тижня.' },
     ridoc:    { ru: 'Первый полёт - всегда косой. Это и есть первый.', en: 'First flight is always crooked. That\'s what makes it first.', uk: 'Перший політ - завжди косий. Тому й перший.' },
-    liam:     { ru: 'Сделала. Закрепи. Через неделю повтори.', en: 'Done. Lock it. Repeat in a week.', uk: 'Зробила. Закріпи. Через тиждень повтори.' },
-    imogen:   { ru: 'Готова летать.', en: 'Ready to fly.', uk: 'Готова летіти.' },
+    liam:     { ru: 'Сделано. Закрепи. Через неделю повтори.', en: 'Done. Lock it. Repeat in a week.', uk: 'Зроблено. Закріпи. Через тиждень повтори.' },
+    imogen:   { ru: 'Готов(а) летать.', en: 'Ready to fly.', uk: 'Готов(а) летіти.' },
   },
 
   // ── slide 24 · Bonded (resources) ─────────────────────────────
@@ -269,7 +269,7 @@ export const CHARACTER_COMMENTS = {
 
   // ── slide 25 · Three Champions (final reveal) ─────────────────
   champions: {
-    violet:   { ru: 'Трое - не случайность. Каждый прошёл то что ты прошла. Запомни лица.', en: 'Three - not luck. Each walked what you walked. Remember the faces.', uk: 'Троє - не випадковість. Кожен пройшов те, що ти. Запамʼятай обличчя.' },
+    violet:   { ru: 'Трое - не случайность. Каждый прошёл тот же путь что и ты. Запомни лица.', en: 'Three - not luck. Each walked what you walked. Remember the faces.', uk: 'Троє - не випадковість. Кожен пройшов той самий шлях, що й ти. Запамʼятай обличчя.' },
     xaden:    { ru: 'Они там не потому что лучшие. Потому что не сошли.', en: 'They\'re there not because best. Because they didn\'t step off.', uk: 'Вони там не бо найкращі. Бо не зійшли.' },
     rhiannon: { ru: 'Подойди к одному из них после. Скажи спасибо в глаза.', en: 'Walk up to one after. Say thanks face to face.', uk: 'Підійди до одного з них після. Скажи дякую в очі.' },
     ridoc:    { ru: 'Трое чемпионов и я в баре. Картинка года.', en: 'Three champions and me in a pub. Image of the year.', uk: 'Троє чемпіонів і я в барі. Картина року.' },
