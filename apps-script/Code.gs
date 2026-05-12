@@ -122,10 +122,12 @@ function doPost(e) {
       // feedback
       submitFeedback,
       listFeedback,
+      deleteFeedback,
       // admin
       deleteStudent,
       deleteStudentsByPrefix,
       resetStudentProgress,
+      deleteArenaByNickname,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -492,6 +494,10 @@ function resetStudentProgress({ nickname }) {
     wipeMatching(SHEETS.DRAGON_VOTES, 'voter_nickname')
     wipeMatching(SHEETS.ARENA_RUNS, 'nickname')
     wipeMatching(SHEETS.BOT_SUBMISSIONS, 'nickname')
+    // Also clear any feedback this nickname submitted — when an admin
+    // resets a student's progress they typically want a fully clean
+    // slate, including the participant's own feedback row.
+    if (SHEETS.FEEDBACK) wipeMatching(SHEETS.FEEDBACK, 'nickname')
 
     // Reset student progress fields (keep id, nickname, name, character_id, etc)
     _updateRow(SHEETS.STUDENTS, rowIdx, {
@@ -986,6 +992,58 @@ function _ensureFeedbackSheet() {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers])
     sheet.setFrozenRows(1)
   }
+}
+
+/**
+ * Admin-only — delete feedback rows by id or by nickname.
+ *   id        delete a single row by primary key
+ *   nickname  delete EVERY row submitted under that nickname
+ * If both provided, only the id is honoured.
+ */
+function deleteFeedback({ id, nickname }) {
+  if (!id && !nickname) throw new Error('id or nickname required')
+  return _withScriptLock(function () {
+    _ensureFeedbackSheet()
+    const sheet = _sheet(SHEETS.FEEDBACK)
+    const all = _allRows(SHEETS.FEEDBACK)
+    let removed = 0
+    for (let i = all.length - 1; i >= 0; i--) {
+      const row = all[i]
+      const matchById = id && String(row.id) === String(id)
+      const matchByNick = !id && nickname && String(row.nickname).toLowerCase() === String(nickname).toLowerCase()
+      if (matchById || matchByNick) {
+        sheet.deleteRow(i + 2)
+        removed++
+        if (id) break // by-id is unique, stop after first hit
+      }
+    }
+    SpreadsheetApp.flush()
+    return { ok: true, removed }
+  })
+}
+
+/**
+ * Admin-only — wipe ALL arena_runs rows for a given nickname, even
+ * when the student record was already removed. Used to clean up
+ * orphan arena rows that point at a nickname with no parent
+ * student.
+ */
+function deleteArenaByNickname({ nickname }) {
+  if (!nickname) throw new Error('nickname required')
+  return _withScriptLock(function () {
+    const nick = String(nickname).toLowerCase().trim()
+    const sheet = _sheet(SHEETS.ARENA_RUNS)
+    const all = _allRows(SHEETS.ARENA_RUNS)
+    let removed = 0
+    for (let i = all.length - 1; i >= 0; i--) {
+      if (String(all[i].nickname).toLowerCase() === nick) {
+        sheet.deleteRow(i + 2)
+        removed++
+      }
+    }
+    SpreadsheetApp.flush()
+    return { ok: true, removed, nickname: nick }
+  })
 }
 
 /**
