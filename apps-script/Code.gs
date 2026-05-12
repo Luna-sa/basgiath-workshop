@@ -219,13 +219,11 @@ function _appendRow(sheetName, record) {
   const headers = HEADERS[sheetName]
   const row = headers.map((h) => record[h] ?? '')
   sheet.appendRow(row)
-  // Force the write to the underlying spreadsheet immediately so the
-  // very next execution context (e.g. an updateStudentProgress that
-  // fires the moment registerStudent returns) sees the new row. Without
-  // flush, Apps Script lazily commits and the next request reads a
-  // stale snapshot — verified empirically: 43/50 updateStudentProgress
-  // calls returned "student not found" right after a successful register.
-  SpreadsheetApp.flush()
+  // NOTE: deliberately NOT calling SpreadsheetApp.flush() on every
+  // append — flush adds 1-2s per write and 50 parallel registrations
+  // ballooned to ~26s p50. Callers that need read-after-write
+  // visibility (registerStudent, sealDragon) call flush() explicitly
+  // before releasing the lock.
   return record
 }
 
@@ -251,13 +249,11 @@ function _updateRow(sheetName, rowIndex, patch) {
   headers.forEach((h, i) => { obj[h] = current[i] })
   Object.assign(obj, patch)
   sheet.getRange(rowIndex, 1, 1, headers.length).setValues([headers.map((h) => obj[h] ?? '')])
-  SpreadsheetApp.flush()
   return obj
 }
 
 function _deleteRow(sheetName, rowIndex) {
   _sheet(sheetName).deleteRow(rowIndex)
-  SpreadsheetApp.flush()
 }
 
 function _uuid() {
@@ -288,8 +284,12 @@ function _json(payload, status) {
  */
 function _withScriptLock(fn, waitMs) {
   var lock = LockService.getScriptLock()
-  if (!lock.tryLock(waitMs || 25000)) {
-    throw new Error('Could not acquire script lock within ' + (waitMs || 25000) + 'ms — retry')
+  // Default 60s — long enough that a 50-person burst of registers
+  // (each ~1-2s under the lock) doesn't starve the back of the queue.
+  // Caller can override per-action: shorter for cheap ops, longer for
+  // sealDragon (Drive upload).
+  if (!lock.tryLock(waitMs || 60000)) {
+    throw new Error('Could not acquire script lock within ' + (waitMs || 60000) + 'ms — retry')
   }
   try {
     return fn()
@@ -324,6 +324,10 @@ function registerStudent({ nickname, name, studio, role, os, claudeCodeReady, ch
       current_page: 0,
     }
     _appendRow(SHEETS.STUDENTS, record)
+    // Explicit flush: the client fires updateStudentProgress and
+    // getStudent right after this returns; without flush they run
+    // in a fresh execution context that sees a stale snapshot.
+    SpreadsheetApp.flush()
     return record
   })
 }
@@ -506,8 +510,11 @@ function sealDragon({ nickname, studentId, characterId, answers, imageB64, promp
       vote_count: 0,
     }
     _appendRow(SHEETS.DRAGONS, record)
+    // Bond Ritual page navigates straight to Aerie which calls
+    // listDragons — flush so the new dragon shows up immediately.
+    SpreadsheetApp.flush()
     return record
-  }, 40000)
+  }, 90000)
 }
 
 function listDragons() {
