@@ -358,20 +358,19 @@ export async function renderCertificateCard({
  * Returned as a plain string so the caller can copy it to clipboard.
  */
 export function buildLinkedInCaption({ dragonName = 'my dragon', tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
-  return `Just trained at Basgiath QA Academy — a Claude Code workshop for QA engineers. 🐉
+  return `Just completed the Claude Code Workshop — Basics, a hands-on training for QA engineers. 🐉
 
 Walked away with a full ecosystem set up on my machine:
 • A personalised CLAUDE.md, 7 slash commands, 4 sub-agents
 • 3 MCP servers wiring Claude into browser, HTTP and live docs
 • Hooks, plan-mode, the lot
-• And my own sealed dragon: ${dragonName}
+• My own AI assistant — ${dragonName}
 
 If you're in QA and haven't tried Claude Code yet — this is the bridge from "AI that answers" to "AI that does the work".
 
-Huge thanks to my tutor Anastasiia Babanina (${tutorLinkedinUrl}) for the world-building and the practical install path.
-Next workshop: course.ainastasia.ai/workshop
+Huge thanks to my tutor Anastasiia Babanina (${tutorLinkedinUrl}) for the practical install path.
 
-#QA #ClaudeCode #AItesting #BasgiathAcademy`
+#QA #ClaudeCode #AItesting`
 }
 
 /** Trigger a file download for a blob. */
