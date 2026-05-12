@@ -330,7 +330,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontSize: 22, lineHeight: 1.3, color: '#FFFFFF', fontWeight: 500,
             marginBottom: 28, maxWidth: 560,
           }}>
-            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>the Claude Code Workshop — Basics</em>, a hands-on training for QA engineers covering CLAUDE.md, slash commands, sub-agents, skills, MCP servers, hooks and plugins. Personal AI assistant built and named <em style={{ color: '#FFFFFF', fontStyle: 'italic' }}>{dragonName}</em>.
+            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>the Claude Code Workshop — Basics</em>, a hands-on training for QA engineers covering CLAUDE.md, slash commands, sub-agents, skills, MCP servers, hooks and plugins. Personal AI assistant built.
           </p>
 
           {/* Stats grid */}
