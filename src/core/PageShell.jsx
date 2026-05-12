@@ -47,10 +47,15 @@ export default function PageShell({ pageIndex, subStepId, children }) {
     <div className="h-screen w-full flex flex-col bg-bg pt-[52px] overflow-hidden">
       <div className="flex-1 flex flex-col items-center overflow-y-auto px-6 sm:px-10 lg:px-16 py-6">
         <div className="w-full max-w-[960px] mx-auto flex flex-col flex-1">
-          {/* Slide header — large, breathing */}
+          {/* Slide header — large, breathing. Eyebrow + divider dot
+              carry the participant's persona colour so the workshop
+              feels tinted to their archetype. */}
           {narrative && (
             <div className="mb-8 text-center shrink-0">
-              <div className="font-mono text-[14px] tracking-[3px] uppercase text-text-secondary mb-3">
+              <div
+                className="font-mono text-[14px] tracking-[3px] uppercase mb-3"
+                style={{ color: persona.accent }}
+              >
                 {page.title}
               </div>
               <h1 className="font-display text-[clamp(32px,5vw,56px)] font-semibold text-white mb-4 leading-[1.1]">
@@ -60,9 +65,12 @@ export default function PageShell({ pageIndex, subStepId, children }) {
                 {narrative.text}
               </p>
               <div className="flex items-center justify-center gap-4 mt-6">
-                <div className="w-10 h-px bg-border" />
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: persona.accent + '66' }} />
-                <div className="w-10 h-px bg-border" />
+                <div className="w-10 h-px" style={{ backgroundColor: persona.accent + '40' }} />
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: persona.accent, boxShadow: `0 0 12px ${persona.accent}88` }}
+                />
+                <div className="w-10 h-px" style={{ backgroundColor: persona.accent + '40' }} />
               </div>
             </div>
           )}

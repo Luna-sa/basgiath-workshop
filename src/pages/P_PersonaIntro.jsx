@@ -1,6 +1,7 @@
 import { useWorkshopStore } from '../store/workshopStore'
 import { useT } from '../i18n/useT'
 import { useLocale } from '../i18n/store'
+import { usePersona } from '../store/usePersona'
 import PageShell from '../core/PageShell'
 import CheckpointButton from '../components/CheckpointButton'
 import { CHARACTERS, pickCharacter } from '../data/characters'
@@ -15,6 +16,7 @@ export default function P_PersonaIntro() {
   const lang = useLocale(s => s.lang)
   const characterId = useWorkshopStore(s => s.user.characterId)
   const character = pickCharacter(CHARACTERS.find(c => c.id === characterId), lang)
+  const persona = usePersona()
 
   return (
     <PageShell pageIndex={10}>
@@ -86,21 +88,34 @@ edge cases первыми. Не льщу. Не разжёвываю.
         </div>
 
         {character && (
-          <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5 flex items-center gap-4">
+          <div
+            className="p-5 flex items-center gap-4 rounded-[2px]"
+            style={{
+              borderColor: persona.accent,
+              borderWidth: 1,
+              borderStyle: 'solid',
+              backgroundColor: persona.accentLight,
+              boxShadow: `0 0 24px ${persona.accent}22`,
+            }}
+          >
             {character.image && (
               <img
                 src={character.image}
                 alt={character.name}
-                className="w-14 h-14 object-cover rounded-full border border-qa-teal/40"
+                className="w-14 h-14 object-cover rounded-full"
+                style={{ border: `2px solid ${persona.accent}` }}
               />
             )}
             {!character.image && (
-              <div className="w-14 h-14 flex items-center justify-center rounded-full border border-qa-teal/40 bg-bg text-[26px]">
+              <div
+                className="w-14 h-14 flex items-center justify-center rounded-full bg-bg text-[26px]"
+                style={{ border: `2px solid ${persona.accent}` }}
+              >
                 {character.emoji}
               </div>
             )}
             <div>
-              <div className="font-mono text-[10px] tracking-[2px] uppercase text-text-dim mb-1">
+              <div className="font-mono text-[10px] tracking-[2px] uppercase mb-1" style={{ color: persona.accent }}>
                 {t('Your archetype', 'Твой архетип', 'Твій архетип')}
               </div>
               <div className="font-display italic text-xl text-white">{character.name}</div>
