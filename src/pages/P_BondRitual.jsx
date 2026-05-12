@@ -61,22 +61,39 @@ function withTimeout(promise, ms, label = 'request') {
 }
 
 // ─── Cards picker (used for breath / size / wings / eyes) ─────────
+// When the question is marked `multi: true`, value is an array of
+// option values and clicking toggles membership. Otherwise it's a
+// single-select where value is a scalar.
 function CardsPicker({ question, value, onChange, lang }) {
+  const multi = !!question.multi
+  const selected = multi ? (Array.isArray(value) ? value : []) : value
+
+  const toggle = (optValue) => {
+    if (!multi) { onChange(optValue); return }
+    const next = selected.includes(optValue)
+      ? selected.filter(v => v !== optValue)
+      : [...selected, optValue]
+    onChange(next)
+  }
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
       {question.options.map(opt => {
-        const isActive = value === opt.value
+        const isActive = multi ? selected.includes(opt.value) : selected === opt.value
         return (
           <button
             key={opt.value}
             type="button"
-            onClick={() => onChange(opt.value)}
-            className={`text-left p-4 border transition-all cursor-pointer ${
+            onClick={() => toggle(opt.value)}
+            className={`relative text-left p-4 border transition-all cursor-pointer ${
               isActive
                 ? 'border-qa-teal bg-qa-teal/[0.10] shadow-[0_0_20px_rgba(0,229,204,0.15)]'
                 : 'border-border bg-surface/40 hover:border-qa-teal/40'
             }`}
           >
+            {multi && isActive && (
+              <span className="absolute top-1.5 right-2 text-qa-teal text-[14px] leading-none">✓</span>
+            )}
             <div className="text-[26px] mb-1.5" style={opt.color ? { color: opt.color } : {}}>{opt.glyph}</div>
             <div className={`font-display italic text-[16px] leading-tight ${isActive ? 'text-white' : 'text-text-body'}`}>
               {lang === 'ru' ? opt.ru : lang === 'uk' ? (opt.uk || opt.en) : opt.en}
@@ -177,11 +194,18 @@ export default function P_BondRitual() {
 
   const updateAnswer = (id, value) => setAnswers(prev => ({ ...prev, [id]: value }))
 
+  // For 'cards' single-select: any truthy value counts as filled.
+  // For 'cards' multi-select: at least one option picked (non-empty array).
+  // For text/textarea: non-blank string.
+  const isCardsFilled = (v, q) => q.multi
+    ? Array.isArray(v) && v.length > 0
+    : !!v
+
   const currentQuestion = stage === 'questions' ? BOND_QUESTIONS[stepIdx] : null
   const isQuestionFilled = useMemo(() => {
     if (!currentQuestion) return true
     const v = answers[currentQuestion.id]
-    if (currentQuestion.type === 'cards') return !!v
+    if (currentQuestion.type === 'cards') return isCardsFilled(v, currentQuestion)
     return (v || '').trim().length > 0
   }, [currentQuestion, answers])
 
@@ -189,7 +213,7 @@ export default function P_BondRitual() {
     () => BOND_QUESTION_IDS.every(id => {
       const v = answers[id]
       const q = BOND_QUESTIONS.find(x => x.id === id)
-      if (q.type === 'cards') return !!v
+      if (q.type === 'cards') return isCardsFilled(v, q)
       return (v || '').trim().length > 0
     }),
     [answers]
@@ -692,11 +716,13 @@ export default function P_BondRitual() {
 }
 
 function Stat({ label, value }) {
-  if (!value) return null
+  // Multi-select answers come in as an array — render comma-separated.
+  const display = Array.isArray(value) ? value.filter(Boolean).join(', ') : value
+  if (!display) return null
   return (
     <div>
       <div className="text-[9px] tracking-[1.5px] uppercase text-text-dim mb-0.5">{label}</div>
-      <div className="text-[13px] text-text-body truncate">{value}</div>
+      <div className="text-[13px] text-text-body truncate">{display}</div>
     </div>
   )
 }

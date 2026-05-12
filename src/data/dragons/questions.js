@@ -27,6 +27,7 @@ export const BOND_QUESTIONS = [
   {
     id: 'breath',
     type: 'cards',
+    multi: true,
     icon: '◉',
     label_en: 'What does your dragon breathe?',
     label_ru: 'Чем дышит твой дракон?',
@@ -78,6 +79,7 @@ export const BOND_QUESTIONS = [
   {
     id: 'wings',
     type: 'cards',
+    multi: true,
     icon: '◑',
     label_en: 'Wing shape?',
     label_ru: 'Форма крыльев?',
@@ -93,6 +95,7 @@ export const BOND_QUESTIONS = [
   {
     id: 'eyes',
     type: 'cards',
+    multi: true,
     icon: '◓',
     label_en: 'Eye colour?',
     label_ru: 'Цвет глаз?',

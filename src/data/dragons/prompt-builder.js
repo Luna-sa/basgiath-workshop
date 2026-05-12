@@ -105,14 +105,28 @@ function inferPoseFromMotto(motto = '') {
   return 'standing on a windswept Aerie ridge at the edge of the cloud-line, head lifted in three-quarter view, wings folded but ready, presence absolute and unmoving, the world muted around its scaled mass'
 }
 
+// Resolve a single value or an array of values against a lookup map.
+// Multi-select questions (breath / wings / eyes) hand us an array;
+// join their visual descriptions with " AND " so the model sees
+// them as a single combined trait (e.g. fire AND lightning).
+function resolveVisual(value, map, fallback) {
+  if (Array.isArray(value)) {
+    const parts = value.map(v => map[v]).filter(Boolean)
+    if (parts.length === 0) return fallback
+    if (parts.length === 1) return parts[0]
+    return parts.join(' AND ')
+  }
+  return map[value] || fallback
+}
+
 export function buildDragonPrompt(answers = {}) {
   const scaleRaw = (answers.scale || '').trim() || 'storm-grey scales with hints of bronze along the spine'
   const breed = inferBreedFromScale(scaleRaw)
-  const breath = BREATH_VISUALS[answers.breath] || BREATH_VISUALS.fire
+  const breath = resolveVisual(answers.breath, BREATH_VISUALS, BREATH_VISUALS.fire)
   const signet = (answers.signet || '').trim() || 'a single etched rune marking across one flank, ancient and weathered'
   const size = SIZE_VISUALS[answers.size] || SIZE_VISUALS.mid
-  const wings = WING_VISUALS[answers.wings] || WING_VISUALS.membranous
-  const eyes = EYE_VISUALS[answers.eyes] || EYE_VISUALS.gold
+  const wings = resolveVisual(answers.wings, WING_VISUALS, WING_VISUALS.membranous)
+  const eyes = resolveVisual(answers.eyes, EYE_VISUALS, EYE_VISUALS.gold)
   const motto = (answers.motto || '').trim()
   const pose = inferPoseFromMotto(motto)
 
