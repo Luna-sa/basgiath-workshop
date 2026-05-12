@@ -143,16 +143,29 @@ export default function GemCategorySlide({ categoryId, pageIndex }) {
     <PageShell pageIndex={pageIndex}>
       <div className="space-y-6">
 
-        {/* Scale texture — same rhythm as the 5 gem deep-dives. */}
-        <div className="relative -mt-2 h-[60px] overflow-hidden border-y border-border opacity-60">
-          <img
-            src="/hero/gems-scale-texture.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg/60 via-bg/20 to-bg/60" />
-        </div>
+        {/* Hero image — labelled lore portrait for categories that
+            ship one (design DNA, sky-scribes…). Replaces the
+            generic scale-texture divider when present. */}
+        {category.heroImage ? (
+          <figure className="relative -mt-2 overflow-hidden border border-border bg-black">
+            <img
+              src={category.heroImage}
+              alt={`${category.name} lore portrait`}
+              className="w-full h-auto block"
+              loading="eager"
+            />
+          </figure>
+        ) : (
+          <div className="relative -mt-2 h-[60px] overflow-hidden border-y border-border opacity-60">
+            <img
+              src="/hero/gems-scale-texture.jpg"
+              alt=""
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-bg/60 via-bg/20 to-bg/60" />
+          </div>
+        )}
 
         {/* Category hero */}
         <div>
