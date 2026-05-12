@@ -105,7 +105,7 @@ export default function CharacterCommentary({ slideKey, position = 'inline' }) {
         <Avatar character={character} color={color} />
         <div className="flex-1 pr-3">
           <div className="font-mono text-[10px] tracking-[2.5px] uppercase mb-1" style={{ color }}>
-            {partnerName}
+            {speakerName}
           </div>
           <p className="font-display italic text-[13.5px] leading-relaxed text-text-body">
             {line}
