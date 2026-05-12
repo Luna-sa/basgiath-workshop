@@ -240,7 +240,7 @@ export default function P_AerieReveal() {
                   className="border border-qa-teal bg-qa-teal/[0.08] px-6 py-3 mb-6"
                 >
                   <p className="font-mono text-[12px] tracking-[4px] uppercase text-qa-teal">
-                    ✦ {t('Aerie Favourite', 'Любимец Аэрии', 'Улюбленець Аерії')} · Basgiath · {today}
+                    ✦ {t('Aerie Favourite', 'Любимец Аэрии', 'Улюбленець Аерії')} · {today}
                   </p>
                 </motion.div>
               )}
