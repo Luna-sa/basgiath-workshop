@@ -36,7 +36,7 @@ export default function P14_Leaderboard() {
       <div className="space-y-6">
         {/* Six-slot grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {CHARACTERS.map(rawC => {
+          {CHARACTERS.filter(c => c.id !== 'self').map(rawC => {
             const c = pickCharacter(rawC, lang)
             const sub = submissions.find(s => s.character_id === c.id)
             const isMine = sub && sub.nickname === (myNickname || '').toLowerCase()

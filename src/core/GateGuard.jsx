@@ -54,12 +54,7 @@ export default function GateGuard({ pageIndex, subStepId }) {
     if (isLastPage) {
       return (
         <div className="mt-6 flex justify-center">
-          <button
-            onClick={() => completePage(pageIndex)}
-            className="px-8 py-3 border border-qa-teal/40 text-qa-teal font-mono text-[12px] tracking-[2px] uppercase font-semibold hover:bg-qa-teal/10 cursor-pointer transition-all"
-          >
-            ✦ {t('Close workshop', 'Закрыть воркшоп', 'Закрити воркшоп')}
-          </button>
+          <CloseButton t={t} onClick={() => completePage(pageIndex)} />
         </div>
       )
     }
@@ -130,27 +125,91 @@ export default function GateGuard({ pageIndex, subStepId }) {
   )
 }
 
+/**
+ * The big primary action button used to advance to the next slide.
+ * Persona-coloured solid fill (the CSS var --char-accent is set by
+ * usePersona on mount). High-contrast black text. Pulsing glow shadow
+ * pulls the eye; chevron nudges on hover. Designed to be the loudest
+ * thing on the slide so participants never miss "where do I click".
+ */
 function NextButton({ onClick, t }) {
   return (
     <button
       onClick={onClick}
-      className="group relative inline-flex items-center gap-2.5 px-10 py-4 bg-qa-teal text-black font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] animate-pulse-teal hover:bg-qa-teal-soft hover:shadow-[0_0_32px_rgba(0,229,204,0.3)] hover:-translate-y-0.5 transition-all cursor-pointer overflow-hidden"
+      className="group relative inline-flex items-center gap-3 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+      style={{
+        backgroundColor: 'var(--char-accent)',
+        color: '#0A0A0A',
+        padding: '16px 36px',
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: '15px',
+        fontWeight: 700,
+        letterSpacing: '1px',
+        borderRadius: '2px',
+        boxShadow: '0 0 0 2px var(--char-accent), 0 0 32px 0 var(--char-accent-light, rgba(0,229,204,0.25))',
+        overflow: 'hidden',
+      }}
     >
-      {t('Next', 'Далее', 'Далі')}
-      <span className="text-lg">→</span>
-      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600" />
+      <span className="relative z-10">{t('Next', 'Далее', 'Далі')}</span>
+      <span className="relative z-10 text-xl transition-transform duration-300 group-hover:translate-x-1">→</span>
+      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
     </button>
   )
 }
 
+/**
+ * Outline variant for "I did it" self-report confirmation. Persona-
+ * coloured border + text, transparent fill, hovers to filled state.
+ */
 function SelfReportButton({ onConfirm, t }) {
   return (
     <button
       onClick={onConfirm}
-      className="group inline-flex items-center gap-2.5 px-8 py-4 border-2 border-qa-teal/40 text-qa-teal font-body text-[15px] font-semibold tracking-[1px] rounded-[2px] hover:bg-qa-teal/10 hover:border-qa-teal transition-all cursor-pointer"
+      className="group inline-flex items-center gap-2.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+      style={{
+        padding: '14px 28px',
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: '14px',
+        fontWeight: 600,
+        letterSpacing: '1px',
+        border: '2px solid var(--char-accent)',
+        color: 'var(--char-accent)',
+        backgroundColor: 'var(--char-accent-light, transparent)',
+        borderRadius: '2px',
+      }}
     >
       <span className="text-lg">✓</span>
-      {t('I did it', 'Я сделал(а)', 'Я зробив(ла)')}
+      <span>{t('I did it', 'Я сделал(а)', 'Я зробив(ла)')}</span>
+    </button>
+  )
+}
+
+/**
+ * Workshop-closer button for the very last slide. Distinct from Next
+ * (heavier outline + ✦ icon, not chevron) so it reads as a finale,
+ * not a continuation.
+ */
+function CloseButton({ onClick, t }) {
+  return (
+    <button
+      onClick={onClick}
+      className="group inline-flex items-center gap-3 cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+      style={{
+        padding: '16px 32px',
+        fontFamily: "'JetBrains Mono', monospace",
+        fontSize: '13px',
+        fontWeight: 700,
+        letterSpacing: '3px',
+        textTransform: 'uppercase',
+        border: '2px solid var(--char-accent)',
+        color: 'var(--char-accent)',
+        backgroundColor: 'var(--char-accent-light, transparent)',
+        borderRadius: '2px',
+        boxShadow: '0 0 24px 0 var(--char-accent-light, rgba(0,229,204,0.2))',
+      }}
+    >
+      <span className="text-lg">✦</span>
+      <span>{t('Close workshop', 'Закрыть воркшоп', 'Закрити воркшоп')}</span>
     </button>
   )
 }

@@ -41,7 +41,7 @@ export default function P01_CharacterSelect() {
 
       {/* Character grid — 2 columns, photo dominant */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {CHARACTERS.map(raw => {
+        {CHARACTERS.filter(c => c.id !== 'self').map(raw => {
           const c = pickCharacter(raw, lang)
           const isSelected = characterId === c.id
 
