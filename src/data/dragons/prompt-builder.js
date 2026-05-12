@@ -132,12 +132,27 @@ const SIGNET_VISUALS = [
   },
 ]
 
+// Multi-theme aware. Each SIGNET_VISUALS entry already names its own
+// body part (flank, shoulder, jaw, throat, spine, haunch, chest) so
+// combining 2-3 markings produces a coherent multi-mark dragon. Cap
+// at 3 to avoid visual chaos — a dragon plastered with 6 different
+// markings looks like a tattoo parlor sample sheet.
 function inferSignetFromText(sigilText = '') {
   const s = String(sigilText || '').toLowerCase()
+  const matches = []
   for (const rule of SIGNET_VISUALS) {
-    if (rule.match.test(s)) return rule.visual
+    if (rule.match.test(s)) {
+      matches.push(rule.visual)
+      if (matches.length >= 3) break
+    }
   }
-  return 'a single ancient etched rune across one flank, weathered into the scale until almost part of the hide'
+  if (matches.length === 0) {
+    return 'a single ancient etched rune across one flank, weathered into the scale until almost part of the hide'
+  }
+  if (matches.length === 1) return matches[0]
+  // Two markings: A and B. Three markings: A, B, and C.
+  if (matches.length === 2) return `${matches[0]}, and ${matches[1]}`
+  return `${matches[0]}, ${matches[1]}, and ${matches[2]}`
 }
 
 /** Pose / mood inferred from motto sentiment. */
