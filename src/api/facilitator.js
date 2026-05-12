@@ -115,6 +115,44 @@ export async function resetArenaRuns(nickname) {
   return { error: { message: 'resetArenaRuns not implemented on the supabase fallback path' } }
 }
 
+// ── Aerie tiebreak (Apps Script v12) ──────────────────────────
+
+export async function getAerieTiebreakCandidates() {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('getAerieTiebreakCandidates')
+      return { candidates: res?.candidates || [], maxVotes: res?.maxVotes || 0, error: null }
+    } catch (e) {
+      return { candidates: [], maxVotes: 0, error: { message: e?.message } }
+    }
+  }
+  return { candidates: [], maxVotes: 0, error: { message: 'tiebreak not implemented on supabase fallback path' } }
+}
+
+export async function startAerieTiebreak(dragonIds) {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('startAerieTiebreak', { dragonIds })
+      return { error: null, ok: res?.ok }
+    } catch (e) {
+      return { error: { message: e?.message || 'startAerieTiebreak failed' } }
+    }
+  }
+  return { error: { message: 'tiebreak not implemented on supabase fallback path' } }
+}
+
+export async function endAerieTiebreak() {
+  if (gsheetsEnabled()) {
+    try {
+      const res = await callAction('endAerieTiebreak')
+      return { error: null, ok: res?.ok }
+    } catch (e) {
+      return { error: { message: e?.message || 'endAerieTiebreak failed' } }
+    }
+  }
+  return { error: { message: 'tiebreak not implemented on supabase fallback path' } }
+}
+
 export async function addArenaRun({ nickname, score, characterId, fireStars = 0, starsCollected = 0, maxCombo = 0, wallsHit = 0 }) {
   if (gsheetsEnabled()) {
     try {

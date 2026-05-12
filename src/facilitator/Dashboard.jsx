@@ -5,6 +5,7 @@ import {
   getAllStudents, setWorkshopPhase, deleteStudent,
   awardXp, setAnnouncement, getPrizes, updatePrize,
   resetStudentProgress, resetArenaRuns, addArenaRun,
+  getAerieTiebreakCandidates, startAerieTiebreak, endAerieTiebreak,
 } from '../api/facilitator'
 import { getFacilitatorState } from '../api/progress'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
@@ -20,6 +21,11 @@ export default function Dashboard() {
   const [submissionsLoading, setSubmissionsLoading] = useState(false)
   const [announceText, setAnnounceText] = useState('')
   const [prizes, setPrizes] = useState([])
+  // Aerie tiebreak state
+  const [tbCandidates, setTbCandidates] = useState([])
+  const [tbMaxVotes, setTbMaxVotes] = useState(0)
+  const [tbActiveIds, setTbActiveIds] = useState([])
+  const [tbBusy, setTbBusy] = useState(false)
 
   const handleAwardXp = async (student, amount) => {
     setBusyId(student.id)
@@ -101,6 +107,45 @@ export default function Dashboard() {
     alert(`@${student.nickname} arena wiped · ${deleted} runs removed`)
   }
 
+  const refreshTiebreak = async () => {
+    const { candidates, maxVotes } = await getAerieTiebreakCandidates()
+    setTbCandidates(candidates)
+    setTbMaxVotes(maxVotes)
+    // Read current active tiebreak ids from facilitator state
+    const fs = await getFacilitatorState()
+    let ids = []
+    if (fs?.tiebreak_dragon_ids) {
+      const raw = fs.tiebreak_dragon_ids
+      try { ids = typeof raw === 'string' ? JSON.parse(raw) : (Array.isArray(raw) ? raw : []) } catch { ids = [] }
+    }
+    setTbActiveIds(ids)
+  }
+
+  const handleStartTiebreak = async () => {
+    if (tbCandidates.length < 2) {
+      alert('Need at least 2 tied dragons at the top to start a tiebreak. Currently: ' + tbCandidates.length)
+      return
+    }
+    const names = tbCandidates.map(c => `@${c.nickname} (${c.name})`).join(', ')
+    if (!window.confirm(`Start AERIE TIEBREAK with ${tbCandidates.length} dragons (${names})?\n\n• All existing dragon_votes will be wiped\n• Every voter gets a fresh 3-vote quota\n• Aerie shows only these dragons until you end the round`)) return
+    setTbBusy(true)
+    const { error } = await startAerieTiebreak(tbCandidates.map(c => c.id))
+    setTbBusy(false)
+    if (error) { alert('Start tiebreak failed: ' + (error.message || JSON.stringify(error))); return }
+    await refreshTiebreak()
+    alert('Tiebreak active. Voters now see only the tied dragons.')
+  }
+
+  const handleEndTiebreak = async () => {
+    if (!window.confirm('End the Aerie tiebreak round? The current vote counts on the tiebreak dragons become the final result.')) return
+    setTbBusy(true)
+    const { error } = await endAerieTiebreak()
+    setTbBusy(false)
+    if (error) { alert('End tiebreak failed: ' + (error.message || JSON.stringify(error))); return }
+    await refreshTiebreak()
+    alert('Tiebreak ended. Aerie is back to normal view.')
+  }
+
   const handleAddArenaRun = async (student) => {
     const scoreStr = window.prompt(`Add a manual arena run for @${student.nickname}. Score?`, '')
     if (scoreStr == null) return
@@ -143,7 +188,8 @@ export default function Dashboard() {
     load()
     refreshSubmissions()
     refreshPrizes()
-    const interval = setInterval(load, 3000)
+    refreshTiebreak()
+    const interval = setInterval(() => { load(); refreshTiebreak() }, 3000)
     return () => clearInterval(interval)
   }, [])
 
@@ -418,10 +464,76 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick Actions removed — they called handleAdvance which
-            was undefined (legacy facilitator-gating that was disabled
-            when the workshop went self-paced). Re-add slide-jump
-            controls if the gating model returns. */}
+        {/* ─── Aerie tiebreak controls ─── */}
+        <div className="mb-8 p-5 border border-amber-400/40 bg-amber-400/[0.04]">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
+            <div>
+              <div className="font-mono text-[12px] tracking-[2px] uppercase text-amber-300">
+                ⚡ Aerie tiebreak
+              </div>
+              <div className="text-[12px] text-text-dim mt-1">
+                When the top of the Aerie is tied, run a clean re-vote round on just the tied dragons.
+                {tbActiveIds.length > 0 && (
+                  <span className="ml-2 text-amber-300">· ACTIVE on {tbActiveIds.length} dragons</span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={refreshTiebreak}
+              className="font-mono text-[11px] text-amber-300 hover:underline cursor-pointer"
+            >
+              Refresh
+            </button>
+          </div>
+
+          {tbCandidates.length === 0 ? (
+            <div className="text-[13px] text-text-dim italic">No dragons sealed yet — nothing to tiebreak.</div>
+          ) : tbCandidates.length === 1 ? (
+            <div className="text-[13px] text-text-body">
+              Current leader: <span className="text-amber-300 font-mono">@{tbCandidates[0].nickname}</span> with <span className="text-amber-300">{tbMaxVotes}</span> votes.
+              <span className="text-text-dim italic"> No tie — nothing to break.</span>
+            </div>
+          ) : (
+            <>
+              <div className="text-[13px] text-text-body mb-3">
+                <span className="text-amber-300 font-semibold">{tbCandidates.length} dragons</span> are tied at the top with <span className="text-amber-300 font-mono">{tbMaxVotes}</span> votes each:
+              </div>
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                {tbCandidates.map(c => (
+                  <div key={c.id} className="border border-border bg-bg/50 p-3">
+                    <div className="font-mono text-[12px] text-qa-teal">@{c.nickname}</div>
+                    <div className="text-[13px] text-white">{c.name}</div>
+                    <div className="font-mono text-[10px] text-text-dim mt-1">{c.character_id}</div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className="flex gap-2 flex-wrap">
+            {tbActiveIds.length > 0 ? (
+              <button
+                onClick={handleEndTiebreak}
+                disabled={tbBusy}
+                className="bg-amber-400 text-black px-5 py-2 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(251,191,36,0.4)] transition-all cursor-pointer disabled:opacity-40"
+              >
+                {tbBusy ? 'working…' : 'End tiebreak round'}
+              </button>
+            ) : (
+              <button
+                onClick={handleStartTiebreak}
+                disabled={tbBusy || tbCandidates.length < 2}
+                className="bg-amber-400 text-black px-5 py-2 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(251,191,36,0.4)] transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                {tbBusy
+                  ? 'working…'
+                  : tbCandidates.length < 2
+                    ? 'Need 2+ tied'
+                    : `Start tiebreak with ${tbCandidates.length} dragons`}
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* Student tracker */}
         <div className="border border-border">

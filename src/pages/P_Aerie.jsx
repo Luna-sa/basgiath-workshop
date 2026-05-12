@@ -10,6 +10,7 @@ import {
   subscribeToAerie,
   MAX_VOTES_PER_VOTER,
 } from '../api/dragons'
+import { getFacilitatorState } from '../api/progress'
 import { generateFakeDragons } from '../data/dragons/fixtures'
 
 /**
@@ -30,6 +31,11 @@ export default function P_Aerie() {
   // state should only show after the network call resolves, not in
   // the first 200-500ms while the first fetch is in flight.
   const [loaded, setLoaded] = useState(false)
+  // List of dragon ids that the facilitator picked for the tiebreak
+  // round. When non-empty, the Aerie filters to ONLY those dragons
+  // and shows a TIEBREAK ROUND banner. Polled with the same cadence
+  // as the rest of the facilitator state.
+  const [tiebreakIds, setTiebreakIds] = useState([])
 
   const params = useMemo(() => new URLSearchParams(window.location.search), [])
   const previewN = parseInt(params.get('preview') || '0', 10)
@@ -54,6 +60,19 @@ export default function P_Aerie() {
       const votes = await getMyVotes(myNickname)
       setMyVotes(votes)
     }
+    // Poll facilitator state for tiebreak roster. Parse the JSON-
+    // encoded dragon-ids list if present.
+    try {
+      const fs = await getFacilitatorState()
+      const raw = fs?.tiebreak_dragon_ids
+      let ids = []
+      if (raw && typeof raw === 'string' && raw.trim()) {
+        try { ids = JSON.parse(raw) } catch { ids = [] }
+      } else if (Array.isArray(raw)) {
+        ids = raw
+      }
+      setTiebreakIds(Array.isArray(ids) ? ids : [])
+    } catch { /* facilitator state optional */ }
     setLoaded(true)
   }
 
@@ -117,7 +136,16 @@ export default function P_Aerie() {
     }
   }
 
-  const sortedDragons = [...dragons].sort((a, b) => {
+  // Tiebreak mode: when the facilitator has picked a roster of tied
+  // top dragons, the Aerie only shows those. Everyone else's dragon
+  // is hidden until the tiebreak ends. Outside of tiebreak mode all
+  // dragons are visible as usual.
+  const inTiebreak = tiebreakIds.length > 0
+  const visibleDragons = inTiebreak
+    ? dragons.filter(d => tiebreakIds.includes(d.id))
+    : dragons
+
+  const sortedDragons = [...visibleDragons].sort((a, b) => {
     if (b.vote_count !== a.vote_count) return b.vote_count - a.vote_count
     return new Date(a.sealed_at) - new Date(b.sealed_at)
   })
@@ -128,6 +156,32 @@ export default function P_Aerie() {
   return (
     <div className="min-h-screen bg-bg text-text-body py-10 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto">
+
+        {/* Tiebreak banner — only when facilitator has activated a
+            tiebreak round. Sits above the header so it's the first
+            thing voters see. */}
+        {inTiebreak && (
+          <div className="mb-8 border-2 border-amber-400 bg-amber-400/[0.08] p-5 text-center shadow-[0_0_40px_rgba(251,191,36,0.25)]">
+            <p className="font-mono text-[11px] tracking-[4px] uppercase text-amber-300 mb-2">
+              ⚡ {t('Tiebreak Round', 'Тай-брейк раунд', 'Тай-брейк раунд')}
+            </p>
+            <p className="font-display italic text-[clamp(22px,3vw,30px)] text-white leading-tight mb-2">
+              {t(
+                `${tiebreakIds.length} dragons tied at the top — vote again, only on these.`,
+                `${tiebreakIds.length} дракона в ничье на вершине — голосуй заново, только за них.`,
+                `${tiebreakIds.length} драконів у нічиї на вершині — голосуй наново, тільки за них.`
+              )}
+            </p>
+            <p className="font-mono text-[11px] text-amber-200/80">
+              {t(
+                'Your previous votes were cleared. Fresh 3-vote quota for this round.',
+                'Прошлые голоса очищены. Свежий quota 3 голоса на этот раунд.',
+                'Попередні голоси очищено. Свіжий quota 3 голоси на цей раунд.'
+              )}
+            </p>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-10">
           <p className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-2">

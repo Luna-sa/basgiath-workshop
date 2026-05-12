@@ -69,6 +69,7 @@ const HEADERS = {
     'key', 'unlocked_page', 'workshop_phase', 'announcement',
     'announcement_at', 'active_round_id', 'active_timer_start',
     'active_timer_duration', 'round_ended', 'round_winners',
+    'tiebreak_dragon_ids',
     'updated_at',
   ],
   [SHEETS.FEEDBACK]: [
@@ -131,6 +132,10 @@ function doPost(e) {
       deleteArenaByNickname,
       addArenaRun,
       adjustXp,
+      // aerie tiebreak
+      getAerieTiebreakCandidates,
+      startAerieTiebreak,
+      endAerieTiebreak,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -733,6 +738,7 @@ function getMatchLeaderboard() {
 // ───────────────────────── Facilitator ────────────────────────
 
 function getFacilitatorState() {
+  _ensureFacilitatorColumns()
   const rows = _allRows(SHEETS.FACILITATOR)
   return rows[0] || null
 }
@@ -740,6 +746,7 @@ function getFacilitatorState() {
 function setFacilitatorState({ patch }) {
   return _withScriptLock(function () {
     if (!patch) throw new Error('patch required')
+    _ensureFacilitatorColumns()
     const rowIdx = _findRowIndex(SHEETS.FACILITATOR, r => r.key === FACILITATOR_KEY)
     if (rowIdx < 0) {
       _appendRow(SHEETS.FACILITATOR, { key: FACILITATOR_KEY, ...patch, updated_at: _now() })
@@ -747,6 +754,109 @@ function setFacilitatorState({ patch }) {
       _updateRow(SHEETS.FACILITATOR, rowIdx, { ...patch, updated_at: _now() })
     }
     return getFacilitatorState()
+  })
+}
+
+/**
+ * Sync the facilitator_state sheet header row to the HEADERS array.
+ * Used to add columns introduced by code updates without forcing
+ * the operator to re-run doSetup() and risk wiping data. Idempotent.
+ */
+function _ensureFacilitatorColumns() {
+  const sheet = _sheet(SHEETS.FACILITATOR)
+  const wanted = HEADERS[SHEETS.FACILITATOR]
+  const lastCol = Math.max(sheet.getLastColumn(), 1)
+  const current = sheet.getRange(1, 1, 1, lastCol).getValues()[0]
+  // Already up to date — quick exit
+  if (current.length >= wanted.length && wanted.every((h, i) => current[i] === h)) {
+    return
+  }
+  // Resize + rewrite the header row, preserving any data already in
+  // those columns. New columns get empty values for existing rows.
+  sheet.getRange(1, 1, 1, wanted.length).setValues([wanted])
+  sheet.setFrozenRows(1)
+}
+
+// ───────────────────────── Aerie tiebreak ────────────────────────
+//
+// Live-workshop tool. When the final voting closes with a tie at
+// the top, the facilitator runs a tiebreak round: only the tied
+// dragons remain visible to voters, everyone gets a fresh 3-vote
+// quota, the round runs for a few minutes, the highest count wins.
+//
+// Implementation:
+//   1. getAerieTiebreakCandidates() — finds the highest vote_count
+//      and returns every dragon at that level (auto-detect)
+//   2. startAerieTiebreak({ dragonIds }) — wipes ALL dragon_votes
+//      rows (clean slate so quotas reset for everyone), stores the
+//      tiebreak dragon list in facilitator_state.tiebreak_dragon_ids
+//   3. endAerieTiebreak() — clears tiebreak_dragon_ids so the UI
+//      goes back to normal Aerie view; the final vote_count of each
+//      tiebreak dragon is now the result
+
+function getAerieTiebreakCandidates() {
+  const dragons = _allRows(SHEETS.DRAGONS)
+  if (dragons.length === 0) return { candidates: [], maxVotes: 0 }
+  const maxVotes = dragons.reduce((m, d) => Math.max(m, Number(d.vote_count) || 0), 0)
+  const candidates = dragons
+    .filter(d => (Number(d.vote_count) || 0) === maxVotes)
+    .map(d => ({
+      id: d.id,
+      nickname: d.nickname,
+      name: d.name,
+      vote_count: Number(d.vote_count) || 0,
+      character_id: d.character_id,
+      image_url: d.image_url,
+    }))
+  return { candidates, maxVotes }
+}
+
+function startAerieTiebreak({ dragonIds }) {
+  if (!Array.isArray(dragonIds) || dragonIds.length < 2) {
+    throw new Error('dragonIds array required with at least 2 entries')
+  }
+  return _withScriptLock(function () {
+    // 1. Wipe ALL dragon_votes rows — every voter gets a fresh
+    //    3-vote quota for the tiebreak round.
+    const votesSheet = _sheet(SHEETS.DRAGON_VOTES)
+    const allVotes = _allRows(SHEETS.DRAGON_VOTES)
+    for (let i = allVotes.length - 1; i >= 0; i--) {
+      votesSheet.deleteRow(i + 2)
+    }
+    // 2. Reset vote_count on every dragon so the UI starts from 0.
+    const dragonsSheet = _sheet(SHEETS.DRAGONS)
+    const allDragons = _allRows(SHEETS.DRAGONS)
+    for (let i = 0; i < allDragons.length; i++) {
+      _updateRow(SHEETS.DRAGONS, i + 2, { vote_count: 0 })
+    }
+    // 3. Write tiebreak roster to facilitator_state.
+    _ensureFacilitatorColumns()
+    const rowIdx = _findRowIndex(SHEETS.FACILITATOR, r => r.key === FACILITATOR_KEY)
+    const payload = {
+      tiebreak_dragon_ids: JSON.stringify(dragonIds),
+      updated_at: _now(),
+    }
+    if (rowIdx < 0) {
+      _appendRow(SHEETS.FACILITATOR, { key: FACILITATOR_KEY, ...payload })
+    } else {
+      _updateRow(SHEETS.FACILITATOR, rowIdx, payload)
+    }
+    SpreadsheetApp.flush()
+    return { ok: true, tiebreak_dragon_ids: dragonIds, voters_reset: true }
+  })
+}
+
+function endAerieTiebreak() {
+  return _withScriptLock(function () {
+    _ensureFacilitatorColumns()
+    const rowIdx = _findRowIndex(SHEETS.FACILITATOR, r => r.key === FACILITATOR_KEY)
+    if (rowIdx < 0) return { ok: true, cleared: false }
+    _updateRow(SHEETS.FACILITATOR, rowIdx, {
+      tiebreak_dragon_ids: '',
+      updated_at: _now(),
+    })
+    SpreadsheetApp.flush()
+    return { ok: true, cleared: true }
   })
 }
 
