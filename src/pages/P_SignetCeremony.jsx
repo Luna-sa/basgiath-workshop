@@ -253,19 +253,34 @@ function QuestionField({ question, value, onChange, lang, characterId, character
       ) : isTextarea ? (
         <textarea
           value={value || ''}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value.slice(0, question.maxLength || Infinity))}
           rows={question.rows || 3}
           placeholder={placeholder}
+          maxLength={question.maxLength}
           className="w-full bg-bg/80 border border-border focus:border-qa-teal/60 rounded-[2px] px-3 py-2.5 text-[14px] text-text-body placeholder-text-dim/60 font-body leading-relaxed transition-colors focus:outline-none resize-y"
         />
       ) : (
         <input
           type="text"
           value={value || ''}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value.slice(0, question.maxLength || Infinity))}
           placeholder={placeholder}
+          maxLength={question.maxLength}
           className="w-full bg-bg/80 border border-border focus:border-qa-teal/60 rounded-[2px] px-3 py-2.5 text-[14px] text-text-body placeholder-text-dim/60 font-body transition-colors focus:outline-none"
         />
+      )}
+      {question.maxLength && (
+        <div className="flex justify-end mt-1">
+          <span className={`font-mono text-[10px] tracking-[1px] ${
+            (value || '').length >= question.maxLength
+              ? 'text-amber-400'
+              : (value || '').length >= question.maxLength * 0.85
+                ? 'text-amber-300/70'
+                : 'text-text-dim'
+          }`}>
+            {(value || '').length} / {question.maxLength}
+          </span>
+        </div>
       )}
     </div>
   )
@@ -415,20 +430,25 @@ export default function P_SignetCeremony() {
     })
 
     // Build the persistence payload — visual profile + the rider's
-    // vow (free-form text). The vow doesn't influence the image but
-    // surfaces on the Aerie cards as the pull quote underneath each
-    // dragon, giving voters an extra signal beyond pure visuals.
+    // motto (short battle-cry text, separate question from vow).
+    // The motto doesn't influence the image but surfaces on the
+    // Aerie cards as the pull quote underneath each dragon, giving
+    // voters an extra signal beyond pure visuals. Capped to 120
+    // chars at input time so the card layout stays clean.
     //
-    // Cap at ~220 chars for the Aerie pull-quote — the card layout
-    // is narrow and long vows break the grid. Full text still lives
-    // in CLAUDE.md where the rider keeps every word.
-    const rawVow = (answers.vow || '').trim().replace(/\s+/g, ' ')
-    const aerieMotto = rawVow.length > 220
-      ? rawVow.slice(0, 219).replace(/\s+\S*$/, '') + '…'
-      : rawVow
+    // Fallback: if the rider didn't fill the motto field but did
+    // fill the vow, use a truncated vow so the Aerie isn't empty.
+    const rawMotto = (answers.motto || '').trim().replace(/\s+/g, ' ')
+    const fallbackVow = (answers.vow || '').trim().replace(/\s+/g, ' ')
+    let displayMotto = rawMotto
+    if (!displayMotto && fallbackVow) {
+      displayMotto = fallbackVow.length > 120
+        ? fallbackVow.slice(0, 119).replace(/\s+\S*$/, '') + '…'
+        : fallbackVow
+    }
     const aerieAnswers = {
       ...derived,
-      motto: aerieMotto,
+      motto: displayMotto,
     }
 
     // Persist to bond-ritual-answers so templates that read the dragon

@@ -173,10 +173,14 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             boxShadow: 'inset 0 0 40px rgba(0,0,0,0.5), 0 8px 24px rgba(0,229,204,0.10)',
           }}>
             {dragonImageUrl ? (
+              // No crossOrigin attribute — the dragon arrives as a
+              // base64 data URI which has no CORS semantics; setting
+              // crossOrigin can make Chromium silently fail to decode
+              // it and the portrait shows the monogram fallback even
+              // though the data is right there.
               <img
                 src={dragonImageUrl}
                 alt={dragonName}
-                crossOrigin="anonymous"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (

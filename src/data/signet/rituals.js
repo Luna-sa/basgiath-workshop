@@ -184,6 +184,77 @@ things compete with it.`,
           },
         ],
       },
+      // ── Motto — short identity line for the Aerie ──────────────
+      // This is intentionally SEPARATE from `vow`. The vow above is
+      // a working creed for the rider's CLAUDE.md (long, paragraph).
+      // The motto is what the Aerie pull-quote shows under the
+      // dragon image — a battle cry, an identity line, six words
+      // people read while voting. Hard-capped at 120 characters so
+      // the Aerie card layout stays clean (2-3 lines, no overflow).
+      {
+        id: 'motto',
+        type: 'text',
+        maxLength: 120,
+        label_en: 'Your battle cry — short.',
+        label_ru: 'Боевой клич — коротко.',
+        label_uk: 'Бойовий клич — коротко.',
+        hint_en: 'One line that surfaces on the Aerie under your dragon — what the squad reads while voting. Up to 120 characters. The full vow above stays in your CLAUDE.md.',
+        hint_ru: 'Одна строка которая появится на Aerie под твоим драконом - то что отряд прочтёт пока голосует. До 120 символов. Полный vow выше остаётся в твоём CLAUDE.md.',
+        hint_uk: 'Один рядок, який зʼявиться на Aerie під твоїм драконом - те, що загін прочитає, поки голосує. До 120 символів. Повна обітниця вище залишається у твоєму CLAUDE.md.',
+        placeholder_en: 'Slow is smooth. Smooth is fast.',
+        placeholder_ru: 'Медленно значит ровно. Ровно значит быстро.',
+        placeholder_uk: 'Повільно значить рівно. Рівно значить швидко.',
+        presets: [
+          {
+            label_en: 'Slow is smooth, smooth is fast',
+            label_ru: 'Медленно — ровно — быстро',
+            label_uk: 'Повільно — рівно — швидко',
+            text_en: 'Slow is smooth. Smooth is fast.',
+            text_ru: 'Медленно значит ровно. Ровно значит быстро.',
+            text_uk: 'Повільно значить рівно. Рівно значить швидко.',
+          },
+          {
+            label_en: 'Catch it before prod does',
+            label_ru: 'Поймаю до прода',
+            label_uk: 'Зловлю до проду',
+            text_en: 'I catch it before prod does.',
+            text_ru: 'Поймаю до того как поймает прод.',
+            text_uk: 'Зловлю до того як зловить прод.',
+          },
+          {
+            label_en: 'Not "it works" — "I know why"',
+            label_ru: 'Не «работает» — «знаю почему»',
+            label_uk: 'Не «працює» — «знаю чому»',
+            text_en: 'Not "it works" — "I know why."',
+            text_ru: 'Не «работает» — «знаю почему».',
+            text_uk: 'Не «працює» — «знаю чому».',
+          },
+          {
+            label_en: 'Quiet flight, sharp eye',
+            label_ru: 'Тихий полёт, острый глаз',
+            label_uk: 'Тихий політ, гостре око',
+            text_en: 'Quiet flight. Sharp eye.',
+            text_ru: 'Тихий полёт. Острый глаз.',
+            text_uk: 'Тихий політ. Гостре око.',
+          },
+          {
+            label_en: "Doubt isn't weakness",
+            label_ru: 'Сомнение — не слабость',
+            label_uk: 'Сумнів — не слабкість',
+            text_en: "Doubt isn't weakness. It's the first check.",
+            text_ru: 'Сомнение не слабость. Это первая проверка.',
+            text_uk: 'Сумнів - не слабкість. Це перша перевірка.',
+          },
+          {
+            label_en: 'No silent costs',
+            label_ru: 'Никаких скрытых цен',
+            label_uk: 'Жодних тихих цін',
+            text_en: 'No silent costs. Name the price.',
+            text_ru: 'Никаких скрытых цен. Назови цену.',
+            text_uk: 'Жодних тихих цін. Назви ціну.',
+          },
+        ],
+      },
     ],
   },
 
