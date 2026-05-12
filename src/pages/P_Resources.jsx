@@ -280,6 +280,20 @@ export default function P_Resources() {
     <div className="min-h-screen px-6 py-16 sm:py-24">
       <div className="max-w-[980px] mx-auto">
 
+        {/* TAKE IT HOME — labelled satchel hero. Dragon-stamped
+            leather case opened to reveal scrolls, list, eye-tokens,
+            booklet, key + quill & ink. Carries the page's framing
+            in one image so the header can drop straight into the
+            "Take it home, rider" line. */}
+        <figure className="relative mb-12 overflow-hidden border border-border bg-black">
+          <img
+            src="/hero/resources-satchel.jpg"
+            alt="Leather satchel with dragon emblem, opened to scrolls and a key — take it home"
+            className="w-full h-auto block"
+            loading="eager"
+          />
+        </figure>
+
         {/* ─── Hero ─── */}
         <header className="mb-20">
           <div className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-5">
