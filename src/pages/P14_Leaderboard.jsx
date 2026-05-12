@@ -125,26 +125,29 @@ export default function P14_Leaderboard() {
           </div>
         )}
 
-        {/* Final battle CTA - open in new tab */}
-        <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5 rounded-[2px] text-center space-y-3">
-          <p className="font-display italic text-xl text-white">
-            {t('Time for the final flight.', 'Время финального полёта.', 'Час фінального польоту.')}
-          </p>
-          <a
-            href="/?page=arena&final=1"
-            target="_blank"
-            rel="noopener"
-            className="inline-block bg-qa-teal text-black px-7 py-3 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all animate-pulse-teal"
-          >
-            {t('Open Final Battle →', 'Запустить финал →', 'Запустити фінал →')}
-          </a>
-          <p className="text-[12px] text-text-dim italic">
-            {t(
-              'Submitted bots load on the projector. The sky judges who took the most stars.',
-              'Submitted боты загружаются на проектор. Небо судит кто собрал больше звёзд.',
-              'Submitted боти завантажуються на проектор. Небо судить, хто зібрав більше зірок.'
-            )}
-          </p>
+        {/* Closing transition — every signet on the board, next
+            slide reveals the champions. Aurora as anticipation
+            mood instead of the projector-mode CTA. */}
+        <div className="relative overflow-hidden border border-qa-teal/30">
+          <img
+            src="/hero/leaderboard-aurora.jpg"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/60 to-bg/30" />
+          <div className="relative text-center px-6 py-10">
+            <p className="font-display italic text-[clamp(22px,2.6vw,30px)] text-white leading-tight mb-3">
+              {t(
+                'Every signet on the board.',
+                'Все сигнеты на доске.',
+                'Усі сигнети на дошці.'
+              )}
+            </p>
+            <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal">
+              {t('Champions next →', 'Победители - на следующем слайде →', 'Переможці - на наступному слайді →')}
+            </p>
+          </div>
         </div>
       </div>
     </PageShell>
