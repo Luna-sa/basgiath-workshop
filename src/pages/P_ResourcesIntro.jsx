@@ -16,6 +16,7 @@ import PageShell from '../core/PageShell'
 import { useWorkshopStore } from '../store/workshopStore'
 import WorkshopCertificate from '../components/WorkshopCertificate'
 import { buildLinkedInCaption, downloadBlob } from '../utils/sigilCard'
+import { submitFeedback } from '../api/feedback'
 
 const TUTOR_LINKEDIN_URL = 'https://www.linkedin.com/in/ainastasia/'
 
@@ -27,9 +28,38 @@ export default function P_ResourcesIntro() {
   const [busy, setBusy] = useState(false)
   const [toast, setToast] = useState('')
 
+  // Feedback form state
+  const [fbRating, setFbRating] = useState(0)
+  const [fbHover, setFbHover] = useState(0)
+  const [fbComment, setFbComment] = useState('')
+  const [fbSent, setFbSent] = useState(false)
+  const [fbBusy, setFbBusy] = useState(false)
+  const [fbError, setFbError] = useState('')
+
   const riderName = user.name?.trim() || ''
   const dragonName = sigil?.dragonName || 'Unnamed'
   const sealedAt = sigil?.sealedAt || Date.now()
+
+  const handleFeedbackSubmit = async (e) => {
+    e?.preventDefault?.()
+    if (fbBusy || fbSent || !fbRating) return
+    setFbBusy(true)
+    setFbError('')
+    try {
+      await submitFeedback({
+        studentId: user.id || null,
+        nickname: user.nickname || '',
+        characterId: user.characterId || null,
+        rating: fbRating,
+        comment: fbComment,
+      })
+      setFbSent(true)
+    } catch (err) {
+      setFbError(err?.message || 'submit failed')
+    } finally {
+      setFbBusy(false)
+    }
+  }
 
   // Live preview scale — cert is rendered at native 1120×792; we
   // shrink for the slide. Keep the source DOM at 1× so the PNG
@@ -194,6 +224,127 @@ export default function P_ResourcesIntro() {
             )}
           </p>
         )}
+
+        {/* ─── Feedback form ───
+            Two-field, takes ~15 seconds. Saves to gsheets if the
+            Apps Script knows the action, else Supabase, else a
+            local queue so nothing is lost. */}
+        <section className="mt-10 pt-8 border-t border-border max-w-2xl mx-auto">
+          {fbSent ? (
+            <div className="text-center">
+              <p className="font-display italic text-2xl text-white">
+                {t('Thanks — feedback received.', 'Спасибо - отзыв получен.', 'Дякую - відгук отримано.')}
+              </p>
+              <p className="text-[13px] text-text-secondary leading-relaxed mt-2">
+                {t(
+                  'Every rider who tells me what landed and what bounced makes the next cohort sharper. See you in the sky.',
+                  'Каждый кто скажет что зашло и что отскочило - делает следующий поток острее. До встречи в небе.',
+                  'Кожен хто скаже що зайшло і що відскочило - робить наступний потік гострішим. До зустрічі у небі.'
+                )}
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleFeedbackSubmit}>
+              <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-2">
+                {t('· Leave feedback ·', '· Оставить отзыв ·', '· Залишити відгук ·')}
+              </p>
+              <h3 className="font-display italic text-2xl text-white leading-tight mb-3">
+                {t(
+                  'Two questions, fifteen seconds.',
+                  'Два вопроса, пятнадцать секунд.',
+                  'Два питання, пʼятнадцять секунд.'
+                )}
+              </h3>
+              <p className="text-[13px] text-text-secondary leading-relaxed mb-5">
+                {t(
+                  'I read every line. This is how the next workshop gets better.',
+                  'Прочитаю каждую строчку. Так следующий воркшоп станет лучше.',
+                  'Прочитаю кожен рядок. Так наступний воркшоп стане кращим.'
+                )}
+              </p>
+
+              {/* Rating row */}
+              <div className="mb-5">
+                <label className="font-mono text-[11px] tracking-[2px] uppercase text-text-dim block mb-2">
+                  {t('How was it?', 'Как тебе воркшоп?', 'Як тобі воркшоп?')}
+                </label>
+                <div className="flex gap-1.5 items-center">
+                  {[1, 2, 3, 4, 5].map(n => {
+                    const active = (fbHover || fbRating) >= n
+                    return (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setFbRating(n)}
+                        onMouseEnter={() => setFbHover(n)}
+                        onMouseLeave={() => setFbHover(0)}
+                        className={`text-3xl leading-none cursor-pointer transition-all ${
+                          active ? 'text-qa-teal' : 'text-text-dim hover:text-qa-teal/60'
+                        }`}
+                        aria-label={`${n} stars`}
+                      >
+                        {active ? '★' : '☆'}
+                      </button>
+                    )
+                  })}
+                  {fbRating > 0 && (
+                    <span className="font-mono text-[11px] text-text-dim ml-3">
+                      {fbRating} / 5
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Comment */}
+              <div className="mb-5">
+                <label className="font-mono text-[11px] tracking-[2px] uppercase text-text-dim block mb-2">
+                  {t(
+                    'What worked, what to sharpen?',
+                    'Что зашло, что доработать?',
+                    'Що зайшло, що доопрацювати?'
+                  )}
+                </label>
+                <textarea
+                  value={fbComment}
+                  onChange={e => setFbComment(e.target.value)}
+                  placeholder={t(
+                    'One short paragraph is plenty.',
+                    'Одного короткого абзаца достаточно.',
+                    'Одного короткого абзацу достатньо.'
+                  )}
+                  rows={3}
+                  maxLength={1500}
+                  className="w-full bg-bg/80 border border-border focus:border-qa-teal/60 focus:outline-none text-[14px] text-text-body p-3 leading-relaxed resize-none placeholder:text-text-dim"
+                />
+                <div className="font-mono text-[10px] text-text-dim text-right mt-1">
+                  {fbComment.length} / 1500
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  type="submit"
+                  disabled={!fbRating || fbBusy}
+                  className="bg-qa-teal text-black px-5 py-2.5 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {fbBusy
+                    ? t('sending…', 'отправляю…', 'надсилаю…')
+                    : t('Send feedback', 'Отправить отзыв', 'Надіслати відгук')}
+                </button>
+                {!fbRating && (
+                  <span className="font-mono text-[10px] text-text-dim italic">
+                    {t('pick a rating first', 'сначала выбери рейтинг', 'спочатку обери рейтинг')}
+                  </span>
+                )}
+                {fbError && (
+                  <span className="font-mono text-[10px] text-corp-red italic">
+                    {fbError}
+                  </span>
+                )}
+              </div>
+            </form>
+          )}
+        </section>
       </div>
     </PageShell>
   )

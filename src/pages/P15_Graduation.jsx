@@ -145,7 +145,7 @@ export default function P15_Graduation() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
-              <span>{t('A bookmarkable Resource Hub - five autopilot prompts, hidden gems, quick reference.', 'Закладка на Resource Hub - пять autopilot-промптов, hidden gems, quick reference.', "Закладка на Resource Hub - пʼять autopilot-промптів, hidden gems, quick reference.")}</span>
+              <span>{t('A bookmarkable Resource Hub - four autopilot prompts, hidden gems, quick reference.', 'Закладка на Resource Hub - четыре autopilot-промпта, hidden gems, quick reference.', "Закладка на Resource Hub - чотири autopilot-промпти, hidden gems, quick reference.")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-qa-teal mt-0.5">◆</span>
@@ -193,29 +193,9 @@ export default function P15_Graduation() {
           </p>
         </motion.div>
 
-        {/* CTA - open Resource Hub */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.45 }}
-          className="text-center"
-        >
-          <a
-            href="/?page=resources"
-            target="_blank"
-            rel="noopener"
-            className="inline-block bg-qa-teal text-black px-8 py-4 font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_28px_rgba(0,229,204,0.5)] transition-all"
-          >
-            {t('Open Resource Hub →', 'Открыть Resource Hub →', 'Відкрити Resource Hub →')}
-          </a>
-          <p className="text-[12px] text-text-dim italic mt-3">
-            {t(
-              'Bookmark this URL with your nickname - your dragon waits for you any day.',
-              'Закрепи закладкой URL со своим ником - дракон ждёт в любой день.',
-              'Збережи закладкою URL зі своїм ніком - дракон чекає будь-якого дня.'
-            )}
-          </p>
-        </motion.div>
+        {/* Resource Hub CTA lives on slide 34 alongside the
+            certificate — graduation now flows straight to the
+            closing line. */}
 
         {/* Closing line */}
         <motion.p
