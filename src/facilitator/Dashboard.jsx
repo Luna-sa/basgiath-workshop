@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { PAGES } from '../data/pages'
 import { CHARACTERS } from '../data/characters'
 import {
   getAllStudents, setWorkshopPhase, deleteStudent,
