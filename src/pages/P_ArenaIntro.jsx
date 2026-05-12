@@ -99,9 +99,9 @@ export default function P_ArenaIntro() {
           </span>
           <span className="text-[13px] text-text-body">
             {t(
-              '~20 minutes total. 10 runs × 45 seconds + coding loop between them.',
-              '~20 минут всего. 10 запусков × 45 секунд + код-петля между ними.',
-              '~20 хвилин усього. 10 запусків × 45 секунд + код-петля між ними.'
+              '~12 minutes total. 5 runs × 45 seconds + coding loop between them.',
+              '~12 минут всего. 5 запусков × 45 секунд + код-петля между ними.',
+              '~12 хвилин усього. 5 запусків × 45 секунд + код-петля між ними.'
             )}
           </span>
         </div>

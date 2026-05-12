@@ -82,7 +82,7 @@ export function buildArenaRulesBlock(characterId) {
 
 # ARENA — правила игры (только факты, без стратегии)
 
-Я лечу в Aerie Arena как ${characterId.charAt(0).toUpperCase() + characterId.slice(1)} против 5 AI-соперников. 10 запусков, сумма очков = мой total. Победитель арены — у кого total максимальный.
+Я лечу в Aerie Arena как ${characterId.charAt(0).toUpperCase() + characterId.slice(1)} против 5 AI-соперников. 5 запусков, сумма очков = мой total. Победитель арены — у кого total максимальный.
 
 ## Цикл tick() — что я читаю
 

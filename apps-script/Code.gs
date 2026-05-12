@@ -563,7 +563,7 @@ function getLatestSubmissionsByCharacter() {
 
 // Each participant submits up to MAX_ARENA_RUNS scored runs.
 // Their leaderboard total is the SUM of all their run scores.
-var MAX_ARENA_RUNS = 10
+var MAX_ARENA_RUNS = 5
 
 function recordArenaRun(body) {
   const {

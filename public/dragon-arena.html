@@ -875,7 +875,7 @@ function saveRuns(runs) {
   try { localStorage.setItem(RUNS_KEY(), JSON.stringify(runs)) } catch (e) {}
 }
 let myRuns = loadRuns()
-const MAX_RUNS = 10
+const MAX_RUNS = 5
 
 // ─────────────────────────────────────────────────────────
 // Web Audio — synthesised sound effects
@@ -2201,7 +2201,7 @@ function updateRunButtonState() {
     return
   }
   if (myRuns.length >= MAX_RUNS) {
-    btn.textContent = '✓ All 10 runs done'
+    btn.textContent = `✓ All ${MAX_RUNS} runs done`
     btn.disabled = true
     return
   }

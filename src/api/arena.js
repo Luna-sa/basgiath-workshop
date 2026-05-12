@@ -3,7 +3,7 @@ import { gsheetsEnabled, callAction } from './gsheetsClient'
 /**
  * Arena v2 — per-run scoring API.
  *
- * Each participant plays up to 10 runs vs 5 AI rivals. Each run's score
+ * Each participant plays up to 5 runs vs 5 AI rivals. Each run's score
  * is persisted; total = SUM(scores). Leaderboard aggregates by nickname.
  *
  * Backend is Google Apps Script (sheet `arena_runs`) — no Supabase
@@ -12,7 +12,7 @@ import { gsheetsEnabled, callAction } from './gsheetsClient'
  * UI degrades gracefully instead of crashing.
  */
 
-const MAX_RUNS = 10
+const MAX_RUNS = 5
 
 export function maxArenaRuns() {
   return MAX_RUNS
@@ -26,7 +26,7 @@ export function maxArenaRuns() {
  * @param {object} payload
  * @param {string} payload.nickname        — lowercase workshop handle
  * @param {string} payload.characterId     — violet|xaden|rhiannon|ridoc|liam|imogen
- * @param {number} payload.runNumber       — 1..10
+ * @param {number} payload.runNumber       — 1..5
  * @param {number} payload.score           — final run score
  * @param {object} payload.breakdown       — { starsCollected, fireStars, maxCombo, wallsHit, patternHit, signetUsed, ticksAlive, botCrashed }
  * @param {object} [payload.runLog]        — optional event timeline (≤80 events)
