@@ -155,12 +155,13 @@ export default function P_Champions() {
           </motion.div>
         )}
 
-        {/* Three winners — horizontal grid. Each column reveals in
-            sequence (stage 1 → 2 → 3), but they sit side-by-side
-            instead of stacking vertically. */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12 items-start">
+        {/* Three winners — weighted grid. Best Dragon is the anchor
+            (it carries an image), so it gets 2 columns of width while
+            Most XP / Arena Champion share 1 column each beside it.
+            Each reveals in sequence (stage 1 → 2 → 3). */}
+        <div className="grid md:grid-cols-4 gap-6 mb-12 items-start">
 
-          {/* ─── Column 1: Best Dragon ─── */}
+          {/* ─── Best Dragon — spans 2 columns ─── */}
           <AnimatePresence>
             {stage >= 1 && (
               <motion.section
@@ -168,10 +169,10 @@ export default function P_Champions() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, ease: 'easeOut' }}
-                className="flex flex-col"
+                className="flex flex-col md:col-span-2"
               >
-                <h2 className="font-mono text-[12px] tracking-[3px] uppercase text-qa-teal mb-2 text-center">
-                  ◆ {t('Best Dragon', 'Лучший Дракон', 'Найкращий Дракон')}
+                <h2 className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-2 text-center">
+                  {t('Best Dragon', 'Лучший Дракон', 'Найкращий Дракон')}
                 </h2>
                 <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
                   {t(
@@ -223,8 +224,8 @@ export default function P_Champions() {
                 transition={{ duration: 1.1, ease: 'easeOut' }}
                 className="flex flex-col"
               >
-                <h2 className="font-mono text-[12px] tracking-[3px] uppercase text-yellow-300 mb-2 text-center">
-                  ✦ {t('Most XP', 'Больше всех XP', 'Найбільше XP')}
+                <h2 className="font-mono text-[11px] tracking-[3px] uppercase text-yellow-300 mb-2 text-center">
+                  {t('Most XP', 'Больше всех XP', 'Найбільше XP')}
                 </h2>
                 <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
                   {t(
@@ -276,8 +277,8 @@ export default function P_Champions() {
                 transition={{ duration: 1.1, ease: 'easeOut' }}
                 className="flex flex-col"
               >
-                <h2 className="font-mono text-[12px] tracking-[3px] uppercase text-pink-400 mb-2 text-center">
-                  ▲ {t('Arena Champion', 'Чемпион Арены', 'Чемпіон Арени')}
+                <h2 className="font-mono text-[11px] tracking-[3px] uppercase text-pink-400 mb-2 text-center">
+                  {t('Arena Champion', 'Чемпион Арены', 'Чемпіон Арени')}
                 </h2>
                 <p className="font-display italic text-[13px] text-text-dim text-center mb-5 min-h-[34px]">
                   {t(

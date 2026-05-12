@@ -21,37 +21,28 @@ export default function ComponentDeepDive({ pageIndex, data }) {
 
   return (
     <PageShell pageIndex={pageIndex}>
-      <div className="space-y-6">
+      <div className="space-y-8">
 
-        {/* HERO */}
+        {/* HERO — italic is reserved for the one display element.
+            Eyebrow stays mono caps; tagline is plain body, not italic.
+            Path is rendered inline-below the name, not on the same
+            baseline, to break the "everything on one row" cluster. */}
         <div>
           <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-2">
-            ◆ {data.eyebrow}
+            {data.eyebrow}
           </div>
-          <div className="flex items-baseline gap-4 flex-wrap mb-3">
-            <h2 className="font-display italic text-[clamp(32px,4vw,42px)] text-white leading-none">
-              {data.name}
-            </h2>
-            <code className="font-mono text-[12px] text-text-dim">{data.path}</code>
-          </div>
-          <p className="font-display italic text-[clamp(16px,2vw,20px)] text-text-secondary leading-relaxed max-w-3xl">
+          <h2 className="font-display italic text-[clamp(36px,4.5vw,48px)] text-white leading-none mb-2">
+            {data.name}
+          </h2>
+          <code className="font-mono text-[11px] text-text-dim block mb-5">{data.path}</code>
+          <p className="text-[clamp(15px,1.8vw,18px)] text-text-secondary leading-[1.6] max-w-3xl">
             {t(data.tagline_en, data.tagline_ru, data.tagline_uk)}
           </p>
         </div>
 
-        {/* STATS row */}
-        {data.stats && (
-          <div className="grid grid-cols-3 gap-3">
-            {data.stats.map(s => (
-              <div key={s.label} className="border border-border bg-surface/40 p-3 text-center">
-                <div className="font-display italic text-[22px] text-qa-teal">{s.value}</div>
-                <div className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-dim mt-1">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* WHAT IS IT */}
+        {/* WHAT IT IS — no section glyph, just a one-word eyebrow that
+            doubles as the section break. Section title now mono caps,
+            understated. */}
         <Section title={t('What it is', 'Что это', 'Що це')}>
           <p className="text-[14px] text-text-body leading-[1.7]">
             {t(data.what_en, data.what_ru, data.what_uk)}
@@ -93,14 +84,15 @@ export default function ComponentDeepDive({ pageIndex, data }) {
           </Section>
         )}
 
-        {/* WHEN TO USE */}
+        {/* WHEN TO USE — restrained list. No glyph per bullet; instead
+            use a thin left rule so each item reads as a separate
+            heuristic. */}
         {data.when && (
           <Section title={t('When to reach for it', 'Когда брать', 'Коли брати')}>
-            <ul className="space-y-1.5 text-[13.5px] text-text-body list-none">
+            <ul className="space-y-3 list-none">
               {data.when.map((line, i) => (
-                <li key={i} className="flex items-baseline gap-2">
-                  <span className="text-qa-teal mt-0.5 shrink-0">◇</span>
-                  <span className="leading-relaxed">{t(line.en, line.ru, line.uk)}</span>
+                <li key={i} className="border-l border-qa-teal/30 pl-4 text-[13.5px] text-text-body leading-[1.65]">
+                  {t(line.en, line.ru, line.uk)}
                 </li>
               ))}
             </ul>
@@ -116,7 +108,7 @@ function Section({ title, children }) {
   return (
     <section>
       <div className="font-mono text-[10px] tracking-[2.5px] uppercase text-qa-teal mb-2.5">
-        ◆ {title}
+        {title}
       </div>
       {children}
     </section>

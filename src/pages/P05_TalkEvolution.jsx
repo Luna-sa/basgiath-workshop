@@ -16,13 +16,26 @@ export default function P05_TalkEvolution() {
     <PageShell pageIndex={5}>
       <div className="space-y-6">
 
-        <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
-          {t(
-            "Claude Code isn't one program. It's seven moving parts on three layers. The next seven slides walk each one — for now, here's the map.",
-            "Claude Code - не одна программа. Это семь компонентов на трёх уровнях. Следующие семь слайдов разберут каждый - сейчас вот карта.",
-            "Claude Code - це не одна програма. Це сім компонентів на трьох рівнях. Наступні сім слайдів розберуть кожен - зараз ось мапа."
-          )}
-        </p>
+        {/* Hero rule — the one mental model the rest of the slide
+            illustrates. "Deeper wins" is what makes the layer model
+            useful; the three colour cards below are just where the
+            layers actually live. */}
+        <div className="border-l-2 border-qa-teal pl-5 py-1 max-w-3xl">
+          <p className="font-display italic text-[clamp(20px,2.6vw,28px)] text-white leading-tight mb-2">
+            {t(
+              'When two layers say different things, the deeper one wins.',
+              'Когда два слоя противоречат - побеждает глубже.',
+              'Коли два шари суперечать - перемагає глибший.'
+            )}
+          </p>
+          <p className="text-[14px] text-text-secondary leading-[1.6]">
+            {t(
+              'Project beats global. Subdirectory beats project. Runtime decisions beat both. Seven moving parts on three layers — here is where each one lives.',
+              'Проект побеждает глобальный. Поддиректория - проект. Runtime - оба. Семь компонентов на трёх уровнях - вот где живёт каждый.',
+              'Проєкт перемагає глобальний. Піддиректорія - проєкт. Runtime - обидва. Сім компонентів на трьох рівнях - ось де живе кожен.'
+            )}
+          </p>
+        </div>
 
         {/* Three layers — visual stack */}
         <div className="space-y-3">
@@ -95,18 +108,6 @@ export default function P05_TalkEvolution() {
             </div>
           </div>
 
-        </div>
-
-        {/* Override hierarchy reminder */}
-        <div className="border border-border bg-surface/40 p-4 flex items-center gap-3">
-          <span className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal shrink-0">◆ rule</span>
-          <p className="text-[13px] text-text-body">
-            {t(
-              'When two layers say different things — the deeper one wins. Project beats global, subdirectory beats project, runtime decisions beat both.',
-              'Когда два слоя противоречат - побеждает глубже. Проект побеждает глобальный, поддиректория - проект, runtime - оба.',
-              'Коли два шари суперечать - перемагає глибший. Проєкт перемагає глобальний, піддиректорія - проєкт, runtime - обидва.'
-            )}
-          </p>
         </div>
 
       </div>
