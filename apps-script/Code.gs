@@ -811,7 +811,14 @@ function getAerieTiebreakCandidates() {
   return { candidates, maxVotes }
 }
 
-function startAerieTiebreak({ dragonIds }) {
+function startAerieTiebreak(opts) {
+  // dragonIds may arrive as a real array (POST from JSON body) or as
+  // a JSON-stringified array (GET param routed through doGet shim).
+  // Normalise both to an array before validating.
+  var dragonIds = opts && opts.dragonIds
+  if (typeof dragonIds === 'string') {
+    try { dragonIds = JSON.parse(dragonIds) } catch (e) { dragonIds = null }
+  }
   if (!Array.isArray(dragonIds) || dragonIds.length < 2) {
     throw new Error('dragonIds array required with at least 2 entries')
   }
