@@ -70,6 +70,16 @@ export const HIDDEN_DRAGONS = [
   // ── Final — Golden Wyrmling on Champions slide
   { id: 'golden-wyrmling', slideKey: 'champions',
     position: { top: 640, left: 540 }, size: 22, opacity: 0.32, rotation: 0, variant: 'golden', xpReward: 500 },
+
+  // ── Bonus gem categories
+  { id: 'p_design-skills-corner', slideKey: 'gem_design_skills',
+    position: { top: 620, left: 760 }, size: 24, opacity: 0.45, rotation: -8, variant: 'regular', xpReward: 40 },
+  { id: 'p_browser-trio-icon', slideKey: 'gem_browser_automation',
+    position: { top: 540, left: 360 }, size: 22, opacity: 0.42, rotation: 12, variant: 'regular', xpReward: 40 },
+  { id: 'p_smart-helpers-glow', slideKey: 'gem_smart_helpers',
+    position: { top: 700, left: 720 }, size: 24, opacity: 0.45, rotation: 6, variant: 'regular', xpReward: 40 },
+  { id: 'p_marketplace-forge', slideKey: 'gem_skills_marketplace',
+    position: { top: 580, left: 400 }, size: 22, opacity: 0.42, rotation: -4, variant: 'regular', xpReward: 40 },
 ]
 
 export const TOTAL_DRAGONS = HIDDEN_DRAGONS.length

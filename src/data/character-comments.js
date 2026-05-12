@@ -276,6 +276,40 @@ export const CHARACTER_COMMENTS = {
     liam:     { ru: 'Посмотри. Запомни. Возвращайся к этим именам через месяц.', en: 'Look. Note. Come back to these names in a month.', uk: 'Поглянь. Запамʼятай. Повернись до цих імен за місяць.' },
     imogen:   { ru: 'Троє. Достойно.', en: 'Three. Worthy.', uk: 'Троє. Гідно.' },
   },
+
+  // ── Bonus gem categories
+  gem_design_skills: {
+    violet:   { ru: 'Не все четыре сразу. Возьми один, дай ему неделю осесть. Потом следующий.', en: 'Not all four at once. Take one, give it a week to settle. Then the next.', uk: 'Не всі чотири одразу. Візьми один, дай йому тиждень осісти. Потім наступний.' },
+    xaden:    { ru: 'Поставь impeccable первым. Сразу увидишь сколько халтуры у тебя в проде.', en: 'Install impeccable first. You\'ll see how much slop is in your prod right now.', uk: 'Постав impeccable першим. Одразу побачиш скільки халтури у тебе в проді.' },
+    rhiannon: { ru: 'Покажи дизайнеру design-extract. У вас будет один общий язык на следующем стендапе.', en: 'Show design-extract to a designer. You\'ll share one language at the next standup.', uk: 'Покажи design-extract дизайнеру. У вас буде одна мова на наступному стендапі.' },
+    ridoc:    { ru: 'open-design + четыре стола в баре = вечер где все спорят про motion.', en: 'open-design + four pub tables = an evening where everyone argues about motion.', uk: 'open-design + чотири столи в барі = вечір де всі сперечаються про motion.' },
+    liam:     { ru: 'Один skill, один проект, одна неделя. Не перескакивай.', en: 'One skill, one project, one week. No leaps.', uk: 'Один skill, один проєкт, один тиждень. Не перестрибуй.' },
+    imogen:   { ru: 'taste-skill. Хватит.', en: 'taste-skill. Enough.', uk: 'taste-skill. Досить.' },
+  },
+  gem_browser_automation: {
+    violet:   { ru: 'Три инструмента - не выбирай по моде. Возьми тот что подходит твоему случаю.', en: 'Three tools - don\'t pick by hype. Pick the one fitting your case.', uk: 'Три інструменти - не обирай за модою. Візьми той що підходить твоєму випадку.' },
+    xaden:    { ru: 'PinchTab - 12MB бинарник. Запускается быстрее чем ты доберёшься до браузера.', en: 'PinchTab - 12MB binary. Boots faster than you can reach your browser.', uk: 'PinchTab - 12MB бінарник. Запускається швидше ніж ти дійдеш до браузера.' },
+    rhiannon: { ru: 'У соседа Playwright уже падает? Покажи browser-harness. Он лечится сам.', en: 'Neighbour\'s Playwright failing? Show them browser-harness. It heals itself.', uk: 'У сусіда Playwright уже падає? Покажи browser-harness. Він лікується сам.' },
+    ridoc:    { ru: 'agent-browser - это когда твоему боту нужны руки, а не глаза.', en: 'agent-browser - for when your bot needs hands, not eyes.', uk: 'agent-browser - це коли твоєму боту потрібні руки, а не очі.' },
+    liam:     { ru: 'Сначала agent-browser - простой. Потом PinchTab если нужна параллельность.', en: 'agent-browser first - simple. Then PinchTab if you need parallel.', uk: 'Спершу agent-browser - простий. Потім PinchTab якщо треба паралельність.' },
+    imogen:   { ru: 'Один сайт. Три попытки. Хватит.', en: 'One site. Three tries. Enough.', uk: 'Один сайт. Три спроби. Досить.' },
+  },
+  gem_smart_helpers: {
+    violet:   { ru: 'Understand-Anything первым. Карту проекта стоит увидеть до того как тронешь файл.', en: 'Understand-Anything first. See the project map before you touch a file.', uk: 'Understand-Anything першим. Побач мапу проєкту перш ніж торкнешся файлу.' },
+    xaden:    { ru: 'caveman режет токены на 22-87%. Поставь сегодня - сэкономишь до квартала.', en: 'caveman cuts tokens 22-87%. Install today - save through the quarter.', uk: 'caveman ріже токени на 22-87%. Постав сьогодні - заощадиш до кварталу.' },
+    rhiannon: { ru: 'CLI-Anything - покажи на стендапе. Команда поймёт за тридцать секунд.', en: 'CLI-Anything - demo at standup. The team will get it in thirty seconds.', uk: 'CLI-Anything - покажи на стендапі. Команда зрозуміє за тридцять секунд.' },
+    ridoc:    { ru: 'n8n-mcp - наконец-то Claude перестанет валить workflows тихо.', en: 'n8n-mcp - finally Claude stops failing workflows silently.', uk: 'n8n-mcp - нарешті Claude перестане валити workflows тихо.' },
+    liam:     { ru: 'Четыре утилиты, по одной в день. К пятнице будет рутина.', en: 'Four utilities, one a day. By Friday it\'s a routine.', uk: 'Чотири утиліти, по одній на день. До пʼятниці буде рутина.' },
+    imogen:   { ru: 'caveman. Дальше.', en: 'caveman. Next.', uk: 'caveman. Далі.' },
+  },
+  gem_skills_marketplace: {
+    violet:   { ru: 'skills.sh - перед тем как писать свой skill, поищи там. Половину работы кто-то уже сделал.', en: 'skills.sh - before authoring a skill, search there. Half the work is done.', uk: 'skills.sh - перш ніж писати свій skill, пошукай там. Половину роботи хтось уже зробив.' },
+    xaden:    { ru: 'anthropic-skills - реверс-инжинирь их. Так быстрее чем читать доки.', en: 'anthropic-skills - reverse-engineer them. Faster than reading docs.', uk: 'anthropic-skills - реверс-інжинір їх. Швидше ніж читати доки.' },
+    rhiannon: { ru: 'awesome-claude-code - подпишись на repo. Star → апдейты прилетают сами.', en: 'awesome-claude-code - subscribe to the repo. Star → updates land on you.', uk: 'awesome-claude-code - підпишись на repo. Star → апдейти прилітають самі.' },
+    ridoc:    { ru: 'superpowers - skill который оркеструет skills. Skill-инцепция. Я в восторге.', en: 'superpowers - a skill that orchestrates skills. Skill-inception. I love it.', uk: 'superpowers - skill який оркеструє skills. Skill-інцепція. Я в захваті.' },
+    liam:     { ru: 'Сначала skills.sh. Потом anthropic-skills. Потом superpowers. По порядку.', en: 'skills.sh first. Then anthropic-skills. Then superpowers. In order.', uk: 'Спершу skills.sh. Потім anthropic-skills. Потім superpowers. По порядку.' },
+    imogen:   { ru: 'skills.sh. Иди.', en: 'skills.sh. Go.', uk: 'skills.sh. Іди.' },
+  },
 }
 
 /**

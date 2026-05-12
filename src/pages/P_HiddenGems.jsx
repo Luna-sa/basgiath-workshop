@@ -62,6 +62,20 @@ export default function P_HiddenGems() {
               'Близько 15 хвилин на все. У кожного гема — install-промпт під Copy. Зачепив якийсь — постав прямо за партою, поки йдемо далі.'
             )}
           </p>
+
+          {/* Bonus categories callout — 4 longform category slides
+              that live past Resources for after-hours exploration. */}
+          <div className="mt-4 pt-3 border-t border-qa-teal/20">
+            <div className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mb-2">
+              ✦ {t('Bonus: four category slides at the end', 'Бонус: четыре категорийных слайда в конце', 'Бонус: чотири категорійних слайди в кінці')}
+            </div>
+            <ul className="text-[12.5px] text-text-body leading-relaxed space-y-1 list-none">
+              <li>◇ <span className="text-white">Design DNA</span> — {t('four skills that give Claude actual design taste', 'четыре skills которые дают Claude настоящий дизайнерский вкус', 'чотири skills які дають Claude справжній дизайнерський смак')}</li>
+              <li>◇ <span className="text-white">Sky-scribes</span> — {t('three ways to give an AI agent a real browser', 'три способа дать AI-агенту настоящий браузер', 'три способи дати AI-агенту справжній браузер')}</li>
+              <li>◇ <span className="text-white">Wing-hands</span> — {t('four utilities: code-map, token-cut, n8n-mcp, CLI-anything', 'четыре утилиты: code-map, token-cut, n8n-mcp, CLI-anything', 'чотири утиліти: code-map, token-cut, n8n-mcp, CLI-anything')}</li>
+              <li>◇ <span className="text-white">The Forge-market</span> — {t('skills.sh, anthropic-skills, superpowers — where skills live', 'skills.sh, anthropic-skills, superpowers — где обитают skills', 'skills.sh, anthropic-skills, superpowers — де живуть skills')}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </PageShell>

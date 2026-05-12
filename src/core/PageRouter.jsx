@@ -38,6 +38,10 @@ const pageComponents = {
   22: lazy(() => import('../pages/P14_Leaderboard')),
   23: lazy(() => import('../pages/P15_Graduation')),
   24: lazy(() => import('../pages/P_ResourcesIntro')),
+  25: lazy(() => import('../pages/P_GemDesignSkills')),
+  26: lazy(() => import('../pages/P_GemBrowserAutomation')),
+  27: lazy(() => import('../pages/P_GemSmartHelpers')),
+  28: lazy(() => import('../pages/P_GemSkillsMarketplace')),
 }
 
 // Loading fallback

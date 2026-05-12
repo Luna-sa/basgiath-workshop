@@ -296,6 +296,50 @@ export const PAGES = [
     xpReward: 0,
     subSteps: null,
   },
+
+  // ✦ BONUS GEM CATEGORIES — discovered after the workshop, accessible
+  // by scrolling past Resources. Each is a long slide listing every
+  // repo in its category (4 design / 3 browser / 4 helpers / 4 sources).
+  {
+    id: 25,
+    slug: 'gem-design-skills',
+    phase: 'live',
+    title: 'Design DNA',
+    narrativeKey: 'gem_design_skills',
+    gate: { type: 'click' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 26,
+    slug: 'gem-browser-automation',
+    phase: 'live',
+    title: 'Sky-scribes',
+    narrativeKey: 'gem_browser_automation',
+    gate: { type: 'click' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 27,
+    slug: 'gem-smart-helpers',
+    phase: 'live',
+    title: 'Wing-hands',
+    narrativeKey: 'gem_smart_helpers',
+    gate: { type: 'click' },
+    xpReward: 0,
+    subSteps: null,
+  },
+  {
+    id: 28,
+    slug: 'gem-skills-marketplace',
+    phase: 'live',
+    title: 'The Forge-market',
+    narrativeKey: 'gem_skills_marketplace',
+    gate: { type: 'none' },
+    xpReward: 0,
+    subSteps: null,
+  },
 ]
 
 export const TOTAL_PAGES = PAGES.length
