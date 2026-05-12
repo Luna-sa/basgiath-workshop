@@ -136,11 +136,11 @@ export function buildDragonPrompt(answers = {}) {
     `Composition: ${pose}.`,
     motto ? `The dragon's bearing carries the meaning of its rider's vow: "${motto}".` : '',
     ``,
-    // Cinematography spec
-    `Cinematography: Arri Alexa LF, anamorphic 2.39:1 lens flares, shallow depth of field with the dragon's eye and head plane in sharp focus. Side-key storm light from the upper-left, deep cool fill from the lower-right, atmospheric haze and visible breath in cold air. Professional cinema colour grade — desaturated cool world palette with the dragon's hide colour pushed deep and rich. Real photographic grain. Individual scales catch the directional light. Wing membrane semi-translucent against the backlight. 8K sharpness, hyper-detailed practical realism.`,
+    // Cinematography spec — heavy film grain, atmospheric softness, NOT clinical-sharp
+    `Cinematography: vintage 35mm film stock with HEAVY visible grain, soft analog film softness, low contrast tonal range, atmospheric haze and fog softening every edge in the frame. The image looks like a frame pulled from a moody fantasy film book or an art-book plate — NOT a 4K CGI render. Side-key storm light from the upper-left, deep cool fill from the lower-right, thick atmospheric mist between camera and subject. Soft focus, slightly hazy across the entire frame, painterly tonal grade — desaturated cool world palette with the dragon's hide colour the only saturation note. Wing membrane and scales soften into the haze at the edges. Fine dust particles caught in the light. Slight motion blur where breath meets cold air. This is the visual mood of a Fourth Wing book cover or a moody concept-art plate, NOT a sharp HOTD CGI hero shot.`,
     ``,
-    // Negatives (critical)
-    `Critical: photoreal, NOT illustrated. NO text, NO logos, NO captions, NO UI elements, NO watermark, NO human characters in frame, NO cartoon stylisation, NO anime, NO smooth digital painting look, NO over-bright saturated background — the world must stay muted while the dragon's true colour shines through. The dragon fills the frame in three-quarter view, claws and tail visible, never centered like a logo.`,
+    // Negatives (critical) — kill the sharpness/CGI failure modes
+    `Critical: photoreal but HEAVILY ATMOSPHERIC and SOFT, NOT clinical CGI sharpness. NO 8K hyper-sharpness, NO crisp edges, NO clinical detail-everywhere look, NO over-rendered scale-by-scale CGI, NO bright sharp highlights. Add real 35mm film grain across the entire frame and atmospheric haze softening every edge. NO text, NO logos, NO captions, NO UI elements, NO watermark, NO human characters in frame, NO cartoon, NO anime, NO smooth digital painting, NO over-bright saturated background — the world stays muted, hazy, grainy, painterly. The dragon fills the frame in three-quarter view, claws and tail visible, edges softening into mist.`,
   ].filter(Boolean)
 
   return parts.join('\n')
