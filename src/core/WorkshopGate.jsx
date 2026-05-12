@@ -123,9 +123,37 @@ export default function WorkshopGate({ onUnlock }) {
           )}
 
           {status === 'error' && (
-            <p className="text-[12px] text-corp-red text-center">
-              {t('Could not check nickname: ', 'Не получилось проверить ник: ', 'Не вдалося перевірити нік: ')}{errorMsg}
-            </p>
+            <div className="space-y-3">
+              <p className="text-[12px] text-corp-red text-center">
+                {t('Could not check nickname: ', 'Не получилось проверить ник: ', 'Не вдалося перевірити нік: ')}{errorMsg}
+              </p>
+              {/* Emergency bypass — if the lookup backend is down during
+                  a live workshop, we still need the participant to be
+                  able to enter. Hydrates the store with whatever they
+                  typed so the persona / dragon flow can run locally. */}
+              <button
+                type="button"
+                onClick={() => {
+                  setUser({
+                    id: null,
+                    name: '',
+                    nickname: nickname.trim().toLowerCase(),
+                    email: '',
+                    studio: '',
+                    role: '',
+                    tool: 'claude',
+                    os: 'mac',
+                    pain: '',
+                    claudeCodeReady: true,
+                    characterId: null,
+                  })
+                  onUnlock?.()
+                }}
+                className="w-full px-6 py-3 font-mono text-[11px] tracking-[2px] uppercase border border-qa-teal/40 text-qa-teal hover:bg-qa-teal/10 transition-colors cursor-pointer"
+              >
+                {t('Enter offline (backend unreachable)', 'Войти офлайн (бэкенд не отвечает)', 'Увійти офлайн (бекенд не відповідає)')}
+              </button>
+            </div>
           )}
 
         </form>
