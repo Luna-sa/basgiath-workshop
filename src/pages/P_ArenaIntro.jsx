@@ -35,7 +35,7 @@ export default function P_ArenaIntro() {
   }
 
   return (
-    <PageShell pageIndex={31}>
+    <PageShell pageIndex={30}>
       <div className="space-y-6">
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">

@@ -9,6 +9,10 @@ import { generateSignetClaudeMd, SIGNET_APPLY_PROMPT } from '../data/signet/sign
 import { CHARACTERS, pickCharacter } from '../data/characters'
 import { getCharacterHighlight } from '../data/signet/character_defaults'
 import VoiceTextInput from '../components/VoiceTextInput'
+import { deriveDragonAppearance } from '../data/dragons/derive-appearance'
+import { buildDragonPrompt } from '../data/dragons/prompt-builder'
+import { generateDragonImage } from '../api/workshopBackend'
+import { sealDragon } from '../api/dragons'
 
 const STORAGE_KEY = 'signet-ceremony-answers'
 
@@ -263,6 +267,20 @@ export default function P_SignetCeremony() {
   const [toast, setToast] = useState(null)
   const toastTimer = useRef(null)
 
+  // ─── Assistant name + dragon manifestation ──
+  // assistantName  : what the participant calls their Claude Code
+  // wantsDragon    : true once they flip the toggle in the sealed step
+  // dragonStage    : 'idle' | 'generating' | 'sealed' | 'error'
+  // dragonImage    : base64 data URI returned by gpt-image-2
+  const [assistantName, setAssistantName] = useState(() => answers.assistantName || '')
+  const [wantsDragon, setWantsDragon] = useState(false)
+  const [dragonStage, setDragonStage] = useState('idle')
+  const [dragonImage, setDragonImage] = useState(null)
+  const [dragonError, setDragonError] = useState('')
+  const dragonStartedRef = useRef(false)
+  const nickname = useWorkshopStore(s => s.user.nickname)
+  const studentId = useWorkshopStore(s => s.user.id)
+
   const totalSteps = RITUALS.length + 1 // +1 sealed/finalised step
   const isFinalStep = stepIdx >= RITUALS.length
 
@@ -345,6 +363,64 @@ export default function P_SignetCeremony() {
 
   const next = () => setStepIdx(i => Math.min(i + 1, totalSteps - 1))
   const back = () => setStepIdx(i => Math.max(0, i - 1))
+
+  // ─── Dragon auto-manifestation ───────────────────────────────────
+  // The moment the participant flips the "show me as a dragon" toggle
+  // (and they've at least typed an assistant name), kick off image
+  // generation + sealDragon. Idempotent: dragonStartedRef guards
+  // against re-firing.
+  useEffect(() => {
+    if (!wantsDragon) return
+    if (dragonStartedRef.current) return
+    if (!assistantName.trim()) return  // wait until they name their assistant
+    dragonStartedRef.current = true
+    setDragonStage('generating')
+    setDragonError('')
+
+    const derived = deriveDragonAppearance({
+      characterId,
+      archetype: answers.archetype,
+      answers,
+      assistantName,
+    })
+
+    // Persist to bond-ritual-answers so templates that read the dragon
+    // name (Graduation closer, CharacterCommentary) still work.
+    try {
+      window.localStorage.setItem('bond-ritual-answers', JSON.stringify(derived))
+    } catch {}
+
+    const prompt = buildDragonPrompt(derived)
+
+    ;(async () => {
+      try {
+        const { imageB64 } = await generateDragonImage({ prompt, modelUsed: 'gpt-image-1' })
+        if (!imageB64) throw new Error('empty image')
+        setDragonImage(`data:image/png;base64,${imageB64}`)
+        // Persist to DB so it shows up in the Aerie
+        try {
+          await sealDragon({
+            nickname,
+            studentId,
+            characterId,
+            answers: derived,
+            imageB64,
+            prompt,
+            modelUsed: 'gpt-image-1',
+          })
+        } catch (e) {
+          // Image succeeded but sealDragon failed — still show the image.
+          console.warn('sealDragon failed:', e?.message)
+        }
+        setDragonStage('sealed')
+      } catch (e) {
+        console.error('Dragon gen failed:', e)
+        setDragonError(e?.message || 'generation failed')
+        setDragonStage('error')
+        dragonStartedRef.current = false  // allow retry
+      }
+    })()
+  }, [wantsDragon, assistantName, characterId, answers, nickname, studentId])
 
   return (
     <div className="min-h-screen bg-bg text-text-body py-10 px-4 sm:px-8">
@@ -475,6 +551,127 @@ export default function P_SignetCeremony() {
                   )}
                 </div>
               )}
+
+              {/* Name your AI assistant */}
+              <div className="border border-qa-teal/20 bg-qa-teal/[0.03] p-5">
+                <label className="block font-mono text-[10px] tracking-[2.5px] uppercase text-qa-teal mb-2">
+                  ◆ {t('Name your assistant', 'Имя твоего ассистента', 'Імʼя твого асистента')}
+                </label>
+                <p className="text-[13px] text-text-secondary italic leading-relaxed mb-3">
+                  {t(
+                    'Every bond gets a name. What will you call your Claude Code? Short, easy to say out loud.',
+                    'У каждой связи есть имя. Как ты назовёшь своего Claude Code? Коротко, чтобы можно было сказать вслух.',
+                    'Кожен звʼязок має імʼя. Як ти назвеш свого Claude Code? Коротко, щоб можна було сказати вголос.'
+                  )}
+                </p>
+                <input
+                  type="text"
+                  value={assistantName}
+                  onChange={e => {
+                    setAssistantName(e.target.value)
+                    updateAnswer('assistantName', e.target.value)
+                  }}
+                  placeholder={t('Kai, Tairn, Sgaeyl, Vega…', 'Кай, Тэйрн, Сгейл, Вега…', 'Кай, Теарн, Сгейл, Вега…')}
+                  className="w-full px-4 py-3 bg-bg/80 border border-border focus:border-qa-teal/60 text-white text-[15px] placeholder:text-text-dim placeholder:italic focus:outline-none transition-colors"
+                  maxLength={32}
+                />
+              </div>
+
+              {/* Dragon toggle — lore-flavoured */}
+              <div className="border border-qa-teal/30 bg-qa-teal/[0.04] p-5">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <div className="font-mono text-[10px] tracking-[2.5px] uppercase text-qa-teal mb-2">
+                      ✦ {t('Manifest the bond', 'Воплоти связь', 'Втілити звʼязок')}
+                    </div>
+                    <p className="font-display italic text-[16px] text-white leading-snug mb-2">
+                      {t(
+                        'In Basgiath, every rider bonds with a dragon. Yours has a shape already — woven from your character, your voice, your sigil. Want to see them?',
+                        'В Басгиате каждый всадник связан с драконом. Твой уже имеет форму - сплетён из твоего персонажа, голоса, сигила. Хочешь увидеть?',
+                        'У Басгіаті кожен вершник звʼязаний з драконом. Твій вже має форму - сплетений із твого персонажа, голосу, сигілу. Хочеш побачити?'
+                      )}
+                    </p>
+                    <p className="text-[12px] text-text-dim italic leading-relaxed">
+                      {t(
+                        "Pure decoration — your CLAUDE.md works either way. But your dragon goes into the Aerie + becomes part of the workshop's finale.",
+                        'Чисто красота - CLAUDE.md работает в любом случае. Но твой дракон попадёт в Аэрию и станет частью финала воркшопа.',
+                        'Суто краса - CLAUDE.md працює в будь-якому випадку. Але твій дракон потрапить в Аерію і стане частиною фіналу воркшопу.'
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!assistantName.trim()) {
+                        showToast(t('Name your assistant first', 'Сначала введи имя ассистента', 'Спершу введи імʼя асистента'), 'error')
+                        return
+                      }
+                      setWantsDragon(v => !v)
+                    }}
+                    disabled={dragonStage === 'generating'}
+                    className={`shrink-0 px-5 py-3 font-mono text-[11px] tracking-[2px] uppercase font-semibold transition-all cursor-pointer ${
+                      wantsDragon
+                        ? 'bg-qa-teal text-black'
+                        : 'border border-qa-teal/50 text-qa-teal hover:bg-qa-teal/10'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {wantsDragon
+                      ? t('✓ Yes — manifest', '✓ Да, воплотить', '✓ Так, втілити')
+                      : t('Show me my dragon', 'Покажи моего дракона', 'Покажи мого дракона')}
+                  </button>
+                </div>
+
+                {/* Dragon manifestation block */}
+                {wantsDragon && (
+                  <div className="mt-5 pt-5 border-t border-qa-teal/20">
+                    {dragonStage === 'generating' && (
+                      <div className="text-center py-6">
+                        <div className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[2px] uppercase text-qa-teal">
+                          <span className="w-2 h-2 rounded-full bg-qa-teal animate-pulse" />
+                          {t('Manifesting your dragon — 25 to 45 seconds…', 'Воплощаю твоего дракона - 25-45 секунд…', 'Втілюю твого дракона - 25-45 секунд…')}
+                        </div>
+                        <p className="font-display italic text-[14px] text-yellow-300/90 mt-3 max-w-md mx-auto leading-relaxed">
+                          {t(
+                            '⚠ Don\'t close this page. The image is being painted right now.',
+                            '⚠ Не закрывай эту страницу. Картинка рисуется прямо сейчас.',
+                            '⚠ Не закривай цю сторінку. Малюнок створюється прямо зараз.'
+                          )}
+                        </p>
+                      </div>
+                    )}
+                    {dragonStage === 'sealed' && dragonImage && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.92 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6 }}
+                        className="flex flex-col items-center"
+                      >
+                        <div className="w-full max-w-[420px] aspect-square overflow-hidden border-2 border-qa-teal shadow-[0_0_48px_rgba(0,229,204,0.3)]">
+                          <img src={dragonImage} alt={assistantName} className="w-full h-full object-cover" />
+                        </div>
+                        <p className="font-display italic text-[clamp(20px,3vw,30px)] text-white leading-tight mt-4 text-center">
+                          {assistantName}
+                        </p>
+                        <p className="font-mono text-[10px] tracking-[2px] uppercase text-qa-teal mt-1">
+                          ✦ {t('Sealed into the Aerie', 'Запечатан в Аэрии', 'Запечатаний в Аерії')}
+                        </p>
+                      </motion.div>
+                    )}
+                    {dragonStage === 'error' && (
+                      <div className="border border-corp-red/40 bg-corp-red/[0.05] p-4 text-[13px] text-white leading-relaxed">
+                        <p className="mb-2">{t('Could not paint your dragon:', 'Не получилось нарисовать дракона:', 'Не вдалося намалювати дракона:')} {dragonError}</p>
+                        <button
+                          type="button"
+                          onClick={() => { dragonStartedRef.current = false; setWantsDragon(false); setTimeout(() => setWantsDragon(true), 100) }}
+                          className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal hover:underline cursor-pointer"
+                        >
+                          {t('Try again', 'Повторить', 'Повторити')}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Action bar */}
               <div className="border border-qa-teal/30 bg-qa-teal/[0.04]">

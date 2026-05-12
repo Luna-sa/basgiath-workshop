@@ -12,7 +12,7 @@ import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
 import Arena from './pages/Arena'
 import P_SignetCeremony from './pages/P_SignetCeremony'
-import P_BondRitual from './pages/P_BondRitual'
+// P_BondRitual deprecated — Bond Ritual logic merged into Signet Ceremony.
 import P_Aerie from './pages/P_Aerie'
 import P_AerieMosaic from './pages/P_AerieMosaic'
 import P_AerieReveal from './pages/P_AerieReveal'
@@ -157,15 +157,14 @@ export default function App() {
   }
 
   if (bondOnly) {
-    return (
-      <ErrorBoundary>
-        <div className="min-h-screen bg-bg text-text-body">
-          <TealParticles />
-          <LanguageToggle /><UserMenu />
-          <P_BondRitual />
-        </div>
-      </ErrorBoundary>
-    )
+    // Bond Ritual deprecated — redirect to Signet Ceremony where
+    // dragon manifestation now lives.
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      params.set('page', 'signet')
+      window.location.replace(`${window.location.pathname}?${params.toString()}`)
+    }
+    return null
   }
 
   if (aerieOnly) {

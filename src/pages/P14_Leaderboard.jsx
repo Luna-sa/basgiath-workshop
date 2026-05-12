@@ -44,7 +44,7 @@ export default function P14_Leaderboard() {
   const submittedCount = submissions.length
 
   return (
-    <PageShell pageIndex={32}>
+    <PageShell pageIndex={31}>
       <div className="space-y-6">
         {/* Counter header */}
         {!loading && (

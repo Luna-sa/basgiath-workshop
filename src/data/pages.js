@@ -1,16 +1,13 @@
-// Workshop flow - 36 pages.
-//
-// 🔒 facilitator = locked until facilitator advances (talk slides)
-// 🔓 self-report / timed-task = student works independently after unlock
+// Workshop flow - 35 pages.
 //
 // Live block:
-//   5: Architecture overview
+//   4-5: talk-intro + architecture overview
 //   6-12: seven component deep-dives (CLAUDE.md, Commands, Agents,
 //         Skills, MCP, Hooks, Plugins)
 //   13-17: modes, install, ecosystem, MCP-demo, power-moves
-//   18-19: persona-builder, bond-ritual
-//   20-29: hidden-gems intro + 5 deep-dives + 4 bonus categories
-//   30-35: aerie, arena, leaderboard, champions, graduation, resources
+//   18:   persona-builder (Signet Ceremony — also generates dragon)
+//   19-28: hidden-gems intro + 5 deep-dives + 4 bonus categories
+//   29-34: aerie, arena, leaderboard, champions, graduation, resources
 
 export const PAGES = [
   // ═══════════════════════════════════════════
@@ -205,7 +202,7 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // ─── Persona + Bond Ritual ───────────────────
+  // ─── Persona (Signet Ceremony — also generates dragon now) ──
   {
     id: 18,
     slug: 'persona-builder',
@@ -216,20 +213,10 @@ export const PAGES = [
     xpReward: 100,
     subSteps: null,
   },
-  {
-    id: 19,
-    slug: 'bond-ritual',
-    phase: 'live',
-    title: 'The Bond Ritual',
-    narrativeKey: 'bond_ritual',
-    gate: { type: 'self-report' },
-    xpReward: 100,
-    subSteps: null,
-  },
 
   // ─── Hidden Gems block ───────────────────────
   {
-    id: 20,
+    id: 19,
     slug: 'hidden-gems',
     phase: 'live',
     title: 'Hidden gems',
@@ -239,7 +226,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 21,
+    id: 20,
     slug: 'gem-mempalace',
     phase: 'live',
     title: 'MemPalace',
@@ -249,7 +236,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 22,
+    id: 21,
     slug: 'gem-suzu-mcp',
     phase: 'live',
     title: 'suzu-mcp',
@@ -259,7 +246,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 23,
+    id: 22,
     slug: 'gem-tool-search',
     phase: 'live',
     title: 'ENABLE_TOOL_SEARCH',
@@ -269,7 +256,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 24,
+    id: 23,
     slug: 'gem-quinn-jinx',
     phase: 'live',
     title: 'Quinn + Jinx',
@@ -279,7 +266,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 25,
+    id: 24,
     slug: 'gem-channels',
     phase: 'live',
     title: 'Claude Code Channels',
@@ -291,7 +278,7 @@ export const PAGES = [
 
   // ─── Bonus gem categories ────────────────────
   {
-    id: 26,
+    id: 25,
     slug: 'gem-design-skills',
     phase: 'live',
     title: 'Design DNA',
@@ -301,7 +288,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 27,
+    id: 26,
     slug: 'gem-browser-automation',
     phase: 'live',
     title: 'Sky-scribes',
@@ -311,7 +298,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 28,
+    id: 27,
     slug: 'gem-smart-helpers',
     phase: 'live',
     title: 'Wing-hands',
@@ -321,7 +308,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 29,
+    id: 28,
     slug: 'gem-skills-marketplace',
     phase: 'live',
     title: 'The Forge-market',
@@ -333,7 +320,7 @@ export const PAGES = [
 
   // ─── Aerie / Arena / Finale ──────────────────
   {
-    id: 30,
+    id: 29,
     slug: 'aerie',
     phase: 'live',
     title: 'The Aerie',
@@ -343,7 +330,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 31,
+    id: 30,
     slug: 'arena',
     phase: 'live',
     title: 'Riders in the Sky',
@@ -353,7 +340,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 32,
+    id: 31,
     slug: 'leaderboard',
     phase: 'live',
     title: 'Signets honoured',
@@ -363,7 +350,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 33,
+    id: 32,
     slug: 'champions',
     phase: 'live',
     title: 'Three Champions',
@@ -373,7 +360,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 34,
+    id: 33,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -383,7 +370,7 @@ export const PAGES = [
     subSteps: null,
   },
   {
-    id: 35,
+    id: 34,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',
