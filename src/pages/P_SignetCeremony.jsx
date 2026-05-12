@@ -145,20 +145,26 @@ function ArchetypePicker({ value, onChange, lang, characterId, characterName }) 
 //     text from the field, preserving everything else
 //   • Multiple chips can be active simultaneously — useful when the
 //     answer is a combination (e.g. "mobile + I lead a team")
-function PresetChips({ presets, currentValue, onPick, lang, questionId, characterId, characterName }) {
+function PresetChips({ presets, currentValue, onPick, lang, questionId, characterId, characterName, singleSelect }) {
   if (!presets?.length) return null
   const recommendedLabel = getCharacterHighlight(characterId, questionId)
   const SEP = '\n\n'
+  const hint = singleSelect
+    ? (lang === 'ru' ? '◆ готовые · выбери одно' : lang === 'uk' ? '◆ готові · обери одне' : '◆ presets · pick one')
+    : (lang === 'ru' ? '◆ готовые · можно несколько' : lang === 'uk' ? '◆ готові · можна кілька' : '◆ presets · pick one or more')
   return (
     <div className="flex flex-wrap gap-1.5 mb-2.5">
       <span className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-dim self-center mr-1">
-        {lang === 'ru' ? '◆ готовые · можно несколько' : lang === 'uk' ? '◆ готові · можна кілька' : '◆ presets · pick one or more'}
+        {hint}
       </span>
       {presets.map((p, i) => {
         const label = lang === 'ru' ? p.label_ru : lang === 'uk' ? (p.label_uk || p.label_en) : p.label_en
         const text = (lang === 'ru' ? p.text_ru : lang === 'uk' ? (p.text_uk || p.text_en) : p.text_en).trim()
         const current = currentValue || ''
-        const isActive = current.includes(text)
+        // Single-select: chip is active when the WHOLE value equals
+        // this preset. Multi-select: chip is active when value contains
+        // the preset text.
+        const isActive = singleSelect ? current.trim() === text : current.includes(text)
         const isRecommended = p.label_en === recommendedLabel && !isActive
         const tip = isRecommended && characterName
           ? (lang === 'ru' ? `◆ ${characterName} выбрал(а) бы это`
@@ -166,6 +172,12 @@ function PresetChips({ presets, currentValue, onPick, lang, questionId, characte
              : `◆ ${characterName} would pick this`)
           : text
         const handleClick = () => {
+          if (singleSelect) {
+            // Click an active chip clears the field. Click any other
+            // chip replaces whatever was there with that chip's text.
+            onPick(isActive ? '' : text)
+            return
+          }
           if (isActive) {
             // Strip the preset text out, plus its adjacent separator.
             const next = current
@@ -240,6 +252,7 @@ function QuestionField({ question, value, onChange, lang, characterId, character
         questionId={question.id}
         characterId={characterId}
         characterName={characterName}
+        singleSelect={question.singleSelect}
       />
 
       {question.voiceEnabled ? (
