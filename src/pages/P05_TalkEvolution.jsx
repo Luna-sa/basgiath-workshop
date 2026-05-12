@@ -37,18 +37,21 @@ export default function P05_TalkEvolution() {
           </p>
         </div>
 
-        {/* Runic wall — narrow texture divider between the rule and
-            the layer cards. Inscribed three-line block reads as
-            "three stone courses" matching the three layers. */}
-        <div className="relative h-[80px] overflow-hidden border-y border-border opacity-70">
+        {/* Dragon anatomy — the master diagram. Seven labelled
+            tablets on a single dragon body map every component the
+            workshop touches: SPINE · CLAUDE.md, EYES · MCP, WINGS ·
+            SKILLS, REFLEXES · HOOKS, MUSCLES · COMMANDS, CORE ·
+            SETTINGS.json, CLAWS · AGENTS, COMPANION · PLUGINS. The
+            layer cards below explain WHERE each piece lives on
+            disk; this image shows WHAT they are. */}
+        <figure className="relative overflow-hidden border border-border bg-black">
           <img
-            src="/hero/architecture-runes.jpg"
-            alt=""
-            className="w-full h-full object-cover"
-            loading="lazy"
+            src="/hero/dragon-anatomy.jpg"
+            alt="Dragon anatomy with seven labelled components"
+            className="w-full h-auto block"
+            loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-bg/30 via-transparent to-bg/30" />
-        </div>
+        </figure>
 
         {/* Three layers — visual stack. One brand colour (teal),
             tonal contrast on borders to separate the three. Italic
@@ -121,33 +124,8 @@ export default function P05_TalkEvolution() {
 
         </div>
 
-        {/* Visual showcase — four labeled lore images for the four
-            "hero" components we deep-dive into next (spine / eyes /
-            reflexes / companions). Each image carries its own carved
-            tablet so the grid needs no captions. 2×2 grid on md+,
-            stacks on mobile. */}
-        <div className="pt-2">
-          <p className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-3">
-            {t('Up next — each piece up close', 'Дальше - каждый компонент крупным планом', 'Далі - кожен компонент крупним планом')}
-          </p>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <LoreTile src="/hero/spine-claudemd.jpg" />
-            <LoreTile src="/hero/eyes-mcp.jpg" />
-            <LoreTile src="/hero/reflexes-hooks.jpg" />
-            <LoreTile src="/hero/companion-plugins.jpg" />
-          </div>
-        </div>
-
       </div>
     </PageShell>
-  )
-}
-
-function LoreTile({ src }) {
-  return (
-    <div className="relative overflow-hidden border border-border bg-black aspect-[16/8.5]">
-      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
-    </div>
   )
 }
 
