@@ -36,23 +36,66 @@ At the end, give me a single short paragraph:
 
 Keep it tight. No 20-step lists. No "let me know if you need help".`
 
-const WORKSPACE_INIT_PROMPT = `Workspace-Init for the QA workshop.
+const LECTURE_ARSENAL_PROMPT = `Lecture Arsenal installer for the Claude Code QA workshop.
 
-Set up my working folder. Do everything yourself, don't ask me to type commands.
+Walk me through every tool we showed during the lecture. I pick which to install with y/n. After each "y" - run the install. After "n" - skip. No 20-line summaries between items, keep it tight.
 
-1. Create \`~/qa-workshop\` if it doesn't exist. Cd into it.
-2. Run \`git init\` inside (skip if .git already exists).
-3. Download the sample QA project. Try in this order:
-   a. \`curl -fL -o sample-project.zip https://workshop.local/handouts/sample-project.zip\`
-   b. If that fails, fall back to: \`git clone https://github.com/Luna-sa/basgiath-workshop-sample.git sample-project\`
-   c. If both fail, print the exact error and tell me to grab it manually from the workshop Resources page.
-4. If you got the zip - unzip into \`~/qa-workshop/sample-project\` and remove the zip.
-5. Print \`ls -la ~/qa-workshop/sample-project\` so I can see the contents.
-6. Inside the sample project, check for a README.md and print its first 30 lines.
+For every item: print one line of WHAT IT DOES, then ask "install? (y/n)". Wait for my answer.
 
-If anything fails - show the full error text, explain in one sentence what it means, and give me one concrete workaround (e.g. "your corp network blocks raw github clones, try the zip instead").
+──────────── ARSENAL ────────────
 
-Finish with one line: "Ready, next step is X" or "Stuck on X, do Y".`
+01. MemPalace - long-term semantic memory for Claude across sessions.
+    Install: tell yourself to set up MemPalace via the mempalace/mempalace repo - install Chroma + Ollama + the MCP server.
+
+02. suzu-mcp - tiny audio MCP, pings when Claude finishes a task.
+    Install: \`claude mcp add suzu -- npx -y @denar90/suzu-mcp\`
+
+03. ENABLE_TOOL_SEARCH flag - Claude searches 100+ tools on demand instead of loading them all up front.
+    Action: edit \`~/.claude/settings.json\` (create if missing). Add \`"enable_tool_search": true\` to the root object. Show me the diff.
+
+04. Quinn + Jinx (qa-test skill) - two AI characters that pair-test through your features. One drives, one tries to break.
+    Install: \`npx skills add adampaulwalker/qa-test\`
+
+05. Claude Code Channels - multiple Claude sessions talk to each other via named channels.
+    Install: follow https://code.claude.com/docs/en/channels - one CLI call.
+
+06. impeccable - design discipline skill, catches AI-slop in UI.
+    Install: \`npx skills add pbakaus/impeccable\`
+
+07. open-design - design-system extractor + audit.
+    Install: \`npx skills add nexu-io/open-design && open-design init\`
+
+08. design-extract - pulls design tokens from any URL.
+    Install: \`gh repo clone Manavarya09/design-extract && cd design-extract && npm i\`
+
+09. agent-browser - Chrome-for-Testing wrapped for agent use.
+    Install: \`npm install -g agent-browser && agent-browser install\`
+
+10. caveman - terse-output style skill, useful for forcing short answers.
+    Install: drop \`caveman.md\` from juliusbrussee/caveman into \`~/.claude/skills/\`.
+
+11. n8n-mcp - hook n8n workflows up to Claude.
+    Install: \`npx @czlonkowski/n8n-mcp\`, then merge the config it prints into \`~/.claude/mcp_servers.json\`.
+
+12. obra/superpowers - meta-framework, one skill that orchestrates 30 others.
+    Install: \`gh repo clone obra/superpowers ~/.claude/skills/superpowers\`
+
+──────────── END ARSENAL ────────────
+
+After each item, print one line:
+  ✓ <name> installed
+  ✗ <name> failed: <one-line reason, next action>
+  ⊘ <name> skipped
+
+At the very end, print this verbatim block:
+
+  ▲ Restart Claude Code now. Quit (Ctrl+D), open a new terminal, run \`claude\`.
+     MCP servers and skills only register on a fresh session.
+
+     Verify MCPs: \`claude mcp list\`
+     Verify skills: \`ls ~/.claude/skills/\`
+
+Tone: dry, no reassurance, no apology, no "let me know if you need help". One step, one answer, next step.`
 
 const MCP_INSTALLER_PROMPT = `MCP installer + diagnostic for the QA workshop.
 
@@ -166,16 +209,6 @@ const AUTOPILOTS = [
     body: SETUP_DOCTOR_PROMPT,
   },
   {
-    name_en: 'Lay your perch',
-    name_ru: 'Заложить насест',
-    name_uk: 'Закласти сідало',
-    sub: 'Workspace-Init',
-    desc_en: 'Creates ~/qa-workshop, downloads the sample project, initializes git. One paste - done.',
-    desc_ru: 'Создаёт ~/qa-workshop, качает sample-проект, инициализирует git. Одна вставка - готово.',
-    desc_uk: 'Створює ~/qa-workshop, качає sample-проєкт, ініціалізує git. Одна вставка - готово.',
-    body: WORKSPACE_INIT_PROMPT,
-  },
-  {
     name_en: "Wake your dragon's senses",
     name_ru: 'Разбуди чувства дракона',
     name_uk: 'Розбуди чуття дракона',
@@ -228,23 +261,12 @@ const DOWNLOADS = [
     href: '/handouts/QUICK_REFERENCE.md',
     filename: 'QUICK_REFERENCE.md',
   },
-  {
-    title_en: 'Sample QA project',
-    title_ru: 'Sample QA проект',
-    title_uk: 'Sample QA проєкт',
-    desc_en: 'A small web app with intentional bugs. Use it to practice /test-cases, /bug-report, /review on real-ish code.',
-    desc_ru: 'Маленькое web-приложение с намеренными багами. На нём практикуй /test-cases, /bug-report, /review на почти-настоящем коде.',
-    desc_uk: 'Маленький web-додаток з навмисними багами. На ньому практикуй /test-cases, /bug-report, /review на майже-справжньому коді.',
-    href: '/handouts/sample-project-readme.md',
-    filename: 'sample-project-readme.md',
-  },
 ]
 
 const EXTERNAL_LINKS = [
   { label: 'Anthropic Claude Code documentation', href: 'https://docs.claude.com/en/docs/claude-code/overview' },
   { label: 'Anthropic prompt library', href: 'https://docs.anthropic.com/en/resources/prompt-library/library' },
   { label: 'MCP servers gallery', href: 'https://github.com/modelcontextprotocol/servers' },
-  { label: 'Workshop GitHub repo (Luna-sa/basgiath-workshop)', href: 'https://github.com/Luna-sa/basgiath-workshop' },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -306,13 +328,40 @@ export default function P_Resources() {
               'Після завершення - перезапусти Claude Code аби MCP-сервери причепилися. Потім перевір:'
             )} ⌘ <span className="text-qa-teal">claude mcp list</span>
           </p>
+
+          {/* Lecture-Arsenal — featured second installer that picks up
+              everything else we showed beyond the workshop core: gems,
+              design skills, browser tooling, channels, superpowers.
+              Walks the user through y/n confirms so they install only
+              what they want, in one paste-and-go session. */}
+          <div className="mt-10">
+            <CopyPrompt
+              featured
+              name={t('Lecture Arsenal Installer', 'Установщик арсенала лекции', 'Встановлювач арсеналу лекції')}
+              desc={t(
+                'One prompt for everything else we showed - 12 items, y/n on each. MemPalace, suzu, ToolSearch flag, Quinn+Jinx, Channels, impeccable, open-design, agent-browser, caveman, n8n-mcp, superpowers.',
+                'Один промпт на всё что мы показывали кроме воркшоп-ядра - 12 пунктов, y/n на каждом. MemPalace, suzu, ToolSearch-флаг, Quinn+Jinx, Channels, impeccable, open-design, agent-browser, caveman, n8n-mcp, superpowers.',
+                'Один промпт на все що ми показували окрім воркшоп-ядра - 12 пунктів, y/n на кожному. MemPalace, suzu, ToolSearch-прапор, Quinn+Jinx, Channels, impeccable, open-design, agent-browser, caveman, n8n-mcp, superpowers.'
+              )}
+            >
+              {LECTURE_ARSENAL_PROMPT}
+            </CopyPrompt>
+
+            <p className="font-mono text-[11px] text-text-dim mt-4 leading-relaxed">
+              ▲ {t(
+                'Goes through each item one by one. Say no to anything you do not want - it skips and moves on. Restart Claude Code at the end.',
+                'Проходит по каждому пункту по очереди. Скажи нет тому что не нужно - пропустит и пойдёт дальше. В конце перезапусти Claude Code.',
+                'Проходить по кожному пункту по черзі. Скажи ні тому що не потрібно - пропустить і піде далі. В кінці перезапусти Claude Code.'
+              )}
+            </p>
+          </div>
         </section>
 
         {/* ─── Section 2: Autopilot prompts ─── */}
         <section className="mb-20">
           <SectionHeader
             eyebrow={t('· Autopilots ·', '· Автопилоты ·', '· Автопілоти ·')}
-            title={t('Five prompts for every step', 'Пять промптов на каждый шаг', 'Пʼять промптів на кожен крок')}
+            title={t('Four prompts for every step', 'Четыре промпта на каждый шаг', 'Чотири промпти на кожен крок')}
             sub={t(
               "Each one is a self-driving instruction set. Paste, watch Claude work, move on. Use them in any order - they're independent.",
               'Каждый - самоисполняющийся набор инструкций. Вставил, посмотрел как Claude работает, пошёл дальше. Используй в любом порядке - они независимы.',
@@ -347,13 +396,13 @@ export default function P_Resources() {
             eyebrow={t('· Provisions ·', '· Провизия ·', '· Провізія ·')}
             title={t('Reference downloads', 'Справочные файлы', 'Довідкові файли')}
             sub={t(
-              'Three files to keep on your machine. The Hidden Gems list alone is worth printing.',
-              'Три файла держать на ноуте. Один Hidden Gems-лист уже стоит распечатать.',
-              'Три файли тримати на ноуті. Один Hidden Gems-список вже варто роздрукувати.'
+              'Two files to keep on your machine. The Hidden Gems list alone is worth printing.',
+              'Два файла держать на ноуте. Один Hidden Gems-лист уже стоит распечатать.',
+              'Два файли тримати на ноуті. Один Hidden Gems-список вже варто роздрукувати.'
             )}
           />
 
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 gap-4">
             {DOWNLOADS.map(d => (
               <a
                 key={d.filename}
