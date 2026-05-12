@@ -6,27 +6,20 @@ import { findDragonById } from '../data/hidden-dragons'
 import { updateStudentProgress } from '../api/progress'
 
 /**
- * A tiny dragon hidden on a slide. Click → puff + curve-flight to HUD
- * (where the Wyrmling counter lives) + confetti + XP. Golden variant
- * fires fullscreen confetti.
+ * Hidden dragon — click → reveal + spiral flight to HUD + reward.
  *
- * Lifecycle:
- *   idle   — semi-transparent dragon at its hiding spot, opacity ~0.18
- *            (hover bumps to ~0.55, scale ×1.15, cursor pointer)
- *   puff   — scales up 2.5× + opacity 1, rotation snap to 0 (250ms)
- *   fly    — arcs toward HUD bottom-right, scaling down, rotating (1.5s)
- *   done   — invisible; XP recorded in store; toast plays via lastToast
+ * Multi-layer animation:
+ *   idle    silhouette at base opacity, scrolls with content
+ *   awake   3 expanding glow rings + 18 spark explosion + dragon
+ *           grows to 3.2× + wing-flap kicks in (300ms)
+ *   fly     spiral arc to HUD with comet-trail (12 echo silhouettes)
+ *           + sparkle ✦ stars dropping along the path (1.5s)
+ *   land    burst at HUD location, counter ticks up (250ms)
  *
- * Idempotent — clicking the same id twice or on reload doesn't re-award.
- * The component returns null once found.
- *
- * Place anywhere inside a slide; default positioning is absolute via
- * inline style. Override via props:
- *   <HiddenDragon id="..." style={{ top: 20, right: 30 }} />
+ * Golden variant: longer (2.5s), edge-cannon confetti, +500 XP
+ * floating tag, golden hue-rotate tint, double trail length.
  */
 
-// Hand-drawn dragon silhouettes (5 variants in /public/dragons/).
-// Each dragon entry deterministically picks one via hash(id) % 5.
 const SILHOUETTE_COUNT = 5
 function pickSilhouette(id) {
   let h = 0
@@ -50,6 +43,7 @@ export default function HiddenDragon({
   const buttonRef = useRef(null)
   const [stage, setStage] = useState('idle')
   const [flightDelta, setFlightDelta] = useState({ x: 0, y: 0 })
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 })
 
   if (!dragon || found) return null
 
@@ -59,67 +53,81 @@ export default function HiddenDragon({
   const baseOpacity = opacityOverride != null ? opacityOverride : dragon.opacity || 0.18
   const rotation = rotationOverride != null ? rotationOverride : dragon.rotation || 0
   const color = isGolden ? '#FEED00' : '#00E5CC'
+  const colorRGB = isGolden ? '254, 237, 0' : '0, 229, 204'
 
-  const handleClick = (e) => {
+  const silhouetteIdx = pickSilhouette(id)
+  const silhouettePath = `/dragons/silhouette-${silhouetteIdx}.png`
+
+  // Trail length scales with golden grandeur
+  const trailCount = isGolden ? 16 : 12
+  const sparkleCount = isGolden ? 12 : 8
+  const ringCount = isGolden ? 4 : 3
+  const explosionCount = isGolden ? 24 : 18
+  // Overall flight duration
+  const flightDur = isGolden ? 2.2 : 1.5
+  const totalDur = flightDur + 0.3   // includes awake stage
+
+  const handleClick = () => {
     if (stage !== 'idle') return
     if (!buttonRef.current) return
     const rect = buttonRef.current.getBoundingClientRect()
-    const startX = rect.left + rect.width / 2
-    const startY = rect.top + rect.height / 2
-    // Aim toward the Wyrmling counter in the HUD (bottom-right). The
-    // HUD's actual element id is hud-wyrmlings — measure it if present.
-    let targetX = window.innerWidth - 80
-    let targetY = window.innerHeight - 60
+    const sx = rect.left + rect.width / 2
+    const sy = rect.top + rect.height / 2
+    let tx = window.innerWidth - 80
+    let ty = window.innerHeight - 60
     const hud = document.getElementById('hud-wyrmlings')
     if (hud) {
       const hr = hud.getBoundingClientRect()
-      targetX = hr.left + hr.width / 2
-      targetY = hr.top + hr.height / 2
+      tx = hr.left + hr.width / 2
+      ty = hr.top + hr.height / 2
     }
-    setFlightDelta({ x: targetX - startX, y: targetY - startY })
-    setStage('puff')
+    setStartPos({ x: sx, y: sy })
+    setFlightDelta({ x: tx - sx, y: ty - sy })
+    setStage('awake')
 
-    // Confetti burst at click point (paged in screen coords 0..1)
+    // Confetti burst at click point
     confetti({
-      particleCount: isGolden ? 100 : 24,
-      spread: 70,
-      startVelocity: 32,
-      origin: { x: startX / window.innerWidth, y: startY / window.innerHeight },
+      particleCount: isGolden ? 120 : 32,
+      spread: 80,
+      startVelocity: 38,
+      origin: { x: sx / window.innerWidth, y: sy / window.innerHeight },
       colors: isGolden
         ? ['#FFD700', '#FFA500', '#FEED00', '#FFFFFF']
         : ['#00E5CC', '#FEED00', '#FF65BE', '#FFFFFF'],
-      ticks: 200,
-      scalar: isGolden ? 1.2 : 0.9,
+      ticks: 220,
+      scalar: isGolden ? 1.3 : 1.0,
     })
 
-    // Golden — fullscreen secondary burst + cannons from edges
     if (isGolden) {
       setTimeout(() => {
         confetti({
-          particleCount: 250,
-          spread: 160,
-          origin: { x: 0.5, y: 0.45 },
+          particleCount: 280, spread: 160, origin: { x: 0.5, y: 0.45 },
           colors: ['#FFD700', '#FEED00', '#FFA500', '#FFFFFF'],
-          startVelocity: 55,
-          gravity: 0.65,
-          ticks: 320,
-          scalar: 1.3,
+          startVelocity: 60, gravity: 0.65, ticks: 360, scalar: 1.4,
         })
-      }, 220)
+      }, 280)
       setTimeout(() => {
-        confetti({ particleCount: 80, angle: 60, spread: 55, origin: { x: 0, y: 0.7 },
+        confetti({ particleCount: 100, angle: 60, spread: 60, origin: { x: 0, y: 0.7 },
           colors: ['#FFD700', '#FEED00'] })
-        confetti({ particleCount: 80, angle: 120, spread: 55, origin: { x: 1, y: 0.7 },
+        confetti({ particleCount: 100, angle: 120, spread: 60, origin: { x: 1, y: 0.7 },
           colors: ['#FFD700', '#FEED00'] })
-      }, 500)
+      }, 600)
     }
 
-    // Timeline: puff (0-250ms) → fly (250-1700ms) → done + award
-    setTimeout(() => setStage('fly'), 240)
+    // Timeline
+    setTimeout(() => setStage('fly'), 320)
     setTimeout(() => {
+      // Land confetti at HUD
+      confetti({
+        particleCount: isGolden ? 60 : 28,
+        spread: 90,
+        startVelocity: 25,
+        origin: { x: tx / window.innerWidth, y: ty / window.innerHeight },
+        colors: isGolden ? ['#FFD700', '#FEED00', '#FFFFFF'] : ['#00E5CC', '#FEED00', '#FFFFFF'],
+        ticks: 140,
+      })
       markDragonFound(id, dragon.xpReward)
       setStage('done')
-      // Fire-and-forget server sync (XP + dragon list)
       const state = useWorkshopStore.getState()
       const studentId = state.user?.id
       const nickname = state.user?.nickname
@@ -130,13 +138,10 @@ export default function HiddenDragon({
           hiddenDragonsFound: (state.hiddenDragonsFound || []).map(d => d.id),
         }).catch(() => {})
       }
-    }, 1700)
+    }, totalDur * 1000)
   }
 
-  // Animation variants per stage
-  const silhouetteIdx = pickSilhouette(id)
-  const silhouettePath = `/dragons/silhouette-${silhouetteIdx}.png`
-
+  // ── Main dragon button ──
   const baseStyle = {
     position: style.position || 'absolute',
     top: style.top ?? dragon.position?.top,
@@ -159,37 +164,52 @@ export default function HiddenDragon({
     ...style,
   }
 
-  const motionProps = stage === 'idle' ? {
-    animate: { opacity: baseOpacity, scale: 1, rotate: rotation, x: 0, y: 0 },
-    whileHover: { opacity: 0.6, scale: 1.18, filter: 'drop-shadow(0 0 6px currentColor)' },
+  const dragonAnim = stage === 'idle' ? {
+    animate: { opacity: baseOpacity, scale: 1, rotate: rotation },
+    whileHover: { opacity: 0.7, scale: 1.2, filter: `drop-shadow(0 0 8px ${color})` },
     transition: { duration: 0.2 },
-  } : stage === 'puff' ? {
+  } : stage === 'awake' ? {
     animate: {
       opacity: 1,
-      scale: 2.6,
+      scale: 3.2,
       rotate: 0,
-      filter: `drop-shadow(0 0 14px ${color})`,
+      filter: [
+        `drop-shadow(0 0 8px ${color})`,
+        `drop-shadow(0 0 26px ${color}) drop-shadow(0 0 6px #fff) brightness(1.4)`,
+      ],
     },
-    transition: { duration: 0.24, ease: 'easeOut' },
+    transition: { duration: 0.32, ease: [0.34, 1.56, 0.64, 1] },
   } : stage === 'fly' ? {
     animate: {
       opacity: [1, 1, 0.6, 0],
-      scale: [2.6, 1.4, 0.7, 0.3],
-      x: [0, flightDelta.x * 0.35, flightDelta.x * 0.75, flightDelta.x],
-      y: [0, flightDelta.y * 0.35 - 100, flightDelta.y * 0.7 - 30, flightDelta.y],
-      rotate: [0, 25, -15, 40],
+      scale: [3.2, 1.8, 0.8, 0.3],
+      rotate: [0, 35, -20, 50],
+      x: [
+        0,
+        flightDelta.x * 0.25 + (flightDelta.x > 0 ? 60 : -60),
+        flightDelta.x * 0.65,
+        flightDelta.x,
+      ],
+      y: [
+        0,
+        flightDelta.y * 0.25 - 140,
+        flightDelta.y * 0.55 - 60,
+        flightDelta.y,
+      ],
       filter: [
-        `drop-shadow(0 0 14px ${color})`,
-        `drop-shadow(0 0 18px ${color})`,
-        `drop-shadow(0 0 8px ${color})`,
+        `drop-shadow(0 0 26px ${color}) brightness(1.4)`,
+        `drop-shadow(0 0 22px ${color}) brightness(1.3)`,
+        `drop-shadow(0 0 12px ${color}) brightness(1.1)`,
         `drop-shadow(0 0 0px ${color})`,
       ],
     },
-    transition: { duration: 1.4, times: [0, 0.35, 0.7, 1], ease: 'easeInOut' },
-  } : {
-    animate: { opacity: 0, scale: 0 },
-    transition: { duration: 0.1 },
-  }
+    transition: { duration: flightDur, times: [0, 0.35, 0.7, 1], ease: [0.4, 0, 0.2, 1] },
+  } : { animate: { opacity: 0, scale: 0 }, transition: { duration: 0.1 } }
+
+  // Wing-flap on inner img — scaleY oscillates during awake + fly
+  const wingFlap = (stage === 'awake' || stage === 'fly') ? {
+    scaleY: [1, 0.55, 1.15, 0.55, 1.15, 0.6, 1.1, 0.7, 1],
+  } : { scaleY: 1 }
 
   return (
     <>
@@ -199,18 +219,24 @@ export default function HiddenDragon({
         onClick={handleClick}
         style={baseStyle}
         initial={{ opacity: baseOpacity, scale: 1, rotate: rotation }}
-        {...motionProps}
+        {...dragonAnim}
       >
-        <img
+        <motion.img
           src={silhouettePath}
           alt=""
           draggable={false}
+          animate={wingFlap}
+          transition={{
+            duration: stage === 'fly' ? flightDur : 0.6,
+            ease: 'easeInOut',
+          }}
           style={{
             display: 'block',
             width: '100%',
             height: '100%',
             objectFit: 'contain',
             pointerEvents: 'none',
+            transformOrigin: 'center',
             filter: isGolden
               ? `drop-shadow(0 0 4px ${color}) hue-rotate(40deg) saturate(2) brightness(1.3)`
               : 'none',
@@ -218,38 +244,195 @@ export default function HiddenDragon({
         />
       </motion.button>
 
-      {/* Spark trail particles during flight — render 6 echoes with stagger */}
       <AnimatePresence>
-        {stage === 'fly' && (
+        {(stage === 'awake' || stage === 'fly') && (
           <>
-            {[0, 1, 2, 3, 4, 5].map(i => (
-              <motion.span
-                key={`spark-${i}`}
+            {/* ── Expanding glow rings at start position ── */}
+            {[...Array(ringCount)].map((_, i) => (
+              <motion.div
+                key={`ring-${i}`}
                 style={{
                   position: 'fixed',
-                  pointerEvents: 'none',
-                  left: buttonRef.current ? buttonRef.current.getBoundingClientRect().left + size / 2 : 0,
-                  top: buttonRef.current ? buttonRef.current.getBoundingClientRect().top + size / 2 : 0,
-                  width: 6, height: 6,
+                  left: startPos.x - 30,
+                  top: startPos.y - 30,
+                  width: 60,
+                  height: 60,
                   borderRadius: '50%',
-                  background: color,
-                  zIndex: 199,
+                  border: `2px solid ${color}`,
+                  pointerEvents: 'none',
+                  zIndex: 198,
+                  boxShadow: `0 0 24px rgba(${colorRGB}, 0.6)`,
                 }}
-                initial={{ opacity: 0.9, scale: 1 }}
-                animate={{
-                  opacity: [0.9, 0.5, 0],
-                  scale: [1, 0.6, 0.2],
-                  x: [0, flightDelta.x * 0.4, flightDelta.x * 0.85],
-                  y: [0, flightDelta.y * 0.4 - 80, flightDelta.y * 0.85 - 10],
-                }}
+                initial={{ scale: 0.4, opacity: 0.95 }}
+                animate={{ scale: [0.4, 5], opacity: [0.9, 0] }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: 1.2 + i * 0.05,
-                  delay: i * 0.06,
+                  duration: 1.1,
+                  delay: i * 0.18,
                   ease: 'easeOut',
                 }}
               />
             ))}
+
+            {/* ── Spark explosion: radiate outward in a circle ── */}
+            {[...Array(explosionCount)].map((_, i) => {
+              const angle = (i / explosionCount) * Math.PI * 2
+              const dist = 90 + Math.random() * 50
+              return (
+                <motion.span
+                  key={`spark-${i}`}
+                  style={{
+                    position: 'fixed',
+                    left: startPos.x - 3,
+                    top: startPos.y - 3,
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: i % 3 === 0 ? '#FFFFFF' : color,
+                    pointerEvents: 'none',
+                    zIndex: 199,
+                    boxShadow: `0 0 8px ${color}`,
+                  }}
+                  initial={{ scale: 1, opacity: 1 }}
+                  animate={{
+                    x: Math.cos(angle) * dist,
+                    y: Math.sin(angle) * dist,
+                    scale: [1, 0.3],
+                    opacity: [1, 0],
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.7 + Math.random() * 0.2,
+                    ease: 'easeOut',
+                  }}
+                />
+              )
+            })}
+          </>
+        )}
+
+        {stage === 'fly' && (
+          <>
+            {/* ── Comet trail: silhouette echoes following dragon ── */}
+            {[...Array(trailCount)].map((_, i) => {
+              const stagger = i * (flightDur * 0.04)
+              const echoScale = 2.4 - i * 0.12
+              return (
+                <motion.img
+                  key={`trail-${i}`}
+                  src={silhouettePath}
+                  alt=""
+                  draggable={false}
+                  style={{
+                    position: 'fixed',
+                    left: startPos.x - size,
+                    top: startPos.y - size,
+                    width: size * 2,
+                    height: size * 2,
+                    pointerEvents: 'none',
+                    zIndex: 197,
+                    filter: isGolden
+                      ? `drop-shadow(0 0 6px ${color}) hue-rotate(40deg) saturate(2) brightness(1.2)`
+                      : `drop-shadow(0 0 8px ${color})`,
+                  }}
+                  initial={{ opacity: 0, scale: echoScale, x: 0, y: 0 }}
+                  animate={{
+                    opacity: [0, 0.55 * (1 - i / trailCount), 0],
+                    scale: [echoScale, echoScale * 0.6, 0.3],
+                    rotate: [0, 25, 60],
+                    x: [
+                      0,
+                      flightDelta.x * 0.25 + (flightDelta.x > 0 ? 60 : -60),
+                      flightDelta.x * 0.65,
+                      flightDelta.x * 0.95,
+                    ],
+                    y: [
+                      0,
+                      flightDelta.y * 0.25 - 140,
+                      flightDelta.y * 0.55 - 60,
+                      flightDelta.y * 0.95,
+                    ],
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: flightDur,
+                    delay: stagger,
+                    times: [0, 0.35, 0.7, 1],
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
+                />
+              )
+            })}
+
+            {/* ── Sparkle ✦ stars dropping along the path ── */}
+            {[...Array(sparkleCount)].map((_, i) => {
+              const t = (i + 1) / (sparkleCount + 1)
+              return (
+                <motion.span
+                  key={`sparkle-${i}`}
+                  style={{
+                    position: 'fixed',
+                    left: startPos.x - 8,
+                    top: startPos.y - 8,
+                    fontSize: 14 + Math.random() * 6,
+                    color,
+                    pointerEvents: 'none',
+                    zIndex: 199,
+                    textShadow: `0 0 8px ${color}`,
+                    fontWeight: 'bold',
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    scale: [0.4, 1.4, 0.2],
+                    x: flightDelta.x * t + (Math.random() - 0.5) * 40,
+                    y: flightDelta.y * t - 80 * Math.sin(t * Math.PI) + (Math.random() - 0.5) * 40,
+                    rotate: 360,
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.9,
+                    delay: 0.2 + t * (flightDur - 0.2),
+                    ease: 'easeOut',
+                  }}
+                >
+                  ✦
+                </motion.span>
+              )
+            })}
+
+            {/* ── Floating XP tag (mid-flight) ── */}
+            <motion.span
+              key="xp-tag"
+              style={{
+                position: 'fixed',
+                left: startPos.x + flightDelta.x * 0.4 - 30,
+                top: startPos.y + flightDelta.y * 0.4 - 110,
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: isGolden ? 18 : 14,
+                fontWeight: 700,
+                color: isGolden ? '#FFD700' : '#FFFFFF',
+                textShadow: `0 0 8px ${color}, 0 0 16px ${color}`,
+                pointerEvents: 'none',
+                zIndex: 201,
+                whiteSpace: 'nowrap',
+              }}
+              initial={{ opacity: 0, scale: 0.5, y: 0 }}
+              animate={{
+                opacity: [0, 1, 1, 0],
+                scale: [0.5, 1.2, 1.0, 0.7],
+                y: [0, -10, -30, -50],
+              }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: flightDur * 0.9,
+                delay: 0.3,
+                times: [0, 0.2, 0.7, 1],
+                ease: 'easeOut',
+              }}
+            >
+              +{dragon.xpReward} XP
+            </motion.span>
           </>
         )}
       </AnimatePresence>
