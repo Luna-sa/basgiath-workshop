@@ -296,8 +296,8 @@ export const NARRATIVE = {
     title_en: 'The Forge-market',
     title_uk: 'The Forge-market',
     subtitle: '',
-    text: 'Карта где брать skills: skills.sh, anthropic-skills, superpowers, awesome-claude-code.',
-    text_en: 'Map of where skills live: skills.sh, anthropic-skills, superpowers, awesome-claude-code.',
-    text_uk: 'Мапа де брати skills: skills.sh, anthropic-skills, superpowers, awesome-claude-code.',
+    text: 'Карта где брать skills: skills.sh, superpowers, awesome-claude-code.',
+    text_en: 'Map of where skills live: skills.sh, superpowers, awesome-claude-code.',
+    text_uk: 'Мапа де брати skills: skills.sh, superpowers, awesome-claude-code.',
   },
 }

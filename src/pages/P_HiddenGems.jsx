@@ -73,7 +73,7 @@ export default function P_HiddenGems() {
               <li>◇ <span className="text-white">Design DNA</span> - {t('four skills that give Claude actual design taste', 'четыре skills которые дают Claude настоящий дизайнерский вкус', 'чотири skills які дають Claude справжній дизайнерський смак')}</li>
               <li>◇ <span className="text-white">Sky-scribes</span> - {t('three ways to give an AI agent a real browser', 'три способа дать AI-агенту настоящий браузер', 'три способи дати AI-агенту справжній браузер')}</li>
               <li>◇ <span className="text-white">Wing-hands</span> - {t('four utilities: code-map, token-cut, n8n-mcp, CLI-anything', 'четыре утилиты: code-map, token-cut, n8n-mcp, CLI-anything', 'чотири утиліти: code-map, token-cut, n8n-mcp, CLI-anything')}</li>
-              <li>◇ <span className="text-white">The Forge-market</span> - {t('skills.sh, anthropic-skills, superpowers - where skills live', 'skills.sh, anthropic-skills, superpowers - где обитают skills', 'skills.sh, anthropic-skills, superpowers - де живуть skills')}</li>
+              <li>◇ <span className="text-white">The Forge-market</span> - {t('skills.sh, superpowers, awesome-list - where skills live', 'skills.sh, superpowers, awesome-list - где обитают skills', 'skills.sh, superpowers, awesome-list - де живуть skills')}</li>
             </ul>
           </div>
         </div>

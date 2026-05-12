@@ -11,6 +11,12 @@ import { useWorkshopStore } from '../store/workshopStore'
 import HiddenDragon from '../components/HiddenDragon'
 import { TOTAL_DRAGONS } from '../data/hidden-dragons'
 
+function isInMainFlow() {
+  if (typeof window === 'undefined') return false
+  const params = new URLSearchParams(window.location.search)
+  return params.get('page') !== 'champions' && window.location.pathname !== '/champions'
+}
+
 /**
  * Three Champions - the workshop finale.
  *
@@ -339,6 +345,31 @@ export default function P_Champions() {
         id="golden-wyrmling"
         style={{ position: 'fixed', bottom: 280, right: 240 }}
       />
+
+      {/* Next button — only when this slide runs inside the main
+          workshop flow (not the projector-only /?page=champions
+          route). Appears once all three reveals have played. */}
+      {isInMainFlow() && stage >= 4 && (
+        <FlowNextButton />
+      )}
     </div>
+  )
+}
+
+function FlowNextButton() {
+  const t = useT()
+  const navigateNext = useWorkshopStore(s => s.navigateNext)
+  const completePage = useWorkshopStore(s => s.completePage)
+  const currentPage = useWorkshopStore(s => s.currentPage)
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.4 }}
+      onClick={() => { completePage(currentPage); navigateNext() }}
+      className="fixed bottom-8 right-8 z-40 px-7 py-3 bg-qa-teal text-black font-mono text-[12px] tracking-[3px] uppercase font-semibold hover:shadow-[0_0_24px_rgba(0,229,204,0.4)] transition-all cursor-pointer"
+    >
+      {t('Continue →', 'Дальше →', 'Далі →')}
+    </motion.button>
   )
 }

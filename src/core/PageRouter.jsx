@@ -39,8 +39,9 @@ const pageComponents = {
   23: lazy(() => import('../pages/P_AerieIntro')),
   24: lazy(() => import('../pages/P_ArenaIntro')),
   25: lazy(() => import('../pages/P14_Leaderboard')),
-  26: lazy(() => import('../pages/P15_Graduation')),
-  27: lazy(() => import('../pages/P_ResourcesIntro')),
+  26: lazy(() => import('../pages/P_Champions')),
+  27: lazy(() => import('../pages/P15_Graduation')),
+  28: lazy(() => import('../pages/P_ResourcesIntro')),
 }
 
 // Loading fallback

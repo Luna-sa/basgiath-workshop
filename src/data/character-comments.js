@@ -294,10 +294,10 @@ export const CHARACTER_COMMENTS = {
   },
   gem_skills_marketplace: {
     violet:   { ru: 'skills.sh - перед тем как писать свой skill, поищи там. Половину работы кто-то уже сделал.', en: 'skills.sh - before authoring a skill, search there. Half the work is done.', uk: 'skills.sh - перш ніж писати свій skill, пошукай там. Половину роботи хтось уже зробив.' },
-    xaden:    { ru: 'anthropic-skills - реверс-инжинирь их. Так быстрее чем читать доки.', en: 'anthropic-skills - reverse-engineer them. Faster than reading docs.', uk: 'anthropic-skills - реверс-інжинір їх. Швидше ніж читати доки.' },
+    xaden:    { ru: 'Реверс-инжинирь любой чужой skill. Так быстрее чем читать доки.', en: 'Reverse-engineer any skill you find. Faster than reading docs.', uk: 'Реверс-інжинір будь-який чужий skill. Швидше ніж читати доки.' },
     rhiannon: { ru: 'awesome-claude-code - подпишись на repo. Star → апдейты прилетают сами.', en: 'awesome-claude-code - subscribe to the repo. Star → updates land on you.', uk: 'awesome-claude-code - підпишись на repo. Star → апдейти прилітають самі.' },
     ridoc:    { ru: 'superpowers - skill который оркеструет skills. Skill-инцепция. Я в восторге.', en: 'superpowers - a skill that orchestrates skills. Skill-inception. I love it.', uk: 'superpowers - skill який оркеструє skills. Skill-інцепція. Я в захваті.' },
-    liam:     { ru: 'Сначала skills.sh. Потом anthropic-skills. Потом superpowers. По порядку.', en: 'skills.sh first. Then anthropic-skills. Then superpowers. In order.', uk: 'Спершу skills.sh. Потім anthropic-skills. Потім superpowers. По порядку.' },
+    liam:     { ru: 'Сначала skills.sh. Потом superpowers. Потом awesome-list. По порядку.', en: 'skills.sh first. Then superpowers. Then awesome-list. In order.', uk: 'Спершу skills.sh. Потім superpowers. Потім awesome-list. По порядку.' },
     imogen:   { ru: 'skills.sh. Иди.', en: 'skills.sh. Go.', uk: 'skills.sh. Іди.' },
   },
 }

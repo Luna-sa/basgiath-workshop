@@ -314,9 +314,21 @@ export const PAGES = [
     subSteps: null,
   },
 
-  // 🎓 GRADUATION
+  // 🏆 THREE CHAMPIONS reveal (Best Dragon · Most XP · Arena Champion)
   {
     id: 26,
+    slug: 'champions',
+    phase: 'live',
+    title: 'Three Champions',
+    narrativeKey: 'champions',
+    gate: { type: 'click' },
+    xpReward: 0,
+    subSteps: null,
+  },
+
+  // 🎓 GRADUATION
+  {
+    id: 27,
     slug: 'graduation',
     phase: 'live',
     title: 'First flight',
@@ -328,7 +340,7 @@ export const PAGES = [
 
   // 📦 RESOURCES - take-home reference
   {
-    id: 27,
+    id: 28,
     slug: 'resources',
     phase: 'live',
     title: 'Bonded',
