@@ -358,20 +358,18 @@ export async function renderCertificateCard({
  * Returned as a plain string so the caller can copy it to clipboard.
  */
 export function buildLinkedInCaption({ tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
-  return `Spent the day at the Claude Code Workshop Basics with Anastasiia Babanina.
+  return `Completed the Claude Code Workshop Basics with Anastasiia Babanina.
 
-Walked in expecting another chat-style AI demo. That was wrong.
+What I'm leaving with:
 
-What I'm actually leaving with:
-
-- A CLAUDE.md that holds my voice, my conventions, the things I refuse to compromise on.
-- Sub-agents handling parts of QA I always wanted to delegate. Test cases, bug triage, review, running in parallel while I focus elsewhere.
+- A CLAUDE.md tuned to my voice, conventions, and non-negotiables.
+- Sub-agents handling parts of QA I always wanted to delegate. Test cases, bug triage, review, in parallel.
 - Claude that opens browsers, hits APIs, reads live documentation. Not describing how. Doing it.
-- A personal AI assistant for the routine work that used to eat my mornings.
+- A personal AI assistant for routine work that used to eat my mornings.
 
 The loop changed. Small stuff runs in the background. I spend the day on what actually needs a human.
 
-If you're a QA still copy-pasting between ChatGPT and your IDE, this workshop closes the gap.
+For any QA still copy-pasting between ChatGPT and an IDE, this workshop closes the gap.
 
 Tutor: Anastasiia Babanina, ${tutorLinkedinUrl}
 
