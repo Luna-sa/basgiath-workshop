@@ -12,6 +12,19 @@ export default function P01_CharacterSelect() {
 
   return (
     <PageShell pageIndex={1}>
+      {/* Dragon roar — intense banner above the lore. Threshing is
+          the moment a cadet's dragon notices them; the image puts
+          the room in that moment before they pick. */}
+      <div className="relative -mt-2 mb-5 h-[160px] overflow-hidden border border-border">
+        <img
+          src="/hero/threshing-roar.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-75"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
+      </div>
+
       {/* Lore context */}
       <div className="mb-5 p-4 border border-border bg-surface/30 text-[13px] text-text-secondary leading-relaxed">
         <p className="mb-2">

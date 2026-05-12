@@ -46,6 +46,18 @@ export default function P14_Leaderboard() {
   return (
     <PageShell pageIndex={31}>
       <div className="space-y-6">
+        {/* Three cloaked figures — riders aligned, signets honoured.
+            Banner sets the "those who flew" mood before the count. */}
+        <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
+          <img
+            src="/hero/leaderboard-figures.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-70"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
+        </div>
+
         {/* Counter header */}
         {!loading && (
           <div className="flex items-baseline justify-center gap-2 font-mono text-[13px] tracking-[2px] uppercase">

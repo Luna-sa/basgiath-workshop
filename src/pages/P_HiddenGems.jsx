@@ -15,14 +15,26 @@ export default function P_HiddenGems() {
   return (
     <PageShell pageIndex={19}>
       <div className="space-y-6">
-        <div>
-          <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
+        {/* Bone amulet — collectibles vibe. The "hidden gems" are
+            artifacts riders carry; the runic charm anchors that
+            feeling next to the intro copy. */}
+        <div className="grid md:grid-cols-[1fr_240px] gap-6 items-start">
+          <p className="text-[15px] text-text-body leading-relaxed">
             {t(
               'Five things most riders don\'t know about. Some are baked into Claude Code and undocumented. Some are community projects that lift the workflow or just delight you. We go through them one at a time over the next slides - each with a copyable autopilot prompt, so you can install on the spot.',
               'Пять штук, про которые большинство всадников не знают. Часть встроена в Claude Code и не задокументирована. Часть - community-проекты, которые поднимают workflow или просто радуют. Сейчас идём по ним по одной - у каждой свой слайд и copyable autopilot-промпт, поставить можно прямо здесь.',
               'Пʼять штук, про які більшість вершників не знають. Частина вбудована у Claude Code і не задокументована. Частина - community-проєкти, які піднімають workflow або просто тішать. Зараз ідемо по них по одній - у кожної свій слайд і copyable autopilot-промпт, поставити можна прямо тут.'
             )}
           </p>
+          <div className="relative aspect-[16/10] max-h-[160px] mx-auto md:mx-0 w-full overflow-hidden border border-border bg-black">
+            <img
+              src="/hero/gems-amulet.jpg"
+              alt=""
+              className="w-full h-full object-cover opacity-85"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-bg/40 via-transparent to-transparent" />
+          </div>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">

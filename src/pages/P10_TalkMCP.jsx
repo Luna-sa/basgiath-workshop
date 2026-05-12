@@ -45,6 +45,19 @@ export default function P10_TalkMCP() {
   return (
     <PageShell pageIndex={16}>
       <div className="space-y-5">
+        {/* Dragon claws on stone — rider's arts. MCP gives Claude
+            things to grip with; the image carries the "tools that
+            reach into the world" idea before the core message lands. */}
+        <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
+          <img
+            src="/hero/mcp-claws.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-70"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         {/* Core message */}
         <div className="p-6 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">
           <p className="text-[20px] text-text-body leading-relaxed">

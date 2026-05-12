@@ -37,9 +37,21 @@ export default function P_ArenaIntro() {
   return (
     <PageShell pageIndex={30}>
       <div className="space-y-6">
+        {/* Hand-on-sword in starfield — combat intensity before
+            the rules block. */}
+        <div className="relative -mt-2 h-[160px] overflow-hidden border border-border">
+          <img
+            src="/hero/arena-sword.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-75"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         <div>
           <p className="font-mono text-[11px] tracking-[3px] uppercase text-qa-teal mb-3">
-            ◆ {t('Riders in the Sky', 'Всадники в небе', 'Вершники у небі')}
+            {t('Riders in the Sky', 'Всадники в небе', 'Вершники у небі')}
           </p>
           <h2 className="font-display text-3xl text-white leading-tight mb-3">
             {t('Code how your dragon flies.', 'Запрограммируй полёт своего дракона.', 'Запрограмуй політ свого дракона.')}
