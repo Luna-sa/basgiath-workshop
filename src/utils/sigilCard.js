@@ -357,20 +357,23 @@ export async function renderCertificateCard({
  * Build the English LinkedIn caption for the certificate share.
  * Returned as a plain string so the caller can copy it to clipboard.
  */
-export function buildLinkedInCaption({ dragonName = 'my dragon', tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
-  return `Just completed the Claude Code Workshop — Basics, a hands-on training for QA engineers. 🐉
+export function buildLinkedInCaption({ tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
+  return `Spent the day at the Claude Code Workshop — Basics with Anastasiia Babanina.
 
-Walked away with a full ecosystem set up on my machine:
-• A personalised CLAUDE.md, 7 slash commands, 4 sub-agents
-• 3 MCP servers wiring Claude into browser, HTTP and live docs
-• Hooks, plan-mode, the lot
-• My own AI assistant — ${dragonName}
+Walked in thinking "AI assistant" meant chat. Walked out with:
 
-If you're in QA and haven't tried Claude Code yet — this is the bridge from "AI that answers" to "AI that does the work".
+— A CLAUDE.md that holds my voice, my conventions, the things I refuse to compromise on
+— 4 sub-agents handling the parts of QA I always wanted to delegate
+— 3 MCP servers letting Claude actually open browsers, hit APIs, read live docs
+— My own AI personal assistant for the routine work that used to eat my mornings
 
-Huge thanks to my tutor Anastasiia Babanina (${tutorLinkedinUrl}) for the practical install path.
+The shift isn't "AI helps me write tests faster." It's "AI does the small loops while I spend the day on the things that actually need a human."
 
-#QA #ClaudeCode #AItesting`
+If you're in QA and still copy-pasting between ChatGPT and your IDE — this is the bridge.
+
+Tutor: Anastasiia Babanina · ${tutorLinkedinUrl}
+
+#QA #ClaudeCode #AITesting`
 }
 
 /** Trigger a file download for a blob. */

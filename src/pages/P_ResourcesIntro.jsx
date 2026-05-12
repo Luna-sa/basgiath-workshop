@@ -127,7 +127,6 @@ export default function P_ResourcesIntro() {
 
       // 2. Copy the English LinkedIn caption to clipboard.
       const caption = buildLinkedInCaption({
-        dragonName,
         tutorLinkedinUrl: TUTOR_LINKEDIN_URL,
       })
       try { await navigator.clipboard.writeText(caption) } catch {}
