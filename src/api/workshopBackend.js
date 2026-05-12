@@ -54,7 +54,15 @@ export async function generateDragonImage({ prompt, size = '1024x1024', quality 
     const detail = await safeReadError(res)
     throw new Error(`generation failed (${res.status}): ${detail}`)
   }
-  return res.json() // { model, image_b64, url, revised_prompt }
+  // Server payload is snake_case ({ model, image_b64, url, revised_prompt }).
+  // Normalise to camelCase here so consumers can keep their idiomatic
+  // destructure. Both keys are exposed for back-compat.
+  const data = await res.json()
+  return {
+    ...data,
+    imageB64: data.image_b64,
+    revisedPrompt: data.revised_prompt,
+  }
 }
 
 async function safeReadError(res) {
