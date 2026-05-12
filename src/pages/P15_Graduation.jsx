@@ -65,11 +65,27 @@ export default function P15_Graduation() {
             {t('Welcome home,', 'С возвращением,', 'З поверненням,')}{' '}
             <em className="italic" style={{ color: persona.accent }}>{name || nickname || character?.name}</em>
           </h2>
-          {character && (
-            <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mt-2">
-              {t('Bonded with', 'Связан с', 'Bonded з')} {character.name} · {character.title}
-            </p>
-          )}
+          {character && (() => {
+            // In the lore: the participant IS the rider (Violet/Xaden/...)
+            // who went through the Threshing — the bonded partner is
+            // their DRAGON. Extract the dragon name from character.dragon
+            // ("Tairn — чёрный Хвостоскорпион" → "Tairn").
+            const dragonRaw = (character.dragon || '').split(/[\s—–-]+/)[0].trim()
+            const isKnownDragon = dragonRaw && !/^(Unknown|Неизвестен|Невідом)/i.test(dragonRaw) && !/появит/i.test(dragonRaw)
+            return (
+              <p className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mt-2">
+                {t('Threshed as', 'Прошёл(ла) Threshing как', 'Пройшов(ла) Threshing як')} {character.name} · {character.title}
+                {isKnownDragon && (
+                  <>
+                    {' · '}
+                    <span style={{ color: persona.accent }}>
+                      {t('bonded with', 'связан(а) с', 'звʼязаний(на) з')} {dragonRaw}
+                    </span>
+                  </>
+                )}
+              </p>
+            )
+          })()}
           {/* Character voice closer — block D from red-thread spec */}
           {(() => {
             const closer = getGraduationCloser(characterId || 'self', lang)
