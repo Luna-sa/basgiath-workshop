@@ -404,10 +404,13 @@ export default function P_SignetCeremony() {
     setDragonStage('generating')
     setDragonError('')
 
+    // Dragon visuals are 100% character-locked — see derive-appearance.js.
+    // The Signet text fields (vow, sigil, tone, etc.) feed CLAUDE.md
+    // generation, NOT the image. This keeps generation deterministic
+    // and on-aesthetic regardless of how much free-form text the rider
+    // typed.
     const derived = deriveDragonAppearance({
       characterId,
-      archetype: answers.archetype,
-      answers,
       assistantName,
     })
 
