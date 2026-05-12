@@ -117,6 +117,7 @@ function doPost(e) {
       // admin
       deleteStudent,
       deleteStudentsByPrefix,
+      resetStudentProgress,
     }
     const fn = handlers[action]
     if (!fn) return _json({ error: 'unknown action: ' + action }, 400)
@@ -446,6 +447,54 @@ function deleteStudentsByPrefix({ prefix }) {
     SpreadsheetApp.flush()
     return { ok: true, studentsMatched: targets.length, rowsRemoved: removedRows, nicknames: targets }
   }, 120000)
+}
+
+/**
+ * Reset a student's progress while keeping their registration row.
+ * Use case: facilitator (anastasiia) tested the full flow herself
+ * and now wants to take the workshop fresh in front of participants
+ * without losing the nickname/character pick that's already pinned
+ * to her live registration.
+ *
+ * Wipes: dragon row, dragon_votes cast, arena_runs, bot_submissions.
+ * Clears on student row: xp, hidden_dragons_found, checkpoints, current_page.
+ */
+function resetStudentProgress({ nickname }) {
+  return _withScriptLock(function () {
+    if (!nickname) throw new Error('nickname required')
+    const nick = String(nickname).toLowerCase().trim()
+
+    // Find the student row — don't delete it
+    const rowIdx = _findRowIndex(SHEETS.STUDENTS, s => String(s.nickname).toLowerCase() === nick)
+    if (rowIdx < 0) return { ok: false, error: 'student not found' }
+
+    // Wipe dependent rows
+    let removed = 0
+    const wipeMatching = function (sheetName, fieldName) {
+      const all = _allRows(sheetName)
+      const sheet = _sheet(sheetName)
+      for (let i = all.length - 1; i >= 0; i--) {
+        if (String(all[i][fieldName]).toLowerCase() === nick) {
+          sheet.deleteRow(i + 2)
+          removed++
+        }
+      }
+    }
+    wipeMatching(SHEETS.DRAGONS, 'nickname')
+    wipeMatching(SHEETS.DRAGON_VOTES, 'voter_nickname')
+    wipeMatching(SHEETS.ARENA_RUNS, 'nickname')
+    wipeMatching(SHEETS.BOT_SUBMISSIONS, 'nickname')
+
+    // Reset student progress fields (keep id, nickname, name, character_id, etc)
+    _updateRow(SHEETS.STUDENTS, rowIdx, {
+      xp: 0,
+      hidden_dragons_found: '[]',
+      checkpoints: '{}',
+      current_page: 0,
+    })
+    SpreadsheetApp.flush()
+    return { ok: true, nickname: nick, rowsRemoved: removed }
+  }, 60000)
 }
 
 function markCheckpoint({ studentId, checkpointId }) {
