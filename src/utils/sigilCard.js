@@ -358,7 +358,7 @@ export async function renderCertificateCard({
  * Returned as a plain string so the caller can copy it to clipboard.
  */
 export function buildLinkedInCaption({ tutorLinkedinUrl = 'https://www.linkedin.com/in/ainastasia/' } = {}) {
-  return `Completed the Claude Code Workshop Basics with Anastasiia Babanina.
+  return `Completed the Claude Code Workshop Basics with QA Clan in my company.
 
 What I'm leaving with:
 
