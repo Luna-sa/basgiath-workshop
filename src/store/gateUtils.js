@@ -64,7 +64,12 @@ export function evaluateGate(state, pageIndex, subStepId = null) {
     }
 
     case 'facilitator':
-      return state.facilitatorUnlockedPage > pageIndex
+      // Facilitator-driven flow disabled for the live workshop —
+      // participants advance themselves. Polling the unlocked_page
+      // value across 50 clients with the free Apps Script quota
+      // creates more lag than it's worth, and a stuck slider
+      // accidentally locks the whole room.
+      return true
 
     default:
       return false

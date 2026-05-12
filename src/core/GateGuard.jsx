@@ -81,25 +81,11 @@ export default function GateGuard({ pageIndex, subStepId }) {
   }
 
   if (gate.type === 'facilitator') {
-    if (isOpen) {
-      return (
-        <div className="mt-6 flex justify-center">
-          <NextButton t={t} onClick={() => { completePage(pageIndex); navigateNext() }} />
-        </div>
-      )
-    }
+    // Facilitator-gating disabled — see comment in store/gateUtils.js.
+    // All facilitator-type slides now behave like a plain click gate.
     return (
-      <div className="mt-6 flex flex-col items-center gap-3">
-        <div className="flex items-center gap-2 px-4 py-3 border border-border bg-surface/50">
-          <span className="w-2 h-2 rounded-full bg-ember animate-pulse" />
-          <span className="font-mono text-[12px] text-text-dim tracking-wider">
-            {pickGateMessage(gate, lang) || t(
-              'Waiting for facilitator command...',
-              'Ожидай команду фасилитатора...',
-              'Чекай на команду фасилітатора...'
-            )}
-          </span>
-        </div>
+      <div className="mt-6 flex justify-center">
+        <NextButton t={t} onClick={() => { completePage(pageIndex); navigateNext() }} />
       </div>
     )
   }
