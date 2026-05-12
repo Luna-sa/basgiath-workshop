@@ -135,10 +135,7 @@ function startPolling() {
 function applyFacilitatorState(newState) {
   if (!newState) return
   const store = useWorkshopStore.getState()
-  if (newState.unlocked_page !== undefined && newState.unlocked_page !== '' &&
-      Number(newState.unlocked_page) !== store.facilitatorUnlockedPage) {
-    store.setFacilitatorUnlock(Number(newState.unlocked_page))
-  }
+  // unlocked_page intentionally ignored — workshop is self-paced now.
   if (newState.workshop_phase && newState.workshop_phase !== store.workshopPhase) {
     store.setWorkshopPhase(newState.workshop_phase)
   }

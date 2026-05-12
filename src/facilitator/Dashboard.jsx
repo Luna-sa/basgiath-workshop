@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { PAGES } from '../data/pages'
 import { CHARACTERS } from '../data/characters'
 import {
-  advanceAll, getAllStudents, setWorkshopPhase, deleteStudent,
+  getAllStudents, setWorkshopPhase, deleteStudent,
   awardXp, setAnnouncement, getPrizes, updatePrize,
 } from '../api/facilitator'
 import { getFacilitatorState } from '../api/progress'
@@ -12,7 +11,6 @@ import RoundControl from './RoundControl'
 
 export default function Dashboard() {
   const [students, setStudents] = useState([])
-  const [currentUnlock, setCurrentUnlock] = useState(4)
   const [phase, setPhase] = useState('pre')
   const [search, setSearch] = useState('')
   const [busyId, setBusyId] = useState(null)
@@ -102,12 +100,7 @@ export default function Dashboard() {
       const data = await getAllStudents()
       setStudents(data)
       const fs = await getFacilitatorState()
-      if (fs) {
-        if (fs.unlocked_page !== undefined && fs.unlocked_page !== '') {
-          setCurrentUnlock(Number(fs.unlocked_page))
-        }
-        if (fs.workshop_phase) setPhase(fs.workshop_phase)
-      }
+      if (fs && fs.workshop_phase) setPhase(fs.workshop_phase)
     }
     load()
     refreshSubmissions()
@@ -115,11 +108,6 @@ export default function Dashboard() {
     const interval = setInterval(load, 3000)
     return () => clearInterval(interval)
   }, [])
-
-  const handleAdvance = async (toPage) => {
-    await advanceAll(toPage)
-    setCurrentUnlock(toPage)
-  }
 
   const handlePhase = async (newPhase) => {
     await setWorkshopPhase(newPhase)
@@ -136,7 +124,7 @@ export default function Dashboard() {
               QA <em className="text-qa-teal italic">Clan</em> — Facilitator
             </h1>
             <div className="font-mono text-[12px] text-text-dim tracking-wider mt-1">
-              {students.length} студентов · Разблокировано до P{currentUnlock}
+              {students.length} студентов · self-paced
             </div>
           </div>
           <div className="flex gap-2">
@@ -156,33 +144,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick advance controls */}
-        <div className="mb-8 p-5 border border-border bg-surface/50">
-          <div className="font-mono text-[12px] tracking-[2px] uppercase text-text-dim mb-4">
-            Advance All Students
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {PAGES.map(page => (
-              <button
-                key={page.id}
-                onClick={() => handleAdvance(page.id + 1)}
-                className={`px-3 py-2 font-mono text-[12px] border cursor-pointer transition-all ${
-                  page.id < currentUnlock
-                    ? 'border-forest/30 bg-forest/[0.05] text-forest'
-                    : page.id === currentUnlock
-                      ? 'border-qa-teal bg-qa-teal/10 text-qa-teal animate-pulse'
-                      : 'border-border text-text-dim hover:border-qa-teal/25'
-                }`}
-                title={page.title}
-              >
-                {String(page.id).padStart(2, '0')}
-              </button>
-            ))}
-          </div>
-          <div className="mt-3 font-mono text-[12px] text-text-dim">
-            Нажми номер → все студенты получат доступ до этой страницы
-          </div>
-        </div>
+        {/* Quick advance / unlock controls removed — flow is self-paced.
+            Participants navigate themselves; no facilitator-side gate. */}
 
         {/* Round control */}
         <RoundControl />

@@ -48,7 +48,7 @@ export const useWorkshopStore = create(
 
       // ── Workshop state ──
       workshopPhase: 'pre', // 'pre' | 'live' | 'complete'
-      facilitatorUnlockedPage: 4, // Students can go up to page 4 by themselves
+      facilitatorUnlockedPage: 9999, // Self-paced workshop — no facilitator lock
 
       // ── Timestamps ──
       startedAt: null,
@@ -418,7 +418,7 @@ export const useWorkshopStore = create(
         preworkChecklist: {},
         preworkPath: 'claude',
         workshopPhase: 'pre',
-        facilitatorUnlockedPage: 4,
+        facilitatorUnlockedPage: 9999,
         startedAt: null,
         completedAt: null,
         lastToast: null,
