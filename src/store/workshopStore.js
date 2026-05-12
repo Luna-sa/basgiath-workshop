@@ -62,6 +62,11 @@ export const useWorkshopStore = create(
       roundWinners: null,
       showPodium: false,
 
+      // ── Sigil (sealed dragon) ──
+      // Persisted so the Resources page can show + offer the card
+      // even when the participant comes back days later.
+      sigil: null, // { imageDataUri, dragonName, motto, riderClass, characterId, sealedAt }
+
       // ── UI ──
       soundEnabled: false,
       showBadgeOverlay: false,
@@ -85,6 +90,8 @@ export const useWorkshopStore = create(
       })),
 
       setAnnouncement: (announcement) => set({ lastAnnouncement: announcement }),
+
+      setSigil: (sigil) => set({ sigil: { ...sigil, sealedAt: sigil.sealedAt || Date.now() } }),
 
       // ── Backend Registration ──
 

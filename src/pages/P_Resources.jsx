@@ -5,10 +5,12 @@
 // participant can come back any day, paste a prompt, and finish what
 // they didn't get to during the live session.
 
+import { useState } from 'react'
 import { useWorkshopStore } from '../store/workshopStore'
 import { generateEcosystemPrompt } from '../data/ecosystem-prompt'
 import CopyPrompt from '../components/CopyPrompt'
 import { useT } from '../i18n/useT'
+import { renderSigilCard, downloadBlob } from '../utils/sigilCard'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Autopilot prompts. Plain pragmatic English inside - lore is in the
@@ -274,7 +276,68 @@ const EXTERNAL_LINKS = [
 export default function P_Resources() {
   const t = useT()
   const user = useWorkshopStore(s => s.user)
+  const sigil = useWorkshopStore(s => s.sigil)
   const ecosystemPrompt = generateEcosystemPrompt(user)
+  const [sigilBusy, setSigilBusy] = useState(false)
+  const [sigilToast, setSigilToast] = useState('')
+
+  const handleSigilDownload = async () => {
+    if (!sigil?.imageDataUri || sigilBusy) return
+    setSigilBusy(true)
+    try {
+      const blob = await renderSigilCard({
+        imageUrl: sigil.imageDataUri,
+        name: sigil.dragonName || 'Unnamed',
+        nickname: user.nickname || 'rider',
+        motto: sigil.motto || '',
+        date: sigil.sealedAt ? new Date(sigil.sealedAt) : new Date(),
+      })
+      const safeName = (sigil.dragonName || 'sigil').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
+      downloadBlob(blob, `basgiath-sigil-${safeName}.png`)
+      setSigilToast(t('Sigil downloaded', 'Сигнет скачан', 'Сигнет завантажено'))
+    } catch (e) {
+      setSigilToast(t('Download failed', 'Скачивание не удалось', 'Завантаження не вдалося'))
+    } finally {
+      setSigilBusy(false)
+      setTimeout(() => setSigilToast(''), 2500)
+    }
+  }
+
+  const handleSigilShare = async () => {
+    if (!sigil?.imageDataUri || sigilBusy) return
+    setSigilBusy(true)
+    try {
+      const blob = await renderSigilCard({
+        imageUrl: sigil.imageDataUri,
+        name: sigil.dragonName || 'Unnamed',
+        nickname: user.nickname || 'rider',
+        motto: sigil.motto || '',
+        date: sigil.sealedAt ? new Date(sigil.sealedAt) : new Date(),
+      })
+      const safeName = (sigil.dragonName || 'sigil').replace(/[^a-z0-9]+/gi, '-').toLowerCase()
+      const file = new File([blob], `basgiath-sigil-${safeName}.png`, { type: 'image/png' })
+      const shareText = t(
+        `Bonded with my dragon ${sigil.dragonName} at Basgiath Academy.`,
+        `Связался(ась) с драконом ${sigil.dragonName} в Академии Басгиат.`,
+        `Звʼязався(лась) з драконом ${sigil.dragonName} в Академії Басгіат.`
+      )
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: shareText })
+        setSigilToast(t('Shared', 'Отправлено', 'Надіслано'))
+      } else {
+        downloadBlob(blob, file.name)
+        setSigilToast(t('Saved (share menu not supported)', 'Сохранено (системный share не поддерживается)', 'Збережено (системний share не підтримується)'))
+      }
+    } catch (e) {
+      // AbortError is normal (user closed the sheet) — don't surface
+      if (e?.name !== 'AbortError') {
+        setSigilToast(t('Share failed', 'Не удалось поделиться', 'Не вдалося поділитися'))
+      }
+    } finally {
+      setSigilBusy(false)
+      setTimeout(() => setSigilToast(''), 2500)
+    }
+  }
 
   return (
     <div className="min-h-screen px-6 py-16 sm:py-24">
@@ -310,6 +373,78 @@ export default function P_Resources() {
             )}
           </p>
         </header>
+
+        {/* ─── Section 0: Your sigil (sealed dragon) ───
+            Only rendered when the participant actually sealed a
+            dragon during P_SignetCeremony. Lets them re-download
+            the composed card or share it via the system share sheet
+            on devices that support files-in-share. */}
+        {sigil?.imageDataUri && (
+          <section className="mb-20">
+            <SectionHeader
+              eyebrow={t('· Your sigil ·', '· Твой сигнет ·', '· Твій сигнет ·')}
+              title={t('Take your dragon home', 'Забери своего дракона', 'Забери свого дракона')}
+              sub={t(
+                'In case you missed the download in the ceremony — your sigil card is ready here. PNG, 1080×1350, social-ready.',
+                'Если не успел(а) скачать на церемонии - карта с твоим драконом ждёт здесь. PNG, 1080×1350, готов для соцсетей.',
+                'Якщо не встиг(ла) завантажити на церемонії - карта з твоїм драконом чекає тут. PNG, 1080×1350, готовий для соцмереж.'
+              )}
+            />
+
+            <div className="grid sm:grid-cols-[260px_1fr] gap-6 items-start p-5 border border-qa-teal/40 bg-qa-teal/[0.04] rounded-[2px]">
+              {/* Live preview of the dragon portrait */}
+              <div className="relative w-full aspect-square overflow-hidden border-2 border-qa-teal/60 shadow-[0_0_32px_rgba(0,229,204,0.18)] bg-black">
+                <img
+                  src={sigil.imageDataUri}
+                  alt={sigil.dragonName || 'Your dragon'}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Metadata + actions */}
+              <div className="flex flex-col">
+                <p className="font-display italic text-[clamp(24px,3vw,32px)] text-white leading-tight">
+                  {sigil.dragonName || t('Your dragon', 'Твой дракон', 'Твій дракон')}
+                </p>
+                <p className="font-mono text-[11px] tracking-[2px] uppercase text-qa-teal mt-1">
+                  ✦ {t('Sealed', 'Запечатан', 'Запечатано')} · {new Date(sigil.sealedAt).toLocaleDateString()}
+                </p>
+                {user.nickname && (
+                  <p className="font-mono text-[11px] text-text-dim mt-2">
+                    {t('rider', 'вершник', 'вершник')} · <span className="text-qa-teal">@{user.nickname}</span>
+                  </p>
+                )}
+
+                <div className="flex gap-2 mt-5 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={handleSigilDownload}
+                    disabled={sigilBusy}
+                    className="bg-qa-teal text-black px-4 py-2 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {sigilBusy
+                      ? t('working…', 'готовлю…', 'готую…')
+                      : '↓ ' + t('Download card', 'Скачать карту', 'Завантажити карту')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSigilShare}
+                    disabled={sigilBusy}
+                    className="border border-qa-teal/40 text-qa-teal px-4 py-2 font-mono text-[11px] tracking-[2px] uppercase hover:bg-qa-teal/10 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    ⇪ {t('Share', 'Поделиться', 'Поділитися')}
+                  </button>
+                </div>
+
+                {sigilToast && (
+                  <p className="font-mono text-[10px] tracking-[1.5px] uppercase text-qa-teal mt-3">
+                    ✓ {sigilToast}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ─── Section 1: Master setup (featured) ─── */}
         <section className="mb-20">

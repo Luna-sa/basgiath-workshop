@@ -396,7 +396,18 @@ export default function P_SignetCeremony() {
       try {
         const { imageB64 } = await generateDragonImage({ prompt, modelUsed: 'gpt-image-1' })
         if (!imageB64) throw new Error('empty image')
-        setDragonImage(`data:image/png;base64,${imageB64}`)
+        const dataUri = `data:image/png;base64,${imageB64}`
+        setDragonImage(dataUri)
+        // Persist sigil to store so the Resources page can re-show
+        // and re-export the card later, even after a session reset.
+        try {
+          useWorkshopStore.getState().setSigil({
+            imageDataUri: dataUri,
+            dragonName: assistantName,
+            characterId,
+            sealedAt: Date.now(),
+          })
+        } catch {}
         // Persist to DB so it shows up in the Aerie
         try {
           await sealDragon({
