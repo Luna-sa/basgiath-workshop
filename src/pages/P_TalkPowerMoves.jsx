@@ -65,6 +65,18 @@ export default function P_TalkPowerMoves() {
     <PageShell pageIndex={17}>
       <div className="space-y-6">
 
+        {/* Hand gripping dagger — sharper than the Arena sword,
+            this is the "power move" precision. */}
+        <div className="relative -mt-2 h-[130px] overflow-hidden border border-border">
+          <img
+            src="/hero/powermoves-dagger.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-75"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
           {t(
             "Six moves that power-users run every day. Not «secret commands» - skills. Master all six and Claude becomes 5x more productive.",

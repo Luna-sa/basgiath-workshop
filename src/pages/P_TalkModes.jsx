@@ -65,6 +65,17 @@ export default function P_TalkModes() {
     <PageShell pageIndex={13}>
       <div className="space-y-6">
 
+        {/* Dragon perched on ledge — four stances of readiness. */}
+        <div className="relative -mt-2 h-[130px] overflow-hidden border border-border">
+          <img
+            src="/hero/talkmodes-perched.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-75"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         <p className="text-[15px] text-text-body leading-relaxed max-w-3xl">
           {t(
             'Four working modes and a handful of hotkeys - that\'s the entire control surface of Claude Code. Get fluent with Shift+Tab and /clear, the rest grows on you.',

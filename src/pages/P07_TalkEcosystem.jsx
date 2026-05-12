@@ -200,6 +200,17 @@ export default function P07_TalkEcosystem() {
   return (
     <PageShell pageIndex={15}>
       <div className="space-y-6">
+        {/* Two dragons mid-air — what flew in. */}
+        <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
+          <img
+            src="/hero/ecosystem-two-dragons.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-75"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         {/* Grimoire frame */}
         <div className="border border-qa-teal/30 bg-gradient-to-br from-qa-teal/[0.05] via-transparent to-transparent p-5">
           <div className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal mb-2">

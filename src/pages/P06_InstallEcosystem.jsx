@@ -24,6 +24,17 @@ export default function P06_InstallEcosystem() {
   return (
     <PageShell pageIndex={14}>
       <div className="space-y-5">
+        {/* Dragon roar emerging — "Forging the bond" moment. */}
+        <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
+          <img
+            src="/hero/install-roar.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-75"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+        </div>
+
         {/* What you get */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
