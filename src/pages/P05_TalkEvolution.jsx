@@ -37,18 +37,20 @@ export default function P05_TalkEvolution() {
           </p>
         </div>
 
-        {/* Three layers — visual stack */}
+        {/* Three layers — visual stack. One brand colour (teal),
+            tonal contrast on borders to separate the three. Italic
+            stays only on the hero rule above. Removed: glowing
+            decoration dots, "layer · 0N" tier labels, italic on
+            card prose. */}
         <div className="space-y-3">
 
-          {/* GLOBAL */}
-          <div className="relative border-l-4 border-qa-teal bg-qa-teal/[0.04] p-5">
-            <div className="absolute -left-[2px] top-5 w-2 h-2 rounded-full bg-qa-teal shadow-[0_0_12px_rgba(0,229,204,0.7)]" />
-            <div className="flex items-baseline gap-3 mb-3">
-              <span className="font-mono text-[10px] tracking-[3px] uppercase text-qa-teal">layer · 01</span>
-              <span className="font-display italic text-[24px] text-white">Global</span>
+          {/* GLOBAL — primary layer, full teal border */}
+          <div className="border-l-2 border-qa-teal bg-qa-teal/[0.04] p-5">
+            <div className="flex items-baseline gap-3 mb-3 flex-wrap">
+              <span className="font-display text-[26px] text-white">Global</span>
               <code className="font-mono text-[11px] text-text-dim">~/.claude/</code>
             </div>
-            <p className="text-[13px] text-text-secondary italic mb-3">
+            <p className="text-[13px] text-text-secondary mb-3 max-w-2xl">
               {t(
                 'Lives in your home folder. Travels with you across every project, every machine where you log in.',
                 'Живёт в твоей домашней папке. Едет с тобой в каждый проект и на каждую машину куда ты залогинен(а).',
@@ -65,15 +67,13 @@ export default function P05_TalkEvolution() {
             </div>
           </div>
 
-          {/* PROJECT */}
-          <div className="relative border-l-4 border-yellow-300/70 bg-yellow-300/[0.04] p-5">
-            <div className="absolute -left-[2px] top-5 w-2 h-2 rounded-full bg-yellow-300 shadow-[0_0_12px_rgba(254,237,0,0.7)]" />
-            <div className="flex items-baseline gap-3 mb-3">
-              <span className="font-mono text-[10px] tracking-[3px] uppercase text-yellow-300/90">layer · 02</span>
-              <span className="font-display italic text-[24px] text-white">Project</span>
+          {/* PROJECT — secondary, muted teal */}
+          <div className="border-l-2 border-qa-teal/40 bg-qa-teal/[0.02] p-5">
+            <div className="flex items-baseline gap-3 mb-3 flex-wrap">
+              <span className="font-display text-[26px] text-white">Project</span>
               <code className="font-mono text-[11px] text-text-dim">{'<project>/.claude/'}</code>
             </div>
-            <p className="text-[13px] text-text-secondary italic mb-3">
+            <p className="text-[13px] text-text-secondary mb-3 max-w-2xl">
               {t(
                 'Lives next to one codebase. Overrides the global layer. Travels with the repo when you commit it.',
                 'Живёт рядом с одним кодбейзом. Перебивает глобальный слой. Едет с репо если коммитишь.',
@@ -81,21 +81,21 @@ export default function P05_TalkEvolution() {
               )}
             </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-[12px] font-mono">
-              <CompChip name="CLAUDE.md" desc="project context" tone="yellow" />
-              <CompChip name="commands/" desc="repo-only commands" tone="yellow" />
-              <CompChip name="settings.json" desc="repo hooks · perms" tone="yellow" />
+              <CompChip name="CLAUDE.md" desc="project context" />
+              <CompChip name="commands/" desc="repo-only commands" />
+              <CompChip name="settings.json" desc="repo hooks · perms" />
             </div>
           </div>
 
-          {/* RUNTIME */}
-          <div className="relative border-l-4 border-corp-pink/70 bg-corp-pink/[0.04] p-5">
-            <div className="absolute -left-[2px] top-5 w-2 h-2 rounded-full bg-corp-pink shadow-[0_0_12px_rgba(255,101,190,0.7)]" />
-            <div className="flex items-baseline gap-3 mb-3">
-              <span className="font-mono text-[10px] tracking-[3px] uppercase text-corp-pink/90">layer · 03</span>
-              <span className="font-display italic text-[24px] text-white">Runtime</span>
+          {/* RUNTIME — tertiary, plain border. Pink only on the
+              two chips that have something fundamentally different
+              about them (they're processes, not files). */}
+          <div className="border-l-2 border-border bg-surface/30 p-5">
+            <div className="flex items-baseline gap-3 mb-3 flex-wrap">
+              <span className="font-display text-[26px] text-white">Runtime</span>
               <code className="font-mono text-[11px] text-text-dim">{'(during a session)'}</code>
             </div>
-            <p className="text-[13px] text-text-secondary italic mb-3">
+            <p className="text-[13px] text-text-secondary mb-3 max-w-2xl">
               {t(
                 "Spun up when Claude starts. The bridges to the outside world and the reflexes that fire on events.",
                 'Поднимается когда Claude стартует. Мосты к внешнему миру и рефлексы которые срабатывают на события.',
@@ -103,8 +103,8 @@ export default function P05_TalkEvolution() {
               )}
             </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-[12px] font-mono">
-              <CompChip name="MCP servers" desc="outside-world links" tone="pink" />
-              <CompChip name="Hooks" desc="event triggers" tone="pink" />
+              <CompChip name="MCP servers" desc="outside-world links" />
+              <CompChip name="Hooks" desc="event triggers" />
             </div>
           </div>
 
@@ -115,16 +115,11 @@ export default function P05_TalkEvolution() {
   )
 }
 
-function CompChip({ name, desc, tone = 'teal' }) {
-  const palette = {
-    teal: { border: 'border-qa-teal/30', name: 'text-qa-teal' },
-    yellow: { border: 'border-yellow-300/30', name: 'text-yellow-300' },
-    pink: { border: 'border-corp-pink/30', name: 'text-corp-pink' },
-  }[tone] || { border: 'border-border', name: 'text-white' }
+function CompChip({ name, desc }) {
   return (
-    <div className={`px-3 py-2 border ${palette.border} bg-black/30`}>
-      <div className={`${palette.name} font-semibold`}>{name}</div>
-      <div className="text-[10px] text-text-dim mt-0.5">{desc}</div>
+    <div className="px-3 py-2 border border-border bg-black/30">
+      <div className="text-qa-teal font-semibold">{name}</div>
+      <div className="text-[10px] text-text-dim mt-0.5 font-sans">{desc}</div>
     </div>
   )
 }
