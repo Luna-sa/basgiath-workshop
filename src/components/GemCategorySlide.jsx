@@ -122,10 +122,10 @@ function ItemBlock({ item, index }) {
             <span className="font-mono text-[9px] tracking-[2px] uppercase text-qa-teal">
               ⌘ {t('install', 'установка', 'встановлення')}
             </span>
-            <CopyButton text={t(item.install_en, item.install_ru, item.install_uk)} />
+            <CopyButton text={item.install_en} />
           </div>
           <pre className="bg-black px-3 py-2.5 text-[12px] font-mono text-text-body whitespace-pre-wrap leading-[1.65]">
-{t(item.install_en, item.install_ru, item.install_uk)}
+{item.install_en}
           </pre>
         </div>
 

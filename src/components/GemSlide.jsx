@@ -260,12 +260,12 @@ export default function GemSlide({ gemId, pageIndex, position }) {
               </span>
             </div>
             <CopyButton
-              text={t(gem.install_en, gem.install_ru, gem.install_uk)}
+              text={gem.install_en}
               label={t('Copy prompt', 'Копировать', 'Копіювати')}
             />
           </div>
           <pre className="bg-black px-4 py-4 text-[12.5px] font-mono text-text-body whitespace-pre-wrap leading-[1.7] max-h-[320px] overflow-y-auto">
-{t(gem.install_en, gem.install_ru, gem.install_uk)}
+{gem.install_en}
           </pre>
         </section>
 

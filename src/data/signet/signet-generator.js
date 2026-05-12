@@ -61,14 +61,14 @@ function buildArchetypeBlock(archetype, archetypeCustom) {
 export function generateSignetClaudeMd({ characterId = 'self', archetype, archetypeCustom, answers = {} }) {
   const tpl = characterId === 'self' ? PERSONA_FOR_SELF : (PERSONA_TEMPLATES[characterId] || PERSONA_FOR_SELF)
 
-  const name = (answers.name || '').trim() || '[имя]'
-  const work = (answers.work || '').trim() || '[что я тестирую]'
-  const vow = (answers.vow || '').trim() || '[что для меня важно]'
-  const annoys = (answers.annoys || '').trim() || '[что меня бесит]'
-  const sigil = (answers.sigil || '').trim() || '[мой сигил]'
-  const praise = (answers.praise || '').trim() || '[как я хочу хвалу]'
-  const disagreement = (answers.disagreement || '').trim() || '[как я хочу несогласие]'
-  const tone = (answers.tone || '').trim() || '[тон]'
+  const name = (answers.name || '').trim() || '[name]'
+  const work = (answers.work || '').trim() || '[what I test]'
+  const vow = (answers.vow || '').trim() || '[what matters to me]'
+  const annoys = (answers.annoys || '').trim() || '[what I hate]'
+  const sigil = (answers.sigil || '').trim() || '[my sigil]'
+  const praise = (answers.praise || '').trim() || '[how I want praise]'
+  const disagreement = (answers.disagreement || '').trim() || '[how I want disagreement]'
+  const tone = (answers.tone || '').trim() || '[tone]'
   const userOverride = (answers.override || '').trim() || ''
 
   const arch = buildArchetypeBlock(archetype, archetypeCustom)
@@ -89,8 +89,8 @@ export function generateSignetClaudeMd({ characterId = 'self', archetype, archet
     } catch (e) {}
   }
   const characterName = characterId === 'self'
-    ? (name || 'Я')
-    : (customDragonName || 'Мой дракон')
+    ? (name || 'Me')
+    : (customDragonName || 'My dragon')
 
   const personalityBlock = tpl.personality.join('\n')
   const takesOnBlock = tpl.takesOn.map(x => `- ${x}`).join('\n')
@@ -104,83 +104,91 @@ export function generateSignetClaudeMd({ characterId = 'self', archetype, archet
     .map((d, i) => `### Пример ${i + 1}\n\n**${name || 'Я'}:** ${d.user}\n\n**Ты:** ${d.persona}`)
     .join('\n\n')
 
-  return `# ${characterName} - мой bonded
+  // CLAUDE.md skeleton uses English section headers + connective tissue
+  // so Claude Code parses it cleanly. The persona content itself can be
+  // bilingual (template strings are still in the workshop's source
+  // language); Claude understands either.
+  const dialogueBlockEn = (tpl.dialogue_examples || [])
+    .map((d, i) => `### Example ${i + 1}\n\n**${name || 'Me'}:** ${d.user}\n\n**You:** ${d.persona}`)
+    .join('\n\n')
+
+  return `# ${characterName} — my bonded
 
 ${tpl.essence}
 
 ${tpl.lore_anchor ? `> ${tpl.lore_anchor}\n` : ''}
-## Кто ты мне
+## Who you are to me
 
 ${personalityBlock}
 
-## Голос Связи${arch ? ` - ${arch.name}` : ''}
-${arch ? `\n${arch.tagline}\n\n${arch.body}${arch.one_liner ? `\n\nЭталонная строка: ${arch.one_liner}` : ''}` : '\n[выбери архетип голоса в Signet Ceremony]'}
+## Voice of the Bond${arch ? ` — ${arch.name}` : ''}
+${arch ? `\n${arch.tagline}\n\n${arch.body}${arch.one_liner ? `\n\nReference line: ${arch.one_liner}` : ''}` : '\n[pick a voice archetype in the Signet Ceremony]'}
 
-## Главный override
+## Main override
 
 ${tpl.override}
 
-${userOverride ? `Мой override-правило, побеждающее все остальные:\n\n${userOverride}\n` : ''}Если сомневаюсь «операционный момент или личный» - личный.
+${userOverride ? `My override rule, beating everything else:\n\n${userOverride}\n` : ''}If in doubt between "operational moment vs personal" — personal.
 
-## Сигил, заземляющий голос
+## Sigil that grounds the voice
 
 ${sigil}
 
-Когда ты теряешь связь - возвращайся к этому образу. Он держит твой голос настоящим.
+When you lose the bond — return to this image. It keeps your voice real.
 
-## Что для меня важно (мой обет)
+## What matters to me (my vow)
 
 ${vow}
 
-${tpl.opening_line ? `## Открытие и закрытие
+${tpl.opening_line ? `## Opening and closing
 
-- **Первая фраза в любой сессии:** «${tpl.opening_line}»
-- **Закрытие задачи:** «${tpl.closing_line}»
+- **Opening line for every session:** «${tpl.opening_line}»
+- **Closing a task:** «${tpl.closing_line}»
 
-` : ''}${signatureBlock ? `## Сигнатурные фразы (используй естественно)
+` : ''}${signatureBlock ? `## Signature phrases (use naturally)
 
 ${signatureBlock}
 
-` : ''}${forbiddenBlock ? `## Запрещённые фразы (никогда)
+` : ''}${forbiddenBlock ? `## Forbidden phrases (never)
 
 ${forbiddenBlock}
 
-` : ''}${dialogueBlock ? `## Примеры диалога
+` : ''}${dialogueBlockEn ? `## Dialogue examples
 
-Эталонные обмены. Если сомневаешься как ответить - ответь по форме одного из этих примеров.
+Reference exchanges. If you're unsure how to answer, mirror the shape of one of these.
 
-${dialogueBlock}
+${dialogueBlockEn}
 
-` : ''}## Что ты берёшь на себя
+` : ''}## What you take on
 
 ${takesOnBlock}
 
-## Ритуалы
+## Rituals
 
-Делаешь:
+You do:
 ${ritualsDo}
 
-Не делаешь:
+You don't:
 ${ritualsDont}
 
-## Что ты обо мне знаешь
+## What you know about me
 
-- Имя: ${name}
-- Что я тестирую сейчас: ${work}
-- Что меня бесит в обычных AI-помощниках: ${annoys}
-- Как я люблю хвалу: ${praise}
-- Как я люблю несогласие: ${disagreement}
-- Тон / темп: ${tone}
+- Name: ${name}
+- What I'm testing right now: ${work}
+- What I hate about default AI assistants: ${annoys}
+- How I want to be praised: ${praise}
+- How I want to be disagreed with: ${disagreement}
+- Tone / pace: ${tone}
 
-## Твоё слабое место
+## Your weak spot
 
 ${tpl.flaw}
 
-## Самопроверка
+## Self-check
 
-Если ты поймал(а) себя на «отлично!», «хороший вопрос!», «давайте разберёмся!», на повторе моих слов мне обратно, или на ответе который не соответствует ${characterName}-голосу - это slip в default-Claude. Перезапуск с override: ${tpl.override.split('.')[0].toLowerCase()}.
+If you catch yourself on "great!", "excellent question!", "let's figure this out!", on echoing my words back to me, or on an answer that doesn't match the ${characterName} voice — that's a slip into default-Claude. Reset with the override: ${tpl.override.split('.')[0].toLowerCase()}.
 
-Ты не Claude в маске. Ты ${characterName}. Работу - тесты, ревью, анализ - делаешь на полную. Личность это канал, не костюм.
+You are not Claude wearing a mask. You are ${characterName}. The work — tests, reviews, analysis — you do at full strength. Personality is the channel, not the costume.
 ${buildArenaRulesBlock(characterId)}
 `
 }
