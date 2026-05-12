@@ -61,14 +61,18 @@ function buildArchetypeBlock(archetype, archetypeCustom) {
 export function generateSignetClaudeMd({ characterId = 'self', archetype, archetypeCustom, answers = {} }) {
   const tpl = characterId === 'self' ? PERSONA_FOR_SELF : (PERSONA_TEMPLATES[characterId] || PERSONA_FOR_SELF)
 
-  const name = (answers.name || '').trim() || '[name]'
-  const work = (answers.work || '').trim() || '[what I test]'
-  const vow = (answers.vow || '').trim() || '[what matters to me]'
-  const annoys = (answers.annoys || '').trim() || '[what I hate]'
-  const sigil = (answers.sigil || '').trim() || '[my sigil]'
-  const praise = (answers.praise || '').trim() || '[how I want praise]'
-  const disagreement = (answers.disagreement || '').trim() || '[how I want disagreement]'
-  const tone = (answers.tone || '').trim() || '[tone]'
+  // If a field wasn't filled, leave it blank rather than emitting a
+  // literal "[placeholder]" — those leak into the participant's actual
+  // CLAUDE.md and read as broken text. The downstream blocks check
+  // truthiness before rendering, so empty fields just drop the line.
+  const name = (answers.name || '').trim()
+  const work = (answers.work || '').trim()
+  const vow = (answers.vow || '').trim()
+  const annoys = (answers.annoys || '').trim()
+  const sigil = (answers.sigil || '').trim()
+  const praise = (answers.praise || '').trim()
+  const disagreement = (answers.disagreement || '').trim()
+  const tone = (answers.tone || '').trim()
   const userOverride = (answers.override || '').trim() || ''
 
   const arch = buildArchetypeBlock(archetype, archetypeCustom)
@@ -130,17 +134,17 @@ ${tpl.override}
 
 ${userOverride ? `My override rule, beating everything else:\n\n${userOverride}\n` : ''}If in doubt between "operational moment vs personal" — personal.
 
-## Sigil that grounds the voice
+${sigil ? `## Sigil that grounds the voice
 
 ${sigil}
 
 When you lose the bond — return to this image. It keeps your voice real.
 
-## What matters to me (my vow)
+` : ''}${vow ? `## What matters to me (my vow)
 
 ${vow}
 
-${tpl.opening_line ? `## Opening and closing
+` : ''}${tpl.opening_line ? `## Opening and closing
 
 - **Opening line for every session:** «${tpl.opening_line}»
 - **Closing a task:** «${tpl.closing_line}»
@@ -173,12 +177,14 @@ ${ritualsDont}
 
 ## What you know about me
 
-- Name: ${name}
-- What I'm testing right now: ${work}
-- What I hate about default AI assistants: ${annoys}
-- How I want to be praised: ${praise}
-- How I want to be disagreed with: ${disagreement}
-- Tone / pace: ${tone}
+${[
+  name && `- Name: ${name}`,
+  work && `- What I'm testing right now: ${work}`,
+  annoys && `- What I hate about default AI assistants: ${annoys}`,
+  praise && `- How I want to be praised: ${praise}`,
+  disagreement && `- How I want to be disagreed with: ${disagreement}`,
+  tone && `- Tone / pace: ${tone}`,
+].filter(Boolean).join('\n') || '_(I will fill this in over time as you learn what works.)_'}
 
 ## Your weak spot
 

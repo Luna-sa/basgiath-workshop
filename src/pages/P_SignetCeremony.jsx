@@ -138,29 +138,54 @@ function ArchetypePicker({ value, onChange, lang, characterId, characterName }) 
 // ────────────────────────────────────────────────────────────────
 
 // ─── Preset chip strip ────────────────────────────────────────────
+// Toggle-mode preset chips.
+//   • Click adds the preset text to the field (separated by a blank line
+//     if other content already present)
+//   • Click again on an already-applied chip removes JUST that chip's
+//     text from the field, preserving everything else
+//   • Multiple chips can be active simultaneously — useful when the
+//     answer is a combination (e.g. "mobile + I lead a team")
 function PresetChips({ presets, currentValue, onPick, lang, questionId, characterId, characterName }) {
   if (!presets?.length) return null
   const recommendedLabel = getCharacterHighlight(characterId, questionId)
+  const SEP = '\n\n'
   return (
     <div className="flex flex-wrap gap-1.5 mb-2.5">
       <span className="font-mono text-[9.5px] tracking-[1.5px] uppercase text-text-dim self-center mr-1">
-        {lang === 'ru' ? '◆ готовые' : lang === 'uk' ? '◆ готові' : '◆ presets'}
+        {lang === 'ru' ? '◆ готовые · можно несколько' : lang === 'uk' ? '◆ готові · можна кілька' : '◆ presets · pick one or more'}
       </span>
       {presets.map((p, i) => {
         const label = lang === 'ru' ? p.label_ru : lang === 'uk' ? (p.label_uk || p.label_en) : p.label_en
-        const text = lang === 'ru' ? p.text_ru : lang === 'uk' ? (p.text_uk || p.text_en) : p.text_en
-        const isActive = (currentValue || '').trim() === text.trim()
+        const text = (lang === 'ru' ? p.text_ru : lang === 'uk' ? (p.text_uk || p.text_en) : p.text_en).trim()
+        const current = currentValue || ''
+        const isActive = current.includes(text)
         const isRecommended = p.label_en === recommendedLabel && !isActive
         const tip = isRecommended && characterName
           ? (lang === 'ru' ? `◆ ${characterName} выбрал(а) бы это`
              : lang === 'uk' ? `◆ ${characterName} обрав(ла) би це`
              : `◆ ${characterName} would pick this`)
           : text
+        const handleClick = () => {
+          if (isActive) {
+            // Strip the preset text out, plus its adjacent separator.
+            const next = current
+              .replace(text + SEP, '')
+              .replace(SEP + text, '')
+              .replace(text, '')
+              .replace(/\n{3,}/g, '\n\n')
+              .trim()
+            onPick(next)
+          } else {
+            const trimmed = current.trim()
+            const next = trimmed ? trimmed + SEP + text : text
+            onPick(next)
+          }
+        }
         return (
           <button
             key={i}
             type="button"
-            onClick={() => onPick(text)}
+            onClick={handleClick}
             className={`relative px-2.5 py-1 font-mono text-[10.5px] tracking-[1px] uppercase border transition-all cursor-pointer ${
               isActive
                 ? 'bg-qa-teal text-black border-qa-teal'
@@ -170,7 +195,9 @@ function PresetChips({ presets, currentValue, onPick, lang, questionId, characte
             }`}
             title={tip}
           >
-            {isRecommended && <span className="mr-1">◆</span>}{label}
+            {isActive && <span className="mr-1">✓</span>}
+            {!isActive && isRecommended && <span className="mr-1">◆</span>}
+            {label}
           </button>
         )
       })}
@@ -697,6 +724,44 @@ export default function P_SignetCeremony() {
                   </div>
                 )}
               </div>
+
+              {/* Soft warning when the rider hasn't manifested a dragon
+                  yet. Not a hard gate — they can still click Next —
+                  but loud enough that they understand what they're
+                  about to skip. Disappears once dragonStage flips to
+                  'sealed'. */}
+              {dragonStage !== 'sealed' && (
+                <div className="border border-amber-400/40 bg-amber-400/[0.06] p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                  <div className="text-amber-300 text-2xl leading-none shrink-0">⚠</div>
+                  <div className="flex-1">
+                    <p className="font-mono text-[10px] tracking-[2px] uppercase text-amber-300 mb-1">
+                      {t('Before you go further', 'Перед тем как идти дальше', 'Перш ніж рушити далі')}
+                    </p>
+                    <p className="text-[13.5px] text-text-body leading-relaxed">
+                      {t(
+                        <>You haven&apos;t manifested your dragon yet. Without it, the <strong className="text-white">certificate at the end of the workshop</strong> won&apos;t carry your bonded form, and your dragon won&apos;t join the Aerie or the final flight. Generation takes 25-45 seconds.</>,
+                        <>Ты ещё не воплотил(а) своего дракона. Без него <strong className="text-white">сертификат в конце воркшопа</strong> будет без твоей связанной формы, а сам дракон не попадёт в Аэрию и в финальный полёт. Генерация - 25-45 секунд.</>,
+                        <>Ти ще не втілив(ла) свого дракона. Без нього <strong className="text-white">сертифікат у кінці воркшопу</strong> буде без твоєї звʼязаної форми, а сам дракон не потрапить до Аерії і у фінальний політ. Генерація - 25-45 секунд.</>
+                      )}
+                    </p>
+                    {dragonStage === 'idle' && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!assistantName.trim()) {
+                            showToast(t('Name your assistant first', 'Сначала введи имя ассистента', 'Спершу введи імʼя асистента'), 'error')
+                            return
+                          }
+                          setWantsDragon(true)
+                        }}
+                        className="mt-3 inline-flex items-center gap-2 bg-amber-400 text-black px-4 py-2 font-mono text-[11px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(251,191,36,0.4)] transition-all cursor-pointer"
+                      >
+                        ↑ {t('Manifest now', 'Воплотить сейчас', 'Втілити зараз')}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Action bar */}
               <div className="border border-qa-teal/30 bg-qa-teal/[0.04]">
