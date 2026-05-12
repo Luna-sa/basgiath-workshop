@@ -45,22 +45,24 @@ export default function P10_TalkMCP() {
   return (
     <PageShell pageIndex={16}>
       <div className="space-y-5">
-        {/* Dragon claws on stone — rider's arts. MCP gives Claude
-            things to grip with; the image carries the "tools that
-            reach into the world" idea before the core message lands. */}
-        <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
+        {/* Core message as a cinematic hero — dragon-claws sits as
+            background, gradient + heavy bottom shadow keeps the
+            text fully readable. Replaces the previous "banner above
+            + text card below" split. */}
+        <div className="relative overflow-hidden border border-[#2E2E2E] rounded-lg min-h-[260px] flex items-center justify-center">
           <img
             src="/hero/mcp-claws.jpg"
             alt=""
-            className="w-full h-full object-cover opacity-70"
+            className="absolute inset-0 w-full h-full object-cover opacity-55"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
-        </div>
-
-        {/* Core message */}
-        <div className="p-6 border border-[#2E2E2E] bg-[#141414] rounded-lg text-center">
-          <p className="text-[20px] text-text-body leading-relaxed">
+          {/* Triple overlay: solid bg veil for contrast, vignette
+              from left, and a centred radial so text-zone is
+              darkest. Text reads as if back-lit. */}
+          <div className="absolute inset-0 bg-bg/55" />
+          <div className="absolute inset-0 bg-gradient-to-r from-bg/70 via-transparent to-bg/40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.55)_0%,transparent_70%)]" />
+          <p className="relative text-[clamp(22px,2.6vw,28px)] text-text-body leading-relaxed text-center px-8 py-12 max-w-3xl">
             {t(
               <>Without MCP - AI <span className="text-text-dim">only answers</span>.<br />With MCP - AI <strong className="text-white">acts</strong>.</>,
               <>Без MCP - AI <span className="text-text-dim">только отвечает</span>.<br />С MCP - AI <strong className="text-white">действует</strong>.</>,
