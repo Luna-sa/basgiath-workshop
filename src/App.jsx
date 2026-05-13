@@ -11,6 +11,7 @@ import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
 import StandaloneCertificate from './pages/StandaloneCertificate'
+import StandaloneFeedback from './pages/StandaloneFeedback'
 import Arena from './pages/Arena'
 import P_SignetCeremony from './pages/P_SignetCeremony'
 // P_BondRitual deprecated — Bond Ritual logic merged into Signet Ceremony.
@@ -109,6 +110,13 @@ function isCertRoute() {
   return path === '/cert' || path === '/cert/' || path === '/certificate' || path === '/certificate/'
 }
 
+function isFeedbackRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'feedback') return true
+  const path = window.location.pathname
+  return path === '/feedback' || path === '/feedback/'
+}
+
 export default function App() {
   const [facilitator] = useState(isFacilitatorMode)
   const [registerOnly] = useState(isRegisterRoute)
@@ -122,15 +130,16 @@ export default function App() {
   const [resourcesOnly] = useState(isResourcesRoute)
   const [championsOnly] = useState(isChampionsRoute)
   const [certOnly] = useState(isCertRoute)
+  const [feedbackOnly] = useState(isFeedbackRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly && !championsOnly && !certOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly && !championsOnly && !certOnly && !feedbackOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly, championsOnly, certOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly, championsOnly, certOnly, feedbackOnly])
 
   if (arenaOnly) {
     return (
@@ -244,6 +253,21 @@ export default function App() {
           <TealParticles />
           <LanguageToggle /><UserMenu />
           <StandaloneRegister />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (feedbackOnly) {
+    // Feedback page is fully open - no login required. If the
+    // participant happens to have a nickname in local store it's
+    // attached to the row, otherwise the submission saves anon.
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle /><UserMenu />
+          <StandaloneFeedback />
         </div>
       </ErrorBoundary>
     )
