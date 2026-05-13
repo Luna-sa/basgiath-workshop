@@ -1,4 +1,5 @@
 import ComponentDeepDive from '../components/ComponentDeepDive'
+import { asset } from "../lib/asset"
 
 export default function P_CompPlugins() {
   return <ComponentDeepDive pageIndex={12} data={DATA} />
@@ -6,7 +7,7 @@ export default function P_CompPlugins() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 07 · companions',
-  heroBanner: '/hero/companion-plugins.jpg',
+  heroBanner: asset('/hero/companion-plugins.jpg'),
   name: 'Plugins',
   path: '~/.claude/plugins/',
   tagline_en: "Bundles of commands + agents + skills + hooks + MCP servers shared as one unit. Install one plugin - gain an entire stack tuned by someone who already solved the problem.",

@@ -1,4 +1,5 @@
 import ComponentDeepDive from '../components/ComponentDeepDive'
+import { asset } from "../lib/asset"
 
 export default function P_CompMCP() {
   return <ComponentDeepDive pageIndex={10} data={DATA} />
@@ -6,7 +7,7 @@ export default function P_CompMCP() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 05 · eyes',
-  heroBanner: '/hero/eyes-mcp.jpg',
+  heroBanner: asset('/hero/eyes-mcp.jpg'),
   name: 'MCP',
   path: '~/.claude/mcp_servers.json',
   tagline_en: "Model Context Protocol - Claude's bridges to the outside world. Browsers, GitHub, Notion, your filesystem, your database. Each MCP server gives Claude a new set of tools to call.",

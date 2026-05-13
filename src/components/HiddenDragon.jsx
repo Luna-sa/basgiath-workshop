@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti'
 import { useWorkshopStore } from '../store/workshopStore'
 import { findDragonById } from '../data/hidden-dragons'
 import { updateStudentProgress } from '../api/progress'
+import { asset } from "../lib/asset"
 
 /**
  * Hidden dragon - click → reveal + spiral flight to HUD + reward.
@@ -56,7 +57,7 @@ export default function HiddenDragon({
   const colorRGB = isGolden ? '254, 237, 0' : '0, 229, 204'
 
   const silhouetteIdx = pickSilhouette(id)
-  const silhouettePath = `/dragons/silhouette-${silhouetteIdx}.png`
+  const silhouettePath = asset(`/dragons/silhouette-${silhouetteIdx}.png`)
 
   // Trail length scales with golden grandeur
   const trailCount = isGolden ? 16 : 12

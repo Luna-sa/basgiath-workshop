@@ -1,4 +1,5 @@
 import ComponentDeepDive from '../components/ComponentDeepDive'
+import { asset } from "../lib/asset"
 
 export default function P_CompHooks() {
   return <ComponentDeepDive pageIndex={11} data={DATA} />
@@ -6,7 +7,7 @@ export default function P_CompHooks() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 06 · reflexes',
-  heroBanner: '/hero/reflexes-hooks.jpg',
+  heroBanner: asset('/hero/reflexes-hooks.jpg'),
   name: 'Hooks',
   path: '~/.claude/settings.json  ·  <project>/.claude/settings.json',
   tagline_en: "Shell commands that run automatically when an event fires - pre-commit, post-tool-use, on-stop. Claude reacts without being asked.",

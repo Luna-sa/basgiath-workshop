@@ -1,4 +1,5 @@
 import ComponentDeepDive from '../components/ComponentDeepDive'
+import { asset } from "../lib/asset"
 
 export default function P_CompClaudeMd() {
   return <ComponentDeepDive pageIndex={6} data={DATA} />
@@ -6,7 +7,7 @@ export default function P_CompClaudeMd() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 01 · spine',
-  heroBanner: '/hero/spine-claudemd.jpg',
+  heroBanner: asset('/hero/spine-claudemd.jpg'),
   name: 'CLAUDE.md',
   path: '~/.claude/CLAUDE.md  ·  <project>/CLAUDE.md',
   tagline_en: "The markdown file Claude reads at the start of every session. Your persona, your rules, the context of your work - in one place.",

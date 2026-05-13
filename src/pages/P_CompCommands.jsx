@@ -1,4 +1,5 @@
 import ComponentDeepDive from '../components/ComponentDeepDive'
+import { asset } from "../lib/asset"
 
 export default function P_CompCommands() {
   return <ComponentDeepDive pageIndex={7} data={DATA} />
@@ -6,7 +7,7 @@ export default function P_CompCommands() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 02 · muscle memory',
-  heroImage: '/hero/commands-hand-snout.jpg',
+  heroImage: asset('/hero/commands-hand-snout.jpg'),
   name: 'Commands',
   path: '~/.claude/commands/  ·  <project>/.claude/commands/',
   tagline_en: 'Slash commands - your custom shortcuts. One file per command. /command-name in the prompt and Claude follows the instructions inside.',

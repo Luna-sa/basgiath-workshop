@@ -1,4 +1,5 @@
 import ComponentDeepDive from '../components/ComponentDeepDive'
+import { asset } from "../lib/asset"
 
 export default function P_CompSkills() {
   return <ComponentDeepDive pageIndex={9} data={DATA} />
@@ -6,7 +7,7 @@ export default function P_CompSkills() {
 
 const DATA = {
   eyebrow: 'COMPONENT · 04 · wings',
-  heroImage: '/hero/skills-tattoo.jpg',
+  heroImage: asset('/hero/skills-tattoo.jpg'),
   name: 'Skills',
   path: '~/.claude/skills/',
   tagline_en: "Reusable abilities Claude gains by reading a folder. Like browser extensions for the brain - install once, available whenever the trigger fires.",

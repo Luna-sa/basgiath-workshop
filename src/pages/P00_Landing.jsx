@@ -1,11 +1,12 @@
 import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
+import { asset } from "../lib/asset"
 
 export default function P00_Landing() {
   const t = useT()
 
   return (
-    <PageShell pageIndex={0} bgImage="/hero/landing-castle.jpg">
+    <PageShell pageIndex={0} bgImage={asset("/hero/landing-castle.jpg")}>
       <div className="space-y-8 relative">
         {/* World intro */}
         <div className="relative p-6 border border-[#2E2E2E] bg-[#0a0a0a]/75 backdrop-blur-sm rounded-lg">
