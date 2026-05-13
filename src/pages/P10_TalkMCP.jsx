@@ -38,6 +38,22 @@ const SERVERS = [
     wow_ru: '«Напиши Playwright тесты используя только актуальный API, не deprecated»',
     wow_uk: '«Напиши Playwright-тести, використовуючи лише актуальний API, без deprecated»',
   },
+  // Glean is a company-internal bonus MCP. Distinct visual styling
+  // applied at render time (border color, eyebrow) so participants
+  // see it's a different tier from the three universal ones.
+  {
+    emoji: '✦', name: 'Glean',
+    bonus: true,
+    what_en: 'AI knows your company knowledge',
+    what_ru: 'AI знает корпоративные знания',
+    what_uk: 'AI знає корпоративні знання',
+    details_en: 'Search across all your company tools at once - Confluence, Slack, Jira, Notion, Google Drive. Claude pulls answers grounded in your real workplace context, not generic web knowledge.',
+    details_ru: 'Поиск по всем корпоративным инструментам сразу - Confluence, Slack, Jira, Notion, Google Drive. Claude вытаскивает ответы из реального контекста твоей компании, а не из обобщённой веб-документации.',
+    details_uk: 'Пошук по всіх корпоративних інструментах одразу - Confluence, Slack, Jira, Notion, Google Drive. Claude витягує відповіді з реального контексту твоєї компанії, а не з узагальненої веб-документації.',
+    wow_en: '"Find every doc, ticket and Slack thread about the new bonus mechanic — summarise the rules and known issues."',
+    wow_ru: '«Найди все доки, тикеты и Slack-обсуждения про новую бонусную механику — собери правила и известные проблемы».',
+    wow_uk: '«Знайди всі документи, тікети та Slack-обговорення про нову бонусну механіку — збери правила й відомі проблеми».',
+  },
 ]
 
 export default function P10_TalkMCP() {
@@ -84,27 +100,46 @@ export default function P10_TalkMCP() {
           </p>
         </div>
 
-        {/* Server cards */}
-        {SERVERS.map(s => (
-          <div key={s.name} className="border border-[#2E2E2E] bg-[#141414] rounded-lg overflow-hidden hover:border-qa-teal/20 hover:shadow-[0_0_15px_rgba(0,229,204,0.05)] transition-all">
-            <div className="p-5">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl">{s.emoji}</span>
-                <div>
-                  <div className="font-display text-[22px] text-white">{s.name}</div>
-                  <div className="text-[15px] text-text-secondary">{t(s.what_en, s.what_ru, s.what_uk)}</div>
+        {/* Server cards — universal trinity + bonus Glean. Bonus
+            card gets a pink/teal-distinct border + eyebrow so it
+            reads as "different tier" at a glance. */}
+        {SERVERS.map(s => {
+          const isBonus = s.bonus
+          return (
+            <div
+              key={s.name}
+              className={`relative rounded-lg overflow-hidden transition-all ${
+                isBonus
+                  ? 'border-2 border-corp-pink/50 bg-corp-pink/[0.04] hover:shadow-[0_0_15px_rgba(255,101,190,0.15)]'
+                  : 'border border-[#2E2E2E] bg-[#141414] hover:border-qa-teal/20 hover:shadow-[0_0_15px_rgba(0,229,204,0.05)]'
+              }`}
+            >
+              {isBonus && (
+                <div className="absolute top-0 right-0 bg-corp-pink text-black px-3 py-1 font-mono text-[10px] tracking-[2px] uppercase font-semibold">
+                  ✦ {t('Bonus · company-internal', 'Бонус · корпоративный', 'Бонус · корпоративний')}
                 </div>
+              )}
+              <div className="p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className={`text-3xl ${isBonus ? 'text-corp-pink' : ''}`}>{s.emoji}</span>
+                  <div>
+                    <div className="font-display text-[22px] text-white">{s.name}</div>
+                    <div className="text-[15px] text-text-secondary">{t(s.what_en, s.what_ru, s.what_uk)}</div>
+                  </div>
+                </div>
+                <p className="text-[16px] text-text-body leading-relaxed mb-3">{t(s.details_en, s.details_ru, s.details_uk)}</p>
               </div>
-              <p className="text-[16px] text-text-body leading-relaxed mb-3">{t(s.details_en, s.details_ru, s.details_uk)}</p>
-            </div>
-            <div className="px-5 py-3 bg-black/40 border-t border-[#1E1E1E]">
-              <div className="font-mono text-[11px] text-text-dim uppercase tracking-wider mb-1">
-                {t('Sample prompt', 'Пример промпта', 'Приклад промпта')}
+              <div className={`px-5 py-3 border-t ${isBonus ? 'bg-corp-pink/[0.04] border-corp-pink/20' : 'bg-black/40 border-[#1E1E1E]'}`}>
+                <div className={`font-mono text-[11px] uppercase tracking-wider mb-1 ${isBonus ? 'text-corp-pink/80' : 'text-text-dim'}`}>
+                  {t('Sample prompt', 'Пример промпта', 'Приклад промпта')}
+                </div>
+                <code className={`font-mono text-[15px] italic ${isBonus ? 'text-corp-pink' : 'text-qa-teal'}`}>
+                  {t(s.wow_en, s.wow_ru, s.wow_uk)}
+                </code>
               </div>
-              <code className="font-mono text-[15px] text-qa-teal italic">{t(s.wow_en, s.wow_ru, s.wow_uk)}</code>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </PageShell>
   )

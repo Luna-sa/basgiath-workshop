@@ -52,6 +52,21 @@ claude mcp add fetch -- npx @anthropic-ai/mcp-fetch
 claude mcp add context7 -- npx @upstash/context7-mcp@latest
 \`\`\`
 
+## 5. Bonus — install Glean MCP (company knowledge search)
+
+Glean lets Claude search across all our internal tools at once (Confluence, Slack, Jira, Notion, Drive). Ground-truth answers from real workplace context instead of generic web knowledge.
+
+Required env vars (ask your Glean admin if you don't have them):
+- \`GLEAN_INSTANCE\` — your company's Glean subdomain (e.g. acme.glean.com)
+- \`GLEAN_API_TOKEN\` — your personal Glean API token
+
+Install:
+\`\`\`
+GLEAN_INSTANCE=<your-company>.glean.com GLEAN_API_TOKEN=<your-token> claude mcp add glean -- npx @gleanwork/local-mcp-server
+\`\`\`
+
+After install, restart Claude Code. Try: "find every doc, ticket and Slack thread about the bonus mechanic — summarise the rules and known issues."
+
 Create ALL files now. Don't ask questions - just build everything.`
 }
 
@@ -67,5 +82,7 @@ export const CURSOR_ECOSYSTEM_PROMPT = `I need you to create a complete QA works
    - playwright: npx @playwright/mcp@latest
    - fetch: npx @anthropic-ai/mcp-fetch
    - context7: npx @upstash/context7-mcp@latest
+   - glean (BONUS, company knowledge search): npx @gleanwork/local-mcp-server
+     with env: GLEAN_INSTANCE=<your-company>.glean.com, GLEAN_API_TOKEN=<your-token>
 
 Create all files now.`
