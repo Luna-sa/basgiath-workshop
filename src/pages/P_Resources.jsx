@@ -287,7 +287,7 @@ export default function P_Resources() {
             "Take it home, rider" line. */}
         <figure className="relative mb-12 overflow-hidden border border-border bg-black">
           <img
-            src="/hero/resources-satchel.jpg"
+            src={`${import.meta.env.BASE_URL}hero/resources-satchel.jpg`}
             alt="Leather satchel with dragon emblem, opened to scrolls and a key — take it home"
             className="w-full h-auto block"
             loading="eager"

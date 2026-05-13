@@ -70,7 +70,7 @@ export default function P_TalkModes() {
             the diagram for this slide. */}
         <figure className="relative -mt-2 overflow-hidden border border-border bg-black">
           <img
-            src="/hero/modes-quad.jpg"
+            src={`${import.meta.env.BASE_URL}hero/modes-quad.jpg`}
             alt="Four Claude Code modes — Plan, Auto, Edit, Yolo"
             className="w-full h-auto block"
             loading="eager"

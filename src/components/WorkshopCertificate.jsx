@@ -362,7 +362,7 @@ the <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>Claud
             flexShrink: 0,
           }}>
             <img
-              src="/brand/anastasia-avatar.jpg"
+              src={`${import.meta.env.BASE_URL}brand/anastasia-avatar.jpg`}
               alt="Anastasiia Babanina"
               crossOrigin="anonymous"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}

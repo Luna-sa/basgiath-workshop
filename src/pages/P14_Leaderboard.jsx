@@ -50,7 +50,7 @@ export default function P14_Leaderboard() {
             Banner sets the "those who flew" mood before the count. */}
         <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
           <img
-            src="/hero/leaderboard-figures.jpg"
+            src={`${import.meta.env.BASE_URL}hero/leaderboard-figures.jpg`}
             alt=""
             className="w-full h-full object-cover opacity-70"
             loading="eager"
@@ -130,7 +130,7 @@ export default function P14_Leaderboard() {
             mood instead of the projector-mode CTA. */}
         <div className="relative overflow-hidden border border-qa-teal/30">
           <img
-            src="/hero/leaderboard-aurora.jpg"
+            src={`${import.meta.env.BASE_URL}hero/leaderboard-aurora.jpg`}
             alt=""
             className="absolute inset-0 w-full h-full object-cover opacity-60"
             loading="lazy"

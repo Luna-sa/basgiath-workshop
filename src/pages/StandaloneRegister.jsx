@@ -122,7 +122,7 @@ export default function StandaloneRegister() {
 
           {/* Left silhouette - hidden on small screens */}
           <img
-            src="/sword-left.jpg"
+            src={`${import.meta.env.BASE_URL}sword-left.jpg`}
             alt=""
             aria-hidden="true"
             className="hidden lg:block w-[260px] h-[600px] object-cover opacity-80 rounded-[2px]"
@@ -197,7 +197,7 @@ export default function StandaloneRegister() {
 
           {/* Right silhouette - hidden on small screens */}
           <img
-            src="/sword-right.jpg"
+            src={`${import.meta.env.BASE_URL}sword-right.jpg`}
             alt=""
             aria-hidden="true"
             className="hidden lg:block w-[260px] h-[600px] object-cover opacity-80 rounded-[2px]"

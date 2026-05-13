@@ -71,7 +71,7 @@ export default function P03_PreWork() {
           opaque below it. */}
       <div className="relative -mt-2 mb-6 h-[140px] overflow-hidden border border-border">
         <img
-          src="/hero/prework-rain.jpg"
+          src={`${import.meta.env.BASE_URL}hero/prework-rain.jpg`}
           alt=""
           className="w-full h-full object-cover opacity-75"
           loading="eager"

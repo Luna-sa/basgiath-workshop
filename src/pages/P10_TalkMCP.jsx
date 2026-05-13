@@ -67,7 +67,7 @@ export default function P10_TalkMCP() {
             quote sits as a separate block below. */}
         <figure className="relative -mt-2 overflow-hidden border border-[#2E2E2E] rounded-lg bg-black">
           <img
-            src="/hero/mcp-trinity.jpg"
+            src={`${import.meta.env.BASE_URL}hero/mcp-trinity.jpg`}
             alt="MCP trinity — Playwright (browser), Context7 (docs), Fetch (http)"
             className="w-full h-auto block"
             loading="eager"

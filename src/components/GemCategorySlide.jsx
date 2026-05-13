@@ -158,7 +158,7 @@ export default function GemCategorySlide({ categoryId, pageIndex }) {
         ) : (
           <div className="relative -mt-2 h-[60px] overflow-hidden border-y border-border opacity-60">
             <img
-              src="/hero/gems-scale-texture.jpg"
+              src={`${import.meta.env.BASE_URL}hero/gems-scale-texture.jpg`}
               alt=""
               className="w-full h-full object-cover"
               loading="lazy"

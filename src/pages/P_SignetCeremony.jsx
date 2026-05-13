@@ -676,7 +676,7 @@ export default function P_SignetCeremony() {
                 {!wantsDragon && (
                   <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[200px] opacity-50 pointer-events-none">
                     <img
-                      src="/hero/signet-coin.jpg"
+                      src={`${import.meta.env.BASE_URL}hero/signet-coin.jpg`}
                       alt=""
                       className="w-full h-full object-cover"
                       loading="lazy"

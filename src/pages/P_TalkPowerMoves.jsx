@@ -71,7 +71,7 @@ export default function P_TalkPowerMoves() {
             cards below. */}
         <figure className="relative -mt-2 overflow-hidden border border-border bg-black">
           <img
-            src="/hero/powermoves-tablet.jpg"
+            src={`${import.meta.env.BASE_URL}hero/powermoves-tablet.jpg`}
             alt="Six power moves carved into stone — plan first, show source, drop it in, give the error, clear, parallel claws"
             className="w-full h-auto block"
             loading="eager"

@@ -203,7 +203,7 @@ export default function P07_TalkEcosystem() {
         {/* Two dragons mid-air — what flew in. */}
         <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
           <img
-            src="/hero/ecosystem-two-dragons.jpg"
+            src={`${import.meta.env.BASE_URL}hero/ecosystem-two-dragons.jpg`}
             alt=""
             className="w-full h-full object-cover opacity-75"
             loading="eager"

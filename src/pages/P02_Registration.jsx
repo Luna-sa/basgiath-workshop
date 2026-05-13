@@ -62,7 +62,7 @@ export default function P02_Registration() {
             </div>
             <div className="relative overflow-hidden border border-border bg-black min-h-[220px]">
               <img
-                src="/hero/parapet-leap.jpg"
+                src={`${import.meta.env.BASE_URL}hero/parapet-leap.jpg`}
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover opacity-85"
                 loading="lazy"

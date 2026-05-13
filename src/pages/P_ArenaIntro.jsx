@@ -41,7 +41,7 @@ export default function P_ArenaIntro() {
             the rules block. */}
         <div className="relative -mt-2 h-[160px] overflow-hidden border border-border">
           <img
-            src="/hero/arena-sword.jpg"
+            src={`${import.meta.env.BASE_URL}hero/arena-sword.jpg`}
             alt=""
             className="w-full h-full object-cover opacity-75"
             loading="eager"

@@ -500,6 +500,7 @@ function resetStudentProgress({ nickname }) {
     }
     wipeMatching(SHEETS.DRAGONS, 'nickname')
     wipeMatching(SHEETS.DRAGON_VOTES, 'voter_nickname')
+    wipeMatching(SHEETS.DRAGON_MATCHES, 'voter_nickname')
     wipeMatching(SHEETS.ARENA_RUNS, 'nickname')
     wipeMatching(SHEETS.BOT_SUBMISSIONS, 'nickname')
     // Also clear any feedback this nickname submitted — when an admin
@@ -746,6 +747,11 @@ function getFacilitatorState() {
 function setFacilitatorState({ patch }) {
   return _withScriptLock(function () {
     if (!patch) throw new Error('patch required')
+    // GET shim passes patch as a JSON string; POST passes it as an
+    // object. Normalise.
+    if (typeof patch === 'string') {
+      try { patch = JSON.parse(patch) } catch (e) { throw new Error('patch must be a JSON object or string: ' + e.message) }
+    }
     _ensureFacilitatorColumns()
     const rowIdx = _findRowIndex(SHEETS.FACILITATOR, r => r.key === FACILITATOR_KEY)
     if (rowIdx < 0) {

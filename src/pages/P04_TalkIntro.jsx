@@ -20,7 +20,7 @@ export default function P04_TalkIntro() {
           </p>
           <div className="relative aspect-[9/16] max-h-[320px] mx-auto md:mx-0 overflow-hidden border border-border bg-black">
             <img
-              src="/hero/bonding-rider.jpg"
+              src={`${import.meta.env.BASE_URL}hero/bonding-rider.jpg`}
               alt=""
               className="w-full h-full object-cover opacity-90"
               loading="lazy"

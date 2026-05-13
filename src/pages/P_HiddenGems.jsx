@@ -28,7 +28,7 @@ export default function P_HiddenGems() {
           </p>
           <div className="relative aspect-[16/10] max-h-[160px] mx-auto md:mx-0 w-full overflow-hidden border border-border bg-black">
             <img
-              src="/hero/gems-amulet.jpg"
+              src={`${import.meta.env.BASE_URL}hero/gems-amulet.jpg`}
               alt=""
               className="w-full h-full object-cover opacity-85"
               loading="lazy"

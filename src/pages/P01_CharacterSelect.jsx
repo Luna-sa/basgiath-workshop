@@ -17,7 +17,7 @@ export default function P01_CharacterSelect() {
           the room in that moment before they pick. */}
       <div className="relative -mt-2 mb-5 h-[160px] overflow-hidden border border-border">
         <img
-          src="/hero/threshing-roar.jpg"
+          src={`${import.meta.env.BASE_URL}hero/threshing-roar.jpg`}
           alt=""
           className="w-full h-full object-cover opacity-75"
           loading="eager"

@@ -46,7 +46,7 @@ export default function P05_TalkEvolution() {
             disk; this image shows WHAT they are. */}
         <figure className="relative overflow-hidden border border-border bg-black">
           <img
-            src="/hero/dragon-anatomy.jpg"
+            src={`${import.meta.env.BASE_URL}hero/dragon-anatomy.jpg`}
             alt="Dragon anatomy with seven labelled components"
             className="w-full h-auto block"
             loading="eager"

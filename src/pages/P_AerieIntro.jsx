@@ -16,7 +16,7 @@ export default function P_AerieIntro() {
             Banner image sets the lore mood before the voting copy. */}
         <div className="relative -mt-4 mb-2 h-[180px] overflow-hidden border border-border">
           <img
-            src="/hero/aerie-wingspan.jpg"
+            src={`${import.meta.env.BASE_URL}hero/aerie-wingspan.jpg`}
             alt=""
             className="w-full h-full object-cover opacity-80"
             loading="eager"

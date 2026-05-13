@@ -27,7 +27,7 @@ export default function P06_InstallEcosystem() {
         {/* Dragon roar emerging — "Forging the bond" moment. */}
         <div className="relative -mt-2 h-[140px] overflow-hidden border border-border">
           <img
-            src="/hero/install-roar.jpg"
+            src={`${import.meta.env.BASE_URL}hero/install-roar.jpg`}
             alt=""
             className="w-full h-full object-cover opacity-75"
             loading="eager"

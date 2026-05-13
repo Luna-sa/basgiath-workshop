@@ -49,7 +49,7 @@ export default function P15_Graduation() {
             backdrop. Sits above the character portrait circle. */}
         <div className="relative -mt-4 mb-2 h-[160px] overflow-hidden">
           <img
-            src="/hero/graduation-braid.jpg"
+            src={`${import.meta.env.BASE_URL}hero/graduation-braid.jpg`}
             alt=""
             className="w-full h-full object-cover object-center opacity-60"
             loading="eager"
