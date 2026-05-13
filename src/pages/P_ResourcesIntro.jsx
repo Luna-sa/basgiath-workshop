@@ -9,7 +9,7 @@
  * Hub for anyone who wants the prompts / handouts / external links.
  */
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import * as htmlToImage from 'html-to-image'
 import { useT } from '../i18n/useT'
 import PageShell from '../core/PageShell'
@@ -17,6 +17,7 @@ import { useWorkshopStore } from '../store/workshopStore'
 import WorkshopCertificate from '../components/WorkshopCertificate'
 import { buildLinkedInCaption, downloadBlob } from '../utils/sigilCard'
 import { submitFeedback } from '../api/feedback'
+import { listDragons } from '../api/dragons'
 
 const TUTOR_LINKEDIN_URL = 'https://www.linkedin.com/in/ainastasia/'
 
@@ -56,9 +57,32 @@ export default function P_ResourcesIntro() {
   const [fbBusy, setFbBusy] = useState(false)
   const [fbError, setFbError] = useState('')
 
+  // Backend fallback for the sealed dragon. If the local Zustand
+  // store lost its sigil (different browser, cache cleared, or store
+  // was wiped between sessions), the cert would render with an empty
+  // portrait even though the dragon is safe in Google Sheets. Pull
+  // the canonical record for this nickname once on mount and use it
+  // as a fallback for any field the local sigil is missing.
+  const [backendDragon, setBackendDragon] = useState(null)
+  useEffect(() => {
+    const nick = String(user.nickname || '').toLowerCase().trim()
+    if (!nick) return
+    let cancelled = false
+    listDragons()
+      .then(rows => {
+        if (cancelled) return
+        const arr = Array.isArray(rows) ? rows : (rows?.dragons || rows?.data || [])
+        const mine = arr.find(d => String(d.nickname || '').toLowerCase() === nick)
+        if (mine) setBackendDragon(mine)
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [user.nickname])
+
   const riderName = editedName.trim()
-  const dragonName = sigil?.dragonName || 'Unnamed'
-  const sealedAt = sigil?.sealedAt || Date.now()
+  const dragonName = sigil?.dragonName || backendDragon?.name || 'Unnamed'
+  const dragonImageUrl = sigil?.imageDataUri || backendDragon?.image_url || null
+  const sealedAt = sigil?.sealedAt || backendDragon?.sealed_at || Date.now()
 
   const handleFeedbackSubmit = async (e) => {
     e?.preventDefault?.()
@@ -237,7 +261,7 @@ export default function P_ResourcesIntro() {
           >
             <WorkshopCertificate
               ref={certRef}
-              dragonImageUrl={sigil?.imageDataUri || null}
+              dragonImageUrl={dragonImageUrl}
               dragonName={dragonName}
               riderName={riderName}
               nickname={user.nickname || 'rider'}
@@ -253,7 +277,7 @@ export default function P_ResourcesIntro() {
           <button
             type="button"
             onClick={handleLinkedIn}
-            disabled={busy || !sigil}
+            disabled={busy || (!sigil && !backendDragon)}
             className="bg-[#0A66C2] text-white px-5 py-2.5 font-mono text-[12px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(10,102,194,0.45)] transition-all cursor-pointer disabled:opacity-40 inline-flex items-center gap-1.5"
           >
             <span className="font-display italic normal-case text-[15px] tracking-normal">in</span>
@@ -262,7 +286,7 @@ export default function P_ResourcesIntro() {
           <button
             type="button"
             onClick={handleDownload}
-            disabled={busy || !sigil}
+            disabled={busy || (!sigil && !backendDragon)}
             className="bg-qa-teal text-black px-5 py-2.5 font-mono text-[12px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] transition-all cursor-pointer disabled:opacity-40"
           >
             ↓ {t('Download PNG', 'Скачать PNG', 'Завантажити PNG')}
@@ -275,7 +299,7 @@ export default function P_ResourcesIntro() {
           </p>
         )}
 
-        {!sigil && (
+        {!sigil && !backendDragon && (
           <p className="text-[12px] text-text-dim italic text-center max-w-xl mx-auto">
             {t(
               'Complete the Signet ceremony to generate your dragon — the cert will appear here automatically.',
