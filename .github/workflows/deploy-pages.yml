@@ -42,20 +42,26 @@ jobs:
         # sync on Linux runners. install reconciles them silently.
         run: npm install
 
+      - name: Write .env.production from secrets
+        # Vite reads import.meta.env.VITE_* from .env files at
+        # build time, NOT from process env. To make the CI secrets
+        # reach the bundle, we materialise them as a .env.production
+        # file just before `vite build` runs. The file is written
+        # in the workspace and never committed.
+        run: |
+          cat > .env.production <<EOF
+          VITE_GSHEETS_API=${{ secrets.VITE_GSHEETS_API }}
+          VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_FACILITATOR_TOKEN=${{ secrets.VITE_FACILITATOR_TOKEN }}
+          VITE_WORKSHOP_API=${{ secrets.VITE_WORKSHOP_API }}
+          VITE_GROQ_API_KEY=${{ secrets.VITE_GROQ_API_KEY }}
+          EOF
+          # Sanity check — log var names only (values stay redacted)
+          echo "Wrote $(grep -c '^VITE_' .env.production) VITE_ keys"
+
       - name: Build (GH Pages base path)
         run: BASE_PATH=/basgiath-workshop/ npm run build
-        env:
-          # Secrets are configured in the repo settings → Secrets
-          # and variables → Actions. Each must be added before the
-          # first deploy or the live mirror will run with empty
-          # values and the gsheets/Supabase/workshop backends will
-          # be unreachable.
-          VITE_GSHEETS_API: ${{ secrets.VITE_GSHEETS_API }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_FACILITATOR_TOKEN: ${{ secrets.VITE_FACILITATOR_TOKEN }}
-          VITE_WORKSHOP_API: ${{ secrets.VITE_WORKSHOP_API }}
-          VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY }}
 
       # GitHub Pages serves static files — there's no SPA fallback
       # for path-based routes like /register. Copying index.html as
