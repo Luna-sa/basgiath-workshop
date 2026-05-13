@@ -42,6 +42,23 @@ jobs:
         # sync on Linux runners. install reconciles them silently.
         run: npm install
 
+      - name: Debug — env var lengths (values stay masked)
+        # Prints only the LENGTH of each var so we can confirm
+        # the secrets reached the runner without leaking values.
+        # Should be > 0 for every entry on a healthy build.
+        run: |
+          node -e "
+            const keys = ['VITE_GSHEETS_API','VITE_SUPABASE_URL','VITE_SUPABASE_ANON_KEY','VITE_FACILITATOR_TOKEN','VITE_WORKSHOP_API','VITE_GROQ_API_KEY'];
+            for (const k of keys) console.log(k, '=>', (process.env[k]||'').length, 'chars');
+          "
+        env:
+          VITE_GSHEETS_API: ${{ secrets.VITE_GSHEETS_API }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_FACILITATOR_TOKEN: ${{ secrets.VITE_FACILITATOR_TOKEN }}
+          VITE_WORKSHOP_API: ${{ secrets.VITE_WORKSHOP_API }}
+          VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY }}
+
       - name: Build (GH Pages base path)
         # vite.config.js reads VITE_* directly from process.env via
         # a custom merge in defineConfig — no .env file dance needed.
