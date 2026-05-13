@@ -141,6 +141,10 @@ export async function startAerieTiebreak(dragonIds) {
   return { error: { message: 'tiebreak not implemented on supabase fallback path' } }
 }
 
+export async function setRegistrationClosed(closed) {
+  return patchFacilitatorState({ registration_closed: closed ? 'TRUE' : '' })
+}
+
 export async function endAerieTiebreak() {
   if (gsheetsEnabled()) {
     try {

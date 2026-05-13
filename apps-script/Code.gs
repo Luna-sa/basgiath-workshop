@@ -69,7 +69,7 @@ const HEADERS = {
     'key', 'unlocked_page', 'workshop_phase', 'announcement',
     'announcement_at', 'active_round_id', 'active_timer_start',
     'active_timer_duration', 'round_ended', 'round_winners',
-    'tiebreak_dragon_ids',
+    'tiebreak_dragon_ids', 'registration_closed',
     'updated_at',
   ],
   [SHEETS.FEEDBACK]: [

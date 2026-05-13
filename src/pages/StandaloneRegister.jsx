@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
 import { registerStudent } from '../api/registration'
+import { getFacilitatorState } from '../api/progress'
 
 const ROLE_OPTIONS = [
   { value: 'manual', label_en: 'QA Manual', label_ru: 'QA Manual', label_uk: 'QA Manual' },
@@ -23,6 +24,22 @@ export default function StandaloneRegister() {
   })
   const [status, setStatus] = useState('idle') // idle | submitting | success | error | nickname-taken
   const [errorMsg, setErrorMsg] = useState('')
+  // Registration kill-switch — read once on mount from facilitator
+  // state. If TRUE, swap the form for a "closed" banner.
+  const [registrationClosed, setRegistrationClosed] = useState(false)
+  const [gateChecked, setGateChecked] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    getFacilitatorState().then(fs => {
+      if (cancelled) return
+      const v = fs?.registration_closed
+      const closed = v === true || v === 'true' || v === 'TRUE' || v === 1 || v === '1'
+      setRegistrationClosed(closed)
+      setGateChecked(true)
+    }).catch(() => setGateChecked(true))
+    return () => { cancelled = true }
+  }, [])
 
   const updateField = (k, v) => {
     if (k === 'nickname') v = String(v).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20)
@@ -174,6 +191,41 @@ export default function StandaloneRegister() {
             className="hidden lg:block w-[260px] h-[600px] object-cover opacity-80 rounded-[2px]"
           />
 
+        </div>
+      </div>
+    )
+  }
+
+  // Registration closed gate — once facilitator state confirms the
+  // flag is on, swap the entire form for a closed banner so no new
+  // sign-ups land in the students sheet from a stale link.
+  if (gateChecked && registrationClosed) {
+    return (
+      <div className="min-h-screen px-6 py-12 sm:py-20 flex items-center justify-center">
+        <div className="max-w-[560px] mx-auto text-center">
+          <div className="font-mono text-[11px] tracking-[3px] uppercase text-amber-300 mb-4">
+            · {t('Registration · closed', 'Регистрация · закрыта', 'Реєстрація · закрита')} ·
+          </div>
+          <h1 className="font-display italic text-3xl sm:text-5xl text-white leading-[1.1] mb-5">
+            {t(
+              'Cohort is full. The gates are sealed for this workshop.',
+              'Поток закрыт. Ворота этого воркшопа запечатаны.',
+              'Потік закрито. Ворота цього воркшопу запечатано.'
+            )}
+          </h1>
+          <p className="text-[15px] text-text-secondary leading-relaxed mb-8">
+            {t(
+              "Registration for this Claude Code workshop has closed. If you already signed up earlier, your nickname still works — open the workshop and use it on the entry screen.",
+              'Регистрация на этот воркшоп Claude Code закрыта. Если ты уже регистрировал(а)ся раньше, твой ник работает - открой воркшоп и используй его на экране входа.',
+              'Реєстрація на цей воркшоп Claude Code закрита. Якщо ти вже реєструвався(лась) раніше, твій нік працює - відкрий воркшоп і використай його на екрані входу.'
+            )}
+          </p>
+          <a
+            href="/"
+            className="inline-block bg-qa-teal text-black px-6 py-3 font-mono text-[12px] tracking-[2px] uppercase font-semibold hover:shadow-[0_0_18px_rgba(0,229,204,0.4)] transition-all"
+          >
+            {t('I already have a nickname →', 'У меня уже есть ник →', 'У мене вже є нік →')}
+          </a>
         </div>
       </div>
     )

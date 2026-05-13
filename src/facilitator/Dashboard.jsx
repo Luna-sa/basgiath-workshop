@@ -6,6 +6,7 @@ import {
   awardXp, setAnnouncement, getPrizes, updatePrize,
   resetStudentProgress, resetArenaRuns, addArenaRun,
   getAerieTiebreakCandidates, startAerieTiebreak, endAerieTiebreak,
+  setRegistrationClosed,
 } from '../api/facilitator'
 import { getFacilitatorState } from '../api/progress'
 import { getLatestSubmissionsByCharacter } from '../api/submissions'
@@ -26,6 +27,20 @@ export default function Dashboard() {
   const [tbMaxVotes, setTbMaxVotes] = useState(0)
   const [tbActiveIds, setTbActiveIds] = useState([])
   const [tbBusy, setTbBusy] = useState(false)
+  // Registration kill-switch state — mirrors facilitator_state.registration_closed
+  const [regClosed, setRegClosed] = useState(false)
+
+  const handleToggleRegistration = async () => {
+    const next = !regClosed
+    const verb = next ? 'CLOSE' : 'RE-OPEN'
+    if (!window.confirm(`${verb} registration?\n\nClosed: the public link shows a "registration closed" banner instead of the form. Existing nicknames still work.\nOpen: new sign-ups can land again.`)) return
+    setRegClosed(next) // optimistic
+    const res = await setRegistrationClosed(next)
+    if (res?.error) {
+      alert('Toggle failed: ' + (res.error.message || JSON.stringify(res.error)))
+      setRegClosed(!next) // rollback
+    }
+  }
 
   const handleAwardXp = async (student, amount) => {
     setBusyId(student.id)
@@ -111,7 +126,8 @@ export default function Dashboard() {
     const { candidates, maxVotes } = await getAerieTiebreakCandidates()
     setTbCandidates(candidates)
     setTbMaxVotes(maxVotes)
-    // Read current active tiebreak ids from facilitator state
+    // Read current active tiebreak ids + registration_closed flag
+    // from facilitator state.
     const fs = await getFacilitatorState()
     let ids = []
     if (fs?.tiebreak_dragon_ids) {
@@ -119,6 +135,8 @@ export default function Dashboard() {
       try { ids = typeof raw === 'string' ? JSON.parse(raw) : (Array.isArray(raw) ? raw : []) } catch { ids = [] }
     }
     setTbActiveIds(ids)
+    const closedRaw = fs?.registration_closed
+    setRegClosed(closedRaw === true || closedRaw === 'TRUE' || closedRaw === 'true' || closedRaw === 1 || closedRaw === '1')
   }
 
   const handleStartTiebreak = async () => {
@@ -211,7 +229,7 @@ export default function Dashboard() {
               {students.length} студентов · self-paced
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center flex-wrap">
             {['pre', 'live', 'complete'].map(p => (
               <button
                 key={p}
@@ -225,6 +243,20 @@ export default function Dashboard() {
                 {p}
               </button>
             ))}
+            {/* Registration kill-switch. Closed state shows a "registration closed" banner on the public StandaloneRegister page. */}
+            <button
+              onClick={handleToggleRegistration}
+              className={`px-4 py-2 font-mono text-[11px] tracking-wider uppercase border cursor-pointer transition-all ${
+                regClosed
+                  ? 'border-corp-red bg-corp-red/10 text-corp-red'
+                  : 'border-qa-teal/40 text-qa-teal hover:border-qa-teal'
+              }`}
+              title={regClosed
+                ? 'Registration CLOSED — public link shows a closed banner. Click to re-open.'
+                : 'Registration OPEN — public link accepts new sign-ups. Click to close.'}
+            >
+              {regClosed ? 'Registration · closed' : 'Registration · open'}
+            </button>
           </div>
         </div>
 
