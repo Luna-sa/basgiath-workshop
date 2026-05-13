@@ -2,6 +2,8 @@
 // Russian (`name`, `title`, etc.) plus optional `_en` / `_uk` variants.
 // Components should read via the `pickCharacter()` helper below.
 
+import { asset } from "../lib/asset"
+
 export const CHARACTERS = [
   {
     id: 'violet',
@@ -24,7 +26,7 @@ export const CHARACTERS = [
     style_en: 'Reads the docs first, touches the keyboard second.',
     style_uk: 'Спершу читає документацію, потім чіпає.',
     emoji: '⚡',
-    image: '/characters/violet.webp',
+    image: asset('/characters/violet.webp'),
     imagePosition: 'object-[center_20%]',
   },
   {
@@ -48,7 +50,7 @@ export const CHARACTERS = [
     style_en: 'Does first, asks questions later. Starts before the brief ends.',
     style_uk: 'Робить, потім розбирається. Починає раніше, ніж усе пояснять.',
     emoji: '🌑',
-    image: '/characters/xaden.webp',
+    image: asset('/characters/xaden.webp'),
     imagePosition: 'object-[center_15%]',
   },
   {
@@ -72,7 +74,7 @@ export const CHARACTERS = [
     style_en: 'Team player. The best beta-tester for someone else\'s config.',
     style_uk: 'Командний гравець. Найкращий бета-тестер чужих конфігів.',
     emoji: '🔥',
-    image: '/characters/rhiannon.webp',
+    image: asset('/characters/rhiannon.webp'),
     imagePosition: 'object-[center_15%]',
   },
   {
@@ -96,7 +98,7 @@ export const CHARACTERS = [
     style_en: 'Experiments, plays. His "tangents" produce the best results in the room.',
     style_uk: 'Експериментує, грається. Його «відхилення від теми» дають найцікавіші результати.',
     emoji: '❄️',
-    image: '/characters/ridoc.webp',
+    image: asset('/characters/ridoc.webp'),
     imagePosition: 'object-[center_10%]',
   },
   {
@@ -120,7 +122,7 @@ export const CHARACTERS = [
     style_en: 'Steps through the work, skips nothing, finishes what was started.',
     style_uk: 'Іде по кроках, нічого не пропускає, доводить до кінця.',
     emoji: '🛡️',
-    image: '/characters/liam.webp',
+    image: asset('/characters/liam.webp'),
     imagePosition: 'object-[center_15%]',
   },
   {
@@ -144,7 +146,7 @@ export const CHARACTERS = [
     style_en: 'Outcome over process. Takes what exists and sharpens it.',
     style_uk: 'Результат важливіший за процес. Бере готове і доточує.',
     emoji: '⚔️',
-    image: '/characters/imogen.webp',
+    image: asset('/characters/imogen.webp'),
     imagePosition: 'object-[center_15%]',
   },
   {
