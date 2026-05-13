@@ -1,0 +1,78 @@
+name: Deploy to GitHub Pages
+
+# Mirror of the Render deploy. Builds the same Vite SPA on every
+# push to main, publishes the static bundle to the gh-pages branch
+# so the live URL `https://luna-sa.github.io/basgiath-workshop/`
+# always reflects the latest commit. Acts as a hot standby in case
+# Render is blocked by a corporate firewall or goes down.
+
+on:
+  push:
+    branches: [main]
+  # Manual trigger via the Actions tab — useful for replaying a
+  # build without pushing a no-op commit.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Cancel any in-flight deploy when a newer commit lands so the
+# gh-pages branch reflects the freshest main, never a stale build.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Build (GH Pages base path)
+        run: BASE_PATH=/basgiath-workshop/ npm run build
+        env:
+          # Secrets are configured in the repo settings → Secrets
+          # and variables → Actions. Each must be added before the
+          # first deploy or the live mirror will run with empty
+          # values and the gsheets/Supabase/workshop backends will
+          # be unreachable.
+          VITE_GSHEETS_API: ${{ secrets.VITE_GSHEETS_API }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_FACILITATOR_TOKEN: ${{ secrets.VITE_FACILITATOR_TOKEN }}
+          VITE_WORKSHOP_API: ${{ secrets.VITE_WORKSHOP_API }}
+
+      # GitHub Pages serves static files — there's no SPA fallback
+      # for path-based routes like /register. Copying index.html as
+      # 404.html makes GH Pages serve the SPA for any unmatched
+      # path (it falls through to React Router which then reads
+      # the URL and renders the right page).
+      - name: SPA fallback (404 → index)
+        run: cp dist/index.html dist/404.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
