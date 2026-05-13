@@ -37,7 +37,10 @@ jobs:
           cache: 'npm'
 
       - name: Install
-        run: npm ci
+        # `npm install` instead of `npm ci` — the lock file has
+        # transitive deps (@emnapi/*) that npm ci flags as out of
+        # sync on Linux runners. install reconciles them silently.
+        run: npm install
 
       - name: Build (GH Pages base path)
         run: BASE_PATH=/basgiath-workshop/ npm run build
