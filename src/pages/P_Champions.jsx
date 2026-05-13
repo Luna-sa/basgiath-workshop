@@ -159,7 +159,7 @@ export default function P_Champions() {
             (it carries an image), so it gets 2 columns of width while
             Most XP / Arena Champion share 1 column each beside it.
             Each reveals in sequence (stage 1 → 2 → 3). */}
-        <div className="grid md:grid-cols-4 gap-6 mb-12 items-start">
+        <div className="grid md:grid-cols-4 gap-6 mb-12 items-center">
 
           {/* ─── Best Dragon - spans 2 columns ─── */}
           <AnimatePresence>
@@ -187,7 +187,7 @@ export default function P_Champions() {
                       initial={{ scale: 0.85, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 1.0, delay: 0.2 }}
-                      className="w-full aspect-square overflow-hidden border-2 border-qa-teal shadow-[0_0_40px_rgba(0,229,204,0.3)] mb-4"
+                      className="w-full max-w-[440px] aspect-square overflow-hidden border-2 border-qa-teal shadow-[0_0_40px_rgba(0,229,204,0.3)] mb-4"
                     >
                       <img
                         src={bestDragon.image_url}
@@ -222,7 +222,7 @@ export default function P_Champions() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, ease: 'easeOut' }}
-                className="flex flex-col"
+                className="flex flex-col rounded-lg border border-yellow-300/25 bg-yellow-300/[0.025] px-5 py-7 shadow-[0_0_30px_rgba(254,237,0,0.06)]"
               >
                 <h2 className="font-mono text-[11px] tracking-[3px] uppercase text-yellow-300 mb-2 text-center">
                   {t('Most XP', 'Больше всех XP', 'Найбільше XP')}
@@ -275,7 +275,7 @@ export default function P_Champions() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, ease: 'easeOut' }}
-                className="flex flex-col"
+                className="flex flex-col rounded-lg border border-pink-400/25 bg-pink-400/[0.025] px-5 py-7 shadow-[0_0_30px_rgba(255,101,190,0.06)]"
               >
                 <h2 className="font-mono text-[11px] tracking-[3px] uppercase text-pink-400 mb-2 text-center">
                   {t('Arena Champion', 'Чемпион Арены', 'Чемпіон Арени')}
