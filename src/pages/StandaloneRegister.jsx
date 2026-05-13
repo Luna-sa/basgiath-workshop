@@ -26,10 +26,22 @@ export default function StandaloneRegister() {
   const [errorMsg, setErrorMsg] = useState('')
   // Registration kill-switch — read once on mount from facilitator
   // state. If TRUE, swap the form for a "closed" banner.
+  //
+  // Bypass: appending `?internal=1` (or any truthy `internal` param)
+  // skips the closed gate so the workshop owner can still test the
+  // form even when the public route is sealed. Not linked from
+  // anywhere — pass the URL by hand to people who need it.
   const [registrationClosed, setRegistrationClosed] = useState(false)
   const [gateChecked, setGateChecked] = useState(false)
+  const internalBypass = (() => {
+    try {
+      const v = new URLSearchParams(window.location.search).get('internal')
+      return v === '1' || v === 'true' || v === 'yes'
+    } catch { return false }
+  })()
 
   useEffect(() => {
+    if (internalBypass) { setGateChecked(true); return }
     let cancelled = false
     getFacilitatorState().then(fs => {
       if (cancelled) return
@@ -39,7 +51,7 @@ export default function StandaloneRegister() {
       setGateChecked(true)
     }).catch(() => setGateChecked(true))
     return () => { cancelled = true }
-  }, [])
+  }, [internalBypass])
 
   const updateField = (k, v) => {
     if (k === 'nickname') v = String(v).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 20)
