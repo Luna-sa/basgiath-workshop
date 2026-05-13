@@ -330,43 +330,13 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             fontSize: 22, lineHeight: 1.3, color: '#FFFFFF', fontWeight: 500,
             marginBottom: 28, maxWidth: 560,
           }}>
-            <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>the Claude Code Workshop — Basics</em>, a hands-on training for QA engineers covering CLAUDE.md, slash commands, sub-agents, skills, MCP servers, hooks and plugins. Personal AI assistant built.
+the <em style={{ color: '#00E5CC', fontStyle: 'italic', fontWeight: 500 }}>Claude Code Workshop — Basics</em>, a hands-on training within <em style={{ color: '#FFFFFF', fontStyle: 'italic' }}>QA Clan</em>. Covered CLAUDE.md, slash commands, sub-agents, skills, MCP servers, hooks and plugins. Personal AI assistant built.
           </p>
 
-          {/* Stats grid */}
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0,
-            borderTop: '1px solid rgba(255,255,255,0.10)', borderBottom: '1px solid rgba(255,255,255,0.10)',
-            maxWidth: 600,
-          }}>
-            {[
-              { num: '7', sub: '/7', label: 'Slash\ncommands', color: '#FFFFFF' },
-              { num: '4', sub: '', label: 'Sub-agents\nbuilt', color: '#00E5CC', italic: true },
-              { num: '3', sub: '/3', label: 'MCP\nservers', color: '#FFFFFF' },
-              { num: '1', sub: '', label: 'AI persona\ndesigned', color: '#FF65BE' },
-            ].map((s, i) => (
-              <div key={i} style={{
-                padding: i === 0 ? '18px 16px 18px 0' : '18px 16px 18px 20px',
-                borderRight: i < 3 ? '1px solid rgba(255,255,255,0.10)' : 'none',
-              }}>
-                <div style={{
-                  fontFamily: '"Playfair Display", Georgia, serif',
-                  fontStyle: s.italic ? 'italic' : 'normal',
-                  fontWeight: 400, fontSize: 34, lineHeight: 1,
-                  color: s.color, letterSpacing: '-0.02em', marginBottom: 6,
-                }}>
-                  {s.num}{s.sub && <span style={{ fontSize: 20, color: '#666' }}>{s.sub}</span>}
-                </div>
-                <div style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: 9, letterSpacing: 2.5, textTransform: 'uppercase', color: '#888888',
-                  lineHeight: 1.3, whiteSpace: 'pre-line',
-                }}>
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Stats grid removed per request — the body copy already
+              names the curriculum, so the numeric tiles were redundant
+              and pulled the eye toward "course-completion brag"
+              energy that doesn't fit the editorial tone. */}
         </div>
       </div>
 
@@ -382,9 +352,11 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             faux-QR / seal block was removed because the code wasn't
             scannable; an invalid QR weakens credibility. */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, paddingBottom: 4 }}>
-          {/* Tutor avatar — round photo, teal hairline. */}
+          {/* Tutor avatar — round photo, teal hairline. Sized ~30%
+              smaller than the original 84px so the tutor block reads
+              as supporting, not co-equal, with the dragon portrait. */}
           <div style={{
-            width: 84, height: 84, borderRadius: '50%', overflow: 'hidden',
+            width: 58, height: 58, borderRadius: '50%', overflow: 'hidden',
             border: '1.5px solid #00E5CC',
             boxShadow: '0 0 0 1px rgba(0,229,204,0.15), 0 6px 18px rgba(0,0,0,0.45)',
             flexShrink: 0,
@@ -413,13 +385,7 @@ const WorkshopCertificate = forwardRef(function WorkshopCertificate(
             <div style={{ width: 180, height: 1, background: '#00E5CC', opacity: 0.5, margin: '8px 0' }} />
             <div style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: 10, letterSpacing: 1.5, color: '#DCDCDC', lineHeight: 1.6,
-            }}>
-              QA Tech Lead · 10+ years
-            </div>
-            <div style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: 9.5, letterSpacing: 1.5, color: '#00E5CC', marginTop: 4, lineHeight: 1.5,
+              fontSize: 9.5, letterSpacing: 1.5, color: '#00E5CC', lineHeight: 1.5,
             }}>
               {TUTOR_LINKEDIN}
             </div>
