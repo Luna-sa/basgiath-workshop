@@ -49,7 +49,7 @@ export default function P_Champions() {
   useEffect(() => {
     let cancelled = false
     Promise.all([
-      listDragons().then(r => r.data || []),
+      listDragons().then(r => Array.isArray(r) ? r : (r?.dragons || r?.data || [])),
       getXpLeaderboard().then(r => r.leaderboard || []),
       getArenaLeaderboard().then(r => r.leaderboard || []),
     ]).then(([d, xp, a]) => {
