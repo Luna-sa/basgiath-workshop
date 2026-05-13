@@ -17,7 +17,7 @@ import { useWorkshopStore } from '../store/workshopStore'
 import WorkshopCertificate from '../components/WorkshopCertificate'
 import { buildLinkedInCaption, downloadBlob } from '../utils/sigilCard'
 import { submitFeedback } from '../api/feedback'
-import { listDragons } from '../api/dragons'
+import { listDragons, getDragonImageDataUri } from '../api/dragons'
 
 const TUTOR_LINKEDIN_URL = 'https://www.linkedin.com/in/ainastasia/'
 
@@ -64,6 +64,13 @@ export default function P_ResourcesIntro() {
   // the canonical record for this nickname once on mount and use it
   // as a fallback for any field the local sigil is missing.
   const [backendDragon, setBackendDragon] = useState(null)
+  // Inline data URI of the backend-stored dragon image. The cert
+  // component can render <img src=...> from a Drive thumbnail fine,
+  // but html-to-image taints the canvas when it tries to capture a
+  // cross-origin <img>, so PNG export and LinkedIn share both fail.
+  // We proxy the bytes through Apps Script as a base64 data URI so
+  // the canvas stays clean.
+  const [backendImageDataUri, setBackendImageDataUri] = useState(null)
   useEffect(() => {
     const nick = String(user.nickname || '').toLowerCase().trim()
     if (!nick) return
@@ -73,15 +80,32 @@ export default function P_ResourcesIntro() {
         if (cancelled) return
         const arr = Array.isArray(rows) ? rows : (rows?.dragons || rows?.data || [])
         const mine = arr.find(d => String(d.nickname || '').toLowerCase() === nick)
-        if (mine) setBackendDragon(mine)
+        if (mine) {
+          setBackendDragon(mine)
+          // Only pull the bytes if the local sigil doesn't already
+          // carry an image - otherwise we'd waste a roundtrip.
+          if (!sigil?.imageDataUri) {
+            getDragonImageDataUri(nick).then(uri => {
+              if (!cancelled && uri) setBackendImageDataUri(uri)
+            })
+          }
+        }
       })
       .catch(() => {})
     return () => { cancelled = true }
-  }, [user.nickname])
+  }, [user.nickname, sigil?.imageDataUri])
 
   const riderName = editedName.trim()
   const dragonName = sigil?.dragonName || backendDragon?.name || 'Unnamed'
-  const dragonImageUrl = sigil?.imageDataUri || backendDragon?.image_url || null
+  // Order of preference matters: prefer the in-memory data URI
+  // (already canvas-safe), then the backend-proxied data URI (also
+  // canvas-safe), then the raw Drive URL as a last resort for preview
+  // (will still break PNG export but at least shows the picture).
+  const dragonImageUrl =
+    sigil?.imageDataUri ||
+    backendImageDataUri ||
+    backendDragon?.image_url ||
+    null
   const sealedAt = sigil?.sealedAt || backendDragon?.sealed_at || Date.now()
 
   const handleFeedbackSubmit = async (e) => {

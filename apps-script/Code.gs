@@ -97,6 +97,7 @@ function doPost(e) {
       // dragons
       sealDragon,
       listDragons,
+      getDragonImageDataUri,
       // votes
       voteForDragon,
       withdrawVote,
@@ -587,6 +588,28 @@ function sealDragon({ nickname, studentId, characterId, answers, imageB64, promp
     SpreadsheetApp.flush()
     return record
   }, 90000)
+}
+
+// Returns the sealed dragon's image as a data URI so the certificate
+// component can render it without tainting the canvas. The browser
+// can't fetch the Drive thumbnail directly (no CORS headers), so we
+// pull the file blob server-side via DriveApp and base64-encode it.
+function getDragonImageDataUri({ nickname }) {
+  if (!nickname) throw new Error('nickname required')
+  const nick = String(nickname).toLowerCase().trim()
+  const dragon = _allRows(SHEETS.DRAGONS).find(d => String(d.nickname).toLowerCase() === nick)
+  if (!dragon) return { error: 'not_found' }
+  const url = String(dragon.image_url || '')
+  const m = url.match(/[?&]id=([^&]+)/)
+  if (!m) return { error: 'bad_url', url }
+  try {
+    const blob = DriveApp.getFileById(m[1]).getBlob()
+    const mime = blob.getContentType() || 'image/png'
+    const b64 = Utilities.base64Encode(blob.getBytes())
+    return { dataUri: 'data:' + mime + ';base64,' + b64, mime }
+  } catch (e) {
+    return { error: 'drive_fetch_failed', message: e && e.message ? e.message : String(e) }
+  }
 }
 
 function listDragons() {

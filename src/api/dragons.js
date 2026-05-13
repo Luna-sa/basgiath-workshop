@@ -108,6 +108,22 @@ export async function listDragons() {
 
 export const MAX_VOTES_PER_VOTER = 3
 
+// Fetch the sealed dragon's image as a same-origin-safe data URI.
+// The certificate component uses html-to-image, which taints the
+// canvas when an <img> points at a cross-origin host like Google
+// Drive (no CORS headers). The Apps Script proxy serves the image
+// bytes inline so html-to-image renders it as part of the cert.
+export async function getDragonImageDataUri(nickname) {
+  if (!nickname || !gsheetsEnabled()) return null
+  try {
+    const res = await callAction('getDragonImageDataUri', { nickname })
+    return res?.dataUri || null
+  } catch (e) {
+    console.warn('getDragonImageDataUri failed:', e.message)
+    return null
+  }
+}
+
 /**
  * Get all votes by this voter. Returns array of { dragon_id, created_at }.
  * Empty array if no votes / nickname missing.
