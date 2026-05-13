@@ -10,6 +10,7 @@ import ErrorBoundary from './core/ErrorBoundary'
 import TealParticles from './effects/TealParticles'
 import Dashboard from './facilitator/Dashboard'
 import StandaloneRegister from './pages/StandaloneRegister'
+import StandaloneCertificate from './pages/StandaloneCertificate'
 import Arena from './pages/Arena'
 import P_SignetCeremony from './pages/P_SignetCeremony'
 // P_BondRitual deprecated — Bond Ritual logic merged into Signet Ceremony.
@@ -101,6 +102,13 @@ function isChampionsRoute() {
   return path === '/champions' || path === '/champions/'
 }
 
+function isCertRoute() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('page') === 'cert') return true
+  const path = window.location.pathname
+  return path === '/cert' || path === '/cert/' || path === '/certificate' || path === '/certificate/'
+}
+
 export default function App() {
   const [facilitator] = useState(isFacilitatorMode)
   const [registerOnly] = useState(isRegisterRoute)
@@ -113,15 +121,16 @@ export default function App() {
   const [revealOnly] = useState(isRevealRoute)
   const [resourcesOnly] = useState(isResourcesRoute)
   const [championsOnly] = useState(isChampionsRoute)
+  const [certOnly] = useState(isCertRoute)
   const nickname = useWorkshopStore(s => s.user.nickname)
   const [unlocked, setUnlocked] = useState(false)
 
   useEffect(() => {
-    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly && !championsOnly) {
+    if (!registerOnly && !arenaOnly && !personaOnly && !signetOnly && !bondOnly && !aerieOnly && !mosaicOnly && !revealOnly && !resourcesOnly && !championsOnly && !certOnly) {
       fetchInitialState()
       if (!facilitator) startSync()
     }
-  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly, championsOnly])
+  }, [facilitator, registerOnly, arenaOnly, personaOnly, signetOnly, bondOnly, aerieOnly, mosaicOnly, revealOnly, resourcesOnly, championsOnly, certOnly])
 
   if (arenaOnly) {
     return (
@@ -235,6 +244,32 @@ export default function App() {
           <TealParticles />
           <LanguageToggle /><UserMenu />
           <StandaloneRegister />
+        </div>
+      </ErrorBoundary>
+    )
+  }
+
+  if (certOnly) {
+    // Standalone cert page - needs a logged-in nickname to look up
+    // the sealed dragon. Falls through to the workshop gate if no
+    // identity is present in local store.
+    if (!nickname && !unlocked) {
+      return (
+        <ErrorBoundary>
+          <div className="min-h-screen bg-bg text-text-body">
+            <TealParticles />
+            <LanguageToggle /><UserMenu />
+            <WorkshopGate onUnlock={() => setUnlocked(true)} />
+          </div>
+        </ErrorBoundary>
+      )
+    }
+    return (
+      <ErrorBoundary>
+        <div className="min-h-screen bg-bg text-text-body">
+          <TealParticles />
+          <LanguageToggle /><UserMenu />
+          <StandaloneCertificate />
         </div>
       </ErrorBoundary>
     )
